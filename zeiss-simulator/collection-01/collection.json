@@ -1,0 +1,394 @@
+{
+	"info": {
+		"_postman_id": "9fe0c875-2f37-4c62-9737-4d0df330cb3b",
+		"name": "Collection 4",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "START Tire Mounting",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "802bbc46-be82-4bd6-92a2-8484bc069e23",
+						"type": "text/javascript",
+						"exec": [
+							"var current_timestamp = new Date();",
+							"pm.variables.set(\"current_timestamp\", current_timestamp.toISOString());",
+							"var uuid = require ('uuid');",
+							"postman.clearEnvironmentVariable(\"workpieceId\");",
+							"postman.clearGlobalVariable(\"workpieceId\");",
+							"pm.globals.set(\"workpieceId\", uuid.v4());"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"notProcessedWorkpieceEvent\": true,\r\n  \"source\": {\r\n    \"id\": \"{{device-1}}\"\r\n  },\r\n  \"type\": \"adamos_StartWorkpieceStep\",\r\n  \"time\": \"{{current_timestamp}}\",\r\n  \"text\": \"Starting tire mounting for wheel id {{workpieceId}}\",\r\n  \"adamos_WorkpieceId\": {\r\n    \"id\": \"{{workpieceId}}\",\r\n    \"type\": \"adamos_WorkpieceIdentification\"\r\n  },\r\n  \"adamos_WorkpieceIdentification_{{workpieceId}}\" : \"\",\r\n  \"adamos_WorkpieceMasterData\" : {\r\n\t\"Mein Master Datum\" : \"Und hier der Inhalt\",\r\n\t\"objektname\":{\r\n\t\t\"Anzahl\":2,\r\n\t\t\"inneres Objekt\":{\r\n\t\t\t\"foo\":\"bar\",\r\n\t\t\t\"hans\":\"imglück\",\r\n\t\t\t\"boolean\":true,\r\n\t\t\t\"boolean2\":false,\r\n\t\t\t\"null?\":null\r\n\t\t\t\r\n\t\t}\r\n\t},\r\n\t\"objektname2\":{\"key\":\"value\"}\r\n  },\r\n  \"adamos_WorkpieceStepData\": {\r\n    \"adamos_stepName\": \"Tire mounting\"\r\n  },\r\n  \"adamos_IsWorkpieceData\": true\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/event/events",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"event",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mesaurement from {{device-1}}",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cb44ec8e-fb79-40c6-9704-5faebe257069",
+						"exec": [
+							"var current_timestamp = new Date();",
+							"pm.variables.set(\"current_timestamp\", current_timestamp.toISOString());",
+							"",
+							"var rndCycleTimeCurrent = 23;",
+							"var rndPartCounterDay = 613;",
+							"var rndTorque = 104;",
+							"",
+							"rndCycleTimeCurrent =",
+							"    _.random(0, 100) <= 70 // In X% of the cases",
+							"    ? rndCycleTimeCurrent + (2 * (_.random(1, 2)).toFixed(0)) // Add random to value",
+							"    : rndCycleTimeCurrent - (2 * (_.random(1, 3)).toFixed(0)); // Subtract random to value",
+							"    ",
+							"rndPartCounterDay =",
+							"    _.random(0, 100) <= 95",
+							"    ? rndPartCounterDay // Do not touch the value",
+							"    : _.random(620, 650); // Set other than 613",
+							"",
+							"rndTorque =",
+							"    _.random(0, 100) <= 90",
+							"    ? rndTorque + (2 * (_.random(1, 2)).toFixed(0)) // Add random to value",
+							"    : rndTorque - (2 * (_.random(1, 3)).toFixed(0)); // Subtract random to value",
+							"",
+							"pm.variables.set(\"tpl_rndCycleTimeCurrent\", rndCycleTimeCurrent);",
+							"pm.variables.set(\"tpl_rndPartCounterDay\", rndPartCounterDay);",
+							"pm.variables.set(\"tpl_rndTorque\", rndTorque);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"time\": \"{{current_timestamp}}\",\n    \"source\": {\n        \"id\": \"{{device-1}}\"\n    },\n    \"type\": \"Tire Mounting Station\",\n    \"Status\": {\n        \"StatusIconGreen\": {\n            \"value\": 1\n        },\n        \"StatusIconYellow\": {\n            \"value\": 0\n        },\n        \"StatusIconRed\": {\n            \"value\": 0\n        }\n    },\n    \"PartCounterDay\": {\n        \"PartCounterDay\": {\n            \"value\": {{tpl_rndPartCounterDay}}\n        }\n    },\n    \"StatusWidget\": {\n        \"StatusWidget\": {\n            \"value\": 1\n        }\n    },\n    \"adamos_IsWorkpieceData\": true,\n    \"torque\": {\n        \"torque\": {\n            \"value\": {{tpl_rndTorque}}\n        }\n    },\n    \"CycleTimeCurrent\": {\n        \"CycleTimeCurrent\": {\n            \"value\": {{tpl_rndCycleTimeCurrent}}\n        }\n    },\n    \"RotorID\": {\n        \"RotorID\": {\n            \"value\": 1400001922\n        }\n    },\n    \"CycleTimeMean\": {\n        \"CycleTimeMean\": {\n            \"value\": 25.0065\n        }\n    }\n}"
+				},
+				"url": {
+					"raw": "{{url}}/measurement/measurements",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"measurement",
+						"measurements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "STOP Tire Mounting",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cb44ec8e-fb79-40c6-9704-5faebe257069",
+						"exec": [
+							"var current_timestamp = new Date();",
+							"pm.variables.set(\"current_timestamp\", current_timestamp.toISOString());",
+							"",
+							"var quality = _.random(0, 100) <= 30 // In X% of the cases",
+							"    ? \"OK\"",
+							"    : \"nOK\";",
+							"",
+							"pm.variables.set(\"tpl_quality\", quality);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"notProcessedWorkpieceEvent\": true,\r\n  \"source\": {\r\n    \"id\": \"{{device-1}}\"\r\n  },\r\n  \"type\": \"adamos_StopWorkpieceStep\",\r\n  \"time\": \"{{current_timestamp}}\",\r\n  \"text\": \"Finished tire mounting for wheel id {{workpieceId}}\",\r\n  \"adamos_WorkpieceId\": {\r\n    \"id\": \"{{workpieceId}}\",\r\n    \"type\": \"adamos_WorkpieceIdentification\"\r\n  },\r\n  \"adamos_WorkpieceIdentification_{{workpieceId}}\" : \"\",\r\n  \"adamos_WorkpieceStepData\": {\r\n    \"adamos_stepName\": \"Tire mounting\",\r\n    \"quality\": \"{{tpl_quality}}\"\r\n  },\r\n  \"adamos_IsWorkpieceData\": true\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/event/events",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"event",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FILL UP NONSENSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "example.com",
+					"host": [
+						"example",
+						"com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FILL UP NONSENSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "example.com",
+					"host": [
+						"example",
+						"com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FILL UP NONSENSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "example.com",
+					"host": [
+						"example",
+						"com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FILL UP NONSENSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "example.com",
+					"host": [
+						"example",
+						"com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FILL UP NONSENSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "example.com",
+					"host": [
+						"example",
+						"com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FILL UP NONSENSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "example.com",
+					"host": [
+						"example",
+						"com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FILL UP NONSENSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "example.com",
+					"host": [
+						"example",
+						"com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FILL UP NONSENSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "example.com",
+					"host": [
+						"example",
+						"com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FILL UP NONSENSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "example.com",
+					"host": [
+						"example",
+						"com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FILL UP NONSENSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "example.com",
+					"host": [
+						"example",
+						"com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FILL UP NONSENSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "example.com",
+					"host": [
+						"example",
+						"com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FILL UP NONSENSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "example.com",
+					"host": [
+						"example",
+						"com"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "SomePwd",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "myTechnicalUser",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "953e8ca2-0650-43a1-bce3-835c9bc51660",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "c93c6981-0cd0-405c-8787-90132901c7b5",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "1bbdc4b8-007d-48b0-bdac-2c597d2f669a",
+			"key": "url",
+			"value": "adamosoeetest01.adamos-dev.com",
+			"type": "string"
+		},
+		{
+			"id": "61bb1bf7-898b-4e97-9630-3a2bdaa0dc26",
+			"key": "device-1",
+			"value": "7592342",
+			"type": "string"
+		}
+	]
+}
