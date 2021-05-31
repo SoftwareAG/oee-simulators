@@ -12,7 +12,7 @@ logging.info(os.environ)
 '''
 Start configuration
 '''
-C8Y_BASE = 'http://mobile.eu-latest.cumulocity.com' #os.environ.get('C8Y_BASEURL')
+C8Y_BASE = os.environ.get('C8Y_BASEURL') #'https://mobile.eu-latest.cumulocity.com'
 C8Y_TENANT = os.environ.get('C8Y_TENANT')
 C8Y_USER = os.environ.get('C8Y_USER')
 C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD')
@@ -60,7 +60,7 @@ logging.info("Starting DMG Simluator 2...")
 
 # Check if device already created
 response = requests.get(C8Y_BASE + '/identity/externalIds/c8y_SimulatorSerial/' + C8Y_SIMULATOR_EXTERNAL_ID, headers=C8Y_HEADERS)
-logging.info("response: " + response)
+#logging.info("response: " + response.json())
 
 if (response.status_code == 200):
     deviceId = response.json()['managedObject']['id']

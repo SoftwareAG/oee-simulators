@@ -11,7 +11,7 @@ logging.info(os.environ)
 '''
 Start configuration
 '''
-C8Y_BASE = 'http://hackathon.adamos-dev.com' #os.environ.get('C8Y_BASEURL')
+C8Y_BASE = os.environ.get('C8Y_BASEURL')
 C8Y_TENANT = os.environ.get('C8Y_TENANT')
 C8Y_USER = os.environ.get('C8Y_USER')
 C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD')
