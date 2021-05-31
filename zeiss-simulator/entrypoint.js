@@ -13,6 +13,7 @@ try {
         environment
     };
 } catch (e) {
+	console.log('catched error: ' + e);
     if (!e instanceof Error || e.code == ! "MODULE_NOT_FOUND") {
         throw e;
     }
@@ -21,6 +22,7 @@ try {
 /** Makes the newman call awaitable */
 function run() {
     newman.run(config, (err) => {
+		console.log('running loop ...');
         if (err) throw err;
         setTimeout(run, process.env.DELAY_ROUNDS);
     });

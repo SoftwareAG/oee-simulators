@@ -6,7 +6,7 @@ FOLDERS=(
 )
 
 echo -e "\n>>> Build base image\n"
-docker build -t adamos/dwp-simulator:base .
+docker build -t adamos/oee-dwp-sim:base .
 
 for coll in "${FOLDERS[@]}"
 do
@@ -17,9 +17,9 @@ do
 
     echo -e "\n>>> Build image $coll\n"
     cd $coll
-    docker build -t adamos/dwp-simulator:$coll .
-#    docker save adamos/dwp-simulator:$coll > image.tar
-#    zip dwp-sim-$coll.zip cumulocity.json image.tar
+    docker build -t adamos/oee-dwp-sim:$coll .
+    docker save adamos/oee-dwp-sim:$coll > image.tar
+    zip oee-dwp-sim-$coll.zip cumulocity.json image.tar
     cd ..
 done
 

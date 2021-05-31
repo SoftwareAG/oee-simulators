@@ -345,7 +345,7 @@
 		"basic": [
 			{
 				"key": "password",
-				"value": "SomePwd",
+				"value": "SomePwd99,!",
 				"type": "string"
 			},
 			{
@@ -381,13 +381,13 @@
 		{
 			"id": "1bbdc4b8-007d-48b0-bdac-2c597d2f669a",
 			"key": "url",
-			"value": "adamosoeetest01.adamos-dev.com",
+			"value": "https://mobile.eu-latest.cumulocity.com",
 			"type": "string"
 		},
 		{
 			"id": "61bb1bf7-898b-4e97-9630-3a2bdaa0dc26",
 			"key": "device-1",
-			"value": "7592342",
+			"value": "119210048",
 			"type": "string"
 		}
 	]
