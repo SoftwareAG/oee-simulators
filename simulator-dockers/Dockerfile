@@ -24,4 +24,5 @@ RUN pip install requests
 #CMD [ "python", "./simulator.py" ]
 #CMD [ "python", "./duerr_simulator.py" ]
 #CMD [ "python", "./asm_simulator.py" ]
-CMD [ "python", "./dmg_simulator.py" ]
+#CMD [ "python", "./dmg_simulator.py" ]
+CMD [ "python", "./event_based_simulators.py" ]
