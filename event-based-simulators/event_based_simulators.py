@@ -180,6 +180,16 @@ class MachineSimulator:
 
         event = self.__type_fragment(event_definition)
         self.__send_event(event)
+    
+    def __on_pieces_ok_event(self, event_definition, task):
+        if not self.machine_up: return self.__log_ignore(event_definition)            
+
+        event = self.__type_fragment(event_definition)
+
+        count_min_hits = event_definition["countMinHits"] or 0
+        count_max_hits = event_definition["countMaxHits"] or 10
+        event.update({"count": randint(count_min_hits, count_max_hits)})
+        self.__send_event(event)
 
     def __on_piece_quality_event(self, event_definition, task):
         if not self.machine_up: return self.__log_ignore(event_definition)            
@@ -231,6 +241,7 @@ class MachineSimulator:
                      'Piece_Produced': __on_piece_produced_event,
                      'Pieces_Produced': __on_pieces_produced_event,
                      'Piece_Ok': __on_piece_ok_event,
+                     'Pieces_Ok': __on_pieces_ok_event,
                      'Piece_Quality': __on_piece_quality_event }
 
     def __create_task(self, event_definition):
