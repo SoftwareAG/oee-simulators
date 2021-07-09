@@ -74,11 +74,6 @@
         "type": "Simulator",
         "id": "sim_004",
         "label": "Normal with Short Shutdowns",
-        "comment": "TODO: ask Harald what does shutdown mean? Does it mean no events at all should be produced while shutdown?",
-        "shutdownDuration": 2,            
-        "shutdownDurationComment": "in minutes",
-        "shutdowns": 1,
-        "shutdownsComment": "1 per hour",
         "events": [
             {
                 "type": "Availability",
@@ -93,7 +88,12 @@
                     "type": "Piece_Ok",
                     "hits": 20
                 }
-            }                
+            },
+            {
+                "type": "Shutdown",
+                "hits": 2,
+                "maxDuration": 5
+            }                   
         ]
     },
     {
