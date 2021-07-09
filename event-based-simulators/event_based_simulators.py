@@ -52,8 +52,8 @@ class CumulocityAPI:
             return json.dumps({'response': 200})
         else:
             response = requests.post(C8Y_BASE + '/event/events', headers=C8Y_HEADERS, data=json.dumps(event))
-            if response.status_code != 200:
-                logging.warning(f'cannot send event. {response}')
+            if not response.ok():
+                logging.warning(f'response status code is not ok: {response}')
             return response.json()
 
     def get_or_create_device(self, sim_id, label):
@@ -66,7 +66,7 @@ class CumulocityAPI:
                 
     def __get_device(self, sim_id):
         response = requests.get(f'{C8Y_BASE}/identity/externalIds/{C8Y_SIMULATORS_GROUP}/{sim_id}', headers=C8Y_HEADERS)
-        if response.status_code == 200:
+        if response.ok():
             device_id = response.json()['managedObject']['id']
             logging.info(f'Device({device_id}) for the simulator({sim_id}) found.')
             return device_id        

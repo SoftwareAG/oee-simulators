@@ -4,7 +4,7 @@ FROM python:3.8.11-alpine3.14
 ADD event_based_simulators.py /
 
 # simulator definitions
-ADD sumulators.json /
+ADD simulators.json /
 
 RUN pip install requests
 
