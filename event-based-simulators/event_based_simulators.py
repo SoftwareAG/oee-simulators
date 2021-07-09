@@ -2,8 +2,11 @@ import time, json, os, logging, requests, base64
 from datetime import datetime
 from random import randint, uniform
 
+VERSION = '1.0'
+
 logging.basicConfig(level=logging.INFO)
 logging.info(os.environ)
+logging.info(f"version: {VERSION}")
 
 '''
 Start configuration
@@ -68,12 +71,12 @@ class CumulocityAPI:
         response = requests.get(f'{C8Y_BASE}/identity/externalIds/{C8Y_SIMULATORS_GROUP}/{sim_id}', headers=C8Y_HEADERS)
         if response.ok:
             device_id = response.json()['managedObject']['id']
-            logging.info(f'Device({device_id}) for the simulator({sim_id}) found.')
+            logging.info(f' Device({device_id}) has been found by its external id "{C8Y_SIMULATORS_GROUP}/{sim_id}".')
             return device_id        
         return None
     
     def __create_device(self, sim_id, label):
-        logging.info("create device...")
+        logging.info(f'Creating a new device for with following external id "{C8Y_SIMULATORS_GROUP}/{sim_id}"')
         device = {
             'name': label,
             'c8y_IsDevice': {}
@@ -127,6 +130,7 @@ class MachineSimulator:
         self.model = model        
         self.device_id = None
         self.machine_up = False
+        self.shutdown = False
         self.tasks = list(map(self.__create_task, self.model["events"]))
         # print(f'events: {self.model["events"]}')
 
@@ -142,7 +146,7 @@ class MachineSimulator:
     def __on_availability_event(self, event_definition, task):             
         event = self.__type_fragment(event_definition)
 
-        status_up_probability = event_definition["statusUpProbability"] or 0.5
+        status_up_probability = event_definition.get("statusUpProbability") or 0.5
         
         if try_event(status_up_probability):
             event.update({'status': 'up'})
@@ -164,8 +168,8 @@ class MachineSimulator:
     def __on_pieces_produced_event(self, event_definition, task):
         if not self.machine_up: return self.__log_ignore(event_definition)            
 
-        count_min_hits = event_definition["countMinHits"] or 0
-        count_max_hits = event_definition["countMaxHits"] or 10
+        count_min_hits = event_definition.get("countMinHits") or 0
+        count_max_hits = event_definition.get("countMaxHits") or 10
 
         event = self.__type_fragment(event_definition)
         event.update({"count": randint(count_min_hits, count_max_hits)})
@@ -186,8 +190,8 @@ class MachineSimulator:
 
         event = self.__type_fragment(event_definition)
 
-        count_min_hits = event_definition["countMinHits"] or 0
-        count_max_hits = event_definition["countMaxHits"] or 10
+        count_min_hits = event_definition.get("countMinHits") or 0
+        count_max_hits = event_definition.get("countMaxHits") or 10
         event.update({"count": randint(count_min_hits, count_max_hits)})
         self.__send_event(event)
 
@@ -196,13 +200,27 @@ class MachineSimulator:
 
         event = self.__type_fragment(event_definition)
 
-        status_ok_probability = event_definition["statusOkProbability"] or 0.5
+        status_ok_probability = event_definition.get("statusOkProbability") or 0.5
         if try_event(status_ok_probability):
             event.update({"status": "ok"})
         else:
             event.update({"status": "nok"})
 
         self.__send_event(event)
+
+    def __on_shutdown_event(self, event_definition, task):
+        self.shutdown = True
+
+        min_duration = event_definition.get("minDuration") or 0
+        max_duration = event_definition.get("maxDuration") or 5
+        duration = int(uniform(min_duration, max_duration) * 60)
+        logging.info(f'shutdown {self.device_id} for the next {duration} seconds.')
+        task = self.create_one_time_task({}, duration, MachineSimulator.__on_machine_up_event)
+        self.tasks.append(task)
+        
+    def __on_machine_up_event(self, event_definition, task):
+        self.shutdown = False
+        logging.info(f'Device({self.device_id}) is up now.')
 
     def __send_following_event(self, event_definition):        
         if "followedBy" in event_definition:
@@ -215,10 +233,9 @@ class MachineSimulator:
                 followed_by_task = self.create_one_time_task(followed_by_definition)
                 self.tasks.append(followed_by_task)                
 
-
-    def create_one_time_task(self, event_definition):
-        event_callback = MachineSimulator.event_mapping[event_definition["type"]]
-        task = Task(2, lambda task: {self.__execute_callback_and_remove_task(event_callback, event_definition, task)})
+    def create_one_time_task(self, event_definition, duration = 2, event_callback = None):
+        callback = event_callback or MachineSimulator.event_mapping[event_definition["type"]]
+        task = Task(duration, lambda task: {self.__execute_callback_and_remove_task(callback, event_definition, task)})
         return task        
         
     def __execute_callback_and_remove_task(self, callback, event_definition, task):
@@ -232,7 +249,6 @@ class MachineSimulator:
             task.tick()
 
     def get_or_create_device_id(self):        
-        # TODO: get or create device id
         sim_id = self.model['id']
         label = self.model['label']
         self.device_id = cumulocityAPI.get_or_create_device(sim_id, label)
@@ -242,7 +258,8 @@ class MachineSimulator:
                      'Pieces_Produced': __on_pieces_produced_event,
                      'Piece_Ok': __on_piece_ok_event,
                      'Pieces_Ok': __on_pieces_ok_event,
-                     'Piece_Quality': __on_piece_quality_event }
+                     'Piece_Quality': __on_piece_quality_event,
+                     'Shutdown': __on_shutdown_event}
 
     def __create_task(self, event_definition):
         min_hits_per_hour = event_definition.get("minHits", event_definition.get("hits"))
@@ -255,7 +272,7 @@ class MachineSimulator:
 
         task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, event_callback)
         
-        print(f'create periodic task for {event_definition["type"]} ({min_hits_per_hour}, {max_hits_per_hour})')        
+        logging.debug(f'create periodic task for {event_definition["type"]} ({min_hits_per_hour}, {max_hits_per_hour})')        
         # event_callback()
         return task
     
@@ -267,7 +284,11 @@ class MachineSimulator:
             'time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
         }
         base_event.update(event_fragment)
-        cumulocityAPI.send_event(base_event)
+
+        if self.shutdown:
+            logging.info(f'{self.model["id"]} is down -> ignore event: {json.dumps(base_event)}')
+        else:
+            cumulocityAPI.send_event(base_event)
 
 def load(filename):
     try:
