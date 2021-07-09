@@ -76,7 +76,7 @@ class CumulocityAPI:
         return None
     
     def __create_device(self, sim_id, label):
-        logging.info(f'Creating a new device for with following external id "{C8Y_SIMULATORS_GROUP}/{sim_id}"')
+        logging.info(f'Creating a new device with following external id "{C8Y_SIMULATORS_GROUP}/{sim_id}"')
         device = {
             'name': label,
             'c8y_IsDevice': {}
