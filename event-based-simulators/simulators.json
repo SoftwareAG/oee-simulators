@@ -37,8 +37,10 @@
                 "countMinHits": 0,
                 "countMaxHits": 10,
                 "followedBy": {
-                    "type": "Piece_Ok",
-                    "hits": 20
+                    "type": "Pieces_Ok",
+                    "countMinHits": 0,
+                    "countMaxHits": 10,
+                    "hits": 6
                 }
             }
         ]
