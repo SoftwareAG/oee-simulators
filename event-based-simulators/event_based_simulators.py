@@ -32,6 +32,13 @@ C8Y_HEADERS = {
 End configuration
 '''
 
+
+# JSON-PYTHON mapping, to get json.load() working
+null = None
+false = False
+true = True
+######################
+
 logging.info(C8Y_BASE)
 logging.info(C8Y_TENANT)
 logging.info(C8Y_USER)
@@ -96,7 +103,7 @@ class CumulocityAPI:
 
 cumulocityAPI = CumulocityAPI()
 class Task:
-    def __init__(self, start_in_seconds, run_block) -> None:
+    def __init__(self, start_in_seconds: int, run_block) -> None:
         self.run_block = run_block
         self.next_run = time.time() + start_in_seconds
     
@@ -105,7 +112,7 @@ class Task:
             self.run_block(self)
 
 class PeriodicTask:
-    def __init__(self, minInterval, maxInterval, run_block) -> None:
+    def __init__(self, minInterval: int, maxInterval: int, run_block) -> None:
         self.run_block = run_block
         self.min_interval_in_seconds = minInterval
         self.max_interval_in_seconds = maxInterval
@@ -131,7 +138,9 @@ class MachineSimulator:
         self.device_id = None
         self.machine_up = False
         self.shutdown = False
-        self.tasks = list(map(self.__create_task, self.model["events"]))
+        self.enabled = model.get('enabled', True)
+        if self.enabled:
+            self.tasks = list(map(self.__create_task, self.model["events"]))
         # print(f'events: {self.model["events"]}')
 
     def __type_fragment(self, event_definition, text = None):
@@ -232,6 +241,9 @@ class MachineSimulator:
             if try_event(followed_by_hits / this_hits):
                 followed_by_task = self.create_one_time_task(followed_by_definition)
                 self.tasks.append(followed_by_task)                
+                logging.debug(f'{self.device_id} task({id(followed_by_task)}) added: {json.dumps(followed_by_definition)}, tasks: {len(self.tasks)}')      
+            else:
+                  logging.debug(f'{self.device_id} followedBy task missed. probability = {1 - followed_by_hits / this_hits} , def: {json.dumps(followed_by_definition)}')         
 
     def create_one_time_task(self, event_definition, duration = 2, event_callback = None):
         callback = event_callback or MachineSimulator.event_mapping[event_definition["type"]]
@@ -241,10 +253,12 @@ class MachineSimulator:
     def __execute_callback_and_remove_task(self, callback, event_definition, task):
         callback(self, event_definition, task)
         if task in self.tasks:
-            self.tasks.remove(task)        
+            self.tasks.remove(task)
+            logging.debug(f'{self.device_id} task({id(task)}) removed: {json.dumps(event_definition)}, tasks: {len(self.tasks)}')        
     
     def tick(self):
-        # print("tick " + self.model["id"])
+        if not self.enabled: return
+
         for task in self.tasks:
             task.tick()
 
@@ -265,8 +279,8 @@ class MachineSimulator:
         min_hits_per_hour = event_definition.get("minHits", event_definition.get("hits"))
         max_hits_per_hour = event_definition.get("maxHits", event_definition.get("hits"))
 
-        min_interval_in_seconds = 3600 / max_hits_per_hour
-        max_interval_in_seconds = 3600 / min_hits_per_hour
+        min_interval_in_seconds = int(3600 / max_hits_per_hour)
+        max_interval_in_seconds = int(3600 / min_hits_per_hour)
 
         event_callback = lambda task:  {MachineSimulator.event_mapping[event_definition["type"]](self, event_definition, task)}
 

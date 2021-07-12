@@ -84,7 +84,7 @@
             {
                 "type": "Piece_Produced",
                 "hits": 25,
-                "followedBy:": {
+                "followedBy": {
                     "type": "Piece_Ok",
                     "hits": 20
                 }
@@ -111,7 +111,7 @@
             {
                 "type": "Piece_Produced",
                 "hits": 0.25,
-                "followedBy:": {
+                "followedBy": {
                     "type": "Piece_Ok",
                     "hits": 0.25
                 }
@@ -132,7 +132,7 @@
             {
                 "type": "Piece_Produced",
                 "hits": 25,
-                "followedBy:": {
+                "followedBy": {
                     "type": "Piece_Ok",
                     "hits": 20
                 }
@@ -153,7 +153,7 @@
             {
                 "type": "Piece_Produced",
                 "hits": 0.25,
-                "followedBy:": {
+                "followedBy": {
                     "type": "Piece_Ok",
                     "hits": 0.25
                 }
