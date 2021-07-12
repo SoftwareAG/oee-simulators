@@ -2,7 +2,7 @@ import time, json, os, logging, requests, base64
 from datetime import datetime
 from random import randint, uniform
 
-VERSION = '1.0'
+VERSION = '1.0.1'
 
 logging.basicConfig(level=logging.INFO)
 logging.info(os.environ)
