@@ -2,35 +2,13 @@ import time, json, os, logging, requests, base64
 from datetime import datetime
 from random import randint, uniform
 
+from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
+
 VERSION = '1.0.1'
 
 logging.basicConfig(level=logging.INFO)
 logging.info(os.environ)
 logging.info(f"version: {VERSION}")
-
-'''
-Start configuration
-'''
-
-C8Y_BASE = os.environ.get('C8Y_BASEURL')
-C8Y_TENANT = os.environ.get('C8Y_TENANT')
-C8Y_USER = os.environ.get('C8Y_USER')
-C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD')
-
-MOCK_RUEQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
-
-user_and_pass_bytes = base64.b64encode((C8Y_TENANT + "/" + C8Y_USER + ':' + C8Y_PASSWORD).encode('ascii')) # bytes
-user_and_pass = user_and_pass_bytes.decode('ascii') # decode to str 
-
-C8Y_HEADERS = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'Basic ' + user_and_pass
-}
-
-'''
-End configuration
-'''
 
 
 # JSON-PYTHON mapping, to get json.load() working
@@ -44,64 +22,13 @@ logging.info(C8Y_TENANT)
 logging.info(C8Y_USER)
 logging.info(C8Y_PASSWORD)
 
-
-C8Y_SIMULATORS_GROUP = "c8y_EventBasedSimulators"
-
 def try_event(probability: float):
     ''' Returns True if event occurs.        
     '''
     return uniform(0.0, 1.0) <= probability
 
-class CumulocityAPI:
-    def __init__(self) -> None:
-        self.mocking = MOCK_RUEQUESTS.lower() == 'true'
-
-    def send_event(self, event):
-        if self.mocking:
-            print("mock: send event ", json.dumps(event), ' to ', C8Y_BASE + '/event/events')
-            return json.dumps({'response': 200})
-        else:
-            response = requests.post(C8Y_BASE + '/event/events', headers=C8Y_HEADERS, data=json.dumps(event))
-            if not response.ok:
-                logging.warning(f'response status code is not ok: {response}')
-            return response.json()
-
-    def get_or_create_device(self, sim_id, label):
-        if self.mocking:
-            print("mock: get or create device with external id", sim_id)
-            return sim_id
-        
-        # Check if device already created
-        return self.__get_device(sim_id) or self.__create_device(sim_id, label)
-                
-    def __get_device(self, sim_id):
-        response = requests.get(f'{C8Y_BASE}/identity/externalIds/{C8Y_SIMULATORS_GROUP}/{sim_id}', headers=C8Y_HEADERS)
-        if response.ok:
-            device_id = response.json()['managedObject']['id']
-            logging.info(f' Device({device_id}) has been found by its external id "{C8Y_SIMULATORS_GROUP}/{sim_id}".')
-            return device_id        
-        return None
-    
-    def __create_device(self, sim_id, label):
-        logging.info(f'Creating a new device with following external id "{C8Y_SIMULATORS_GROUP}/{sim_id}"')
-        device = {
-            'name': label,
-            'c8y_IsDevice': {}
-        }
-        response = requests.post(C8Y_BASE + '/inventory/managedObjects', headers=C8Y_HEADERS, data=json.dumps(device))
-        device_id = response.json()['id']
-        logging.info(device_id)
-
-        external_id = {
-            'type': C8Y_SIMULATORS_GROUP,
-            'externalId': sim_id
-        }
-        response = requests.post(C8Y_BASE + '/identity/globalIds/' + device_id + '/externalIds', headers=C8Y_HEADERS, data=json.dumps(external_id))
-        logging.info(response)
-        return device_id
-
-
 cumulocityAPI = CumulocityAPI()
+
 class Task:
     def __init__(self, start_in_seconds: int, run_block) -> None:
         self.run_block = run_block
