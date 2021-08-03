@@ -1,0 +1,99 @@
+{
+    "@com_adamos_oee_datamodel_MachineOEEConfiguration": {
+    "subscriptions": [
+        {
+            "pollingIntervalSeconds": 10,
+            "name": "Piece_Ok",
+            "type": "event",
+            "deviceID": "${deviceId}"
+        },
+        {
+            "pollingIntervalSeconds": 10,
+            "name": "Piece_Produced",
+            "type": "event",
+            "deviceID": "${deviceId}"
+        },
+        {
+            "pollingIntervalSeconds": 10,
+            "name": "Availability",
+            "type": "event",
+            "deviceID": "${deviceId}"
+        }
+    ],
+    "timeframes": {
+        "Interval3": null,
+        "IntervalUnit2": null,
+        "Interval4": null,
+        "IntervalUnit1": "min",
+        "Interval1": "10",
+        "IntervalUnit4": null,
+        "Interval2": null,
+        "IntervalUnit3": null
+    },
+    "testConfiguration": false,
+    "oeeTargets": {
+        "performance": 80,
+        "overall": 80,
+        "availability": 80,
+        "quality": 80
+    },
+    "inputs": {
+        "ActualQualityAmount": [
+            {
+                "type": "TRANSFORMATION_RULE",
+                "value": "countEvents(\"${deviceId}\",\"Piece_Ok\")"
+            }
+        ],
+        "ActualProductionAmount": [
+            {
+                "type": "TRANSFORMATION_RULE",
+                "value": "countEvents(\"${deviceId}\",\"Piece_Produced\")"
+            }
+        ],
+        "ActualProductionTime": [
+            {
+                "type": "MACHINE_EVENT",
+                "value": ""
+            }
+        ]
+    },
+    "alarms": [],
+    "type": "MACHINE",
+    "deviceId": "${deviceId}",
+    "shortShutdowns": null,
+    "version": "2.0.0",
+    "amountUnit": "",
+    "uid": "${tenantId}",
+    "intervals": [
+        600.0
+    ],
+    "external": false,
+    "ui": {
+        "shortStoppages": "Not Tracked",
+        "correlationSectionVisited": true,
+        "computation": "PPQ",
+        "shortStoppagesAmount": null
+    },
+    "idealCycleAmount": "",
+    "machineEvents": {
+        "MACHINE_STATUS": [
+            {
+                "value": "evt(\"${deviceId}\",\"Availability\",\"status\",false) = \"up\""
+            }
+        ],
+        "QUALITY_STATUS": []
+    },
+    "locationId": "",
+    "workpiece": {
+        "amount": "0.4",
+        "unit": "pcs",
+        "name": "Pieces",
+        "isActive": true,
+        "timeunit": 1
+    },
+    "name": "Simulator Normal #1 - ${counter}",
+    "tenantId": "${tenantId}",
+    "id": "${profileId}",
+    "status": "ACTIVE"
+    }
+}
