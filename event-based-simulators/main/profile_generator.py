@@ -145,9 +145,6 @@ def create_and_activate_profile(external_id: str):
         logging.warn(f'Couldn\'t create profile for {external_id} due to {e}')
     return None
 
-
-# api.delete_all_simulators_profile()
-
 def delete_profile(id):
     response = requests.delete(f'{C8Y_BASE}/inventory/managedObjects/{id}', headers=C8Y_HEADERS)
     if response.ok:
@@ -155,13 +152,12 @@ def delete_profile(id):
     else:
         logging.warning(f'Couldn\'t delete managed object. response: {response}, content: {response.text}')
 
-PROFILES_PER_DEVICE = 0
+
+# api.delete_all_simulators_profile()
+
+PROFILES_PER_DEVICE = 1
 
 for id in external_ids:
     for _ in range(PROFILES_PER_DEVICE):
        profile = create_and_activate_profile(id)
 
-
-profiles = api.get_profiles()
-for profile in profiles:
-    delete_profile(profile['id'])
