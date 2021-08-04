@@ -4,7 +4,7 @@ from random import randint, uniform
 
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
 
-VERSION = '1.0.1'
+VERSION = '1.0.3'
 
 logging.basicConfig(level=logging.INFO)
 logging.info(os.environ)
