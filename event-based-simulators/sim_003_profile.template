@@ -6,21 +6,21 @@
     "shortShutdowns": null,
     "version": "2.0.0",
     "amountUnit": "",
-    "name": "Simulator Normal #2 - ${counter}",
+    "name": "Simulator Normal #3 - ${counter}",
     "tenantId": "${tenantId}",
     "locationId": "Matrix",
     "external": false,
     "testConfiguration": false,
     "subscriptions": [
-        {
+        {   
             "pollingIntervalSeconds": 10,
-            "name": "Pieces_Ok",
+            "name": "Piece_Quality",
             "type": "event",
             "deviceID": "${deviceId}"
         },
         {
             "pollingIntervalSeconds": 10,
-            "name": "Pieces_Produced",
+            "name": "Piece_Produced",
             "type": "event",
             "deviceID": "${deviceId}"
         },
@@ -35,7 +35,7 @@
         "ActualQualityAmount": [
             {
                 "type": "TRANSFORMATION_RULE",
-                "value": "evt(\"${deviceId}\",\"Pieces_Ok\",\"count\",false)"
+                "value": "countEvents(\"${deviceId}\",\"Piece_Ok\")"
             }
         ],
         "ActualProductionAmount": [
@@ -83,7 +83,11 @@
                 "value": "evt(\"${deviceId}\",\"Availability\",\"status\",false) = \"up\""
             }
         ],
-        "QUALITY_STATUS": []
+        "QUALITY_STATUS": [
+            {
+                "value": "evt(\"${deviceId}\",\"Piece_Quality\",\"status\",false) = \"ok\""
+            }
+        ]
     },
     "workpiece": {
         "amount": "1",

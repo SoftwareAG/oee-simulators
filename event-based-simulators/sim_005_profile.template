@@ -6,7 +6,7 @@
     "shortShutdowns": null,
     "version": "2.0.0",
     "amountUnit": "",
-    "name": "Simulator Normal #2 - ${counter}",
+    "name": "Simulator Slow Producer - ${counter}",
     "tenantId": "${tenantId}",
     "locationId": "Matrix",
     "external": false,
@@ -14,13 +14,13 @@
     "subscriptions": [
         {
             "pollingIntervalSeconds": 10,
-            "name": "Pieces_Ok",
+            "name": "Piece_Ok",
             "type": "event",
             "deviceID": "${deviceId}"
         },
         {
             "pollingIntervalSeconds": 10,
-            "name": "Pieces_Produced",
+            "name": "Piece_Produced",
             "type": "event",
             "deviceID": "${deviceId}"
         },
@@ -35,13 +35,13 @@
         "ActualQualityAmount": [
             {
                 "type": "TRANSFORMATION_RULE",
-                "value": "evt(\"${deviceId}\",\"Pieces_Ok\",\"count\",false)"
+                "value": "countEvents(\"${deviceId}\",\"Piece_Ok\")"
             }
         ],
         "ActualProductionAmount": [
             {
                 "type": "TRANSFORMATION_RULE",
-                "value": "evt(\"${deviceId}\",\"Pieces_Produced\",\"count\",false)"
+                "value": "countEvents(\"${deviceId}\",\"Piece_Produced\")"
             }
         ],
         "ActualProductionTime": [
@@ -52,17 +52,20 @@
         ]
     },
     "intervals": [
-        600.0
+        600.0,
+        3500.0,
+        14400.0,
+        28800.0
     ],
     "timeframes": {
         "Interval1": "10",
         "IntervalUnit1": "min",
-        "Interval2": null,
-        "IntervalUnit2": null,
-        "Interval3": null,
-        "IntervalUnit3": null,
-        "Interval4": null,
-        "IntervalUnit4": null     
+        "Interval2": "1",
+        "IntervalUnit2": "h",
+        "Interval3": "4",
+        "IntervalUnit3": "h",
+        "Interval4": "8",
+        "IntervalUnit4": "h"     
     },
     "oeeTargets": {
         "performance": 80,
@@ -86,7 +89,7 @@
         "QUALITY_STATUS": []
     },
     "workpiece": {
-        "amount": "1",
+        "amount": "0.004",
         "unit": "pcs",
         "name": "Pieces",
         "isActive": true,

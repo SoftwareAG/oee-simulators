@@ -1,5 +1,16 @@
 {
-    "@com_adamos_oee_datamodel_MachineOEEConfiguration": {
+    "id": "",
+    "alarms": [],
+    "type": "MACHINE",
+    "deviceId": "${deviceId}",
+    "shortShutdowns": null,
+    "version": "2.0.0",
+    "amountUnit": "",
+    "name": "Simulator Normal #1 - ${counter}",
+    "tenantId": "${tenantId}",
+    "locationId": "Matrix",
+    "external": false,
+    "testConfiguration": false,
     "subscriptions": [
         {
             "pollingIntervalSeconds": 10,
@@ -20,23 +31,6 @@
             "deviceID": "${deviceId}"
         }
     ],
-    "timeframes": {
-        "Interval3": null,
-        "IntervalUnit2": null,
-        "Interval4": null,
-        "IntervalUnit1": "min",
-        "Interval1": "10",
-        "IntervalUnit4": null,
-        "Interval2": null,
-        "IntervalUnit3": null
-    },
-    "testConfiguration": false,
-    "oeeTargets": {
-        "performance": 80,
-        "overall": 80,
-        "availability": 80,
-        "quality": 80
-    },
     "inputs": {
         "ActualQualityAmount": [
             {
@@ -57,17 +51,25 @@
             }
         ]
     },
-    "alarms": [],
-    "type": "MACHINE",
-    "deviceId": "${deviceId}",
-    "shortShutdowns": null,
-    "version": "2.0.0",
-    "amountUnit": "",
-    "uid": "${tenantId}",
     "intervals": [
         600.0
     ],
-    "external": false,
+    "timeframes": {
+        "Interval1": "10",
+        "IntervalUnit1": "min",
+        "Interval2": null,
+        "IntervalUnit2": null,
+        "Interval3": null,
+        "IntervalUnit3": null,
+        "Interval4": null,
+        "IntervalUnit4": null     
+    },
+    "oeeTargets": {
+        "performance": 80,
+        "overall": 80,
+        "availability": 80,
+        "quality": 80
+    },
     "ui": {
         "shortStoppages": "Not Tracked",
         "correlationSectionVisited": true,
@@ -83,7 +85,6 @@
         ],
         "QUALITY_STATUS": []
     },
-    "locationId": "",
     "workpiece": {
         "amount": "0.4",
         "unit": "pcs",
@@ -91,9 +92,5 @@
         "isActive": true,
         "timeunit": 1
     },
-    "name": "Simulator Normal #1 - ${counter}",
-    "tenantId": "${tenantId}",
-    "id": "${profileId}",
-    "status": "ACTIVE"
-    }
+    "status": "INCOMPLETE"
 }

@@ -63,6 +63,8 @@ class CumulocityAPI:
         return self.__get_device(sim_id) or self.__create_device(sim_id, label)
 
     def count_profiles(self, device_id):
+        ''' count all profiles for the given device id.
+        '''
         if self.mocking:
             print(f'mock: count_profiles(${device_id})')
             return 10
@@ -100,6 +102,30 @@ class CumulocityAPI:
         logging.warning(f'cannot update managed object. response:{response}')
         return {}
 
+    def add_child_object(self, device_id: str, child_id: str):
+        if self.mocking:
+            print(f'mock: add_child_device()')
+            return {'id': '0'}
+
+        data = {"managedObject": {"id": child_id}}
+        response = requests.post(f'{C8Y_BASE}/inventory/managedObjects/{device_id}/childDevices', headers=C8Y_HEADERS, data=json.dumps(data))
+        if response.ok:
+            return response.json()
+
+        logging.warning(f'cannot add child object. response:{response}')
+        return {}
+
+
+    def find_device_by_external_id(self, external_id):
+        if self.mocking:
+            print(f'mock: find_device_by_external_id()')
+            return []
+        response = requests.get(f'{C8Y_BASE}/inventory/managedObjects?text={external_id}&fragmentType=c8y_IsDevice', headers=C8Y_HEADERS)
+        if response.ok:
+            mangaged_objects = response.json()['managedObjects']
+            return [mo['id'] for mo in mangaged_objects]
+        return []
+
     def __get_device(self, sim_id):
         response = requests.get(f'{C8Y_BASE}/identity/externalIds/{C8Y_SIMULATORS_GROUP}/{sim_id}', headers=C8Y_HEADERS)
         if response.ok:
@@ -129,8 +155,6 @@ class CumulocityAPI:
 
 print(C8Y_BASE)
 
-
-
 def to_variable(name: str):
     return '${' + name + '}'
 
@@ -148,20 +172,27 @@ replacers = {
     'counter': '100'
 }
 
-cumulocityAPI = CumulocityAPI()
+# cumulocityAPI = CumulocityAPI()
 
-print(f'test c8y API. {cumulocityAPI.count_profiles(21839972)}')
+# ids = cumulocityAPI.find_device_by_external_id('SIM_001')
+# print("found devices:", ids)
 
+# for id in ids:
+    # print(f' device {id}, profiles: {cumulocityAPI.count_profiles(id)}')
 
-profileTemplate = {
-    'name': 'Generated Profile 1',
-    'type': 'OEECalculationProfile'
-}
+# print(f'test c8y API. {cumulocityAPI.count_profiles(21839972)}')
+
+# print(f'test c8y API. {cumulocityAPI.count_profiles(21839972)}')
+
+# profileTemplate = {
+    # 'name': 'Generated Profile 1',
+    # 'type': 'OEECalculationProfile'
+# }
 
 
 # profile = cumulocityAPI.update_managed_object('134999993', substitute(template, replacers))
-profile = cumulocityAPI.update_managed_object('131356012', json.dumps({'@com_adamos_oee_datamodel_MachineOEEConfiguration': {}}))
+# profile = cumulocityAPI.update_managed_object('131356012', json.dumps({'@com_adamos_oee_datamodel_MachineOEEConfiguration': {}}))
 
 # profile = cumulocityAPI.create_managed_object(json.dumps(profileTemplate))
 
-print(json.dumps(profile))
+# print(json.dumps(profile))
