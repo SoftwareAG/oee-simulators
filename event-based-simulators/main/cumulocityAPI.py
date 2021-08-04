@@ -2,10 +2,10 @@ import time, json, os, logging, requests, base64
 from datetime import datetime
 from random import randint, uniform
 
-C8Y_BASE = os.environ.get('C8Y_BASEURL')
-C8Y_TENANT = os.environ.get('C8Y_TENANT')
-C8Y_USER = os.environ.get('C8Y_USER')
-C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD')
+C8Y_BASE = os.environ.get('C8Y_BASEURL') or 'http://localhost:8080'
+C8Y_TENANT = os.environ.get('C8Y_TENANT') or 't100'
+C8Y_USER = os.environ.get('C8Y_USER') or 'test'
+C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD') or 'test'
 
 MOCK_RUEQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
 
@@ -34,7 +34,6 @@ C8Y_SIMULATORS_GROUP = "c8y_EventBasedSimulators"
 
 OEE_DATA_MODEL_FIELD_NAME = "@com_adamos_oee_datamodel_MachineOEEConfiguration"
 
-
 __counter = 0
 def global_counter():
     __counter = __counter + 1
@@ -43,6 +42,7 @@ def global_counter():
 class CumulocityAPI:
     def __init__(self) -> None:
         self.mocking = MOCK_RUEQUESTS.lower() == 'true'
+        print(f'mocking: {self.mocking}' )
 
     def send_event(self, event):
         if self.mocking:
@@ -151,48 +151,3 @@ class CumulocityAPI:
         response = requests.post(C8Y_BASE + '/identity/globalIds/' + device_id + '/externalIds', headers=C8Y_HEADERS, data=json.dumps(external_id))
         logging.info(response)
         return device_id
-
-
-print(C8Y_BASE)
-
-def to_variable(name: str):
-    return '${' + name + '}'
-
-def substitute(template: str, replacers: dict):
-    result = template
-    for key in replacers:
-        result = result.replace(to_variable(key), replacers[key])
-    return result
-
-template = open('sim_001_profile.template', 'r').read()
-replacers = {
-    'deviceId': '131356012',
-    'tenantId': 't7690037',
-    'profileId': '134999993',
-    'counter': '100'
-}
-
-# cumulocityAPI = CumulocityAPI()
-
-# ids = cumulocityAPI.find_device_by_external_id('SIM_001')
-# print("found devices:", ids)
-
-# for id in ids:
-    # print(f' device {id}, profiles: {cumulocityAPI.count_profiles(id)}')
-
-# print(f'test c8y API. {cumulocityAPI.count_profiles(21839972)}')
-
-# print(f'test c8y API. {cumulocityAPI.count_profiles(21839972)}')
-
-# profileTemplate = {
-    # 'name': 'Generated Profile 1',
-    # 'type': 'OEECalculationProfile'
-# }
-
-
-# profile = cumulocityAPI.update_managed_object('134999993', substitute(template, replacers))
-# profile = cumulocityAPI.update_managed_object('131356012', json.dumps({'@com_adamos_oee_datamodel_MachineOEEConfiguration': {}}))
-
-# profile = cumulocityAPI.create_managed_object(json.dumps(profileTemplate))
-
-# print(json.dumps(profile))

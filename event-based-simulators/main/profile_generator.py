@@ -31,21 +31,6 @@ def substitute(template: str, replacers: dict):
         result = result.replace(to_variable(key), replacers[key])
     return result
 
-# template = open('sim_001_profile.template', 'r').read()
-# replacers = {
-#     'deviceId': '123456789',
-#     'tenantId': 't12345',
-#     'profileId': '7891011',
-#     'counter': '100'
-# }
-
-
-# print(substitute(template, replacers))
-
-# replacers["counter"] = "110"
-
-# print(substitute(template, replacers))
-
 external_ids = [f'SIM_00{number}' for number in range(1,8)]
 
 class OeeApi:
@@ -88,8 +73,8 @@ class OeeApi:
         if response.ok:
             return response.json()
         
-        logging.warn(f'cannot activate profile. response: {response}')
-        return profile
+        logging.warn(f'cannot activate profile. response: {response}, content: {response.text}')
+        return {}
 
     def __create_profile(self, profile_definition):
         response = requests.post(self.CONF_REST_ENDPOINT, headers=C8Y_HEADERS, data=profile_definition)
@@ -161,10 +146,22 @@ def create_and_activate_profile(external_id: str):
     return None
 
 
-api.delete_all_simulators_profile()
+# api.delete_all_simulators_profile()
 
-PROFILES_PER_DEVICE = 2
+def delete_profile(id):
+    response = requests.delete(f'{C8Y_BASE}/inventory/managedObjects/{id}', headers=C8Y_HEADERS)
+    if response.ok:
+        logging.info(f'deleted managed object {id}')
+    else:
+        logging.warning(f'Couldn\'t delete managed object. response: {response}, content: {response.text}')
+
+PROFILES_PER_DEVICE = 0
 
 for id in external_ids:
     for _ in range(PROFILES_PER_DEVICE):
        profile = create_and_activate_profile(id)
+
+
+profiles = api.get_profiles()
+for profile in profiles:
+    delete_profile(profile['id'])
