@@ -50,9 +50,12 @@ class CumulocityAPI:
             return json.dumps({'response': 200})
         else:
             response = requests.post(C8Y_BASE + '/event/events', headers=C8Y_HEADERS, data=json.dumps(event))
-            if not response.ok:
-                logging.warning(f'response status code is not ok: {response}')
+            self.log_warning_on_bad_repsonse(response)
             return response.json()
+
+    def log_warning_on_bad_repsonse(self, response):
+        if not response.ok:
+            logging.warning(f'response status code is not ok: {response}, content: {response.text}')
 
     def get_or_create_device(self, sim_id, label):
         if self.mocking:
@@ -77,7 +80,7 @@ class CumulocityAPI:
                 logging.warn(f'cannot convert "${response.text}" to number. exception: {e}')
                 return 0
         else:
-            logging.warning("bad response:" + response)
+            self.log_warning_on_bad_repsonse(response)
             return 0
     
     def create_managed_object(self, fragment: str):
@@ -86,8 +89,8 @@ class CumulocityAPI:
             return {'id': '0'}
         response = requests.post(C8Y_BASE + '/inventory/managedObjects', headers=C8Y_HEADERS, data=fragment)
         if response.ok:
-            return response.json
-        logging.warning(f'cannot create managed object. response:{response}')
+            return response.json()
+        self.log_warning_on_bad_repsonse(response)
         #TODO: check for errors
         return {}
 
@@ -99,7 +102,7 @@ class CumulocityAPI:
         response = requests.put(f'{C8Y_BASE}/inventory/managedObjects/{device_id}', headers=C8Y_HEADERS, data=fragment)
         if response.ok:
             return response.json()
-        logging.warning(f'cannot update managed object. response:{response}')
+        self.log_warning_on_bad_repsonse(response)
         return {}
 
     def add_child_object(self, device_id: str, child_id: str):
@@ -112,7 +115,7 @@ class CumulocityAPI:
         if response.ok:
             return response.json()
 
-        logging.warning(f'cannot add child object. response:{response}')
+        self.log_warning_on_bad_repsonse(response)
         return {}
 
 
@@ -131,7 +134,7 @@ class CumulocityAPI:
         if response.ok:
             device_id = response.json()['managedObject']['id']
             logging.info(f' Device({device_id}) has been found by its external id "{C8Y_SIMULATORS_GROUP}/{sim_id}".')
-            return device_id        
+            return device_id
         return None
     
     def __create_device(self, sim_id, label):
@@ -140,14 +143,19 @@ class CumulocityAPI:
             'name': label,
             'c8y_IsDevice': {}
         }
-        response = self.create_managed_object(json.dumps(device))
-        device_id = response.json()['id']
-        logging.info(device_id)
+        device = self.create_managed_object(json.dumps(device))
+        device_id = device['id']
+        if device_id:
+            logging.info(f'new device created({device_id})')
+            return self.__add_external_id(device_id, sim_id)
+        return device_id
 
+    def __add_external_id(self, device_id, ext_id, type = C8Y_SIMULATORS_GROUP):
         external_id = {
-            'type': C8Y_SIMULATORS_GROUP,
-            'externalId': sim_id
+            'type': type,
+            'externalId': ext_id
         }
         response = requests.post(C8Y_BASE + '/identity/globalIds/' + device_id + '/externalIds', headers=C8Y_HEADERS, data=json.dumps(external_id))
-        logging.info(response)
+        self.log_warning_on_bad_repsonse(response)
         return device_id
+
