@@ -104,7 +104,7 @@ class OeeApi:
     def count_profiles_for(self, device_id):
         return self.c8y_api.count_profiles(device_id)
     
-    def delete_all_simulators_profiles(self):
+    def delete_all_simulators_profiles(self, limit=-1):
         simulator_ids = [api.find_device(id) for id in external_ids]
 
         profiles = self.get_profiles()
@@ -113,6 +113,8 @@ class OeeApi:
             if profile['deviceId'] in simulator_ids and profile["locationId"] == "Matrix":
                 if self.delete_profile(profile):
                     deleted_profiles = deleted_profiles + 1
+                    if limit > -1 and deleted_profiles >= limit:
+                        break
 
         print("profiles deleted:", deleted_profiles)
 
@@ -152,25 +154,31 @@ def delete_profile(id):
     else:
         logging.warning(f'Couldn\'t delete managed object. response: {response}, content: {response.text}')
 
+
+# api.delete_all_simulators_profiles()
+
 def count_profiles():
     request_query = f'{C8Y_BASE}/inventory/managedObjects/count?type=OEECalculationProfile'
     repsonse = requests.get(request_query, headers=C8Y_HEADERS)
     if repsonse.ok:
         return repsonse.json()
 
-# api.delete_all_simulators_profiles()
 
-PROFILES_PER_DEVICE = 200
+def delete_profiles():
+    request_query = f'{C8Y_BASE}/inventory/managedObjects?type=OEECalculationProfile&pageSize=500'
+    reponse = requests.get(request_query, headers=C8Y_HEADERS)
+    if reponse.ok:
+        managedObjects = reponse.json()['managedObjects']
+        for profile in managedObjects:
+            delete_profile(profile['id'])
 
-print(f'profiles: {count_profiles()}')
 
-counter = 0
-for _ in range(PROFILES_PER_DEVICE):
-    for id in external_ids:
-       profile = create_and_activate_profile(id)
-       counter = counter + 1
-       if counter % 200 == 0:
-           print(print(f'profiles: {count_profiles()}. Wait for 12 minutes'))
-           time.sleep(12 * 60) # sleep for 12 minutes
+print(count_profiles())
+# delete all profiles using oee-bundle endpoint
+api.delete_all_simulators_profiles()
+print(count_profiles())
 
-print(f'profiles: {count_profiles()}')
+# delete all oee-profiles directly
+# this makes sense if oee-bundle is not running and cannot be started
+# delete_profiles()
+print(count_profiles())
