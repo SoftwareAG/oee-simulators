@@ -4,7 +4,7 @@ from random import randint, uniform
 
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
 
-VERSION = '1.0.3'
+VERSION = '1.0.4'
 
 logging.basicConfig(level=logging.INFO)
 logging.info(os.environ)
@@ -31,6 +31,7 @@ cumulocityAPI = CumulocityAPI()
 
 class Task:
     def __init__(self, start_in_seconds: int, run_block) -> None:
+        self.extra = {}
         self.run_block = run_block
         self.next_run = time.time() + start_in_seconds
     
@@ -97,9 +98,9 @@ class MachineSimulator:
         if not self.machine_up: return self.__log_ignore(event_definition)            
 
         event = self.__type_fragment(event_definition)
-        self.__send_event(event)
+        timestamp = self.__send_event(event)
         
-        self.__send_following_event(event_definition)
+        self.__send_following_event(event_definition, timestamp)
 
     def __on_pieces_produced_event(self, event_definition, task):
         if not self.machine_up: return self.__log_ignore(event_definition)            
@@ -119,13 +120,19 @@ class MachineSimulator:
         if not self.machine_up: return self.__log_ignore(event_definition)            
 
         event = self.__type_fragment(event_definition)
-        self.__send_event(event)
+
+        piece_produced_timestamp = None
+        if hasattr(task, 'extra'):
+            piece_produced_timestamp = task.extra["timestamp"]
+
+        self.__send_event(event, piece_produced_timestamp)
     
     def __on_pieces_ok_event(self, event_definition, task):
         if not self.machine_up: return self.__log_ignore(event_definition)            
 
         event = self.__type_fragment(event_definition)
 
+        #TODO: should timestamp be synchronized?
         count_min_hits = event_definition.get("countMinHits") or 0
         count_max_hits = event_definition.get("countMaxHits") or 10
         event.update({"count": randint(count_min_hits, count_max_hits)})
@@ -158,7 +165,7 @@ class MachineSimulator:
         self.shutdown = False
         logging.info(f'Device({self.device_id}) is up now.')
 
-    def __send_following_event(self, event_definition):        
+    def __send_following_event(self, event_definition, timestamp = None):        
         if "followedBy" in event_definition:
             followed_by_definition = event_definition["followedBy"]
             followed_by_hits = followed_by_definition["hits"]
@@ -167,6 +174,7 @@ class MachineSimulator:
             # should followedBy event be sent?
             if try_event(followed_by_hits / this_hits):
                 followed_by_task = self.create_one_time_task(followed_by_definition)
+                followed_by_task.extra["timestamp"] = timestamp
                 self.tasks.append(followed_by_task)                
                 logging.debug(f'{self.device_id} task({id(followed_by_task)}) added: {json.dumps(followed_by_definition)}, tasks: {len(self.tasks)}')      
             else:
@@ -217,19 +225,22 @@ class MachineSimulator:
         # event_callback()
         return task
     
-    def __send_event(self, event_fragment):
+    def __send_event(self, event_fragment, timestamp = None):
+        newTimestamp = timestamp or datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
         base_event = {
             'source': {
                 'id': self.device_id
             },
-            'time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+            'time': newTimestamp
         }
         base_event.update(event_fragment)
 
         if self.shutdown:
             logging.info(f'{self.model["id"]} is down -> ignore event: {json.dumps(base_event)}')
+            return None
         else:
             cumulocityAPI.send_event(base_event)
+            return newTimestamp
 
 def load(filename):
     try:
