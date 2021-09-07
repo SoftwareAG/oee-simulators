@@ -1,4 +1,3 @@
-
 # OEE Simulators
 
 Create predefined simulators for testing OEE-App in the Cumulocity. 
@@ -30,6 +29,8 @@ To deploy this project, zip image.tar and cumulocity.json to oee-simulators.zip 
 ## Development
 
 The entry point is [event_based_simulators.py](main/event_based_simulators.py). The script reads simulator's defintions from [simulators.json](main/simulators.json) and create a new device for every entry. The *id* property in json is used as *extenral_id* in Cumulocity to avoid creating multiple devices by redeploying/updating script.
+
+The [simulators.json](main/simulators.json) based on [this](simulators.md) description.
 
 To mock REST API calls set the evnironment varibale *MOCK_C8Y_REQUESTS* to `true`
 

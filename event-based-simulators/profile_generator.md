@@ -27,13 +27,4 @@ Use *event_based_simulators/main/profile_deleter.py* to start profile generation
 
 See comments at the end of the script file for more details
 
-## Visual Studio Code
-
-- Open *event-based-simulators* folder in the VSC.
-- Install python plugin: ms-python.python
-- copy [launch.json](misc/.vscode/launch.json) to *event-based-simulators/.vscode/* folder. The file contains few configuration to run python script with differnt environment varibales. 
-- open profile_generator.py file
-- click at the big run icon on the left toolbar(see [screenshot](images/vsc_run_python.png))
-- select run profile you want to use. Every profile is configured for different tenant.
-- click green run icon in the top area to run the currently opened python script.
 
