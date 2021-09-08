@@ -3,6 +3,7 @@
         "type": "Simulator",
         "id": "sim_001",
         "label": "Normal #1",
+        "enabled": true,
         "events": [
             {
                 "type": "Availability",
@@ -24,6 +25,7 @@
         "type": "Simulator",
         "id": "sim_002",
         "label": "Normal #2",
+        "enabled": true,
         "events": [
             {
                 "type": "Availability",
@@ -49,6 +51,7 @@
         "type": "Simulator",
         "id": "sim_003",
         "label": "Normal #3",
+        "enabled": true,
         "events": [
             {
                 "type": "Availability",
@@ -72,6 +75,7 @@
     },
     {
         "type": "Simulator",
+        "enabled": true,
         "id": "sim_004",
         "label": "Normal with Short Shutdowns",
         "events": [
@@ -101,6 +105,7 @@
         "id": "sim_005",
         "label": "Slow Producer",
         "comment": "",
+        "enabled": true,
         "events": [
             {
                 "type": "Availability",
@@ -123,6 +128,7 @@
         "id": "sim_006",
         "label": "High Frequency Availability",
         "comment": "",
+        "enabled": true,
         "events": [
             {
                 "type": "Availability",
@@ -144,6 +150,7 @@
         "id": "sim_007",
         "label": "Slow Producer + Hight Frequency Availability",
         "comment": "",
+        "enabled": true,
         "events": [
             {
                 "type": "Availability",
@@ -156,6 +163,28 @@
                 "followedBy": {
                     "type": "Piece_Ok",
                     "hits": 0.25
+                }
+            }                
+        ]
+    },
+    {
+        "type": "Simulator",
+        "id": "sim_008",
+        "label": "Ideal Producer",
+        "comment": "",
+        "enabled": true,
+        "events": [
+            {
+                "type": "Availability",
+                "hits": 360,                    
+                "statusUpProbability": 1.0
+            },
+            {
+                "type": "Piece_Produced",
+                "hits": 60,
+                "followedBy": {
+                    "type": "Piece_Ok",
+                    "hits": 60
                 }
             }                
         ]
