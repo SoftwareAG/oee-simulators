@@ -4,7 +4,7 @@ from random import randint, uniform
 
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
 
-VERSION = '1.0.6'
+VERSION = '1.0.7'
 
 logging.basicConfig(level=logging.INFO)
 logging.info(os.environ)
@@ -67,6 +67,7 @@ class MachineSimulator:
         self.machine_up = False
         self.shutdown = False
         self.enabled = model.get('enabled', True)
+        self.statudDownSent = False
         if self.enabled:
             self.tasks = list(map(self.__create_task, self.model["events"]))
         # print(f'events: {self.model["events"]}')
@@ -84,6 +85,11 @@ class MachineSimulator:
         event = self.__type_fragment(event_definition)
 
         status_up_probability = event_definition.get("statusUpProbability") or 0.5
+
+        if not self.statudDownSent and event_definition.get("forceStatusDown") or False:
+            status_up_probability = 0.0
+            self.statudDownSent = true
+            logging.info(f'force status down for {self.device_id}')
         
         if try_event(status_up_probability):
             event.update({'status': 'up'})
