@@ -117,9 +117,9 @@ class MachineSimulator:
         event = self.__type_fragment(event_definition)
         event.update({"count": randint(count_min_hits, count_max_hits)})
 
-        self.__send_event(event)
+        timestamp = self.__send_event(event)
 
-        self.__send_following_event(event_definition)
+        self.__send_following_event(event_definition, timestamp)
         
     
     def __on_piece_ok_event(self, event_definition, task):
@@ -142,7 +142,12 @@ class MachineSimulator:
         count_min_hits = event_definition.get("countMinHits") or 0
         count_max_hits = event_definition.get("countMaxHits") or 10
         event.update({"count": randint(count_min_hits, count_max_hits)})
-        self.__send_event(event)
+
+        piece_produced_timestamp = None
+        if hasattr(task, 'extra'):
+            piece_produced_timestamp = task.extra["timestamp"]
+
+        self.__send_event(event, piece_produced_timestamp)
 
     def __on_piece_quality_event(self, event_definition, task):
         if not self.machine_up: return self.__log_ignore(event_definition)            
