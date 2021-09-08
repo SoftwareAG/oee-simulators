@@ -1,6 +1,37 @@
 # OEE Simulators
 
-Create predefined simulators for testing OEE-App in the Cumulocity. 
+Creates predefined simulators for testing in the Cumulocity OEE-App.
+
+## Features
+
+  - automatically creates simulators based on JSON definition.
+  - uses externalId to identify Simulator. It avoids duplicating of similators by re-deploying/updating microservice.
+  - configurable externalId and label
+  - simulator can be disabled, in sense that no events will be sent
+  - the amount of events per hour can be configured either as a random number in a range
+      ```
+      "minHits": 5,
+      "maxHits": 10
+      ```
+    or like a constant number: 
+      ```
+      "hits": 20
+      ```
+  - the availibility of mashine is expressed as probability value with range from 0.0 to 1.0
+  - the timestamp of the following *Piece_ok" event is the same as corresponding *Piece_Produced" event.
+  - the expected quality of production is configurable. E.g. here 
+      ```"type": "Piece_Produced",
+                "hits": 25,
+                "followedBy": {
+                    "type": "Piece_Ok",
+                    "hits": 20
+                } 
+      ```
+    the expected quality would be 80%( *followedBy.hits/hits * 100%* )
+  - Simulates shutdowns(no events are sent if machine is DOWN)
+  - The all simulation logic is just one Python file and can be easily extended/improved if needed.
+  - [Python Script](profile_generator.md) for creating profiles for the simulators(every simulator needs a temlate with predefined name: <sim_id>_profile.template)
+
 
 ## Get project
 
