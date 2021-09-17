@@ -1,37 +1,42 @@
-# OEE Simulators
+# Event based simulators
 
-Creates predefined simulators for testing in the Cumulocity OEE-App.
+This project offers two main features: 
+- the oee-imulators microservice which creates some devices and periodically sends events for them
+- the Profile Generator which allows creation of OEE Profiles from the command line
 
-## Features
+## Microservice oee-imulators
 
-  - automatically creates simulators based on JSON definition.
-  - uses externalId to identify Simulator. It avoids duplicating of similators by re-deploying/updating microservice.
-  - configurable externalId and label
-  - simulator can be disabled, in sense that no events will be sent
-  - the amount of events per hour can be configured either as a random number in a range
-      ```
-      "minHits": 5,
-      "maxHits": 10
-      ```
-    or like a constant number: 
-      ```
-      "hits": 20
-      ```
-  - the availibility of mashine is expressed as probability value with range from 0.0 to 1.0
-  - the timestamp of the following *Piece_ok" event is the same as corresponding *Piece_Produced" event.
-  - the expected quality of production is configurable. E.g. here 
-      ```"type": "Piece_Produced",
-                "hits": 25,
-                "followedBy": {
-                    "type": "Piece_Ok",
-                    "hits": 20
-                } 
-      ```
-    the expected quality would be 80%( *followedBy.hits/hits * 100%* )
-  - Simulates shutdowns(no events are sent if machine is DOWN)
-  - The all simulation logic is just one Python file and can be easily extended/improved if needed.
-  - [Python Script](profile_generator.md) for creating profiles for the simulators(every simulator needs a temlate with predefined name: <sim_id>_profile.template)
+Creates simulators in Cumulocity based on the definitions in [simulators.json](main/simulators.json). Those can be used for profiles in the OEE App. The currently supported simulators the corresponding profiles are defined [here](simulators.md).
 
+- automatically creates simulators based on JSON definition.
+- uses externalId to identify Simulator. It avoids duplicating of similators by re-deploying/updating microservice.
+- configurable externalId and label
+- simulator can be disabled, in sense that no events will be sent
+- the amount of events per hour can be configured either as a random number in a range
+    ```
+    "minHits": 5,
+    "maxHits": 10
+    ```
+  or like a constant number: 
+    ```
+    "hits": 20
+    ```
+- the availibility of mashine is expressed as probability value with range from 0.0 to 1.0
+- the timestamp of the following *Piece_ok" event is the same as corresponding *Piece_Produced" event.
+- the expected quality of production is configurable. E.g. here 
+    ```"type": "Piece_Produced",
+              "hits": 25,
+              "followedBy": {
+                  "type": "Piece_Ok",
+                  "hits": 20
+              } 
+    ```
+  the expected quality would be 80%( *followedBy.hits/hits * 100%* )
+- Simulates shutdowns(no events are sent if machine is DOWN)
+- The all simulation logic is just one Python file and can be easily extended/improved if needed.
+- [Python Script](profile_generator.md) for creating profiles for the simulators (every simulator needs a temlate with predefined name: <sim_id>_profile.template)
+
+## [Profile Generator](profile_generator.md)
 
 ## Get project
 
@@ -61,8 +66,6 @@ To deploy this project, zip image.tar and cumulocity.json to oee-simulators.zip 
 
 The entry point is [event_based_simulators.py](main/event_based_simulators.py). The script reads simulator's defintions from [simulators.json](main/simulators.json) and create a new device for every entry. The *id* property in json is used as *extenral_id* in Cumulocity to avoid creating multiple devices by redeploying/updating script.
 
-The [simulators.json](main/simulators.json) based on [this](simulators.md) description.
-
 To mock REST API calls set the evnironment varibale *MOCK_C8Y_REQUESTS* to `true`
 
 ## Visual Studio Code
@@ -75,8 +78,6 @@ To mock REST API calls set the evnironment varibale *MOCK_C8Y_REQUESTS* to `true
 - select run profile you want to use.
 - click green run icon in the top area to run the currently opened python script.
   
-
-# [Profile Generator](profile_generator.md)
 
 
 
