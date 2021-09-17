@@ -6,8 +6,9 @@ This project offers two main features:
 
 ## Microservice oee-imulators
 
-Creates simulators in Cumulocity based on the definitions in [simulators.json](main/simulators.json). Those can be used for profiles in the OEE App. The currently supported simulators the corresponding profiles are defined [here](simulators.md).
+Creates simulators in Cumulocity based on the definitions in [simulators.json](main/simulators.json). Those simulators can be used for profiles in the OEE App. The currently supported simulators and the corresponding profiles are described [here](simulators.md).
 
+Detailed feature list:
 - automatically creates simulators based on JSON definition.
 - uses externalId to identify Simulator. It avoids duplicating of similators by re-deploying/updating microservice.
 - configurable externalId and label
