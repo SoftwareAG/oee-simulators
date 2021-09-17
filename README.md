@@ -12,4 +12,4 @@ Prebuilt docker images can be downloaded from the [Releases](https://github.soft
 
 ## Generic event based Simulators
 
-[Generic event based Simulators](event-based-simulators) are the simulators we do use for development and should be used for testing and demoing of Cumulocity IoT OEE app. The simulators have been designed and configured to simulate commonly seen machine types. A detailed description and how to configure calculation profiles in OEE app can be found in the [documentation](event-based-simulators).
+[Generic event based Simulators](event-based-simulators) are the simulators we do use for development and should be used for testing and demoing of Cumulocity IoT OEE app. The simulators have been designed and configured to simulate commonly seen machine types. A detailed description of [supported machine types](event-based-simulators/simulators.md) and [how to configure calculation profiles](event-based-simulators/simulators.md#oee-profile-settings-for-simulators) in OEE app can be found in the [event-based-simulators](event-based-simulators) project.
