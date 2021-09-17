@@ -39,9 +39,9 @@ Back to [README.md](README.md)
 - **Quality**:  the simulator produces an event “Piece_Ok”. The calculation counts these. The event is produced shortly after the “Piece_Produced” event (both events have the same timestamp). There is always one “Piece_Produced” for a “Piece_Ok” event, which results in a quality of 100%.
 
 ### Ideal Producer
-- **Availability**: TODO
-- **Performance**: TODO
-- **Quality**:  TODO
+- **Availability**: the simulator produces an “Availability” event which has a field “status” that is always “up”, which results in an availability of 100%.
+- **Performance**: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced 60 times per hour, which results in a performance of 100%. 
+- **Quality**:  the simulator produces an event “Piece_Ok”. The calculation counts these. The event is produced shortly after the “Piece_Produced” event (both events have the same timestamp). There is always one “Piece_Produced” for a “Piece_Ok” event, which results in a quality of 100%.
 
 ## Profile settings for simulators
 
@@ -50,7 +50,8 @@ Generally, labels like Profile Name, Machine Location or Workpiece Name can be a
 | Simulator | Workiece | Resolution | Computation | Matching | Goals |
 | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- 
 | Normal #1 | 0.4 pcs per min | 10 min | PPQ | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 80, 80, 80, 80 |
+| Normal #2 | 1 pcs per min | 10 min | PPQ | APA: Value from event "Pieces_Produced" count<br />APT: Value from event: "Availability" = String "up"<br />AQA: Value from event "Pieces_Ok" count | 80, 80, 80, 80 |
 
 - APA: Actual Production Amount
-- APT: Actual Production Time
+- APT: Actual Production Time (dont forget to tick checkbox "define machine status event")
 - AQA: Actual Quality Amount
