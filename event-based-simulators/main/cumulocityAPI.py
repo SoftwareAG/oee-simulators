@@ -7,7 +7,7 @@ C8Y_TENANT = os.environ.get('C8Y_TENANT') or 't100'
 C8Y_USER = os.environ.get('C8Y_USER') or 'test'
 C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD') or 'test'
 
-MOCK_RUEQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
+MOCK_REQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
 
 user_and_pass_bytes = base64.b64encode((C8Y_TENANT + "/" + C8Y_USER + ':' + C8Y_PASSWORD).encode('ascii')) # bytes
 user_and_pass = user_and_pass_bytes.decode('ascii') # decode to str 
@@ -18,31 +18,23 @@ C8Y_HEADERS = {
     'Authorization': 'Basic ' + user_and_pass
 }
 
-'''
-End configuration
-'''
-
-
 # JSON-PYTHON mapping, to get json.load() working
 null = None
 false = False
 true = True
 ######################
 
-
-C8Y_SIMULATORS_GROUP = "c8y_EventBasedSimulators"
-
 OEE_DATA_MODEL_FIELD_NAME = "@com_adamos_oee_datamodel_MachineOEEConfiguration"
 
-__counter = 0
-def global_counter():
-    __counter = __counter + 1
-    return __counter
-
 class CumulocityAPI:
+
+    # TODO: rename to "c8y_EventBasedSimulator"? What about existing simulators?
+    C8Y_SIMULATORS_GROUP = "c8y_EventBasedSimulator"
+    OEE_CALCULATION_PROFILE_TYPE = "OEECalculationProfile"
+
     def __init__(self) -> None:
-        self.mocking = MOCK_RUEQUESTS.lower() == 'true'
-        print(f'mocking: {self.mocking}' )
+        self.mocking = MOCK_REQUESTS.lower() == 'true'
+        logging.info(f'MOCK_REQUESTS: {self.mocking}')
 
     def send_event(self, event):
         if self.mocking:
@@ -63,7 +55,7 @@ class CumulocityAPI:
             return sim_id
         
         # Check if device already created
-        return self.__get_device(sim_id) or self.__create_device(sim_id, label)
+        return self.get_device_by_external_id(sim_id) or self.__create_device(sim_id, label)
 
     def count_profiles(self, device_id):
         ''' count all profiles for the given device id.
@@ -71,7 +63,7 @@ class CumulocityAPI:
         if self.mocking:
             print(f'mock: count_profiles(${device_id})')
             return 10
-        request_query = f'{C8Y_BASE}/inventory/managedObjects/count?type=OEECalculationProfile&text={device_id}'
+        request_query = f'{C8Y_BASE}/inventory/managedObjects/count?type={self.OEE_CALCULATION_PROFILE_TYPE}&text={device_id}'
         response = requests.get(request_query, headers=C8Y_HEADERS)
         if response.ok:
             try:
@@ -93,6 +85,28 @@ class CumulocityAPI:
         self.log_warning_on_bad_repsonse(response)
         #TODO: check for errors
         return {}
+
+    def get_managed_object(self, id: str):
+        if self.mocking:
+            print(f'mock: get_managed_object()')
+            return {'id': '0'}
+        response = requests.get(C8Y_BASE + f'/inventory/managedObjects/{id}', headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json()
+        self.log_warning_on_bad_repsonse(response)
+        #TODO: check for errors
+        return {}
+
+    def delete_managed_object(self, id: str):
+        if self.mocking:
+            print(f'mock: delete_managed_object()')
+            return {'id': '0'}
+        response = requests.delete(C8Y_BASE + f'/inventory/managedObjects/{id}', headers=C8Y_HEADERS)
+        if response.ok:
+            return 1
+        self.log_warning_on_bad_repsonse(response)
+        #TODO: check for errors
+        return 0
 
     def update_managed_object(self, device_id, fragment):
         if self.mocking:
@@ -118,36 +132,47 @@ class CumulocityAPI:
         self.log_warning_on_bad_repsonse(response)
         return {}
 
-
-    def find_device_by_external_id(self, external_id):
+    def find_simulators(self):
         if self.mocking:
-            print(f'mock: find_device_by_external_id()')
+            print(f'mock: find_simulators()')
             return []
-        response = requests.get(f'{C8Y_BASE}/inventory/managedObjects?text={external_id}&fragmentType=c8y_IsDevice', headers=C8Y_HEADERS)
+        response = requests.get(f'{C8Y_BASE}/inventory/managedObjects?type={self.C8Y_SIMULATORS_GROUP}&fragmentType=c8y_IsDevice', headers=C8Y_HEADERS)
         if response.ok:
             mangaged_objects = response.json()['managedObjects']
             return [mo['id'] for mo in mangaged_objects]
+        logging.warning(f'Cannot find simulators: {response}, content:{response.text}')
         return []
 
-    def __get_device(self, sim_id):
-        response = requests.get(f'{C8Y_BASE}/identity/externalIds/{C8Y_SIMULATORS_GROUP}/{sim_id}', headers=C8Y_HEADERS)
+    def get_external_Ids(self, deviceIds):
+        externalIds = []
+        for id in deviceIds:
+            extIdResponse = requests.get(C8Y_BASE + '/identity/globalIds/' + id + '/externalIds', headers=C8Y_HEADERS)
+            if extIdResponse.ok:
+                externalIds.append(extIdResponse.json()['externalIds'][0]['externalId'])
+        
+        return externalIds
+
+    def get_device_by_external_id(self, external_id):
+        response = requests.get(f'{C8Y_BASE}/identity/externalIds/{self.C8Y_SIMULATORS_GROUP}/{external_id}', headers=C8Y_HEADERS)
         if response.ok:
             device_id = response.json()['managedObject']['id']
-            logging.info(f' Device({device_id}) has been found by its external id "{C8Y_SIMULATORS_GROUP}/{sim_id}".')
+            logging.info(f'Device({device_id}) has been found by its external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}".')
             return device_id
+        logging.warning(f'No device has been found for the external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}".')
         return None
     
-    def __create_device(self, sim_id, label):
-        logging.info(f'Creating a new device with following external id "{C8Y_SIMULATORS_GROUP}/{sim_id}"')
+    def __create_device(self, external_id, name):
+        logging.info(f'Creating a new device with following external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}"')
         device = {
-            'name': label,
-            'c8y_IsDevice': {}
+            'name': name,
+            'c8y_IsDevice': {},
+            'type': {self.C8Y_SIMULATORS_GROUP}
         }
         device = self.create_managed_object(json.dumps(device))
         device_id = device['id']
         if device_id:
             logging.info(f'new device created({device_id})')
-            return self.__add_external_id(device_id, sim_id)
+            return self.__add_external_id(device_id, external_id)
         return device_id
 
     def __add_external_id(self, device_id, ext_id, type = C8Y_SIMULATORS_GROUP):

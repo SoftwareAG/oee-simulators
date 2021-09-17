@@ -5,19 +5,31 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Aktuelle Datei",
+            "name": "create profiles",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "main/profile_generator.py",
             "console": "integratedTerminal",
-            "env": {
-                "C8Y_BASEURL": "https://mobile.eu-latest.cumulocity.com",
-                "C8Y_TENANT": "mobile",
-                "C8Y_USER": "test",
-                "C8Y_PASSWORD": "test",
-                "MOCK_C8Y_REQUESTS": "true"
-
-            } 
+            "envFile": "${workspaceFolder}/.vscode/.env",
+            "args": ["--create-profiles"]
+        },        
+        {
+            "name": "remove simulator profiles via OEE API",
+            "type": "python",
+            "request": "launch",
+            "program": "main/profile_generator.py",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.vscode/.env",
+            "args": ["--remove-simulator-profiles-via-oee"]
+        },        
+        {
+            "name": "delete simulator profiles",
+            "type": "python",
+            "request": "launch",
+            "program": "main/profile_generator.py",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.vscode/.env",
+            "args": ["--delete-simulator-profiles"]
         }
     ]
 }

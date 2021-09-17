@@ -36,13 +36,35 @@ Detailed feature list:
   the expected quality would be 80% (*followedBy.hits/hits * 100%*)
 - Simulates shutdowns (no events are sent if machine is DOWN)
 - Written in Python and is easy to extend
-- [Python Script](profile_generator.md) to create OEE calculation profiles for the simulators (every simulator needs a temlate with predefined name: <sim_id>_profile.template)
+- the main entry point is [event_based_simulators.py](main/event_based_simulators.py)
+  - the script reads the configuration from [simulators.json](main/simulators.json) and creates a new device for every entry
+  - the `id` property is used as `external_id` for the ManagedObjects to avoid creating multiple devices when redeploying/updating the microservice
+
+### Build the docker image
+
+To build the docker image for this microservice, execute:
+```
+git clone git@github.softwareag.com:IOTA/oee-simulators.git
+cd oee-simulators/event_based_simulators
+docker build -t oee-simulators .
+docker save -o image.tar oee-simulators
+zip oee-simulators.zip image.tar cumulocity.json 
+```
+
+### Deployment
+
+To deploy this project, upload the zip file to the Cumulocity as Microservice. The zip file can be created locally as described above or downloaded from the [releases](releases) section.
 
 ## Profile generator
 
-To use the profile generator, the *oee-simulators microservice* needs to be deployed and devices have to be available in the tenant.
+The Profile Generator is a [Python script](main/profile_generator.py) that creates OEE calculation profiles for each simulator available in the tenant. Every simulator needs a template with appropriate name (<external_id>_profile.template) in your local [main](main/) folder. The simulators must have been created beforehand by deploying the [oee-simulators](#simulator-microservice) microservice.
 
-### Environment variabels
+### Environment
+
+Install python 3.8.3+ on your system. Probably you'll need install some packages using *pip* commmand, e.g.
+```
+pip install requests
+```
 
 To run the scripts the following environment variables need to be set:
 
@@ -51,59 +73,47 @@ C8Y_BASEURL=https://perftest.2.performance.c8y.io
 C8Y_TENANT=t3233
 C8Y_USER=viktor.tymoshenko@softwareag.com
 C8Y_PASSWORD=yourpassword
+```
+
+Additionally the following optional/debug variables can be set:
+```
 MOCK_C8Y_REQUESTS=false
 PROFILES_PER_DEVICE=1
 ```
 
-### Generate profiles
+- if MOCK_C8Y_REQUESTS is set to true, no requests to the C8Y tenant are executed, but you can see what would have been executed in the log
+- if PROFILES_PER_DEVICE is increased, more than one profile is created for each simulator; this might be useful when doing performance/scalability tests
 
-Change `PROFILES_PER_DEVICE` variable to generate a given number of profiles. There will be a profile created per device. As there are 7+ simulators, the result amount of profiles will be 'PROFILES_PER_DEVICE * 7'.
+### Execution
 
-To generate profiles run
+There are two ways to execute the profile generation. You can run it from the development environment [Visual Studio Code](#visual-studio-code) or from the command line.
+
+#### Execution from command line
+To execute the scripts from command line, open a command prompt and the *oee-simulators\event-based-simulators* folder.
+
+To create profiles, execute:
 ```
-event_based_simulators/main/profile_generator.py
+python .\main\profile_generator.py -c
 ``` 
 
-To delete profiles run
-```event_based_simulators/main/profile_deleter.py```
-
-See comments at the end of the script file for more details.
-
-## Build the project
-
-### Python
-
-Install python 3.8.3+ on your system. Probably you'll need install some packages using *pip* commmand.
-
-### Build docker image
-
+To remove profiles using the OEE API, execute:
 ```
-git clone git@github.softwareag.com:IOTA/oee-simulators.git
-cd oee-simulators/event_based_simulators
-docker build -t oee-simulators .
-docker save -o image.tar oee-simulators
+python .\main\profile_generator.py -r
+``` 
+
+To remove profiles using the standard Cumulocity IoT API (e.g. if OEE is not installed on the tenant), execute:
 ```
-    
-### Deployment
+python .\main\profile_generator.py -d
+``` 
 
-To deploy this project, zip image.tar and cumulocity.json to oee-simulators.zip and deploy it to the Cumulocity as Microservice.
+#### Execution in Visual Studio Code
 
-
-## Development
-
-The entry point is [event_based_simulators.py](main/event_based_simulators.py). The script reads simulator's defintions from [simulators.json](main/simulators.json) and creates a new device for every entry. The `id` property in json is used as `extenral_id` in Cumulocity to avoid creating multiple devices by redeploying/updating script.
-
-To mock REST API calls set the evnironment varibale `MOCK_C8Y_REQUESTS` to `true`
-
-## Visual Studio Code
-
-- Open *event-based-simulators* folder in the VSC.
+- Open *event-based-simulators* folder in the VSC
 - Install python plugin: ms-python.python
-- adjust environemnt varibales in *.xcode/launch.json*. 
-- open python file you want to run/debug
-- click at the big run icon on the left toolbar
-- select run profile you want to use.
-- click green run icon in the top area to run the currently opened python script.
+- adjust environemnt varibales in [.vscode/.env](.vscode/.env)
+- click at the big run/debug icon in the left toolbar
+- select the configuration that you want to use from the dropdown: `create profiles`, `remove simulator profiles via OEE API`, `delete simulator profiles`
+- click the small green run/debug icon left of the dropdown in the top area to execute the configuration
   
 
 
