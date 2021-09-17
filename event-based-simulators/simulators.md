@@ -45,18 +45,18 @@ Back to [README.md](README.md)
 
 ## Profile settings for simulators
 
-Generally, labels like Profile Name, Machine Location or Workpiece Name can be arbitrary values as they dont have any influence on the calculation. Usually two resolution intervals should be configured: 30min & 1h (additionally there is a built-in 10min default interval). Other profile settings are described in the table below. The values for Resolution & Goals are recommendations and can be changed according to the use case.
+Generally, labels like Profile Name, Machine Location or Workpiece Name can be arbitrary values as they dont have any influence on the calculation. Usually two resolution intervals should be configured: 30min & 1h (additionally there is a built-in 10min default interval). The computation method is "PPQ". Other profile settings are described in the table below. The values for Resolution & Goals are recommendations and can be changed according to the use case.
 
-| Simulator | Workiece | Computation | Matching | Goals | Other |
-| ----------- | ----------- | ----------- | ----------- | ----------- | ----------- |
-| Normal #1 | 0.4 pcs per min | PPQ | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 80, 80, 80, 80 | |
-| Normal #2 | 1 pcs per min | PPQ | APA: Value from event "Pieces_Produced" count<br />APT: Value from event: "Availability" = String "up"<br />AQA: Value from event "Pieces_Ok" count | 80, 80, 80, 80 | |
-| Normal #3 | 60 pcs per hour | PPQ | APA: Value from event "Pieces_Produced" count<br />APT: Value from event: "Availability" = String "up"<br />AQA: Value from event "Piece_Quality" = "ok" | 20, 90, 50, 90 | |
-| Normal with Short Shutdowns | 25 pcs per hour | PPQ | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 60, 90, 90, 90 | short stoppages: 3 min |
-| Slow Producer | 0.25 pcs per hour | PPQ | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 90, 90, 100, 100 | Resolution: 4 hours, 1 days |
-| High Frequency Availability | 25 pcs per hour | PPQ | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 60, 90, 90, 80 | |
-| SP + HFA | 0.25 pcs per hour | PPQ | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 90, 90, 100, 100 | Resolution: 4 hours, 1 days |
-| Ideal Producer | 60 pcs per hour | PPQ | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 100, 100, 100, 100 | |
+| Simulator | Workiece | Matching | Goals | Other |
+| ----------- | ----------- | ----------- | ----------- | ----------- |
+| Normal #1 | 0.4 pcs per min | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 80, 80, 80, 80 | |
+| Normal #2 | 1 pcs per min | APA: Value from event "Pieces_Produced" count<br />APT: Value from event: "Availability" = String "up"<br />AQA: Value from event "Pieces_Ok" count | 80, 80, 80, 80 | |
+| Normal #3 | 60 pcs per hour | APA: Value from event "Pieces_Produced" count<br />APT: Value from event: "Availability" = String "up"<br />AQA: Value from event "Piece_Quality" = "ok" | 20, 90, 50, 90 | |
+| Normal with Short Shutdowns | 25 pcs per hour | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 60, 90, 90, 90 | short stoppages: 3 min |
+| Slow Producer | 0.25 pcs per hour | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 90, 90, 100, 100 | Resolution: 4 hours, 1 days |
+| High Frequency Availability | 25 pcs per hour | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 60, 90, 90, 80 | |
+| SP + HFA | 0.25 pcs per hour | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 90, 90, 100, 100 | Resolution: 4 hours, 1 days |
+| Ideal Producer | 60 pcs per hour | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 100, 100, 100, 100 | |
 
 - APA: Actual Production Amount
 - APT: Actual Production Time (dont forget to tick checkbox "define machine status event")
