@@ -33,7 +33,7 @@ Back to [README.md](README.md)
 - **Performance**: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about 25 times per hour. 
 - **Quality**: the simulator produces a “Piece_Ok” event. The calculation counts these. The event is produced about 20 times per hour. Those events follow a few seconds after a corresponding “Piece_Produced” event (both events have the same timestamp). Some “Piece_Produced” events are not followed by a “Piece_Ok” event (to simulate a piece with bad quality).
 
-### Slow Producer + High Frequency Availability
+### Slow Producer + High Frequency Availability (SP + HFA)
 - **Availability**: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation checks if the value of this field is “up”. This event is produced every 10s. Most of the time the status does not change and it is 90% up.
 - **Performance**: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about every 4h.
 - **Quality**:  the simulator produces an event “Piece_Ok”. The calculation counts these. The event is produced shortly after the “Piece_Produced” event (both events have the same timestamp). There is always one “Piece_Produced” for a “Piece_Ok” event, which results in a quality of 100%.
@@ -54,6 +54,9 @@ Generally, labels like Profile Name, Machine Location or Workpiece Name can be a
 | Normal #3 | 60 pcs per hour | PPQ | APA: Value from event "Pieces_Produced" count<br />APT: Value from event: "Availability" = String "up"<br />AQA: Value from event "Piece_Quality" = "ok" | 20, 90, 50, 90 | |
 | Normal with Short Shutdowns | 25 pcs per hour | PPQ | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 60, 90, 90, 90 | short stoppages: 3 min |
 | Slow Producer | 0.25 pcs per hour | PPQ | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 90, 90, 100, 100 | Resolution: 4 hours, 1 days |
+| High Frequency Availability | 25 pcs per hour | PPQ | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 60, 90, 90, 80 | |
+| SP + HFA | 0.25 pcs per hour | PPQ | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 90, 90, 100, 100 | Resolution: 4 hours, 1 days |
+| Ideal Producer | 60 pcs per hour | PPQ | APA: Event count "Piece_Produced"<br />APT: Value from event: "Availability" = String "up"<br />AQA: Event count "Piece_Ok" | 100, 100, 100, 100 | |
 
 - APA: Actual Production Amount
 - APT: Actual Production Time (dont forget to tick checkbox "define machine status event")
