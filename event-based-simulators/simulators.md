@@ -1,5 +1,3 @@
-Back to [README.md](README.md)
-
 ## Event based Simulators
 
 The simulators will create machines sending all data (currently only events) required to configure Cumulocity IoT OEE app to calculate **OEE** from **Availability**, **Performance** and **Quality**.
@@ -52,12 +50,12 @@ The simulators will create machines sending all data (currently only events) req
 Labels not mentioned explicitely in the following table, such as for example `Profile Name`, `Machine Location` or `Workpiece Name`, can be arbitrary values as they don't have any influence on the calculation. 
 
 For all calculation profiles we recommend at least 2 `Resolution` intervals: 
-- *30 minuntes*
+- *30 minutes*
 - *1 hour* 
   
 Additionally 10 minutes default interval will be available for all profiles, even if not explicitely configured. 
 
-The computation method is `PPQ`. Other profile settings are described in the table below. All values for `Resolution` and `Goals` are recommendations and could be changed according to the use case.
+The computation method is `PPQ` for all profiles. Matching settings for each profile are described in the table below. All values for `Resolution` and `Goals` are recommendations and could be changed according to the use case.
 
 | Simulator | Workpiece | Matching | Goals | Other |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
@@ -70,6 +68,6 @@ The computation method is `PPQ`. Other profile settings are described in the tab
 | SP + HFA | 0.25 pcs per hour | APA: Event count `Piece_Produced`<br />APT: Value from event: `Availability` = String `up`<br />AQA: Event count `Piece_Ok` | 90, 90, 100, 100 | Resolution: 4 hours, 1 days |
 | Ideal Producer | 60 pcs per hour | APA: Event count `Piece_Produced`<br />APT: Value from event: `Availability` = String `up`<br />AQA: Event count `Piece_Ok` | 100, 100, 100, 100 | |
 
-APA: Actual Production Amount
-APT: Actual Production Time (enable `define machine status event`)
-AQA: Actual Quality Amount
+- APA: Actual Production Amount
+- APT: Actual Production Time (enable *define machine status event*)
+- AQA: Actual Quality Amount
