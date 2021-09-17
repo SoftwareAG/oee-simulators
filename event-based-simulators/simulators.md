@@ -3,13 +3,9 @@ Back to [README.md](README.md)
 ## Supported Simulators
 
 ### Normal #1
-#### Availability
-The simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation is a machine status event checking that the value is “up”. This event is produced 5-10 times per hour with 90% being “up”.
-#### Performance
-The simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about 25 times per hour. 
-#### Quality
-The simulator produces an “Piece_Ok” event. The calculation counts these. The event is produced about 20 times per hour. Those events follow a few seconds after a corresponding “Piece_Produced” event. Some “Piece_Produced” events are not followed by a “Piece_Ok” event (to simulate a piece with bad quality).
-
+- Availability: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation is a machine status event checking that the value is “up”. This event is produced 5-10 times per hour with 90% being “up”.
+- Performance: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about 25 times per hour. 
+- Quality: the simulator produces an “Piece_Ok” event. The calculation counts these. The event is produced about 20 times per hour. Those events follow a few seconds after a corresponding “Piece_Produced” event. Some “Piece_Produced” events are not followed by a “Piece_Ok” event (to simulate a piece with bad quality).
 
 **Normal #2 (Intervals: 1min, 10min)**
 Availability: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation is a machine status event  checking that the value is “up”. This event is produced 5-10 times per hour with 90% being “up”.
