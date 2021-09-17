@@ -3,43 +3,45 @@ Back to [README.md](README.md)
 ## Supported Simulators
 
 ### Normal #1
-- **Availability**: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation is a machine status event checking that the value is “up”. This event is produced 5-10 times per hour with 90% being “up”.
+- **Availability**: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation checks if the value of this field is “up”. This event is produced 5-10 times per hour with 90% being “up”.
 - **Performance**: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about 25 times per hour. 
-- **Quality**: the simulator produces an “Piece_Ok” event. The calculation counts these. The event is produced about 20 times per hour. Those events follow a few seconds after a corresponding “Piece_Produced” event. Some “Piece_Produced” events are not followed by a “Piece_Ok” event (to simulate a piece with bad quality).
+- **Quality**: the simulator produces a “Piece_Ok” event. The calculation counts these. The event is produced about 20 times per hour. Those events follow a few seconds after a corresponding “Piece_Produced” event (both events have the same timestamp). Some “Piece_Produced” events are not followed by a “Piece_Ok” event (to simulate a piece with bad quality).
 
-**Normal #2 (Intervals: 1min, 10min)**
-Availability: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation is a machine status event  checking that the value is “up”. This event is produced 5-10 times per hour with 90% being “up”.
-Performance: the simulator produces an event “Pieces_Produced”. They contain a field named “count” with values ranging from 0-10. The calculation adds the counts from the fields. The event is produced 6 times per hour (every 10 min). 
-Quality: the simulator produces an event “Piece_Ok”. The calculation counts these. The event is produced about 20 times per hour. The should follow a few seconds after a corresponding “Piece_Produced” event. Some “Piece_Produced” events are not followed by a “Piece_Ok” event.
+### Normal #2
+- **Availability**: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation checks if the value of this field is “up”. This event is produced 5-10 times per hour with 90% being “up”.
+- **Performance**: the simulator produces an event “Pieces_Produced”. It contains a field named “count” with values ranging from 0-10. The calculation sums up the values of this field. The event is produced 6 times per hour (every 10 min). 
+- **Quality**: the simulator produces a “Piece_Ok” event. The calculation counts these. The event is produced about 20 times per hour. Those events follow a few seconds after a corresponding “Piece_Produced” event (both events have the same timestamp). Some “Piece_Produced” events are not followed by a “Piece_Ok” event (to simulate a piece with bad quality).
 
-**Normal #3 (Intervals: 1min, 10min)**
-Availability: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation is a machine status event checking that the value is “up”. This event is produced 5-10 times per hour with 90% being “up”.
-Performance: the simulator produces an event “Pieces_Produced”. They contain a field named “count” with values ranging from 0-10. The calculation adds the counts from the fields. The event is produced 6 times per hour (every 10 min). 
-Quality: the simulator produces an event “Piece_Quality”. These have a field “status” that is either “ok” or “nok”. The calculation is a quality status event checking that the value is “ok”. There is 2-3 of these with 90% of the time being in state “ok”.
+### Normal #3
+- **Availability**: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation checks if the value of this field is “up”. This event is produced 5-10 times per hour with 90% being “up”.
+- **Performance**: the simulator produces an event “Pieces_Produced”. It contains a field named “count” with values ranging from 0-10. The calculation sums up the values of this field. The event is produced 6 times per hour (every 10 min). 
+- **Quality**: the simulator produces an event “Piece_Quality”. These have a field “status” that is either “ok” or “nok”. The calculation is a quality status event checking that the value is “ok”. There is 2-3 of these with 90% of the time being in state “ok”.
 
-**Normal with Short Shutdowns (Intervals: 1min, 10min)**
-Short Shutdowns: is enabled and set to 2 minutes.
-Availability: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation is a machine status event checking that the value is “up”. This event is produced 5-10 times per hour with 90% being “up”. There is a few short shutdowns with the machine being in “down” less than 2 minutes.
-Performance: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about 25 times per hour. 
-Quality:  the simulator produces an event “Piece_Ok”. The calculation counts these. The event is produced about 20 times per hour. The should follow a few seconds after a corresponding “Piece_Produced” event. Some “Piece_Produced” events are not followed by a “Piece_Ok” event.
+### Normal with Short Shutdowns
+- **Short Shutdowns**: is enabled and set to 2 minutes.
+- **Availability**: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation checks if the value of this field is “up”. This event is produced 5-10 times per hour with 90% being “up”. There is a few short shutdowns with the machine being in “down” less than 2 minutes.
+- **Performance**: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about 25 times per hour. 
+- **Quality**: the simulator produces a “Piece_Ok” event. The calculation counts these. The event is produced about 20 times per hour. Those events follow a few seconds after a corresponding “Piece_Produced” event (both events have the same timestamp). Some “Piece_Produced” events are not followed by a “Piece_Ok” event (to simulate a piece with bad quality).
 
-**Slow Producer (Intervals: 10min, 1h, 4h, 8h)**
-Availability: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation is a machine status event checking that the value is “up”. This event is produced 5-10 times per hour with 90% being “up”.
-Performance: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about every 4h
-Quality:  the simulator produces an event “Piece_Ok”. The calculation counts these. The event is produced shortly after the “Piece_Produced” event. There should always be one, leading to a quality of 100%.
+### Slow Producer
+- **Availability**: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation checks if the value of this field is “up”. This event is produced 5-10 times per hour with 90% being “up”.
+- **Performance**: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about every 4h.
+- **Quality**:  the simulator produces an event “Piece_Ok”. The calculation counts these. The event is produced shortly after the “Piece_Produced” event (both events have the same timestamp). There is always one “Piece_Produced” for a “Piece_Ok” event, which results in a quality of 100%.
 
-**High Frequency Availability (Intervals: 1min, 10min)**
-Availability: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation is a machine status event checking that the value is “up”. This event is produced every 10s. Most of the time the status should not change and it is 90% up.
-Performance: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about 25 times per hour. 
-Quality:  the simulator produces an event “Piece_Ok”. The calculation counts these. The event is produced about 20 times per hour. The should follow a few seconds after a corresponding “Piece_Produced” event. Some “Piece_Produced” events are not followed by a “Piece_Ok” event.
+### High Frequency Availability
+- **Availability**: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation checks if the value of this field is “up”. This event is produced every 10s. Most of the time the status does not change and it is 90% up.
+- **Performance**: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about 25 times per hour. 
+- **Quality**: the simulator produces a “Piece_Ok” event. The calculation counts these. The event is produced about 20 times per hour. Those events follow a few seconds after a corresponding “Piece_Produced” event (both events have the same timestamp). Some “Piece_Produced” events are not followed by a “Piece_Ok” event (to simulate a piece with bad quality).
 
-**Slow Producer + High Frequency Availability (Intervals: 10min, 1h, 4h, 8h)**
-Availability: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation is a machine status event checking that the value is “up”. This event is produced every 10s. Most of the time the status should not change and it is 90% up.
-Performance: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about every 4h
-Quality:  the simulator produces an event “Piece_Ok”. The calculation counts these. The event is produced shortly after the “Piece_Produced” event. There should always be one, leading to a quality of 100%.
+### Slow Producer + High Frequency Availability
+- **Availability**: the simulator produces an “Availability” event which has a field “status” that is either “up” or “down”. The calculation checks if the value of this field is “up”. This event is produced every 10s. Most of the time the status does not change and it is 90% up.
+- **Performance**: the simulator produces an event “Piece_Produced”. The calculation counts these. The event is produced about every 4h.
+- **Quality**:  the simulator produces an event “Piece_Ok”. The calculation counts these. The event is produced shortly after the “Piece_Produced” event (both events have the same timestamp). There is always one “Piece_Produced” for a “Piece_Ok” event, which results in a quality of 100%.
 
 ### Ideal Producer
-TODO
+- **Availability**: TODO
+- **Performance**: TODO
+- **Quality**:  TODO
 
 ## Profile settings for simulators
 
