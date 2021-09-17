@@ -59,9 +59,9 @@ Additionally 10 minutes default interval will be available for all profiles, eve
 
 The computation method is `PPQ`. Other profile settings are described in the table below. All values for `Resolution` and `Goals` are recommendations and could be changed according to the use case.
 
-| Simulator | Workiece | Matching | Goals | Other |
+| Simulator | Workpiece | Matching | Goals | Other |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-| Normal #1 | 0.4 pcs per min | APA: Event count `Piece_Produced`<br />APT: Value from event: `Availability` = String `up`<br />AQA: Event count `Piece_Ok` | 80, 80, 80, 80 | |
+| Normal #1 | 25 pcs per hour | APA: Event count `Piece_Produced`<br />APT: Value from event: `Availability` = String `up`<br />AQA: Event count `Piece_Ok` | 80, 80, 80, 80 | |
 | Normal #2 | 1 pcs per min | APA: Value from event `Pieces_Produced` count<br />APT: Value from event: `Availability` = String `up`<br />AQA: Value from event `Pieces_Ok` count | 80, 80, 80, 80 | |
 | Normal #3 | 60 pcs per hour | APA: Value from event `Pieces_Produced` count<br />APT: Value from event: `Availability` = String `up`<br />AQA: Value from event `Piece_Quality` = `ok` | 20, 90, 50, 90 | |
 | Normal with Short Shutdowns | 25 pcs per hour | APA: Event count `Piece_Produced`<br />APT: Value from event: `Availability` = String `up`<br />AQA: Event count `Piece_Ok` | 60, 90, 90, 90 | short stoppages: 3 min |
