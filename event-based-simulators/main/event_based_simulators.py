@@ -4,7 +4,7 @@ from random import randint, uniform
 
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
 
-VERSION = '1.0.7'
+VERSION = '1.0.8'
 
 logging.basicConfig(level=logging.INFO)
 logging.info(os.environ)
@@ -115,11 +115,13 @@ class MachineSimulator:
         count_max_hits = event_definition.get("countMaxHits") or 10
 
         event = self.__type_fragment(event_definition)
-        event.update({"count": randint(count_min_hits, count_max_hits)})
+        pieces_produced = randint(count_min_hits, count_max_hits)
+        event.update({"count": pieces_produced})
 
         timestamp = self.__send_event(event)
-
-        self.__send_following_event(event_definition, timestamp)
+        if pieces_produced > 0:
+            extra_params = {"pieces_produced": pieces_produced}
+            self.__send_following_event(event_definition, timestamp, extra_params)
         
     
     def __on_piece_ok_event(self, event_definition, task):
@@ -138,14 +140,15 @@ class MachineSimulator:
 
         event = self.__type_fragment(event_definition)
 
-        #TODO: should timestamp be synchronized?
         count_min_hits = event_definition.get("countMinHits") or 0
         count_max_hits = event_definition.get("countMaxHits") or 10
-        event.update({"count": randint(count_min_hits, count_max_hits)})
 
         piece_produced_timestamp = None
         if hasattr(task, 'extra'):
             piece_produced_timestamp = task.extra["timestamp"]
+            count_max_hits = task.extra.get("pieces_produced") or count_max_hits
+
+        event.update({"count": randint(count_min_hits, count_max_hits)})
 
         self.__send_event(event, piece_produced_timestamp)
 
@@ -176,7 +179,7 @@ class MachineSimulator:
         self.shutdown = False
         logging.info(f'Device({self.device_id}) is up now.')
 
-    def __send_following_event(self, event_definition, timestamp = None):        
+    def __send_following_event(self, event_definition, timestamp = None, extra_params = {}):        
         if "followedBy" in event_definition:
             followed_by_definition = event_definition["followedBy"]
             followed_by_hits = followed_by_definition["hits"]
@@ -186,6 +189,7 @@ class MachineSimulator:
             if try_event(followed_by_hits / this_hits):
                 followed_by_task = self.create_one_time_task(followed_by_definition)
                 followed_by_task.extra["timestamp"] = timestamp
+                followed_by_task.extra.update(extra_params)
                 self.tasks.append(followed_by_task)                
                 logging.debug(f'{self.device_id} task({id(followed_by_task)}) added: {json.dumps(followed_by_definition)}, tasks: {len(self.tasks)}')      
             else:
