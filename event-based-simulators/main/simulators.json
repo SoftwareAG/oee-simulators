@@ -38,7 +38,7 @@
             {
                 "type": "Pieces_Produced",
                 "hits": 6,
-                "countMinHits": 0,
+                "countMinHits": 1,
                 "countMaxHits": 10,
                 "followedBy": {
                     "type": "Pieces_Ok",
