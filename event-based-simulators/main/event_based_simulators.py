@@ -106,7 +106,8 @@ class MachineSimulator:
         event = self.__type_fragment(event_definition)
         timestamp = self.__send_event(event)
         
-        self.__send_following_event(event_definition, timestamp)
+        if timestamp:
+            self.__send_following_event(event_definition, timestamp)
 
     def __on_pieces_produced_event(self, event_definition, task):
         if not self.machine_up: return self.__log_ignore(event_definition)            
@@ -119,14 +120,12 @@ class MachineSimulator:
         event.update({"count": pieces_produced})
 
         timestamp = self.__send_event(event)
-        if pieces_produced > 0:
+        if timestamp and pieces_produced > 0:
             extra_params = {"pieces_produced": pieces_produced}
             self.__send_following_event(event_definition, timestamp, extra_params)
         
     
     def __on_piece_ok_event(self, event_definition, task):
-        if not self.machine_up: return self.__log_ignore(event_definition)            
-
         event = self.__type_fragment(event_definition)
 
         piece_produced_timestamp = None
@@ -136,8 +135,6 @@ class MachineSimulator:
         self.__send_event(event, piece_produced_timestamp)
     
     def __on_pieces_ok_event(self, event_definition, task):
-        if not self.machine_up: return self.__log_ignore(event_definition)            
-
         event = self.__type_fragment(event_definition)
 
         count_min_hits = event_definition.get("countMinHits") or 0
