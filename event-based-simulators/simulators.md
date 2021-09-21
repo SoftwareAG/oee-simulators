@@ -45,6 +45,16 @@ The simulators will create machines sending all data (currently only events) req
 - **Performance**: the simulator produces an event `Piece_Produced`. The event is produced 60 times per hour, which results in a performance of 100%. 
 - **Quality**:  the simulator produces an event `Piece_Ok`. The event is produced shortly after the `Piece_Produced` event (both events have the same timestamp). There is always one `Piece_Produced` for a `Piece_Ok` event, which results in a quality of 100%.
 
+#### Ideal Producer Q80
+- **Availability**: the simulator produces an `Availability` event which has a field `status` that is always `up`, which results in an availability of 100%.
+- **Performance**: the simulator produces an event `Piece_Produced`. The event is produced 60 times per hour, which results in a performance of 100%. 
+- **Quality**:  the simulator produces an event `Piece_Ok`. The event might be produced with probability 80% shortly after the `Piece_Produced` event (both events have the same timestamp), which results in a quality of 80%.
+
+#### Ideal Producer A80
+- **Availability**: the simulator produces an `Availability` event which has a field `status` that is 80% of time is `up`, which results in an availability of 80%.
+- **Performance**: the simulator produces an event `Piecec_Produced`. The event is produced 60 times per hour and it contains a field named `count` with value 5. The summary amount of events per hour is 300. 
+- **Quality**: the simulator produces a `Pieces_Ok` event. It contains a field named `count` with value 5. Those events follow a few seconds after a corresponding `Pieces_Produced` event (both events have the same timestamp). The summary amount of quality pieces is also 300 per hour, which results in a quality of 100%.
+  
 ### OEE profile settings for simulators
 
 Labels not mentioned explicitely in the following table, such as for example `Profile Name`, `Machine Location` or `Workpiece Name`, can be arbitrary values as they don't have any influence on the calculation. 
@@ -67,6 +77,8 @@ The computation method is `PPQ` for all profiles. Matching settings for each pro
 | High Frequency Availability | 25 pcs per hour | APA: Event count `Piece_Produced`<br />APT: Value from event: `Availability` = String `up`<br />AQA: Event count `Piece_Ok` | 60, 90, 90, 80 | |
 | SP + HFA | 0.25 pcs per hour | APA: Event count `Piece_Produced`<br />APT: Value from event: `Availability` = String `up`<br />AQA: Event count `Piece_Ok` | 90, 90, 100, 100 | Resolution: 4 hours, 1 days |
 | Ideal Producer | 60 pcs per hour | APA: Event count `Piece_Produced`<br />APT: Value from event: `Availability` = String `up`<br />AQA: Event count `Piece_Ok` | 100, 100, 100, 100 | |
+| Ideal Producer Q80| 60 pcs per hour | APA: Event count `Piece_Produced`<br />APT: Value from event: `Availability` = String `up`<br />AQA: Event count `Piece_Ok` | 80, 100, 100, 80 | |
+| Ideal Producer A80 | 300 pcs per hour | APA: Value from event `Pieces_Produced` count<br />APT: Value from event: `Availability` = String `up`<br />AQA: Value from event `Pieces_Ok` count | 80, 80, 100, 100 | |
 
 - APA: Actual Production Amount
 - APT: Actual Production Time (enable *define machine status event*)
