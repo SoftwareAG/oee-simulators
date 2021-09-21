@@ -196,5 +196,56 @@
                 }
             }                
         ]
+    },
+    {
+        "type": "Simulator",
+        "id": "sim_009",
+        "label": "Ideal Producer Q80",
+        "comment": "",
+        "enabled": true,
+        "events": [
+            {
+                "type": "Availability",
+                "hits": 120,                    
+                "statusUpProbability": 1.0,
+                "forceStatusDown": true
+            },
+            {
+                "type": "Piece_Produced",
+                "hits": 60,
+                "followedBy": {
+                    "type": "Piece_Ok",
+                    "hits": 48
+                }
+            }                
+        ]
+    },
+    {
+        "type": "Simulator",
+        "id": "sim_0010",
+        "label": "Ideal Producer A80",
+        "comment": "",
+        "enabled": true,
+        "events": [
+            {
+                "type": "Availability",
+                "hits": 120,                    
+                "statusUpProbability": 0.8,
+                "forceStatusDown": true
+            },
+            {
+                "type": "Pieces_Produced",
+                "hits": 60,
+                "countMinHits": 5,
+                "countMaxHits": 5,
+                "followedBy": {
+                    "type": "Pieces_Ok",
+                    "countMinHits": 5,
+                    "countMaxHits": 5,
+                    "hits": 60
+                }
+            }              
+        ]
     }
+
 ]
