@@ -6,7 +6,7 @@
     "shortShutdowns": null,
     "version": "2.0.0",
     "amountUnit": "",
-    "name": "Simulator Normal #1 - ${counter}",
+    "name": "Ideal Producer Q80 - ${counter}",
     "tenantId": "${tenantId}",
     "locationId": "Matrix",
     "external": false,
@@ -66,9 +66,9 @@
         "IntervalUnit4": null     
     },
     "oeeTargets": {
-        "overall": 65,
-        "availability": 90,
-        "performance": 95,    
+        "overall": 100,
+        "availability": 100,
+        "performance": 100,    
         "quality": 80
     },
     "ui": {
@@ -87,7 +87,7 @@
         "QUALITY_STATUS": []
     },
     "workpiece": {
-        "amount": "25",
+        "amount": "60",
         "unit": "pcs",
         "name": "Pieces",
         "isActive": true,

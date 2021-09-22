@@ -34,8 +34,8 @@
     "inputs": {
         "ActualQualityAmount": [
             {
-                "type": "TRANSFORMATION_RULE",
-                "value": "countEvents(\"${deviceId}\",\"Piece_Ok\")"
+                "type": "MACHINE_EVENT",
+                "value": ""
             }
         ],
         "ActualProductionAmount": [
@@ -52,23 +52,24 @@
         ]
     },
     "intervals": [
-        600.0
+        1800.0,
+        3600.0
     ],
     "timeframes": {
-        "Interval1": "10",
+        "Interval1": "30",
         "IntervalUnit1": "min",
-        "Interval2": null,
-        "IntervalUnit2": null,
+        "Interval2": "1",
+        "IntervalUnit2": "h",
         "Interval3": null,
         "IntervalUnit3": null,
         "Interval4": null,
         "IntervalUnit4": null     
     },
     "oeeTargets": {
-        "performance": 80,
-        "overall": 80,
-        "availability": 80,
-        "quality": 80
+        "overall": 20,
+        "availability": 90,
+        "performance": 50,    
+        "quality": 90
     },
     "ui": {
         "shortStoppages": "Not Tracked",
@@ -90,11 +91,11 @@
         ]
     },
     "workpiece": {
-        "amount": "1",
+        "amount": "60",
         "unit": "pcs",
         "name": "Pieces",
         "isActive": true,
-        "timeunit": 1
+        "timeunit": 2
     },
     "status": "INCOMPLETE"
 }
