@@ -175,7 +175,7 @@ class CumulocityAPI:
         device = {
             'name': name,
             'c8y_IsDevice': {},
-            'type': {self.C8Y_SIMULATORS_GROUP}
+            'type': self.C8Y_SIMULATORS_GROUP
         }
         device = self.create_managed_object(json.dumps(device))
         device_id = device['id']
