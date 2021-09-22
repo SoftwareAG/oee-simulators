@@ -27,6 +27,8 @@ logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 logging.info("using C8Y backend:" + C8Y_BASE)
 logging.info("using C8Y tenant:" + C8Y_TENANT)
 
+c8y_api = CumulocityAPI()
+
 def to_variable(name: str):
     return '${' + name + '}'
 
@@ -106,7 +108,7 @@ class OeeApi:
         return self.c8y_api.count_profiles(device_id)
     
     def delete_all_simulators_profiles(self):
-        simulator_ids = oee_api.get_simulatorIds()
+        simulator_ids = oee_api.get_simulator_ids()
 
         profiles = self.get_profiles()
         deleted_profiles = 0
@@ -132,23 +134,22 @@ class OeeApi:
         logging.warning(f'Cannot delete profile: {response}, content:{response.text}')
         return False
 
-    def get_simulatorIds(self):
+    def get_simulator_ids(self):
         ids = self.c8y_api.find_simulators()
         if ids:
             return ids
         logging.warning(f'Didnt find any simulators: {ids}')
         return []
 
-    def get_simulatorExternalIds(self):
-        ids = self.get_simulatorIds()
+    def get_simulator_external_ids(self):
+        ids = self.get_simulator_ids()
         if ids:
-            return self.c8y_api.get_external_Ids(ids)
+            return self.c8y_api.get_external_ids(ids)
         logging.warning(f'Didnt find any simulators: {ids}')
         return []    
     
 oee_api = OeeApi()
 
-# TODO: move those methods into oeeAPI?
 def create_and_activate_profile(external_id: str):
     try:
         profile = oee_api.new_profile(external_id)
@@ -162,57 +163,50 @@ def create_and_activate_profile(external_id: str):
     return None
 
 def delete_profiles():
-    simulatorIds = oee_api.get_simulatorIds()
+    simulator_ids = oee_api.get_simulator_ids()
     deleted_profiles = 0
-    for simulatorId in simulatorIds:
-        logging.info(f'deleting profiles for {simulatorId}')
-        response = requests.get(f'{C8Y_BASE}/inventory/managedObjects/{simulatorId}', headers=C8Y_HEADERS)
+    for simulator_id in simulator_ids:
+        logging.info(f'deleting profiles for {simulator_id}')
+        response = requests.get(f'{C8Y_BASE}/inventory/managedObjects/{simulator_id}', headers=C8Y_HEADERS)
         if response.ok:            
-            childDevices = response.json()['childDevices']['references']
-            for childDevice in childDevices:
-                childDeviceId = childDevice['managedObject']['id']
-                childDeviceJson = oee_api.c8y_api.get_managed_object(childDeviceId)
-                if childDeviceJson['type'] == oee_api.c8y_api.OEE_CALCULATION_PROFILE_TYPE:
-                    logging.info(f'deleting managed object {childDeviceId}')
-                    deleted_profiles = deleted_profiles + oee_api.c8y_api.delete_managed_object(childDeviceId)
+            child_devices = response.json()['childDevices']['references']
+            for child_device in child_devices:
+                child_device_id = child_device['managedObject']['id']
+                child_device_json = c8y_api.get_managed_object(child_device_id)
+                if child_device_json['type'] == c8y_api.OEE_CALCULATION_PROFILE_TYPE:
+                    logging.info(f'deleting managed object {child_device_id}')
+                    deleted_profiles = deleted_profiles + c8y_api.delete_managed_object(child_device_id)
         else:
             logging.warning(f'Couldn\'t find the managed object. response: {response}, content: {response.text}')
     logging.info(f'profiles deleted: {deleted_profiles}')
-        
-def count_profiles():
-    request_query = f'{C8Y_BASE}/inventory/managedObjects/count?type={oee_api.c8y_api.OEE_CALCULATION_PROFILE_TYPE}'
-    repsonse = requests.get(request_query, headers=C8Y_HEADERS)
-    if repsonse.ok:
-        return repsonse.json()
-
 
 if args.createProfiles:
     logging.info('===============================')
     logging.info('starting to create profiles ...')
-    logging.info(f'existing profiles: {count_profiles()}')
+    logging.info(f'existing profiles: {c8y_api.count_all_profiles()}')
 
     counter = 0
     for _ in range(PROFILES_PER_DEVICE):
-        for external_id in oee_api.get_simulatorExternalIds():
+        for external_id in oee_api.get_simulator_external_ids():
             profile = create_and_activate_profile(external_id)
             counter = counter + 1
             if counter % 200 == 0:
-                logging.info(f'profiles: {count_profiles()}. Wait for {SLEEP_TIME_FOR_PROFILE_CREATION_LOOP} minutes')
+                logging.info(f'profiles: {c8y_api.count_all_profiles()}. Wait for {SLEEP_TIME_FOR_PROFILE_CREATION_LOOP} minutes')
                 # sleep for some time to be able to verify if calculation is still working with the given number of profiles
                 time.sleep(SLEEP_TIME_FOR_PROFILE_CREATION_LOOP) 
-    logging.info(f'profiles after execution: {count_profiles()}')
+    logging.info(f'profiles after execution: {c8y_api.count_all_profiles()}')
 
 if args.removeSimulatorProfilesViaOee:
     logging.info('===============================================')
     logging.info('starting to remove all simulator profiles via OEE API ...')
-    logging.info(f'existing profiles: {count_profiles()}')
+    logging.info(f'existing profiles: {c8y_api.count_all_profiles()}')
     oee_api.delete_all_simulators_profiles()
-    logging.info(f'profiles after execution: {count_profiles()}')
+    logging.info(f'profiles after execution: {c8y_api.count_all_profiles()}')
 
 if args.deleteSimulatorProfiles:
     logging.info('===================================')
     logging.info('starting to delete all simulator profiles ...')
-    logging.info(f'existing profiles: {count_profiles()}')
+    logging.info(f'existing profiles: {c8y_api.count_all_profiles()}')
     delete_profiles()
-    logging.info(f'profiles after execution: {count_profiles()}')
+    logging.info(f'profiles after execution: {c8y_api.count_all_profiles()}')
     

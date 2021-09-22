@@ -56,6 +56,16 @@ class CumulocityAPI:
         
         # Check if device already created
         return self.get_device_by_external_id(sim_id) or self.__create_device(sim_id, label)
+        
+    def count_all_profiles(self):
+        if self.mocking:
+            print(f'mock: count_profiles()')
+            return 5
+
+        request_query = f'{C8Y_BASE}/inventory/managedObjects/count?type={self.OEE_CALCULATION_PROFILE_TYPE}'
+        repsonse = requests.get(request_query, headers=C8Y_HEADERS)
+        if repsonse.ok:
+            return repsonse.json()
 
     def count_profiles(self, device_id):
         ''' count all profiles for the given device id.
@@ -143,14 +153,14 @@ class CumulocityAPI:
         logging.warning(f'Cannot find simulators: {response}, content:{response.text}')
         return []
 
-    def get_external_Ids(self, deviceIds):
-        externalIds = []
-        for id in deviceIds:
-            extIdResponse = requests.get(C8Y_BASE + '/identity/globalIds/' + id + '/externalIds', headers=C8Y_HEADERS)
-            if extIdResponse.ok:
-                externalIds.append(extIdResponse.json()['externalIds'][0]['externalId'])
+    def get_external_ids(self, device_ids):
+        external_ids = []
+        for id in device_ids:
+            external_id_response = requests.get(C8Y_BASE + '/identity/globalIds/' + id + '/externalIds', headers=C8Y_HEADERS)
+            if external_id_response.ok:
+                external_ids.append(external_id_response.json()['externalIds'][0]['externalId'])
         
-        return externalIds
+        return external_ids
 
     def get_device_by_external_id(self, external_id):
         response = requests.get(f'{C8Y_BASE}/identity/externalIds/{self.C8Y_SIMULATORS_GROUP}/{external_id}', headers=C8Y_HEADERS)
