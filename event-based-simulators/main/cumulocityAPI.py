@@ -28,7 +28,6 @@ OEE_DATA_MODEL_FIELD_NAME = "@com_adamos_oee_datamodel_MachineOEEConfiguration"
 
 class CumulocityAPI:
 
-    # TODO: rename to "c8y_EventBasedSimulator"? What about existing simulators?
     C8Y_SIMULATORS_GROUP = "c8y_EventBasedSimulator"
     OEE_CALCULATION_PROFILE_TYPE = "OEECalculationProfile"
 
