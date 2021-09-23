@@ -5,10 +5,13 @@ from random import randint, uniform
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
 
 VERSION = '1.0.8'
+def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
+    return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
 logging.basicConfig(level=logging.INFO)
 logging.info(os.environ)
 logging.info(f"version: {VERSION}")
+logging.info(f"started at {current_timestamp()}")
 
 
 # JSON-PYTHON mapping, to get json.load() working
@@ -301,7 +304,7 @@ class MachineSimulator:
         return task
     
     def __send_event(self, event_fragment, timestamp = None):
-        newTimestamp = timestamp or datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+        newTimestamp = timestamp or current_timestamp()
         base_event = {
             'source': {
                 'id': self.device_id
