@@ -145,7 +145,7 @@ class CumulocityAPI:
         if self.mocking:
             print(f'mock: find_simulators()')
             return []
-        response = requests.get(f'{C8Y_BASE}/inventory/managedObjects?type={self.C8Y_SIMULATORS_GROUP}&fragmentType=c8y_IsDevice', headers=C8Y_HEADERS)
+        response = requests.get(f'{C8Y_BASE}/inventory/managedObjects?type={self.C8Y_SIMULATORS_GROUP}&fragmentType=c8y_IsDevice&pageSize=100', headers=C8Y_HEADERS)
         if response.ok:
             mangaged_objects = response.json()['managedObjects']
             return [mo['id'] for mo in mangaged_objects]
