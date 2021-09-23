@@ -52,23 +52,24 @@
         ]
     },
     "intervals": [
-        300.0
+        1800.0,
+        3600.0
     ],
     "timeframes": {
-        "Interval1": "5",
+        "Interval1": "30",
         "IntervalUnit1": "min",
-        "Interval2": null,
-        "IntervalUnit2": null,
+        "Interval2": "1",
+        "IntervalUnit2": "h",
         "Interval3": null,
         "IntervalUnit3": null,
         "Interval4": null,
         "IntervalUnit4": null     
     },
     "oeeTargets": {
-        "performance": 80,
-        "overall": 80,
-        "availability": 80,
-        "quality": 80
+        "overall": 100,
+        "availability": 100,
+        "performance": 100,    
+        "quality": 100
     },
     "ui": {
         "shortStoppages": "Not Tracked",
@@ -86,11 +87,11 @@
         "QUALITY_STATUS": []
     },
     "workpiece": {
-        "amount": "1",
+        "amount": "60",
         "unit": "pcs",
         "name": "Pieces",
         "isActive": true,
-        "timeunit": 1
+        "timeunit": 2
     },
     "status": "INCOMPLETE"
 }

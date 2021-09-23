@@ -52,22 +52,23 @@
         ]
     },
     "intervals": [
-        600.0
+        1800.0,
+        3600.0
     ],
     "timeframes": {
-        "Interval1": "10",
+        "Interval1": "30",
         "IntervalUnit1": "min",
-        "Interval2": null,
-        "IntervalUnit2": null,
+        "Interval2": "1",
+        "IntervalUnit2": "h",
         "Interval3": null,
         "IntervalUnit3": null,
         "Interval4": null,
         "IntervalUnit4": null     
     },
     "oeeTargets": {
-        "performance": 80,
-        "overall": 80,
-        "availability": 80,
+        "overall": 60,
+        "availability": 90,
+        "performance": 90,    
         "quality": 80
     },
     "ui": {
@@ -86,11 +87,11 @@
         "QUALITY_STATUS": []
     },
     "workpiece": {
-        "amount": "0.4",
+        "amount": "25",
         "unit": "pcs",
         "name": "Pieces",
         "isActive": true,
-        "timeunit": 1
+        "timeunit": 2
     },
     "status": "INCOMPLETE"
 }
