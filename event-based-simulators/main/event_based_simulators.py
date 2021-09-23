@@ -1,4 +1,4 @@
-import time, json, os, logging, requests, base64
+﻿import time, json, os, logging, requests, base64
 from datetime import datetime
 from random import randint, uniform
 
@@ -68,9 +68,33 @@ class MachineSimulator:
         self.shutdown = False
         self.enabled = model.get('enabled', True)
         self.statudDownSent = False
+        self.production_time_s = 0.0
+        self.last_production_time_update = time.time()
         if self.enabled:
             self.tasks = list(map(self.__create_task, self.model["events"]))
         # print(f'events: {self.model["events"]}')
+
+    def __produce_pieces(self):
+        production_time = time.time() - self.last_production_time_update
+        self.last_production_time_update = time.time()
+        if self.machine_up and not self.shutdown:
+            self.production_time_s = self.production_time_s + production_time
+            # print(f'{self.device_id} production time: {self.production_time_s}s')
+
+    def __pick_one_piece(self, pieces_per_seconds: float):
+        piece_production_time = 1.0 / pieces_per_seconds
+        if (self.production_time_s > piece_production_time):
+            self.production_time_s = self.production_time_s - piece_production_time
+            # print(f'{self.device_id} one piece produced, remained time: {self.production_time_s}s')
+            return True
+        # print(f'{self.device_id} piece not yet produced, production time: {self.production_time_s}s')
+        return False
+    
+    def __pick_pieces(self, pieces_per_seconds: float):
+        pieces_produced = int(pieces_per_seconds * self.production_time_s)
+        self.production_time_s = self.production_time_s - pieces_produced / pieces_per_seconds
+        # print(f'{self.device_id} pieces produced: {pieces_produced}, remained time: {self.production_time_s}s')
+        return pieces_produced
 
     def __type_fragment(self, event_definition, text = None):
         return {
@@ -81,7 +105,10 @@ class MachineSimulator:
     def __log_ignore(self, event_definition):
         print(f'{self.device_id} is down -> ignore event {event_definition["type"]}')        
 
-    def __on_availability_event(self, event_definition, task):             
+    def __on_availability_event(self, event_definition, task):         
+        
+        self.__produce_pieces()
+
         event = self.__type_fragment(event_definition)
 
         status_up_probability = event_definition.get("statusUpProbability") or 0.5
@@ -101,22 +128,30 @@ class MachineSimulator:
         self.__send_event(event)        
 
     def __on_piece_produced_event(self, event_definition, task):
-        if not self.machine_up: return self.__log_ignore(event_definition)            
+        if not self.machine_up: return self.__log_ignore(event_definition) 
 
-        event = self.__type_fragment(event_definition)
-        timestamp = self.__send_event(event)
+        self.__produce_pieces()
         
-        if timestamp:
+        pieces_per_hour = event_definition.get("hits") or 1
+
+        if self.__pick_one_piece(pieces_per_hour / 3600.0):
+            event = self.__type_fragment(event_definition)
+            timestamp = self.__send_event(event)            
             self.__send_following_event(event_definition, timestamp)
 
     def __on_pieces_produced_event(self, event_definition, task):
-        if not self.machine_up: return self.__log_ignore(event_definition)            
+        if not self.machine_up: return self.__log_ignore(event_definition)
 
-        count_min_hits = event_definition.get("countMinHits") or 0
+        self.__produce_pieces()           
+
+        # count_min_hits = event_definition.get("countMinHits") or 0
         count_max_hits = event_definition.get("countMaxHits") or 10
 
+        hits = event_definition.get("hits") or 1
+
         event = self.__type_fragment(event_definition)
-        pieces_produced = randint(count_min_hits, count_max_hits)
+        # pieces_produced = randint(count_min_hits, count_max_hits)
+        pieces_produced = self.__pick_pieces(hits * count_max_hits / 3600.0)
         event.update({"count": pieces_produced})
 
         timestamp = self.__send_event(event)
@@ -163,6 +198,7 @@ class MachineSimulator:
         self.__send_event(event)
 
     def __on_shutdown_event(self, event_definition, task):
+        self.__produce_pieces()
         self.shutdown = True
 
         min_duration = event_definition.get("minDuration") or 0
@@ -173,6 +209,7 @@ class MachineSimulator:
         self.tasks.append(task)
         
     def __on_machine_up_event(self, event_definition, task):
+        self.__produce_pieces()
         self.shutdown = False
         logging.info(f'Device({self.device_id}) is up now.')
 
