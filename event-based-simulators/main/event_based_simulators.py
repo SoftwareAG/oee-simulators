@@ -70,7 +70,6 @@ class MachineSimulator:
         self.machine_up = False
         self.shutdown = False
         self.enabled = model.get('enabled', True)
-        self.statudDownSent = False
         self.production_time_s = 0.0
         self.last_production_time_update = time.time()
         if self.enabled:
@@ -130,11 +129,6 @@ class MachineSimulator:
         event = self.__type_fragment(event_definition)
 
         status_up_probability = event_definition.get("statusUpProbability") or 0.5
-
-        if not self.statudDownSent and event_definition.get("forceStatusDown") or False:
-            status_up_probability = 0.0
-            self.statudDownSent = true
-            logging.info(f'force status down for {self.device_id}')
         
         if try_event(status_up_probability):
             event.update({'status': 'up'})
