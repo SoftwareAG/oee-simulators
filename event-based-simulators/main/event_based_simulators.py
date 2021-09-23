@@ -155,8 +155,8 @@ class MachineSimulator:
 
     def __get_production_info(self):
         return {
-            'apt': self.production_time_s,
-            'production_speed': self.production_speed_s * 3600.0,
+            'production_time_s': self.production_time_s,
+            'production_speed_h': self.production_speed_s * 3600.0,
             'pieces_produced': self.production_speed_s * self.production_time_s
         }
 
