@@ -209,7 +209,7 @@ class MachineSimulator:
             piece_produced_timestamp = task.extra["timestamp"]
             count_max_hits = task.extra.get("pieces_produced") or count_max_hits
 
-        event.update({"count": randint(count_min_hits, count_max_hits)})
+        event.update({"count": randint(min(count_min_hits, count_max_hits), count_max_hits)})
 
         self.__send_event(event, piece_produced_timestamp)
 
