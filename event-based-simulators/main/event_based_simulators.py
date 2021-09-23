@@ -138,8 +138,20 @@ class MachineSimulator:
             self.machine_up = False
 
         event.update(self.__get_production_info())
+        self.__send_event(event)
 
-        self.__send_event(event)     
+        # Send Piece_Produced as soon as possible(to get OEE calculation quicker for Slow Producers)
+        # Might make sense to configure the behavior per simulator in json.
+        if self.__is_whole_piece_available():
+            self.__force_production_event()
+
+    def __force_production_event(self):
+        for event_definition in self.model["events"]:
+            event_type = event_definition.get("type")
+            if event_type == "Piece_Produced":
+                task = self.create_one_time_task(event_definition)
+                self.tasks.append(task)
+
 
     def __get_production_info(self):
         return {
