@@ -75,10 +75,10 @@ class MachineSimulator:
         self.last_production_time_update = time.time()
         if self.enabled:
             self.tasks = list(map(self.__create_task, self.model["events"]))
-            self.production_speed = self.__get_production_speed(self.model["events"])
+            self.production_speed_s = self.__get_production_speed_s(self.model["events"])
         # print(f'events: {self.model["events"]}')
 
-    def __get_production_speed(self, events) -> float:
+    def __get_production_speed_s(self, events) -> float:
         """Returns pieces/s""" 
         for event_definition in events:
             event_type = event_definition.get("type") or ""
@@ -150,8 +150,8 @@ class MachineSimulator:
     def __get_production_info(self):
         return {
             'apt': self.production_time_s,
-            'production_speed': self.production_speed * 3600.0,
-            'pieces_produced': self.production_speed * self.production_time_s
+            'production_speed': self.production_speed_s * 3600.0,
+            'pieces_produced': self.production_speed_s * self.production_time_s
         }
 
     def __on_piece_produced_event(self, event_definition, task):
@@ -166,6 +166,14 @@ class MachineSimulator:
             event.update(self.__get_production_info())
             timestamp = self.__send_event(event)            
             self.__send_following_event(event_definition, timestamp)
+
+        if self.__is_whole_piece_available():
+            # send piece_produced again.
+            next_task = self.create_one_time_task(event_definition)
+            self.tasks.append(next_task)               
+
+    def __is_whole_piece_available(self):
+        return int(self.production_time_s * self.production_speed_s) >= 1
 
     def __on_pieces_produced_event(self, event_definition, task):
         if not self.machine_up: return self.__log_ignore(event_definition)
@@ -258,9 +266,9 @@ class MachineSimulator:
             else:
                   logging.debug(f'{self.device_id} followedBy task missed. probability = {1 - followed_by_hits / this_hits} , def: {json.dumps(followed_by_definition)}')         
 
-    def create_one_time_task(self, event_definition, duration = 2, event_callback = None):
+    def create_one_time_task(self, event_definition, start_in_seconds = 2, event_callback = None):
         callback = event_callback or MachineSimulator.event_mapping[event_definition["type"]]
-        task = Task(duration, lambda task: {self.__execute_callback_and_remove_task(callback, event_definition, task)})
+        task = Task(start_in_seconds, lambda task: {self.__execute_callback_and_remove_task(callback, event_definition, task)})
         return task        
         
     def __execute_callback_and_remove_task(self, callback, event_definition, task):
