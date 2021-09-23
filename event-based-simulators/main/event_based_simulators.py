@@ -72,7 +72,22 @@ class MachineSimulator:
         self.last_production_time_update = time.time()
         if self.enabled:
             self.tasks = list(map(self.__create_task, self.model["events"]))
+            self.production_speed = self.__get_production_speed(self.model["events"])
         # print(f'events: {self.model["events"]}')
+
+    def __get_production_speed(self, events) -> float:
+        """Returns pieces/s""" 
+        for event_definition in events:
+            event_type = event_definition.get("type") or ""
+            if event_type == "Piece_Produced":
+                hits = event_definition.get("hits")
+                return hits / 3600.0
+            if event_type == "Pieces_Produced":
+                hits = event_definition.get("hits")
+                max_count = event_definition.get("countMaxHits")
+                return hits * max_count / 3600.0
+
+        return 0.0
 
     def __produce_pieces(self):
         production_time = time.time() - self.last_production_time_update
@@ -125,7 +140,16 @@ class MachineSimulator:
             event.update({'status': 'down'})
             self.machine_up = False
 
-        self.__send_event(event)        
+        event.update(self.__get_production_info())
+
+        self.__send_event(event)     
+
+    def __get_production_info(self):
+        return {
+            'apt': self.production_time_s,
+            'production_speed': self.production_speed * 3600.0,
+            'pieces_produced': self.production_speed * self.production_time_s
+        }
 
     def __on_piece_produced_event(self, event_definition, task):
         if not self.machine_up: return self.__log_ignore(event_definition) 
@@ -136,6 +160,7 @@ class MachineSimulator:
 
         if self.__pick_one_piece(pieces_per_hour / 3600.0):
             event = self.__type_fragment(event_definition)
+            event.update(self.__get_production_info())
             timestamp = self.__send_event(event)            
             self.__send_following_event(event_definition, timestamp)
 
@@ -153,6 +178,7 @@ class MachineSimulator:
         # pieces_produced = randint(count_min_hits, count_max_hits)
         pieces_produced = self.__pick_pieces(hits * count_max_hits / 3600.0)
         event.update({"count": pieces_produced})
+        event.update(self.__get_production_info())
 
         timestamp = self.__send_event(event)
         if timestamp and pieces_produced > 0:
