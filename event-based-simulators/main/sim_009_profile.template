@@ -66,7 +66,7 @@
         "IntervalUnit4": null     
     },
     "oeeTargets": {
-        "overall": 100,
+        "overall": 80,
         "availability": 100,
         "performance": 100,    
         "quality": 80
