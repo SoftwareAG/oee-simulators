@@ -41,8 +41,11 @@ class CumulocityAPI:
             return json.dumps({'response': 200})
         else:
             response = requests.post(C8Y_BASE + '/event/events', headers=C8Y_HEADERS, data=json.dumps(event))
+            if response.ok:
+                return response.json()
             self.log_warning_on_bad_repsonse(response)
-            return response.json()
+            return None
+            
 
     def log_warning_on_bad_repsonse(self, response):
         if not response.ok:
