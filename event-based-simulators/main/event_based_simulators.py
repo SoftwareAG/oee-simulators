@@ -11,7 +11,6 @@ def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
 
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INFO)
 log = logging.getLogger("sims")
-log.info(os.environ)
 log.info(f"version: {VERSION}")
 log.info(f"started at {current_timestamp()}")
 
