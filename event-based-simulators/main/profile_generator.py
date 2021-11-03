@@ -5,8 +5,14 @@ from argparse import ArgumentParser
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_HEADERS, CumulocityAPI
 from oeeAPI import OeeAPI, ProfileCreateMode
 
-PROFILES_PER_DEVICE = os.environ.get('PROFILES_PER_DEVICE') or 1
-SLEEP_TIME_FOR_PROFILE_CREATION_LOOP = os.environ.get('SLEEP_TIME_FOR_PROFILE_CREATION_LOOP') or 60 * 12
+def try_int(value):
+    try:
+        return int(value)
+    except:
+        return None
+
+PROFILES_PER_DEVICE = try_int(os.environ.get('PROFILES_PER_DEVICE')) or 1
+SLEEP_TIME_FOR_PROFILE_CREATION_LOOP = try_int(os.environ.get('SLEEP_TIME_FOR_PROFILE_CREATION_LOOP')) or 60 * 12
 
 parser = ArgumentParser()
 group = parser.add_mutually_exclusive_group(required=True)
