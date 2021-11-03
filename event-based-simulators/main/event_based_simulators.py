@@ -3,6 +3,7 @@ from datetime import datetime
 from random import randint, uniform
 
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
+from oeeAPI import OeeAPI, ProfileCreateMode
 
 VERSION = '1.0.8'
 def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
@@ -32,6 +33,7 @@ def try_event(probability: float):
     return uniform(0.0, 1.0) <= probability
 
 cumulocityAPI = CumulocityAPI()
+oeeAPI = OeeAPI()
 
 class Task:
     def __init__(self, start_in_seconds: int, run_block) -> None:
@@ -343,12 +345,16 @@ def load(filename):
         print(e, type(e))
         return {}
     
+log.info(f'cwd:{os.getcwd()}')
 SIMULATOR_MODELS = load("simulators.json")
 
 simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 
 # create managed object for every simulator
 [item.get_or_create_device_id() for item in simulators]
+
+[oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
+    for id in oeeAPI.get_simulator_external_ids()]
 
 while True:
     for simulator in simulators:
