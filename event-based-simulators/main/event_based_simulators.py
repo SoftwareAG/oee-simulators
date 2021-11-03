@@ -5,7 +5,7 @@ from random import randint, uniform
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
 from oeeAPI import OeeAPI, ProfileCreateMode
 
-VERSION = '1.0.8'
+VERSION = '1.0.26'
 def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
