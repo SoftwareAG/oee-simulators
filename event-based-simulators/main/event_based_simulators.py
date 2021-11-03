@@ -8,10 +8,11 @@ VERSION = '1.0.8'
 def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
-logging.basicConfig(level=logging.INFO)
-logging.info(os.environ)
-logging.info(f"version: {VERSION}")
-logging.info(f"started at {current_timestamp()}")
+logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INFO)
+log = logging.getLogger("sims")
+log.info(os.environ)
+log.info(f"version: {VERSION}")
+log.info(f"started at {current_timestamp()}")
 
 
 # JSON-PYTHON mapping, to get json.load() working
@@ -20,10 +21,10 @@ false = False
 true = True
 ######################
 
-logging.info(C8Y_BASE)
-logging.info(C8Y_TENANT)
-logging.info(C8Y_USER)
-logging.info(C8Y_PASSWORD)
+log.info(C8Y_BASE)
+log.info(C8Y_TENANT)
+log.info(C8Y_USER)
+#log.info(C8Y_PASSWORD)
 
 def try_event(probability: float):
     ''' Returns True if event occurs.        
@@ -247,14 +248,14 @@ class MachineSimulator:
         min_duration = event_definition.get("minDuration") or 0
         max_duration = event_definition.get("maxDuration") or 5
         duration = int(uniform(min_duration, max_duration) * 60)
-        logging.info(f'shutdown {self.device_id} for the next {duration} seconds.')
+        log.info(f'shutdown {self.device_id} for the next {duration} seconds.')
         task = self.create_one_time_task({}, duration, MachineSimulator.__on_machine_up_event)
         self.tasks.append(task)
         
     def __on_machine_up_event(self, event_definition, task):
         self.__produce_pieces()
         self.shutdown = False
-        logging.info(f'Device({self.device_id}) is up now.')
+        log.info(f'Device({self.device_id}) is up now.')
 
     def __send_following_event(self, event_definition, timestamp = None, extra_params = {}):        
         if "followedBy" in event_definition:
@@ -268,9 +269,9 @@ class MachineSimulator:
                 followed_by_task.extra["timestamp"] = timestamp
                 followed_by_task.extra.update(extra_params)
                 self.tasks.append(followed_by_task)                
-                logging.debug(f'{self.device_id} task({id(followed_by_task)}) added: {json.dumps(followed_by_definition)}, tasks: {len(self.tasks)}')      
+                log.debug(f'{self.device_id} task({id(followed_by_task)}) added: {json.dumps(followed_by_definition)}, tasks: {len(self.tasks)}')      
             else:
-                  logging.debug(f'{self.device_id} followedBy task missed. probability = {1 - followed_by_hits / this_hits} , def: {json.dumps(followed_by_definition)}')         
+                  log.debug(f'{self.device_id} followedBy task missed. probability = {1 - followed_by_hits / this_hits} , def: {json.dumps(followed_by_definition)}')         
 
     def create_one_time_task(self, event_definition, start_in_seconds = 2, event_callback = None):
         callback = event_callback or MachineSimulator.event_mapping[event_definition["type"]]
@@ -281,7 +282,7 @@ class MachineSimulator:
         callback(self, event_definition, task)
         if task in self.tasks:
             self.tasks.remove(task)
-            logging.debug(f'{self.device_id} task({id(task)}) removed: {json.dumps(event_definition)}, tasks: {len(self.tasks)}')        
+            log.debug(f'{self.device_id} task({id(task)}) removed: {json.dumps(event_definition)}, tasks: {len(self.tasks)}')        
     
     def tick(self):
         if not self.enabled: return
@@ -313,7 +314,7 @@ class MachineSimulator:
 
         task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, event_callback)
         
-        logging.debug(f'create periodic task for {event_definition["type"]} ({min_hits_per_hour}, {max_hits_per_hour})')        
+        log.debug(f'create periodic task for {event_definition["type"]} ({min_hits_per_hour}, {max_hits_per_hour})')        
         # event_callback()
         return task
     
@@ -328,7 +329,7 @@ class MachineSimulator:
         base_event.update(event_fragment)
 
         if self.shutdown:
-            logging.info(f'{self.model["id"]} is down -> ignore event: {json.dumps(base_event)}')
+            log.info(f'{self.model["id"]} is down -> ignore event: {json.dumps(base_event)}')
             return None
         else:
             cumulocityAPI.send_event(base_event)
