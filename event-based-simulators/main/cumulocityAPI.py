@@ -23,6 +23,7 @@ null = None
 false = False
 true = True
 ######################
+log = logging.getLogger("C8yAPI")
 
 OEE_DATA_MODEL_FIELD_NAME = "@com_adamos_oee_datamodel_MachineOEEConfiguration"
 
@@ -33,11 +34,11 @@ class CumulocityAPI:
 
     def __init__(self) -> None:
         self.mocking = MOCK_REQUESTS.lower() == 'true'
-        logging.info(f'MOCK_REQUESTS: {self.mocking}')
+        log.info(f'MOCK_REQUESTS: {self.mocking}')
 
     def send_event(self, event):
         if self.mocking:
-            print("mock: send event ", json.dumps(event), ' to ', C8Y_BASE + '/event/events')
+            log.info(f"mock: send event {json.dumps(event)} to {C8Y_BASE}/event/events")
             return json.dumps({'response': 200})
         else:
             response = requests.post(C8Y_BASE + '/event/events', headers=C8Y_HEADERS, data=json.dumps(event))
@@ -49,11 +50,11 @@ class CumulocityAPI:
 
     def log_warning_on_bad_repsonse(self, response):
         if not response.ok:
-            logging.warning(f'response status code is not ok: {response}, content: {response.text}')
+            log.warning(f'response status code is not ok: {response}, content: {response.text}')
 
     def get_or_create_device(self, sim_id, label):
         if self.mocking:
-            print("mock: get or create device with external id", sim_id)
+            log.info(f"mock: get or create device with external id {sim_id}")
             return sim_id
         
         # Check if device already created
@@ -61,7 +62,7 @@ class CumulocityAPI:
         
     def count_all_profiles(self):
         if self.mocking:
-            print(f'mock: count_profiles()')
+            log.info(f'mock: count_profiles()')
             return 5
 
         request_query = f'{C8Y_BASE}/inventory/managedObjects/count?type={self.OEE_CALCULATION_PROFILE_TYPE}'
@@ -73,7 +74,7 @@ class CumulocityAPI:
         ''' count all profiles for the given device id.
         '''
         if self.mocking:
-            print(f'mock: count_profiles(${device_id})')
+            log.info(f'mock: count_profiles(${device_id})')
             return 10
         request_query = f'{C8Y_BASE}/inventory/managedObjects/count?type={self.OEE_CALCULATION_PROFILE_TYPE}&text={device_id}'
         response = requests.get(request_query, headers=C8Y_HEADERS)
@@ -81,7 +82,7 @@ class CumulocityAPI:
             try:
                 return int(response.text)
             except Exception as e:
-                logging.warn(f'cannot convert "${response.text}" to number. exception: {e}')
+                log.warn(f'cannot convert "${response.text}" to number. exception: {e}')
                 return 0
         else:
             self.log_warning_on_bad_repsonse(response)
@@ -89,7 +90,7 @@ class CumulocityAPI:
     
     def create_managed_object(self, fragment: str):
         if self.mocking:
-            print(f'mock: create_managed_object()')
+            log.info(f'mock: create_managed_object()')
             return {'id': '0'}
         response = requests.post(C8Y_BASE + '/inventory/managedObjects', headers=C8Y_HEADERS, data=fragment)
         if response.ok:
@@ -100,7 +101,7 @@ class CumulocityAPI:
 
     def get_managed_object(self, id: str):
         if self.mocking:
-            print(f'mock: get_managed_object()')
+            log.info(f'mock: get_managed_object()')
             return {'id': '0'}
         response = requests.get(C8Y_BASE + f'/inventory/managedObjects/{id}', headers=C8Y_HEADERS)
         if response.ok:
@@ -111,7 +112,7 @@ class CumulocityAPI:
 
     def delete_managed_object(self, id: str):
         if self.mocking:
-            print(f'mock: delete_managed_object()')
+            log.info(f'mock: delete_managed_object()')
             return {'id': '0'}
         response = requests.delete(C8Y_BASE + f'/inventory/managedObjects/{id}', headers=C8Y_HEADERS)
         if response.ok:
@@ -122,7 +123,7 @@ class CumulocityAPI:
 
     def update_managed_object(self, device_id, fragment):
         if self.mocking:
-            print(f'mock: update_managed_object()')
+            log.info(f'mock: update_managed_object()')
             return {'id': '0'}
 
         response = requests.put(f'{C8Y_BASE}/inventory/managedObjects/{device_id}', headers=C8Y_HEADERS, data=fragment)
@@ -133,7 +134,7 @@ class CumulocityAPI:
 
     def add_child_object(self, device_id: str, child_id: str):
         if self.mocking:
-            print(f'mock: add_child_device()')
+            log.info(f'mock: add_child_device()')
             return {'id': '0'}
 
         data = {"managedObject": {"id": child_id}}
@@ -146,13 +147,13 @@ class CumulocityAPI:
 
     def find_simulators(self):
         if self.mocking:
-            print(f'mock: find_simulators()')
+            log.info(f'mock: find_simulators()')
             return []
         response = requests.get(f'{C8Y_BASE}/inventory/managedObjects?type={self.C8Y_SIMULATORS_GROUP}&fragmentType=c8y_IsDevice&pageSize=100', headers=C8Y_HEADERS)
         if response.ok:
             mangaged_objects = response.json()['managedObjects']
             return [mo['id'] for mo in mangaged_objects]
-        logging.warning(f'Cannot find simulators: {response}, content:{response.text}')
+        log.warning(f'Cannot find simulators: {response}, content:{response.text}')
         return []
 
     def get_external_ids(self, device_ids):
@@ -168,13 +169,13 @@ class CumulocityAPI:
         response = requests.get(f'{C8Y_BASE}/identity/externalIds/{self.C8Y_SIMULATORS_GROUP}/{external_id}', headers=C8Y_HEADERS)
         if response.ok:
             device_id = response.json()['managedObject']['id']
-            logging.info(f'Device({device_id}) has been found by its external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}".')
+            log.info(f'Device({device_id}) has been found by its external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}".')
             return device_id
-        logging.warning(f'No device has been found for the external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}".')
+        log.warning(f'No device has been found for the external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}".')
         return None
     
     def __create_device(self, external_id, name):
-        logging.info(f'Creating a new device with following external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}"')
+        log.info(f'Creating a new device with following external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}"')
         device = {
             'name': name,
             'c8y_IsDevice': {},
@@ -183,7 +184,7 @@ class CumulocityAPI:
         device = self.create_managed_object(json.dumps(device))
         device_id = device['id']
         if device_id:
-            logging.info(f'new device created({device_id})')
+            log.info(f'new device created({device_id})')
             return self.__add_external_id(device_id, external_id)
         return device_id
 

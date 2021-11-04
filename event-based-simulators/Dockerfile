@@ -1,7 +1,11 @@
 FROM python:3.8.11-alpine3.14
 
-ADD main /
+RUN pip install requests \
+    && addgroup -S appgroup \
+    && adduser -S appuser -G appgroup
 
-RUN pip install requests
+ADD --chown=appuser:appgroup main /home/appuser
+WORKDIR /home/appuser
 
+USER appuser
 CMD [ "python", "./event_based_simulators.py" ]

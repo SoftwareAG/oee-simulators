@@ -5,31 +5,49 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "envFile": "${workspaceFolder}/.vscode/.env",
+            "cwd": "${workspaceFolder}/main/",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "create profiles",
             "type": "python",
             "request": "launch",
-            "program": "main/profile_generator.py",
+            "program": "profile_generator.py",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.vscode/.env",
-            "args": ["--create-profiles"]
-        },        
+            "cwd": "${workspaceFolder}/main/",
+            "args": [
+                "--create-profiles"
+            ]
+        },
         {
             "name": "remove simulator profiles via OEE API",
             "type": "python",
             "request": "launch",
-            "program": "main/profile_generator.py",
+            "program": "profile_generator.py",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.vscode/.env",
-            "args": ["--remove-simulator-profiles-via-oee"]
-        },        
+            "cwd": "${workspaceFolder}/main/",
+            "args": [
+                "--remove-simulator-profiles-via-oee"
+            ]
+        },
         {
             "name": "delete simulator profiles",
             "type": "python",
             "request": "launch",
-            "program": "main/profile_generator.py",
+            "program": "profile_generator.py",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.vscode/.env",
-            "args": ["--delete-simulator-profiles"]
+            "cwd": "${workspaceFolder}/main/",
+            "args": [
+                "--delete-simulator-profiles"
+            ]
         }
     ]
 }
