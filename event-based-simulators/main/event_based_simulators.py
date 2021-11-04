@@ -26,6 +26,9 @@ log.info(C8Y_TENANT)
 log.info(C8Y_USER)
 #log.info(C8Y_PASSWORD)
 
+CREATE_PROFILES = os.environ.get("CREATE_PROFILES", "false")
+log.info(f'CREATE_PROFILES:{CREATE_PROFILES}')
+
 def try_event(probability: float):
     ''' Returns True if event occurs.        
     '''
@@ -352,8 +355,9 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 # create managed object for every simulator
 [item.get_or_create_device_id() for item in simulators]
 
-[oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
-    for id in oeeAPI.get_simulator_external_ids()]
+if CREATE_PROFILES.lower() == "true":
+    [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
+        for id in oeeAPI.get_simulator_external_ids()]
 
 while True:
     for simulator in simulators:

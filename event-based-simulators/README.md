@@ -51,6 +51,15 @@ docker save -o image.tar oee-simulators
 zip oee-simulators.zip image.tar cumulocity.json 
 ```
 
+### Creating profiles automatically
+
+To build the docker image that also create profile per device automatically, use following docker build command:
+```
+docker build --build-arg ARG_CREATE_PROFILES=true -t oee-simulators .
+```
+
+Note: A profile will be created and activated only if no other profiles are already defined for the particular device.
+
 ### Deployment
 
 To deploy this project, upload the zip file to the Cumulocity as Microservice. The zip file can be created locally as described above or downloaded from the [releases](releases) section.
