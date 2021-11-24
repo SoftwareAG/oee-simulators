@@ -20,7 +20,7 @@
         },
         {
             "pollingIntervalSeconds": 10,
-            "name": "Piece_Produced",
+            "name": "Pieces_Produced",
             "type": "event",
             "deviceID": "${deviceId}"
         },
