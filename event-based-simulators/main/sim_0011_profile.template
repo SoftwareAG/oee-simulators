@@ -1,0 +1,110 @@
+{
+        "id": "",
+        "alarms": [],
+        "type": "MACHINE",
+        "deviceId": "${deviceId}",
+        "shortShutdowns": null,
+        "version": "2.0.0",
+        "amountUnit": "",
+        "name": "Ideal producer with planned maintenance and manual stops",        
+        "tenantId": "${tenantId}",
+        "locationId": "Matrix",
+        "external": false,
+        "testConfiguration": false,
+        "subscriptions": [
+            {
+                "type": "event",
+                "name": "Availability",
+                "deviceId": null,
+                "pollingIntervalSeconds": 10,
+                "key": "event.Availability"
+            },
+            {
+                "type": "event",
+                "name": "Pieces_Ok",
+                "deviceId": null,
+                "pollingIntervalSeconds": 10,
+                "key": "event.Pieces_Ok"
+            },
+            {
+                "type": "event",
+                "name": "Pieces_Produced",
+                "deviceId": null,
+                "pollingIntervalSeconds": 10,
+                "key": "event.Pieces_Produced"
+            }
+        ],
+        "inputs": {
+            "AvailabilityLossTime": [
+                {
+                    "type": "MACHINE_EVENT",
+                    "category": "1",
+                    "value": ""
+                },
+                {
+                    "type": "MACHINE_EVENT",
+                    "category": "2",
+                    "value": ""
+                }
+            ],
+            "ActualQualityAmount": [
+                {
+                    "type": "TRANSFORMATION_RULE",
+                    "value": "countEvents(\"${deviceId}\",\"Pieces_Ok\")"
+                }
+            ],
+            "ActualProductionAmount": [
+                {
+                    "type": "TRANSFORMATION_RULE",
+                    "value": "countEvents(\"${deviceId}\",\"Pieces_Produced\")"
+                }
+            ]
+        },
+        "machineEvents": {
+            "MACHINE_STATUS": [
+                {
+                    "category": "1",
+                    "value": "evt(\"${deviceId}\",\"Availability\",\"status\",false) = \"Planned maintenance\""
+                },
+                {
+                    "category": "2",
+                    "value": "evt(\"${deviceId}\",\"Availability\",\"source\",false) = \"Manual stop\""
+                }
+            ],
+            "QUALITY_STATUS": []
+        },
+        "oeeTargets": {
+            "performance": 80,
+            "overall": 70,
+            "availability": 80,
+            "quality": 100
+        },
+        "workpiece": {
+            "amount": "300",
+            "unit": "pcs",
+            "name": "Pieces",
+            "isActive": true,
+            "timeunit": 2
+        },
+        "timeframes": {
+            "Interval3": null,
+            "IntervalUnit2": "h",
+            "Interval4": null,
+            "IntervalUnit1": "min",
+            "Interval1": "10",
+            "IntervalUnit4": null,
+            "Interval2": "1",
+            "IntervalUnit3": null
+        },
+        "ui": {
+            "shortStoppages": "",
+            "correlationSectionVisited": false,
+            "computation": "LPQ",
+            "shortStoppagesAmount": "1"
+        },
+        "intervals": [
+            600.0,
+            3600.0
+        ],
+        "status": "INCOMPLETE"
+    }

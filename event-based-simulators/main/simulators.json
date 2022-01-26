@@ -9,7 +9,9 @@
                 "type": "Availability",
                 "minHits": 5,
                 "maxHits": 10,
-                "statusUpProbability": 0.9,
+                "status": ["up", "down"],
+                "probabilities": [0.9, 0.1],
+                "durations": [0, 0],
                 "forceStatusDown": true
             },
             {
@@ -31,8 +33,10 @@
             {
                 "type": "Availability",
                 "minHits": 5,
-                "maxHits": 10,
-                "statusUpProbability": 0.9,
+                "maxHits": 10,                
+                "status": ["up", "down"],
+                "probabilities": [0.9, 0.1],
+                "durations": [0, 0],
                 "forceStatusDown": true
             },
             {
@@ -59,7 +63,9 @@
                 "type": "Availability",
                 "minHits": 5,
                 "maxHits": 10,
-                "statusUpProbability": 0.9,
+                "status": ["up", "down"],
+                "probabilities": [0.9, 0.1],
+                "durations": [0, 0],
                 "forceStatusDown": true
             },
             {
@@ -86,7 +92,9 @@
                 "type": "Availability",
                 "minHits": 5,
                 "maxHits": 10,
-                "statusUpProbability": 0.9,
+                "status": ["up", "down"],
+                "probabilities": [0.9, 0.1],
+                "durations": [0, 0],
                 "forceStatusDown": true
             },
             {
@@ -115,7 +123,9 @@
                 "type": "Availability",
                 "minHits": 5,
                 "maxHits": 10,
-                "statusUpProbability": 0.9,
+                "status": ["up", "down"],
+                "probabilities": [0.9, 0.1],
+                "durations": [0, 0],
                 "forceStatusDown": true
             },
             {
@@ -138,7 +148,9 @@
             {
                 "type": "Availability",
                 "hits": 360,                    
-                "statusUpProbability": 0.9,
+                "status": ["up", "down"],
+                "probabilities": [0.9, 0.1],
+                "durations": [0, 0],
                 "forceStatusDown": true
             },
             {
@@ -161,7 +173,9 @@
             {
                 "type": "Availability",
                 "hits": 360,                    
-                "statusUpProbability": 0.9,
+                "status": ["up", "down"],
+                "probabilities": [0.9, 0.1],
+                "durations": [0, 0],
                 "forceStatusDown": true
             },
             {
@@ -184,7 +198,9 @@
             {
                 "type": "Availability",
                 "hits": 360,                    
-                "statusUpProbability": 1.0,
+                "status": ["up", "down"],
+                "probabilities": [1.0, 0.0],
+                "durations": [0, 0],
                 "forceStatusDown": true
             },
             {
@@ -207,7 +223,9 @@
             {
                 "type": "Availability",
                 "hits": 120,                    
-                "statusUpProbability": 1.0,
+                "status": ["up", "down"],
+                "probabilities": [1.0, 0.0],
+                "durations": [0, 0],
                 "forceStatusDown": true
             },
             {
@@ -230,7 +248,38 @@
             {
                 "type": "Availability",
                 "hits": 120,                    
-                "statusUpProbability": 0.8,
+                "status": ["up", "down"],
+                "probabilities": [0.8, 0.2],
+                "durations": [0, 0],
+                "forceStatusDown": true
+            },
+            {
+                "type": "Pieces_Produced",
+                "hits": 60,
+                "countMinHits": 5,
+                "countMaxHits": 5,
+                "followedBy": {
+                    "type": "Pieces_Ok",
+                    "countMinHits": 5,
+                    "countMaxHits": 5,
+                    "hits": 60
+                }
+            }              
+        ]
+    },
+    {
+        "type": "Simulator",
+        "id": "sim_0011",
+        "label": "Ideal Producer with planned maintenance and manual stop",
+        "comment": "",
+        "enabled": true,
+        "events": [
+            {
+                "type": "Availability",
+                "hits": 120,                    
+                "status": ["up", "Planned maintenance", "Manual stop"],
+                "probabilities": [0.9, 0.07, 0.03],
+                "durations": [0, 600, 120],
                 "forceStatusDown": true
             },
             {
