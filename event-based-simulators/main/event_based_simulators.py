@@ -35,8 +35,7 @@ def try_event(probability: float):
     return uniform(0.0, 1.0) <= probability
 
 def get_random_status(statusses, durations, probabilites):
-    '''returns a random status and duration of the given lists of status, durations and probabilites.
-    :param statusses: list of statusses with format {"txt": str, "prob": float}
+    '''returns a random status and duration of the given lists of status, durations and probabilites.    
     '''
     if len(statusses) != len(probabilites) or len(durations) != len(probabilites):
         log.info(
