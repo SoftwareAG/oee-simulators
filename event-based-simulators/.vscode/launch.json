@@ -48,6 +48,30 @@
             "args": [
                 "--delete-simulator-profiles"
             ]
+        },
+        {
+            "name": "create calculation categories",
+            "type": "python",
+            "request": "launch",
+            "program": "profile_generator.py",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.vscode/.env",
+            "cwd": "${workspaceFolder}/main/",
+            "args": [
+                "--create-categories"
+            ]
+        },
+        {
+            "name": "delete calculation categories",
+            "type": "python",
+            "request": "launch",
+            "program": "profile_generator.py",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.vscode/.env",
+            "cwd": "${workspaceFolder}/main/",
+            "args": [
+                "--delete-categories"
+            ]
         }
     ]
 }

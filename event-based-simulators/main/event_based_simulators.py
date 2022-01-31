@@ -371,6 +371,7 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 if CREATE_PROFILES.lower() == "true":
     [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
         for id in oeeAPI.get_simulator_external_ids()]
+    os.system("python profile_generator.py -cat")
 
 while True:
     for simulator in simulators:

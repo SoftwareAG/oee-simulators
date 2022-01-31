@@ -22,6 +22,8 @@ group.add_argument("-r", "--remove-simulator-profiles-via-oee", action="store_tr
                     help="remove all simulator profiles using the OEE API provided by oee-bundle")
 group.add_argument("-d", "--delete-simulator-profiles", action="store_true", dest="deleteSimulatorProfiles",
                     help="delete all simulator profiles using the C8Y inventory API (useful if oee-bundle is not working/available")
+group.add_argument("-cat", "--create-categories", action="store_true", dest="createCalculationCategories", help="create or update calclation categories")
+group.add_argument("--delete-categories", action="store_true", dest="deleteCalculationCategories", help="delete all calclation categories")
 args = parser.parse_args()
 
 # JSON-PYTHON mapping, to get json.load() working
@@ -86,3 +88,28 @@ if args.deleteSimulatorProfiles:
     delete_profiles()
     log.info(f'profiles after execution: {c8y_api.count_all_profiles()}')
     
+if args.deleteCalculationCategories:
+    log.info('===================================')
+    log.info('starting to delete all calculation categories ...')
+    log.info(
+        f'existing category managed objects: {c8y_api.count_all_categories()}')
+    deleted_categories = 0
+    for category in c8y_api.get_calculation_categories():
+        deleted_categories += c8y_api.delete_managed_object(category['id'])
+    log.info(f'Managed_objects deleted: {deleted_categories}')
+
+if args.createCalculationCategories:
+    log.info('===================================')
+    log.info('starting to create calculation categories ...')
+    with open('./categories.json', 'r') as f:
+        categories = f.read()
+    if (c8y_api.count_all_categories()) == 0:
+        log.info('Create category managed object')
+        c8y_api.create_managed_object(categories)
+    elif (c8y_api.count_all_categories()) == 1:
+        log.info('Update category managed object')
+        c8y_category = c8y_api.get_calculation_categories()[0]
+        c8y_api.update_managed_object(c8y_category['id'], categories)
+    else:
+        log.warning('More than 1 category managed object! Unable to update managed object')
+    log.info('==========Categories created==========')

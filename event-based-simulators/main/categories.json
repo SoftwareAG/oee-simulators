@@ -1,0 +1,17 @@
+{
+    "type": "OEECategoryConfiguration",
+    "categories": [
+        {
+            "categoryInput": "Availability Loss (Time)",
+            "name": "Planned maintenance",
+            "id": "1",
+            "status": "ACTIVE"
+        },
+        {
+            "categoryInput": "Availability Loss (Time)",
+            "name": "Manual stops",
+            "id": "2",
+            "status": "ACTIVE"
+        }
+    ]
+}
