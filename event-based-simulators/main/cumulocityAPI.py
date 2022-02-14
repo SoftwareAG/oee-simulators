@@ -31,6 +31,7 @@ class CumulocityAPI:
 
     C8Y_SIMULATORS_GROUP = "c8y_EventBasedSimulator"
     OEE_CALCULATION_PROFILE_TYPE = "OEECalculationProfile"
+    OEE_CALUCLATION_CATEGORY = "OEECategoryConfiguration"
 
     def __init__(self) -> None:
         self.mocking = MOCK_REQUESTS.lower() == 'true'
@@ -59,13 +60,17 @@ class CumulocityAPI:
         
         # Check if device already created
         return self.get_device_by_external_id(sim_id) or self.__create_device(sim_id, label)
-        
     def count_all_profiles(self):
+        return self.__count_all(self.OEE_CALCULATION_PROFILE_TYPE)
+    
+    def count_all_categories(self):
+        return self.__count_all(self.OEE_CALUCLATION_CATEGORY)
+    def __count_all(self, oee_type):
         if self.mocking:
-            log.info(f'mock: count_profiles()')
+            log.info(f'mock: count_all types({oee_type})')
             return 5
 
-        request_query = f'{C8Y_BASE}/inventory/managedObjects/count?type={self.OEE_CALCULATION_PROFILE_TYPE}'
+        request_query = f'{C8Y_BASE}/inventory/managedObjects/count?type={oee_type}'
         repsonse = requests.get(request_query, headers=C8Y_HEADERS)
         if repsonse.ok:
             return repsonse.json()
@@ -108,6 +113,16 @@ class CumulocityAPI:
             return response.json()
         self.log_warning_on_bad_repsonse(response)
         #TODO: check for errors
+        return {}
+    
+    def get_calculation_categories(self):
+        if self.mocking:
+            log.info(f'mock: get_managed_object()')
+            return [{'id': '0'}]
+        response = requests.get(C8Y_BASE + f'/inventory/managedObjects?type={self.OEE_CALUCLATION_CATEGORY}', headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json()['managedObjects']
+        self.log_warning_on_bad_repsonse(response)        
         return {}
 
     def delete_managed_object(self, id: str):

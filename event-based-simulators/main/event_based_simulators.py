@@ -1,6 +1,6 @@
 ﻿import time, json, os, logging, requests, base64
 from datetime import datetime
-from random import randint, uniform
+from random import randint, uniform, choices
 
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
 from oeeAPI import OeeAPI, ProfileCreateMode
@@ -34,6 +34,16 @@ def try_event(probability: float):
     '''
     return uniform(0.0, 1.0) <= probability
 
+def get_random_status(statusses, durations, probabilites):
+    '''returns a random status and duration of the given lists of status, durations and probabilites.    
+    '''
+    if len(statusses) != len(probabilites) or len(durations) != len(probabilites):
+        log.info(
+            "Length of statusses, duration and probabilites does not match. Set status to up")
+        return "up", 0
+    choice = choices([i for i in range(len(probabilites))], probabilites)[0]
+    return statusses[choice], durations[choice]
+
 cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()
 
@@ -60,8 +70,10 @@ class PeriodicTask:
         return time.time() + randint(self.min_interval_in_seconds, self.max_interval_in_seconds)
     
     def __reschedule_and_run(self):
-        self.next_run = self.__calculate_next_run()
-        self.run_block(self)        
+        duration = self.run_block(self)
+        duration = duration.pop() or 0  # Why is duration a set?
+        self.next_run = self.__calculate_next_run() + duration
+        log.debug(f"Reschedule next run and wait for additional {duration} seconds. Next run is at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.next_run))}")
 
     def tick(self):
         if (time.time() - self.next_run) > 0:
@@ -133,14 +145,13 @@ class MachineSimulator:
 
         event = self.__type_fragment(event_definition)
 
-        status_up_probability = event_definition.get("statusUpProbability") or 0.5
-        
-        if try_event(status_up_probability):
-            event.update({'status': 'up'})
-            self.machine_up = True
-        else:
-            event.update({'status': 'down'})
-            self.machine_up = False
+        statusses = event_definition.get("status") or ["up"]
+        probabilities = event_definition.get("probabilities") or [0.5]
+        durations = event_definition.get("durations") or [0]
+        status, duration = get_random_status(
+            statusses, durations, probabilities)
+        self.machine_up = (status == "up")
+        event.update({'status': status})
 
         event.update(self.__get_production_info())
         self.__send_event(event)
@@ -149,6 +160,8 @@ class MachineSimulator:
         # Might make sense to configure the behavior per simulator in json.
         if self.__is_whole_piece_available():
             self.__force_production_event()
+
+        return duration
 
     def __force_production_event(self):
         for event_definition in self.model["events"]:
@@ -358,6 +371,7 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 if CREATE_PROFILES.lower() == "true":
     [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
         for id in oeeAPI.get_simulator_external_ids()]
+    os.system("python profile_generator.py -cat")
 
 while True:
     for simulator in simulators:
