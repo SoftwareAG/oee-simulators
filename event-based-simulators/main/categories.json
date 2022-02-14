@@ -4,13 +4,13 @@
         {
             "categoryInput": "Availability Loss (Time)",
             "name": "Planned maintenance",
-            "id": "1",
+            "id": "10001",
             "status": "ACTIVE"
         },
         {
             "categoryInput": "Availability Loss (Time)",
             "name": "Manual stops",
-            "id": "2",
+            "id": "10002",
             "status": "ACTIVE"
         }
     ]

@@ -63,11 +63,11 @@
         "machineEvents": {
             "MACHINE_STATUS": [
                 {
-                    "category": "1",
+                    "category": "10001",
                     "value": "evt(\"${deviceId}\",\"Availability\",\"status\",false) = \"Planned maintenance\""
                 },
                 {
-                    "category": "2",
+                    "category": "10002",
                     "value": "evt(\"${deviceId}\",\"Availability\",\"source\",false) = \"Manual stop\""
                 }
             ],
