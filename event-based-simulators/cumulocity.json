@@ -1,6 +1,6 @@
 {
 	"apiVersion": "1",
-	"version": "1.0.28-SNAPSHOT",
+	"version": "1.0.28",
 	"provider": {
   		"name": "Viktor Tymoshenko (event-based simulators)"
 	},
