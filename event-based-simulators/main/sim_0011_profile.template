@@ -68,7 +68,7 @@
                 },
                 {
                     "category": "10002",
-                    "value": "evt(\"${deviceId}\",\"Availability\",\"source\",false) = \"Manual stop\""
+                    "value": "evt(\"${deviceId}\",\"Availability\",\"status\",false) = \"Manual stop\""
                 }
             ],
             "QUALITY_STATUS": []
