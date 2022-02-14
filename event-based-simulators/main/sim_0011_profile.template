@@ -38,12 +38,12 @@
             "AvailabilityLossTime": [
                 {
                     "type": "MACHINE_EVENT",
-                    "category": "1",
+                    "category": "10001",
                     "value": ""
                 },
                 {
                     "type": "MACHINE_EVENT",
-                    "category": "2",
+                    "category": "10002",
                     "value": ""
                 }
             ],
