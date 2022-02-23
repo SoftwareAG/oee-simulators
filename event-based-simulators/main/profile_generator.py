@@ -108,8 +108,14 @@ if args.createCalculationCategories:
         c8y_api.create_managed_object(categories)
     elif (c8y_api.count_all_categories()) == 1:
         log.info('Update category managed object')
-        c8y_category = c8y_api.get_calculation_categories()[0]
-        c8y_api.update_managed_object(c8y_category['id'], categories)
+        categories_by_id = {}
+        for c in json.loads(categories)['categories'] + c8y_api.get_calculation_categories()[0]['categories']:
+            categories_by_id[c['id']] = c
+        mo_id = c8y_api.get_calculation_categories()[0]['id']
+        fragment = {
+            'categories': list(categories_by_id.values())
+        }
+        c8y_api.update_managed_object(mo_id, json.dumps(fragment))
     else:
         log.warning('More than 1 category managed object! Unable to update managed object')
     log.info('==========Categories created==========')
