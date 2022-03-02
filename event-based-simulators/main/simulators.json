@@ -270,7 +270,7 @@
     {
         "type": "Simulator",
         "id": "sim_0011",
-        "label": "Ideal Producer with planned maintenance and manual stop",
+        "label": "Ideal Producer with Categories",
         "comment": "",
         "enabled": true,
         "events": [
