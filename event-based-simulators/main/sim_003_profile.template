@@ -55,16 +55,6 @@
         1800.0,
         3600.0
     ],
-    "timeframes": {
-        "Interval1": "30",
-        "IntervalUnit1": "min",
-        "Interval2": "1",
-        "IntervalUnit2": "h",
-        "Interval3": null,
-        "IntervalUnit3": null,
-        "Interval4": null,
-        "IntervalUnit4": null     
-    },
     "oeeTargets": {
         "overall": 20,
         "availability": 90,

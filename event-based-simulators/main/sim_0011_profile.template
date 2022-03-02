@@ -6,7 +6,7 @@
         "shortShutdowns": null,
         "version": "2.0.0",
         "amountUnit": "",
-        "name": "Ideal producer with planned maintenance and manual stops",        
+        "name": "Simulator Ideal Producer with Categories - ${counter}",        
         "tenantId": "${tenantId}",
         "locationId": "Matrix",
         "external": false,
@@ -85,16 +85,6 @@
             "name": "Pieces",
             "isActive": true,
             "timeunit": 2
-        },
-        "timeframes": {
-            "Interval3": null,
-            "IntervalUnit2": "h",
-            "Interval4": null,
-            "IntervalUnit1": "min",
-            "Interval1": "10",
-            "IntervalUnit4": null,
-            "Interval2": "1",
-            "IntervalUnit3": null
         },
         "ui": {
             "shortStoppages": "",
