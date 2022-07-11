@@ -295,6 +295,34 @@
                 }
             }              
         ]
+    },
+    {
+        "type": "Simulator",
+        "id": "sim_0012",
+        "label": "Normal #12 with Shiftplan",
+        "enabled": true,
+        "events": [
+            {
+                "type": "Availability",
+                "minHits": 5,
+                "maxHits": 10,
+                "status": ["up", "down"],
+                "probabilities": [0.9, 0.1],
+                "durations": [0, 0],
+                "forceStatusDown": true
+            },
+            {
+                "type": "Piece_Produced",
+                "hits": 25,
+                "followedBy": {
+                    "type": "Piece_Ok",
+                    "hits": 20
+                }
+            }
+        ],
+        "shiftplans": [
+
+        ]
     }
 
 ]
