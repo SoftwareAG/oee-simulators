@@ -26,7 +26,8 @@ class ProfileCreateMode(Enum):
     CREATE_IF_NOT_EXISTS = 2
 
 class OeeAPI:
-    CONF_REST_ENDPOINT = f'{C8Y_BASE}/service/oee-bundle/configurationmanager/2/configuration'
+    OEE_BASE = f'{C8Y_BASE}/service/oee-bundle'
+    CONF_REST_ENDPOINT = f'{OEE_BASE}/configurationmanager/2/configuration'
     c8y_api = CumulocityAPI()
 
     templates = {}
@@ -152,4 +153,19 @@ class OeeAPI:
         if ids:
             return self.c8y_api.get_external_ids(ids)
         log.warning(f'Didnt find any simulators: {ids}')
-        return []    
+        return []  
+    
+    def add_or_update_shiftplan(self, shiftplan):
+        response = requests.post(f'{self.OEE_BASE}/mes/shiftplan', headers=C8Y_HEADERS, data=json.dumps(shiftplan))
+        if response.ok:
+            log.info(f'Shiftplan for {shiftplan.location_id} was created')
+            return True
+        log.warning(f'Cannot create Shiftplan for location:{shiftplan.location_id}, content: {response.text}')
+        return False
+
+    def get_shiftplan(self, location_id):
+        response = requests.get(f'{self.OEE_BASE}/mes/shiftplan', headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json
+        log.warning(f'Cannot get shiftplan for {location_id}')
+        return {}
