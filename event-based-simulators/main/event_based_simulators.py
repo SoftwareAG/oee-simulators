@@ -25,6 +25,7 @@ true = True
 shiftplans = []
 shiftplan_polling_interval = timedelta(days=1)
 last_shiftplan_poll_time = datetime.utcnow()-shiftplan_polling_interval
+shiftplan_dateformat='%Y-%m-%dT%H:%M:%SZ'
 
 log.info(C8Y_BASE)
 log.info(C8Y_TENANT)
@@ -377,8 +378,8 @@ class MachineSimulator:
                 for timeslot in shiftplan["timeslots"]:
                     if timeslot["slotType"] == "PRODUCTION":
                         now = datetime.utcnow()
-                        start = datetime.strptime(timeslot["slotStart"], '%Y-%m-%dT%H:%M:%SZ')
-                        end = datetime.strptime(timeslot["slotEnd"], '%Y-%m-%dT%H:%M:%SZ')
+                        start = datetime.strptime(timeslot["slotStart"], shiftplan_dateformat)
+                        end = datetime.strptime(timeslot["slotEnd"], shiftplan_dateformat)
                         if start < now and end > now:
                             return True
         return no_shiftplan
@@ -390,7 +391,7 @@ def get_new_shiftplans(shiftplans):
     log.info(f'Polling new Shiftplans, Polling interval is set to {shiftplan_polling_interval}')
     new_shiftplans = []
     for key, shiftplan in enumerate(shiftplans):
-        new_shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], datetime.utcnow(), datetime.utcnow()+shiftplan_polling_interval))
+        new_shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow()+shiftplan_polling_interval:{shiftplan_dateformat}}'))
     return new_shiftplans
 
 
@@ -415,7 +416,7 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 SHIFTPLANS_MODELS = load("shiftplans.json")
 [oeeAPI.add_or_update_shiftplan(shiftplan) for shiftplan in SHIFTPLANS_MODELS]
 #first poll to fill the shiftplans array with shiftplans from locationsIds presented in the model
-[shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], datetime.utcnow(), datetime.utcnow()+shiftplan_polling_interval)) for shiftplan in SHIFTPLANS_MODELS]
+[shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow()+shiftplan_polling_interval:{shiftplan_dateformat}}')) for shiftplan in SHIFTPLANS_MODELS]
 
 if CREATE_PROFILES.lower() == "true":
     [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
