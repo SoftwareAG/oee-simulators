@@ -143,8 +143,8 @@ class MachineSimulator:
     def __log_ignore(self, event_definition):
         print(f'{self.device_id} is down -> ignore event {event_definition["type"]}')
 
-    def __log_ignore_not_in_shift(self, event_definition):
-        print(f'{self.model["locationId"]} is out of shift -> ignore event {event_definition["type"]}')        
+    def __log_ignore_not_in_shift(self):
+        print(f'Device: {self.device_id} is out of shift -> ignore event')        
 
     def __on_availability_event(self, event_definition, task):         
         
@@ -311,7 +311,7 @@ class MachineSimulator:
     def tick(self):
         if not self.enabled: return
         if not self.is_in_productionTime():
-            self.__log_ignore_not_in_shift
+            self.__log_ignore_not_in_shift()
             return
         for task in self.tasks:
             task.tick()
@@ -362,19 +362,23 @@ class MachineSimulator:
             return newTimestamp
 
     def is_in_productionTime(self):
-        locationId = self.model["locationId"]
+        profiles = oeeAPI.get_profiles()
+        locationId = 'Matrix'
+        for profile in profiles:
+            if profile["deviceId"] == self.device_id:
+                locationId = profile["locationId"]
+                break
         no_shiftplan = True
         for shiftplan in shiftplans:
-            if shiftplan.locationId == locationId:
+            if shiftplan["locationId"] == locationId:
                 no_shiftplan = False
-                for timeslot in shiftplan.timeslots:
-                    if timeslot.slotType == "PRODUCTION":
+                for timeslot in shiftplan["timeslots"]:
+                    if timeslot["slotType"] == "PRODUCTION":
                         now = datetime.utcnow()
-                        start = datetime.strptime(timeslot.slotStart, '%y-%m-%dT%H:%M:%SZ')
-                        end = datetime.strptime(timeslot.slotEnd, '%y-%m-%dT%H:%M:%SZ')
+                        start = datetime.strptime(timeslot["slotStart"], '%Y-%m-%dT%H:%M:%SZ')
+                        end = datetime.strptime(timeslot["slotEnd"], '%Y-%m-%dT%H:%M:%SZ')
                         if start < now and end > now:
                             return True
-        
         return no_shiftplan
 
 def load(filename):
@@ -398,7 +402,7 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 SHIFTPLANS_MODELS = load("shiftplans.json")
 [oeeAPI.add_or_update_shiftplan(shiftplan) for shiftplan in SHIFTPLANS_MODELS]
 #first poll to fill the shiftplans array with shiftplans from locationsIds presented in the model
-[shiftplans.append(oeeAPI.get_shiftplan(shiftplan.locationId)) for shiftplan in SHIFTPLANS_MODELS]
+[shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"])) for shiftplan in SHIFTPLANS_MODELS]
 
 if CREATE_PROFILES.lower() == "true":
     [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
@@ -406,10 +410,13 @@ if CREATE_PROFILES.lower() == "true":
     os.system("python profile_generator.py -cat")
 
 while True:
-    #one a day pull the shiftplans and set last_shiftplan_poll_time back
+    #once a day pull the shiftplans and set last_shiftplan_poll_time back
     if last_shiftplan_poll_time+timedelta(1)<datetime.utcnow():
+        log.info("polling new Shiftplans")
+        new_shiftplans = []
         for key, shiftplan in enumerate(shiftplans):
-            shiftplans[key] = oeeAPI.get_shiftplan(location_id=shiftplan.location_id)
+            new_shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"]))
+        shiftplans = new_shiftplans
         last_shiftplan_poll_time = datetime.utcnow()
 
     for simulator in simulators:
