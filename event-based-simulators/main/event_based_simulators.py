@@ -23,7 +23,8 @@ true = True
 
 #array for shiftplans and last time shiftplans polling time
 shiftplans = []
-last_shiftplan_poll_time = datetime.utcnow()-timedelta(1)
+shiftplan_polling_interval = timedelta(days=1)
+last_shiftplan_poll_time = datetime.utcnow()-shiftplan_polling_interval
 
 log.info(C8Y_BASE)
 log.info(C8Y_TENANT)
@@ -144,7 +145,7 @@ class MachineSimulator:
         print(f'{self.device_id} is down -> ignore event {event_definition["type"]}')
 
     def __log_ignore_not_in_shift(self):
-        print(f'Device: {self.device_id} is out of shift -> ignore event')        
+        log.info(f'Device: {self.device_id} is out of shift -> ignore event')
 
     def __on_availability_event(self, event_definition, task):         
         
@@ -402,7 +403,7 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 SHIFTPLANS_MODELS = load("shiftplans.json")
 [oeeAPI.add_or_update_shiftplan(shiftplan) for shiftplan in SHIFTPLANS_MODELS]
 #first poll to fill the shiftplans array with shiftplans from locationsIds presented in the model
-[shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"])) for shiftplan in SHIFTPLANS_MODELS]
+[shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], datetime.utcnow(), datetime.utcnow()+shiftplan_polling_interval)) for shiftplan in SHIFTPLANS_MODELS]
 
 if CREATE_PROFILES.lower() == "true":
     [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
@@ -411,11 +412,11 @@ if CREATE_PROFILES.lower() == "true":
 
 while True:
     #once a day pull the shiftplans and set last_shiftplan_poll_time back
-    if last_shiftplan_poll_time+timedelta(1)<datetime.utcnow():
+    if last_shiftplan_poll_time+shiftplan_polling_interval<datetime.utcnow():
         log.info("polling new Shiftplans")
         new_shiftplans = []
         for key, shiftplan in enumerate(shiftplans):
-            new_shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"]))
+            new_shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], datetime.utcnow(), datetime.utcnow()+shiftplan_polling_interval))
         shiftplans = new_shiftplans
         last_shiftplan_poll_time = datetime.utcnow()
 
