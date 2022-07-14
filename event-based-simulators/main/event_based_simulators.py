@@ -382,6 +382,17 @@ class MachineSimulator:
                             return True
         return no_shiftplan
 
+def shiftplan_polling_overdue():
+    return last_shiftplan_poll_time+shiftplan_polling_interval<datetime.utcnow()
+
+def get_new_shiftplans():
+    log.info("Polling new Shiftplans")
+    new_shiftplans = []
+    for key, shiftplan in enumerate(shiftplans):
+        new_shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], datetime.utcnow(), datetime.utcnow()+shiftplan_polling_interval))
+    shiftplans = new_shiftplans
+
+
 def load(filename):
     try:
         with open(filename) as f_obj:
@@ -411,13 +422,9 @@ if CREATE_PROFILES.lower() == "true":
     os.system("python profile_generator.py -cat")
 
 while True:
-    #once a day pull the shiftplans and set last_shiftplan_poll_time back
-    if last_shiftplan_poll_time+shiftplan_polling_interval<datetime.utcnow():
-        log.info("polling new Shiftplans")
-        new_shiftplans = []
-        for key, shiftplan in enumerate(shiftplans):
-            new_shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], datetime.utcnow(), datetime.utcnow()+shiftplan_polling_interval))
-        shiftplans = new_shiftplans
+    #Checks if polling time is overdue and eventually gets new Shiftplans
+    if shiftplan_polling_overdue():
+        get_new_shiftplans()
         last_shiftplan_poll_time = datetime.utcnow()
 
     for simulator in simulators:
