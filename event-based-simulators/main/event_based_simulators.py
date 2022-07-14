@@ -21,7 +21,7 @@ false = False
 true = True
 ######################
 
-#array for shiftplans and last time shiftplans polling time
+#array for shiftplans, last polling time of the shiftplans and polling interval
 shiftplans = []
 shiftplan_polling_interval = timedelta(days=1)
 last_shiftplan_poll_time = datetime.utcnow()-shiftplan_polling_interval
@@ -144,7 +144,7 @@ class MachineSimulator:
     def __log_ignore(self, event_definition):
         print(f'{self.device_id} is down -> ignore event {event_definition["type"]}')
 
-    def __log_ignore_not_in_shift(self):
+    def __log_not_in_shift(self):
         log.info(f'Device: {self.device_id} is out of shift -> ignore event')
 
     def __on_availability_event(self, event_definition, task):         
@@ -312,7 +312,7 @@ class MachineSimulator:
     def tick(self):
         if not self.enabled: return
         if not self.is_in_productionTime():
-            self.__log_ignore_not_in_shift()
+            self.__log_not_in_shift()
             return
         for task in self.tasks:
             task.tick()
@@ -369,6 +369,7 @@ class MachineSimulator:
             if profile["deviceId"] == self.device_id:
                 locationId = profile["locationId"]
                 break
+        #if there are no shiftplans for a device, it should not be affected by production-time
         no_shiftplan = True
         for shiftplan in shiftplans:
             if shiftplan["locationId"] == locationId:
@@ -382,15 +383,15 @@ class MachineSimulator:
                             return True
         return no_shiftplan
 
-def shiftplan_polling_overdue():
+def is_shiftplan_polling_overdue():
     return last_shiftplan_poll_time+shiftplan_polling_interval<datetime.utcnow()
 
-def get_new_shiftplans():
-    log.info("Polling new Shiftplans")
+def get_new_shiftplans(shiftplans):
+    log.info(f'Polling new Shiftplans, Polling interval is set to {shiftplan_polling_interval}')
     new_shiftplans = []
     for key, shiftplan in enumerate(shiftplans):
         new_shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], datetime.utcnow(), datetime.utcnow()+shiftplan_polling_interval))
-    shiftplans = new_shiftplans
+    return new_shiftplans
 
 
 def load(filename):
@@ -423,8 +424,8 @@ if CREATE_PROFILES.lower() == "true":
 
 while True:
     #Checks if polling time is overdue and eventually gets new Shiftplans
-    if shiftplan_polling_overdue():
-        get_new_shiftplans()
+    if is_shiftplan_polling_overdue():
+        shiftplans = get_new_shiftplans(shiftplans)
         last_shiftplan_poll_time = datetime.utcnow()
 
     for simulator in simulators:
