@@ -384,9 +384,6 @@ class MachineSimulator:
                             return True
         return no_shiftplan
 
-def is_shiftplan_polling_overdue():
-    return last_shiftplan_poll_time+shiftplan_polling_interval<datetime.utcnow()
-
 def get_new_shiftplans(shiftplans):
     log.info(f'Polling new Shiftplans, Polling interval is set to {shiftplan_polling_interval}')
     new_shiftplans = []
@@ -425,7 +422,7 @@ if CREATE_PROFILES.lower() == "true":
 
 while True:
     #Checks if polling time is overdue and eventually gets new Shiftplans
-    if is_shiftplan_polling_overdue():
+    if last_shiftplan_poll_time+shiftplan_polling_interval<datetime.utcnow():
         shiftplans = get_new_shiftplans(shiftplans)
         last_shiftplan_poll_time = datetime.utcnow()
 
