@@ -156,16 +156,36 @@ class OeeAPI:
         return []  
     
     def add_or_update_shiftplan(self, shiftplan):
-        response = requests.post(f'{self.OEE_BASE}/mes/shiftplan', headers=C8Y_HEADERS, data=json.dumps(shiftplan))
+        locationId = shiftplan["locationId"]
+        for timeslot in shiftplan["recurringTimeslots"]:
+            if not self.add_timeslot(locationId, timeslot):
+                self.update_timeslot(locationId, timeslot, timeslot["id"])
+        return True
+
+
+    def update_timeslot(self, locationId, timeslot, timeslotId):
+        url = f'{self.OEE_BASE}/mes/shiftplan/{locationId}/timeslot/{timeslotId}'
+        response = requests.put(url, headers=C8Y_HEADERS, data= json.dumps(timeslot))
         if response.ok:
-            log.info(f'Shiftplan for {shiftplan.location_id} was created')
+            log.info(f'Timeslot for {locationId} was updated')
             return True
-        log.warning(f'Cannot create Shiftplan for location:{shiftplan.location_id}, content: {response.text}')
+        log.warning(f'Cannot update Timeslot for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
         return False
 
-    def get_shiftplan(self, location_id):
-        response = requests.get(f'{self.OEE_BASE}/mes/shiftplan', headers=C8Y_HEADERS)
+
+    def add_timeslot(self, locationId, timeslot):
+        url = f'{self.OEE_BASE}/mes/shiftplan/{locationId}/timeslot'
+        response = requests.post(url, headers=C8Y_HEADERS, data = json.dumps(timeslot))
         if response.ok:
-            return response.json
-        log.warning(f'Cannot get shiftplan for {location_id}')
-        return {}
+            log.info(f'Timeslot for {locationId} was created')
+            return True
+        log.warning(f'Cannot create Timeslot for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
+        return False
+
+    def get_shiftplan(self, locationId):
+        url = f'{self.OEE_BASE}/mes/shiftplan/{locationId}'
+        response = requests.get(url, headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json()
+        log.warning(f'Cannot get shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
+        return {'locationId':locationId,'timeslots':{}}
