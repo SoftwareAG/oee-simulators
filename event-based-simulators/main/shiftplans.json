@@ -1,13 +1,13 @@
 [
     {
-      "locationId": "MachineLocation1",
+      "locationId": "Matrix",
       "recurringTimeslots": [
         {
-          "id": "MachineLocation1-1",
+          "id": "Matrix-1",
           "seriesPostfix": "MorningShift",
           "slotType": "PRODUCTION",
-          "slotStart": "2021-08-18T09:00:00Z",
-          "slotEnd": "2021-08-18T17:00:00Z",
+          "slotStart": "2022-07-13T09:00:00Z",
+          "slotEnd": "2022-07-13T17:00:00Z",
           "description": "Morning Shift",
           "active": true,
           "slotRecurrence": {
@@ -23,14 +23,14 @@
       ]
     },
     {
-      "locationId": "MachineLocation2",
+      "locationId": "Matrix",
       "recurringTimeslots": [
         {
-          "id": "MachineLocation2-1",
+          "id": "Matrix2-1",
           "seriesPostfix": "MorningShift",
           "slotType": "PRODUCTION",
-          "slotStart": "2021-08-18T09:00:00Z",
-          "slotEnd": "2021-08-18T17:00:00Z",
+          "slotStart": "2022-07-15T09:00:00Z",
+          "slotEnd": "2022-07-15T17:00:00Z",
           "description": "Morning Shift",
           "active": true,
           "slotRecurrence": {
