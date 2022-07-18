@@ -387,8 +387,8 @@ class MachineSimulator:
 def get_new_shiftplans(shiftplans):
     log.info(f'Polling new Shiftplans, Polling interval is set to {shiftplan_polling_interval}')
     new_shiftplans = []
-    for key, shiftplan in enumerate(shiftplans):
-        new_shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow()+shiftplan_polling_interval:{shiftplan_dateformat}}'))
+    for shiftplan in shiftplans:
+        new_shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + shiftplan_polling_interval:{shiftplan_dateformat}}'))
     return new_shiftplans
 
 
@@ -422,7 +422,7 @@ if CREATE_PROFILES.lower() == "true":
 
 while True:
     #Checks if polling time is overdue and eventually gets new Shiftplans
-    if last_shiftplan_poll_time+shiftplan_polling_interval<datetime.utcnow():
+    if last_shiftplan_poll_time + shiftplan_polling_interval < datetime.utcnow():
         shiftplans = get_new_shiftplans(shiftplans)
         last_shiftplan_poll_time = datetime.utcnow()
 
