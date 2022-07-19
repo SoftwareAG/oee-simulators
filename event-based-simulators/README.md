@@ -43,8 +43,8 @@ Detailed feature list:
   - Simulators are linked to shiftplans via locationId
   - Shiftplans are polled once a day
   - If a Simulator is not in Production time according to the given Shiftplan, it will not produce any  events
-  - At startup [shiftplans.json] is parsed and used to update the given timeslots whitin the shiftplan
-  - The `locationId's` presented in [shiftplans.json] are used to parse for all shiftplans used in the script and are the only shiftplans are considered for the polling
+  - At startup [shiftplans.json](main/shiftplans.json) is parsed and used to update the given timeslots whitin the shiftplan
+  - The `locationId's` presented in [shiftplans.json](main/shiftplans.json) are used to parse for all shiftplans used in the script and are the only shiftplans are considered for the polling
 
 ### Build the docker image
 
