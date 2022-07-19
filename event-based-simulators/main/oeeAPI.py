@@ -26,7 +26,8 @@ class ProfileCreateMode(Enum):
     CREATE_IF_NOT_EXISTS = 2
 
 class OeeAPI:
-    CONF_REST_ENDPOINT = f'{C8Y_BASE}/service/oee-bundle/configurationmanager/2/configuration'
+    OEE_BASE = f'{C8Y_BASE}/service/oee-bundle'
+    CONF_REST_ENDPOINT = f'{OEE_BASE}/configurationmanager/2/configuration'
     c8y_api = CumulocityAPI()
 
     templates = {}
@@ -152,4 +153,39 @@ class OeeAPI:
         if ids:
             return self.c8y_api.get_external_ids(ids)
         log.warning(f'Didnt find any simulators: {ids}')
-        return []    
+        return []  
+    
+    def add_or_update_shiftplan(self, shiftplan):
+        locationId = shiftplan["locationId"]
+        for timeslot in shiftplan["recurringTimeslots"]:
+            if not self.add_timeslot(locationId, timeslot):
+                self.update_timeslot(locationId, timeslot, timeslot["id"])
+        return True
+
+
+    def update_timeslot(self, locationId, timeslot, timeslotId):
+        url = f'{self.OEE_BASE}/mes/shiftplan/{locationId}/timeslot/{timeslotId}'
+        response = requests.put(url, headers=C8Y_HEADERS, data= json.dumps(timeslot))
+        if response.ok:
+            log.info(f'Timeslot for {locationId} was updated')
+            return True
+        log.warning(f'Cannot update Timeslot for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
+        return False
+
+
+    def add_timeslot(self, locationId, timeslot):
+        url = f'{self.OEE_BASE}/mes/shiftplan/{locationId}/timeslot'
+        response = requests.post(url, headers=C8Y_HEADERS, data = json.dumps(timeslot))
+        if response.ok:
+            log.info(f'Timeslot for {locationId} was created')
+            return True
+        log.warning(f'Cannot create Timeslot for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
+        return False
+
+    def get_shiftplan(self, locationId, dateFrom, dateTo):
+        url = f'{self.OEE_BASE}/mes/shiftplan/{locationId}?dateFrom={dateFrom}&dateTo={dateTo}'
+        response = requests.get(url, headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json()
+        log.warning(f'Cannot get shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
+        return {'locationId':locationId,'timeslots':{}}

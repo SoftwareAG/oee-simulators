@@ -1,0 +1,49 @@
+[
+    {
+      "locationId": "Matrix",
+      "recurringTimeslots": [
+        {
+          "id": "Matrix-1",
+          "seriesPostfix": "MorningShift",
+          "slotType": "PRODUCTION",
+          "slotStart": "2022-07-13T09:00:00Z",
+          "slotEnd": "2022-07-13T17:00:00Z",
+          "description": "Morning Shift",
+          "active": true,
+          "slotRecurrence": {
+            "weekdays": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "locationId": "Matrix",
+      "recurringTimeslots": [
+        {
+          "id": "Matrix2-1",
+          "seriesPostfix": "MorningShift",
+          "slotType": "PRODUCTION",
+          "slotStart": "2022-07-15T09:00:00Z",
+          "slotEnd": "2022-07-15T17:00:00Z",
+          "description": "Morning Shift",
+          "active": true,
+          "slotRecurrence": {
+            "weekdays": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  

@@ -1,5 +1,5 @@
-﻿import time, json, os, logging, requests, base64
-from datetime import datetime
+import time, json, os, logging, requests, base64
+from datetime import datetime, timedelta
 from random import randint, uniform, choices
 
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
@@ -20,6 +20,12 @@ null = None
 false = False
 true = True
 ######################
+
+#array for shiftplans, last polling time of the shiftplans and polling interval
+shiftplans = []
+shiftplan_polling_interval = timedelta(days=1)
+last_shiftplan_poll_time = datetime.utcnow()-shiftplan_polling_interval
+shiftplan_dateformat='%Y-%m-%dT%H:%M:%SZ'
 
 log.info(C8Y_BASE)
 log.info(C8Y_TENANT)
@@ -89,6 +95,7 @@ class MachineSimulator:
         self.enabled = model.get('enabled', True)
         self.production_time_s = 0.0
         self.last_production_time_update = time.time()
+        self.out_of_production_time_logged = False
         if self.enabled:
             self.tasks = list(map(self.__create_task, self.model["events"]))
             self.production_speed_s = self.__get_production_speed_s(self.model["events"])
@@ -137,7 +144,10 @@ class MachineSimulator:
         }
 
     def __log_ignore(self, event_definition):
-        print(f'{self.device_id} is down -> ignore event {event_definition["type"]}')        
+        print(f'{self.device_id} is down -> ignore event {event_definition["type"]}')
+
+    def __log_not_in_shift(self):
+        log.info(f'Device: {self.device_id} is out of shift -> ignore event')
 
     def __on_availability_event(self, event_definition, task):         
         
@@ -303,7 +313,13 @@ class MachineSimulator:
     
     def tick(self):
         if not self.enabled: return
-
+        if not self.is_in_productionTime():
+            if not self.out_of_production_time_logged:
+                self.__log_not_in_shift()
+            self.out_of_production_time_logged = True
+            return
+        else:
+            self.out_of_production_time_logged = False
         for task in self.tasks:
             task.tick()
 
@@ -352,6 +368,35 @@ class MachineSimulator:
             cumulocityAPI.send_event(base_event)
             return newTimestamp
 
+    def is_in_productionTime(self):
+        profiles = oeeAPI.get_profiles()
+        locationId = ''
+        for profile in profiles:
+            if profile["deviceId"] == self.device_id:
+                locationId = profile["locationId"]
+                break
+        #if there are no shiftplans for a device, it should not be affected by production-time
+        no_shiftplan = True
+        for shiftplan in shiftplans:
+            if shiftplan["locationId"] == locationId:
+                no_shiftplan = False
+                for timeslot in shiftplan["timeslots"]:
+                    if timeslot["slotType"] == "PRODUCTION":
+                        now = datetime.utcnow()
+                        start = datetime.strptime(timeslot["slotStart"], shiftplan_dateformat)
+                        end = datetime.strptime(timeslot["slotEnd"], shiftplan_dateformat)
+                        if start < now and end > now:
+                            return True
+        return no_shiftplan
+
+def get_new_shiftplans(locationIds):
+    log.info(f'Polling new Shiftplans, Polling interval is set to {shiftplan_polling_interval}')
+    new_shiftplans = []
+    for locationId in locationIds:
+        new_shiftplans.append(oeeAPI.get_shiftplan(locationId, f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + shiftplan_polling_interval:{shiftplan_dateformat}}'))
+    return new_shiftplans
+
+
 def load(filename):
     try:
         with open(filename) as f_obj:
@@ -368,12 +413,24 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 # create managed object for every simulator
 [item.get_or_create_device_id() for item in simulators]
 
+
+#read & update Shiftplans
+SHIFTPLANS_MODELS = load("shiftplans.json")
+[oeeAPI.add_or_update_shiftplan(shiftplan) for shiftplan in SHIFTPLANS_MODELS]
+#first poll to fill the shiftplans array with shiftplans from locationsIds presented in the model
+shiftplans = get_new_shiftplans(list(map(lambda shiftplan: shiftplan["locationId"], SHIFTPLANS_MODELS)))
+
 if CREATE_PROFILES.lower() == "true":
     [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
         for id in oeeAPI.get_simulator_external_ids()]
     os.system("python profile_generator.py -cat")
 
 while True:
+    #Checks if polling time is overdue and eventually gets new Shiftplans
+    if last_shiftplan_poll_time + shiftplan_polling_interval < datetime.utcnow():
+        shiftplans = get_new_shiftplans(list(map(lambda shiftplan: shiftplan["locationId"], shiftplans)))
+        last_shiftplan_poll_time = datetime.utcnow()
+
     for simulator in simulators:
-        simulator.tick()        
+        simulator.tick()
     time.sleep(1)

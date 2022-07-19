@@ -39,6 +39,12 @@ Detailed feature list:
 - the main entry point is [event_based_simulators.py](main/event_based_simulators.py)
   - the script reads the configuration from [simulators.json](main/simulators.json) and creates a new device for every entry
   - the `id` property is used as `external_id` for the ManagedObjects to avoid creating multiple devices when redeploying/updating the microservice
+- Simulators act according to given Shiftplans
+  - Simulators are linked to shiftplans via locationId
+  - Shiftplans are polled once a day
+  - If a Simulator is not in Production time according to the given Shiftplan, it will not produce any  events
+  - At startup [shiftplans.json](main/shiftplans.json) is parsed and used to update the given timeslots whitin the shiftplan
+  - The `locationId's` presented in [shiftplans.json](main/shiftplans.json) are used to parse for all shiftplans used in the script and are the only shiftplans are considered for the polling
 
 ### Build the docker image
 
