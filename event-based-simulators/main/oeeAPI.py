@@ -155,23 +155,11 @@ class OeeAPI:
         log.warning(f'Didnt find any simulators: {ids}')
         return []  
     
-    def add_or_update_shiftplan(self, shiftplan):
+    def add_timeslots_for_shiftplan(self, shiftplan):
         locationId = shiftplan["locationId"]
         for timeslot in shiftplan["recurringTimeslots"]:
-            if not self.add_timeslot(locationId, timeslot):
-                self.update_timeslot(locationId, timeslot, timeslot["id"])
+            self.add_timeslot(locationId, timeslot)
         return True
-
-
-    def update_timeslot(self, locationId, timeslot, timeslotId):
-        url = f'{self.OEE_BASE}/mes/shiftplan/{locationId}/timeslot/{timeslotId}'
-        response = requests.put(url, headers=C8Y_HEADERS, data= json.dumps(timeslot))
-        if response.ok:
-            log.info(f'Timeslot for {locationId} was updated')
-            return True
-        log.warning(f'Cannot update Timeslot for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
-        return False
-
 
     def add_timeslot(self, locationId, timeslot):
         url = f'{self.OEE_BASE}/mes/shiftplan/{locationId}/timeslot'

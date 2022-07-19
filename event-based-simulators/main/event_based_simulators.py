@@ -416,7 +416,7 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 
 #read & update Shiftplans
 SHIFTPLANS_MODELS = load("shiftplans.json")
-[oeeAPI.add_or_update_shiftplan(shiftplan) for shiftplan in SHIFTPLANS_MODELS]
+[oeeAPI.add_timeslots_for_shiftplan(shiftplan) for shiftplan in SHIFTPLANS_MODELS]
 #first poll to fill the shiftplans array with shiftplans from locationsIds presented in the model
 shiftplans = get_new_shiftplans(list(map(lambda shiftplan: shiftplan["locationId"], SHIFTPLANS_MODELS)))
 
