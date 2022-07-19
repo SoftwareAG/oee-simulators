@@ -95,6 +95,7 @@ class MachineSimulator:
         self.enabled = model.get('enabled', True)
         self.production_time_s = 0.0
         self.last_production_time_update = time.time()
+        self.out_of_production_time_logged = False
         if self.enabled:
             self.tasks = list(map(self.__create_task, self.model["events"]))
             self.production_speed_s = self.__get_production_speed_s(self.model["events"])
@@ -313,8 +314,12 @@ class MachineSimulator:
     def tick(self):
         if not self.enabled: return
         if not self.is_in_productionTime():
-            self.__log_not_in_shift()
+            if not self.out_of_production_time_logged:
+                self.__log_not_in_shift()
+            self.out_of_production_time_logged = True
             return
+        else:
+            self.out_of_production_time_logged = False
         for task in self.tasks:
             task.tick()
 
@@ -365,7 +370,7 @@ class MachineSimulator:
 
     def is_in_productionTime(self):
         profiles = oeeAPI.get_profiles()
-        locationId = 'Matrix'
+        locationId = ''
         for profile in profiles:
             if profile["deviceId"] == self.device_id:
                 locationId = profile["locationId"]
@@ -384,11 +389,11 @@ class MachineSimulator:
                             return True
         return no_shiftplan
 
-def get_new_shiftplans(shiftplans):
+def get_new_shiftplans(locationIds):
     log.info(f'Polling new Shiftplans, Polling interval is set to {shiftplan_polling_interval}')
     new_shiftplans = []
-    for shiftplan in shiftplans:
-        new_shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + shiftplan_polling_interval:{shiftplan_dateformat}}'))
+    for locationId in locationIds:
+        new_shiftplans.append(oeeAPI.get_shiftplan(locationId, f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + shiftplan_polling_interval:{shiftplan_dateformat}}'))
     return new_shiftplans
 
 
@@ -413,7 +418,8 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 SHIFTPLANS_MODELS = load("shiftplans.json")
 [oeeAPI.add_or_update_shiftplan(shiftplan) for shiftplan in SHIFTPLANS_MODELS]
 #first poll to fill the shiftplans array with shiftplans from locationsIds presented in the model
-[shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow()+shiftplan_polling_interval:{shiftplan_dateformat}}')) for shiftplan in SHIFTPLANS_MODELS]
+#[shiftplans.append(oeeAPI.get_shiftplan(shiftplan["locationId"], f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow()+shiftplan_polling_interval:{shiftplan_dateformat}}')) for shiftplan in SHIFTPLANS_MODELS]
+shiftplans = get_new_shiftplans(list(map(lambda shiftplan: shiftplan["locationId"], SHIFTPLANS_MODELS)))
 
 if CREATE_PROFILES.lower() == "true":
     [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
@@ -423,7 +429,7 @@ if CREATE_PROFILES.lower() == "true":
 while True:
     #Checks if polling time is overdue and eventually gets new Shiftplans
     if last_shiftplan_poll_time + shiftplan_polling_interval < datetime.utcnow():
-        shiftplans = get_new_shiftplans(shiftplans)
+        shiftplans = get_new_shiftplans(list(map(lambda shiftplan: shiftplan["locationId"], shiftplans)))
         last_shiftplan_poll_time = datetime.utcnow()
 
     for simulator in simulators:
