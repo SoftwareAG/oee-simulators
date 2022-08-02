@@ -144,10 +144,10 @@ class MachineSimulator:
         }
 
     def __log_ignore(self, event_definition):
-        print(f'{self.device_id} is down -> ignore event {event_definition["type"]}')
+        print(f'Device: {self.device_id} [{self.model["label"]}] is down -> ignore event {event_definition["type"]}')
 
     def __log_not_in_shift(self):
-        log.info(f'Device: {self.device_id} is out of shift -> ignore event')
+        log.info(f'Device: {self.device_id} [{self.model["label"]}] is not in PRODUCTION shift -> ignore event')
 
     def __on_availability_event(self, event_definition, task):         
         

@@ -6,9 +6,9 @@
     "shortShutdowns": null,
     "version": "2.0.0",
     "amountUnit": "",
-    "name": "Simulator Normal #12 with Shiftplan - ${counter}",
+    "name": "Simulator Normal #15 with three shifts - ${counter}",
     "tenantId": "${tenantId}",
-    "locationId": "ShortShiftsLocation",
+    "locationId": "ThreeShiftLocation",
     "external": false,
     "testConfiguration": false,
     "subscriptions": [
