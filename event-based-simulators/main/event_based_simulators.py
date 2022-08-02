@@ -144,7 +144,7 @@ class MachineSimulator:
         }
 
     def __log_ignore(self, event_definition):
-        print(f'Device: {self.device_id} [{self.model["label"]}] is down -> ignore event {event_definition["type"]}')
+        log.info(f'Device: {self.device_id} [{self.model["label"]}] is down -> ignore event {event_definition["type"]}')
 
     def __log_not_in_shift(self):
         log.info(f'Device: {self.device_id} [{self.model["label"]}] is not in PRODUCTION shift -> ignore event')
