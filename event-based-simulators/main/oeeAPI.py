@@ -127,7 +127,8 @@ class OeeAPI:
         log.info(f'profiles deleted: {deleted_profiles}')
 
     def get_profiles(self):
-        response = requests.get(f'{self.CONF_REST_ENDPOINT}', headers=C8Y_HEADERS)
+        log.info(f'Trying to get Profiles URL:{self.CONF_REST_ENDPOINT} with Headers: {C8Y_HEADERS}')
+        response = requests.get(self.CONF_REST_ENDPOINT, headers=C8Y_HEADERS)
         if response.ok:
             return response.json()
         log.warning(f'Cannot get profiles: {response}, content:{response.text}')
@@ -155,9 +156,9 @@ class OeeAPI:
         log.warning(f'Didnt find any simulators: {ids}')
         return []  
     
-    def add_timeslots_for_shiftplan(self, shiftplan):
-        locationId = shiftplan["locationId"]
-        for timeslot in shiftplan["recurringTimeslots"]:
+    def add_timeslots_for_shiftplan(self,shiftplan):
+        locationId = shiftplan.locationId
+        for timeslot in shiftplan.recurringTimeSlots:
             self.add_timeslot(locationId, timeslot)
         return True
 

@@ -23,6 +23,7 @@ true = True
 
 #array for shiftplans and polling interval
 shiftplans = []
+one_minute = 60
 one_day = 86400 
 shiftplan_polling_interval = one_day
 log.info(f'Shiftplan polling interval is set to {shiftplan_polling_interval:,} secs')
@@ -84,7 +85,7 @@ class PeriodicTask:
 
     def tick(self):
         if (time.time() - self.next_run) > 0:
-            self.__reschedule_and_run()                
+            self.__reschedule_and_run()    
 
 class Shiftplan:
     def __init__(self, shiftplan_model) -> None:
@@ -142,6 +143,7 @@ class MachineSimulator:
     def __init__(self, model) -> None:
         self.model = model        
         self.device_id = None
+        self.locationId = model.get("locationId", "")
         self.machine_up = False
         self.shutdown = False
         self.enabled = model.get('enabled', True)
@@ -427,16 +429,12 @@ class MachineSimulator:
             return newTimestamp
 
     def is_in_productionTime(self):
-        profiles = oeeAPI.get_profiles()
-        locationId = ''
-        for profile in profiles:
-            if profile["deviceId"] == self.device_id:
-                locationId = profile["locationId"]
-                break
+        #profiles = oeeAPI.get_profiles()
+        
         #if there are no shiftplans for a device, it should not be affected by production-time
         no_shiftplan = True
         for shiftplan in shiftplans:
-            if shiftplan.locationId == locationId:
+            if shiftplan.locationId == self.locationId:
                 no_shiftplan = False
                 for timeslot in shiftplan.recurringTimeSlots:
                     if timeslot.slotType == "PRODUCTION":
