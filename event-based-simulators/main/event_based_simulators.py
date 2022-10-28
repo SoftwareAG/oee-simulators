@@ -23,7 +23,6 @@ true = True
 
 #array for shiftplans and polling interval
 shiftplans = []
-one_minute = 60
 one_day = 86400 
 shiftplan_polling_interval = one_day
 log.info(f'Shiftplan polling interval is set to {shiftplan_polling_interval:,} secs')
