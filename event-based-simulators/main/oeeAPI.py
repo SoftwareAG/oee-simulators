@@ -28,6 +28,7 @@ class ProfileCreateMode(Enum):
 class OeeAPI:
     OEE_BASE = f'{C8Y_BASE}/service/oee-bundle'
     CONF_REST_ENDPOINT = f'{OEE_BASE}/configurationmanager/2/configuration'
+    SHIFTPLAN_REST_ENDPOINT = f'{OEE_BASE}/mes/shiftplan'
     c8y_api = CumulocityAPI()
 
     templates = {}
@@ -163,7 +164,7 @@ class OeeAPI:
         return True
 
     def add_timeslot(self, locationId, timeslot):
-        url = f'{self.OEE_BASE}/mes/shiftplan/{locationId}/timeslot'
+        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}/timeslot'
         response = requests.post(url, headers=C8Y_HEADERS, data = json.dumps(timeslot))
         if response.ok:
             log.info(f'Timeslot for {locationId} was created')
@@ -172,7 +173,7 @@ class OeeAPI:
         return False
 
     def get_shiftplan(self, locationId, dateFrom, dateTo):
-        url = f'{self.OEE_BASE}/mes/shiftplan/{locationId}?dateFrom={dateFrom}&dateTo={dateTo}'
+        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}?dateFrom={dateFrom}&dateTo={dateTo}'
         response = requests.get(url, headers=C8Y_HEADERS)
         if response.ok:
             return response.json()

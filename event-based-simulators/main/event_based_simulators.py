@@ -1,4 +1,4 @@
-import time, json, os, logging
+﻿import time, json, os, logging
 from datetime import datetime, timedelta
 from random import randint, uniform, choices
 
@@ -451,7 +451,6 @@ def load(filename):
         with open(filename) as f_obj:
             return json.load(f_obj)
     except Exception as e:
-        print(e, type(e))
         log.error(e, type(e))
         return {}
     
@@ -459,7 +458,7 @@ log.info(f'cwd:{os.getcwd()}')
 SIMULATOR_MODELS = load("simulators.json")
 
 simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
-[simulator for simulator in simulators]
+
 # create managed object for every simulator
 [item.get_or_create_device_id() for item in simulators]
 
