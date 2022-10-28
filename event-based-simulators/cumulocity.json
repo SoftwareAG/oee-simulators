@@ -1,6 +1,6 @@
 {
 	"apiVersion": "1",
-	"version": "1.0.30",
+	"version": "1.0.30-SNAPSHOT",
 	"provider": {
   		"name": "Viktor Tymoshenko (event-based simulators)"
 	},
@@ -16,7 +16,8 @@
 		"ROLE_EVENT_READ",
 		"ROLE_ALARM_READ",
 		"ROLE_IDENTITY_READ",
-		"ROLE_OEECONFIGURATOR_ADMIN"
+		"ROLE_OEECONFIGURATOR_ADMIN",
+		"ROLE_OPTION_MANAGEMENT_READ"
 	],
 	"roles":[]
 }

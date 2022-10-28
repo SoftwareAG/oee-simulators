@@ -365,6 +365,8 @@ SIMULATOR_MODELS = load("simulators.json")
 
 simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 
+cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
+
 # create managed object for every simulator
 [item.get_or_create_device_id() for item in simulators]
 

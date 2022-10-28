@@ -212,3 +212,11 @@ class CumulocityAPI:
         self.log_warning_on_bad_repsonse(response)
         return device_id
 
+    def get_tenant_option_by_category(self, category):
+        log.info(f'Receiving Tenant option: ')
+        response = requests.get(C8Y_BASE + f'/tenant/options/{category}', headers=C8Y_HEADERS)
+        if response.ok:
+            log.info(f'Got options: {response.json()} for category {category}')
+            return
+        log.warn(f'Could not get any tenant options for category {category}. response status code is: {response}, content: {response.text}')
+
