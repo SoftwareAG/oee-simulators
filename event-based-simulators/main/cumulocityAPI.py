@@ -213,7 +213,6 @@ class CumulocityAPI:
         return device_id
 
     def get_tenant_option_by_category(self, category):
-        log.info(f'Receiving Tenant option: ')
         response = requests.get(C8Y_BASE + f'/tenant/options/{category}', headers=C8Y_HEADERS)
         if response.ok:
             return response.json()
