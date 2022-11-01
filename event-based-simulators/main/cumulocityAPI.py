@@ -216,5 +216,5 @@ class CumulocityAPI:
         response = requests.get(C8Y_BASE + f'/tenant/options/{category}', headers=C8Y_HEADERS)
         if response.ok:
             return response.json()
-        log.warn(f'Could not get any tenant options for category {category}. response status code is: {response}, content: {response.text}')
-        return None
+        log.warn(f'Could not get any tenant options for category {category}. Response status code is: {response}, content: {response.text}')
+        return {}

@@ -53,10 +53,12 @@ zip oee-simulators.zip image.tar cumulocity.json
 
 ### Creating profiles automatically
 
-To build the docker image that also create profile per device automatically, use following docker build command:
-```
-docker build --build-arg ARG_CREATE_PROFILES=true -t oee-simulators .
-```
+The creation of profiles can be configured using the tenant options on the given c8y tenant. 
+Tenant options should fall under the category-name: "event-based-simulators"
+
+Two Options can be configured:
+- CREATE_PROFILES - should hold a boolean with true/false wether the profiles should be created. Its false on default.
+- CREATE_PROFILES_ARGUMENTS can be used to set a string, that is passed down to the profile creation script as arguments [Execution from command line / CLI arguments](#execution-from-command-line). 
 
 Note: A profile will be created and activated only if no other profiles are already defined for the particular device.
 
