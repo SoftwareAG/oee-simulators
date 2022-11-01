@@ -57,7 +57,7 @@ The creation of profiles can be configured using the tenant options on the given
 Tenant options should fall under the category-name: "event-based-simulators"
 
 Two Options can be configured:
-- CREATE_PROFILES - should hold a boolean with true/false wether the profiles should be created. Its false on default.
+- CREATE_PROFILES - holds a boolean with 'true' or 'false' to indicate if the profiles should be created. Default: 'false'
 - CREATE_PROFILES_ARGUMENTS can be used to set a string, that is passed down to the profile creation script as arguments [Execution from command line / CLI arguments](#execution-from-command-line). 
 
 Note: A profile will be created and activated only if no other profiles are already defined for the particular device.
