@@ -1,8 +1,9 @@
 {
 	"apiVersion": "1",
-	"version": "1.0.30",
+	"version": "1.0.31",
 	"provider": {
-  		"name": "Viktor Tymoshenko (event-based simulators)"
+  		"name": "IoT & Analytics Mobile Accelerators (event-based simulators)",
+		"support":"iot-analytics-mobile-accelerator@softwareag.com"
 	},
 	"isolation": "PER_TENANT",
 	"requiredRoles": [
@@ -16,7 +17,8 @@
 		"ROLE_EVENT_READ",
 		"ROLE_ALARM_READ",
 		"ROLE_IDENTITY_READ",
-		"ROLE_OEECONFIGURATOR_ADMIN"
+		"ROLE_OEECONFIGURATOR_ADMIN",
+		"ROLE_OPTION_MANAGEMENT_READ"
 	],
 	"roles":[]
 }

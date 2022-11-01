@@ -5,7 +5,7 @@ from random import randint, uniform, choices
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
 from oeeAPI import OeeAPI, ProfileCreateMode
 
-VERSION = '1.0.30'
+VERSION = '1.0.31'
 def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
@@ -26,9 +26,6 @@ log.info(C8Y_TENANT)
 log.info(C8Y_USER)
 #log.info(C8Y_PASSWORD)
 
-CREATE_PROFILES = os.environ.get("CREATE_PROFILES", "false")
-log.info(f'CREATE_PROFILES:{CREATE_PROFILES}')
-
 def try_event(probability: float):
     ''' Returns True if event occurs.        
     '''
@@ -46,6 +43,11 @@ def get_random_status(statusses, durations, probabilites):
 
 cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()
+
+microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
+CREATE_PROFILES = microservice_options.get("CREATE_PROFILES", False)
+CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
+log.info(f'CREATE_PROFILES:{CREATE_PROFILES}')
 
 class Task:
     def __init__(self, start_in_seconds: int, run_block) -> None:
@@ -359,11 +361,13 @@ def load(filename):
     except Exception as e:
         print(e, type(e))
         return {}
+
     
 log.info(f'cwd:{os.getcwd()}')
 SIMULATOR_MODELS = load("simulators.json")
 
 simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
+
 
 # create managed object for every simulator
 [item.get_or_create_device_id() for item in simulators]
@@ -371,7 +375,7 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 if CREATE_PROFILES.lower() == "true":
     [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
         for id in oeeAPI.get_simulator_external_ids()]
-    os.system("python profile_generator.py -cat")
+    os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
 
 while True:
     for simulator in simulators:
