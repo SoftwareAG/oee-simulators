@@ -22,18 +22,11 @@ python ExportProfilesData.py [-h] [--baseurl BASEURL] [--id-tenant ID_TENANT]
                              [--data-type {measurements,alarms}]
                              [--mode {all,specific}]
 ```
-optional arguments:
-  -h, --help            show this help message and exit
-  --baseurl BASEURL, -b BASEURL
-                        Base URL of the tenant
-  --id-tenant ID_TENANT, -i ID_TENANT
-                        Tenant ID
-  --username USERNAME, -u USERNAME
-                        Tenant's username
-  --password PASSWORD, -p PASSWORD
-                        Tenant's password
-  --data-type {measurements,alarms}, -d {measurements,alarms}
-                        Choose data type between "measurement" or "alarm"
-  --mode {all,specific}, -m {all,specific}
-                        Extract "all" devices data or only data from a
-                        "specific" device
+optional arguments:\
+  -h, --help : show this help message and exit \
+  --baseurl BASEURL, -b BASEURL : Base URL of the tenant\
+  --id-tenant ID_TENANT, -i ID_TENANT : Tenant ID \
+  --username USERNAME, -u USERNAME : Tenant's username \
+  --password PASSWORD, -p PASSWORD : Tenant's password \
+  --data-type {measurements,alarms}, -d {measurements,alarms} : Choose data type between "measurement" or "alarm" \
+  --mode {all,specific}, -m {all,specific} : Export "all" devices data or only data from a "specific" device \
