@@ -33,6 +33,10 @@ def c8yPlatformConnection():
         C8Y_PASSWORD = args.password
         MODE = args.mode
         DATA_TYPE = args.data_type
+        c8y = CumulocityApi(base_url=C8Y_BASE,  # the url of your Cumulocity tenant here
+                        tenant_id=C8Y_TENANT,  # the tenant ID of your Cumulocity tenant here
+                        username=C8Y_USER,  # your Cumulocity IoT username
+                        password=C8Y_PASSWORD)  # your Cumulocity IoT password
     except:
         C8Y_BASE = Environment.C8Y_BASE
         C8Y_TENANT = Environment.C8Y_TENANT
@@ -44,8 +48,7 @@ def c8yPlatformConnection():
         print("Do you want to extract 'measurements' or 'alarms' data?")
         DATA_TYPE = chooseOneOfChoices(['measurements', 'alarms'])
         print(f"You chose to extract {DATA_TYPE.upper()} data")
-
-    c8y = CumulocityApi(base_url=C8Y_BASE,  # the url of your Cumulocity tenant here
+        c8y = CumulocityApi(base_url=C8Y_BASE,  # the url of your Cumulocity tenant here
                         tenant_id=C8Y_TENANT,  # the tenant ID of your Cumulocity tenant here
                         username=C8Y_USER,  # your Cumulocity IoT username
                         password=C8Y_PASSWORD)  # your Cumulocity IoT password
