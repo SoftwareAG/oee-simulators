@@ -1,5 +1,5 @@
 import argparse
-import Credentials
+import Environment
 
 from c8y_api import CumulocityApi
 
@@ -34,10 +34,10 @@ def c8yPlatformConnection():
         MODE = args.mode
         DATA_TYPE = args.data_type
     except:
-        C8Y_BASE = Credentials.C8Y_BASE
-        C8Y_TENANT = Credentials.C8Y_TENANT
-        C8Y_USER = Credentials.C8Y_USER
-        C8Y_PASSWORD = Credentials.C8Y_PASSWORD
+        C8Y_BASE = Environment.C8Y_BASE
+        C8Y_TENANT = Environment.C8Y_TENANT
+        C8Y_USER = Environment.C8Y_USER
+        C8Y_PASSWORD = Environment.C8Y_PASSWORD
         print("Do you want to extract 'all' devices data or only data from a 'specific' device?")
         MODE = chooseOneOfChoices(['all', 'specific'])
         print(f"You chose to extract data from {MODE.upper()} device(s)")
