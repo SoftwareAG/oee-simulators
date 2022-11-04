@@ -10,10 +10,10 @@ def exportAllProfileData(c8y, DATA_TYPE):
         for childDevice in device.child_devices:
             print(f"Child device {childDevice.name}, id #{childDevice.id}")
             if DATA_TYPE == "alarms":
-                listAlarms(childDevice)
+                listAlarms(c8y, childDevice)
             elif DATA_TYPE == "measurements":
                 # listing measurements of child device
-                listMeasurements(childDevice)
+                listMeasurements(c8y, childDevice)
 
 
 def exportSpecificProfileData(c8y, DATA_TYPE):
@@ -28,23 +28,23 @@ def exportSpecificProfileData(c8y, DATA_TYPE):
         for childDevice in device.child_devices:
             print(f"Child device {childDevice.name}, id #{childDevice.id}")
             if DATA_TYPE == "alarms":
-                listAlarms(childDevice)
+                listAlarms(c8y, childDevice)
             elif DATA_TYPE == "measurements":
                 # listing measurements of child device
-                listMeasurements(childDevice)
+                listMeasurements(c8y, childDevice)
 
     if deviceCount == 0:
         print(f"No device with name {deviceName} found")
 
 
-def listAlarms(childDevice):
+def listAlarms(c8y, childDevice):
     for alarm in c8y.alarms.select(source=childDevice.id):
         print(f"Found alarm #{alarm.id}, severity: {alarm.severity}\n")
         print(f"{alarm.text}\n")
         print(f"fragments: {list(alarm.keys())}\n")
 
 
-def listMeasurements(childDevice):
+def listMeasurements(c8y, childDevice):
     for measurement in c8y.measurements.select(source=childDevice.id):
         print(f"Found measurement id #{measurement.id}\n, type: {measurement.type}\n")
         for measurementKey in measurement.fragments:
