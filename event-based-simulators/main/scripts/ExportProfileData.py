@@ -22,7 +22,7 @@ def exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo, filePath):
 
 def exportSpecificProfileData(c8y, DATA_TYPE, createFrom, createTo, filePath):
     print(f"Enter device name to search for {DATA_TYPE} data: ")
-    deviceName = 'Normal #1'  # input()
+    deviceName = input()
     deviceCount = 0
     for device in c8y.device_inventory.select(type="c8y_EventBasedSimulator", name=deviceName):
         print(f"Found device '{device.name}', id: #{device.id}, "
@@ -51,7 +51,6 @@ def listAlarms(c8y, childDevice, createFrom, createTo, filePath):
         count += 1
         appendDataToJsonFile(alarm.to_json(), filePath, count)
 
-
 def listMeasurements(c8y, childDevice, createFrom, createTo, filePath):
     # Create a count variable as a json/dict key to save json data
     count = 0
@@ -59,9 +58,6 @@ def listMeasurements(c8y, childDevice, createFrom, createTo, filePath):
         print(f"Found measurement id #{measurement.id}\n, type: {measurement.type}\n")
         count += 1
         appendDataToJsonFile(measurement.to_json(), filePath, count)
-        # for measurementKey in measurement.fragments:
-        #    print(f"{measurementKey}: {measurement.fragments.get(measurementKey)}")
-
 
 def appendDataToJsonFile(jsonData, filePath, count, json_data={}):
     try:
@@ -95,9 +91,9 @@ if __name__ == '__main__':
     c8y, MODE, DATA_TYPE = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
 
     print("Export data which is created after/from: \n(example input: 2022-10-28T15:52:19.605Z)")
-    createFrom = ''  # input()
+    createFrom = input()
     print("and created before/to: \n(example input: 2022-10-28T16:02:02.310Z)")
-    createTo = ''  # input()
+    createTo = input()
     filePath = createFilePathFromDateTime(DATA_TYPE)
     if MODE == 'all':
         exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo, filePath)
