@@ -218,3 +218,6 @@ class CumulocityAPI:
             return response.json()
         log.warn(f'Could not get any tenant options for category {category}. Response status code is: {response}, content: {response.text}')
         return {}
+
+    def add_externalId(self, mo_id, ext_id, type = C8Y_SIMULATORS_GROUP):
+        self.__add_external_id(device_id= mo_id, ext_id=ext_id, type=type)
