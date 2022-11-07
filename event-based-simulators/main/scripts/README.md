@@ -1,6 +1,6 @@
 # Generic scripts information
 This scripts folder contains:
-- The **ExportProfileData.py** which is used to export measurements or alarms data from devices
+- The **ExportOrImportProfileData.py** which is used to export measurements or alarms data from devices
 - The **Environment.py** which is used to setup environment parameters
 
 ## Setup environment parameters:

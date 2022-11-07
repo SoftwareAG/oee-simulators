@@ -1,5 +1,5 @@
 import argparse
-import Credentials
+import Environment
 
 from c8y_api import CumulocityApi
 
