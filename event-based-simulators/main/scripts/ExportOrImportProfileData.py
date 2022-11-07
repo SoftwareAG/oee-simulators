@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime
+from os.path import isfile, join
 
 import ArgumentsAndCredentialsHandler
 
@@ -22,7 +23,7 @@ def exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo, filePath):
 
 def exportSpecificProfileData(c8y, DATA_TYPE, createFrom, createTo, filePath):
     print(f"Enter device name to search for {DATA_TYPE} data: ")
-    deviceName = input()
+    deviceName = "Normal #1"  # input()
     deviceCount = 0
     for device in c8y.device_inventory.select(type="c8y_EventBasedSimulator", name=deviceName):
         print(f"Found device '{device.name}', id: #{device.id}, "
@@ -51,6 +52,7 @@ def listAlarms(c8y, childDevice, createFrom, createTo, filePath):
         count += 1
         appendDataToJsonFile(alarm.to_json(), filePath, count)
 
+
 def listMeasurements(c8y, childDevice, createFrom, createTo, filePath):
     # Create a count variable as a json/dict key to save json data
     count = 0
@@ -58,6 +60,9 @@ def listMeasurements(c8y, childDevice, createFrom, createTo, filePath):
         print(f"Found measurement id #{measurement.id}\n, type: {measurement.type}\n")
         count += 1
         appendDataToJsonFile(measurement.to_json(), filePath, count)
+        # for measurementKey in measurement.fragments:
+        #    print(f"{measurementKey}: {measurement.fragments.get(measurementKey)}")
+
 
 def appendDataToJsonFile(jsonData, filePath, count, json_data={}):
     try:
@@ -86,16 +91,54 @@ def createFilePathFromDateTime(DATA_TYPE):
     return filePath
 
 
+def chooseOneOfChoices(listOfChoices):
+    while True:
+        listToStringWithCommas = "', '".join(listOfChoices)
+        print(f"Type one of these words '{listToStringWithCommas}'")
+        inputString = input()
+        if inputString in listOfChoices:
+            break
+        else:
+            print(f"the choice {inputString} is not accepted, only input {listToStringWithCommas}")
+    return inputString
+
+
+def checkFileList():
+    if not os.path.exists('export_data'):
+        print("No folder with name export_data")
+    else:
+        onlyfiles = [f for f in os.listdir('export_data') if isfile(join('export_data', f))]
+        return onlyfiles
+
+
 # Main function to run the script
 if __name__ == '__main__':
-    c8y, MODE, DATA_TYPE = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
+    c8y = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
+    # Provide input to choose the mode and data type to export
+    print("Do you want to 'import' or 'export' data?")
+    ACTION = chooseOneOfChoices(['import', 'export'])
+    print(f"You chose to {ACTION} data")
+    print("Do you want to extract 'all' devices data or only data from a 'specific' device?")
+    MODE = chooseOneOfChoices(['all', 'specific'])
+    print(f"You chose to {ACTION} data from {MODE.upper()} device(s)")
+    print("Do you want to extract 'measurements' or 'alarms' data?")
+    DATA_TYPE = chooseOneOfChoices(['measurements', 'alarms'])
+    print(f"You chose to {ACTION} {DATA_TYPE.upper()} data")
+    if ACTION == "export":
+        print("Export data which is created after/from: \n(example input: 2022-10-28T15:52:19.605Z)")
+        createFrom = input()
+        print("and created before/to: \n(example input: 2022-10-28T16:02:02.310Z)")
+        createTo = input()
 
-    print("Export data which is created after/from: \n(example input: 2022-10-28T15:52:19.605Z)")
-    createFrom = input()
-    print("and created before/to: \n(example input: 2022-10-28T16:02:02.310Z)")
-    createTo = input()
-    filePath = createFilePathFromDateTime(DATA_TYPE)
-    if MODE == 'all':
-        exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo, filePath)
-    elif MODE == 'specific':
-        exportSpecificProfileData(c8y, DATA_TYPE, createFrom, createTo, filePath)
+        filePath = createFilePathFromDateTime(DATA_TYPE)
+        if MODE == 'all':
+            exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo, filePath)
+        elif MODE == 'specific':
+            exportSpecificProfileData(c8y, DATA_TYPE, createFrom, createTo, filePath)
+
+    elif ACTION == "import":
+        listOfFiles = checkFileList()
+        print("Which file do you want to upload?")
+        listToStringWithNewLine = "\n".join(listOfFiles)
+        print(listToStringWithNewLine)
+        # TODO: Implement import function
