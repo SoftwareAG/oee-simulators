@@ -200,10 +200,10 @@ class CumulocityAPI:
         device_id = device['id']
         if device_id:
             log.info(f'new device created({device_id})')
-            return self.__add_external_id(device_id, external_id)
+            return self.add_external_id(device_id, external_id)
         return device_id
 
-    def __add_external_id(self, device_id, ext_id, type = C8Y_SIMULATORS_GROUP):
+    def add_external_id(self, device_id, ext_id, type = C8Y_SIMULATORS_GROUP):
         external_id = {
             'type': type,
             'externalId': ext_id
@@ -218,6 +218,3 @@ class CumulocityAPI:
             return response.json()
         log.warn(f'Could not get any tenant options for category {category}. Response status code is: {response}, content: {response.text}')
         return {}
-
-    def add_externalId(self, mo_id, ext_id, type = C8Y_SIMULATORS_GROUP):
-        self.__add_external_id(device_id= mo_id, ext_id=ext_id, type=type)
