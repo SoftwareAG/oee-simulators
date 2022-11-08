@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from os.path import isfile, join
 
 import ArgumentsAndCredentialsHandler
@@ -91,18 +91,6 @@ def createFilePathFromDateTime(DATA_TYPE):
     return filePath
 
 
-def chooseOneOfChoices(listOfChoices):
-    while True:
-        listToStringWithCommas = "', '".join(listOfChoices)
-        print(f"Type one of these words '{listToStringWithCommas}'")
-        inputString = input()
-        if inputString in listOfChoices:
-            break
-        else:
-            print(f"the choice {inputString} is not accepted, only input {listToStringWithCommas}")
-    return inputString
-
-
 def checkFileList():
     if not os.path.exists('export_data'):
         print("No folder with name export_data")
@@ -114,23 +102,15 @@ def checkFileList():
 # Main function to run the script
 if __name__ == '__main__':
     c8y = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
-    # Provide input to choose the mode and data type to export
-    print("Do you want to 'import' or 'export' data?")
-    ACTION = chooseOneOfChoices(['import', 'export'])
-    print(f"You chose to {ACTION} data")
-    print("Do you want to extract 'all' devices data or only data from a 'specific' device?")
-    MODE = chooseOneOfChoices(['all', 'specific'])
-    print(f"You chose to {ACTION} data from {MODE.upper()} device(s)")
-    print("Do you want to extract 'measurements' or 'alarms' data?")
-    DATA_TYPE = chooseOneOfChoices(['measurements', 'alarms'])
-    print(f"You chose to {ACTION} {DATA_TYPE.upper()} data")
+    MODE, DATA_TYPE, ACTION = ArgumentsAndCredentialsHandler.argumentsParser()
     if ACTION == "export":
         print("Export data which is created after/from: \n(example input: 2022-10-28T15:52:19.605Z)")
-        createFrom = input()
+        createTo = datetime.now().replace(tzinfo=timezone.utc)
         print("and created before/to: \n(example input: 2022-10-28T16:02:02.310Z)")
-        createTo = input()
-
+        createFrom = createTo - timedelta(days=4)
         filePath = createFilePathFromDateTime(DATA_TYPE)
+        print(createFrom)
+        print(createTo)
         if MODE == 'all':
             exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo, filePath)
         elif MODE == 'specific':
