@@ -6,10 +6,10 @@ from c8y_api import CumulocityApi
 
 def argumentsParser():
     parser = argparse.ArgumentParser(description='Script to export or import profiles data')
+    parser.add_argument('--device-name', '-n', type=str, help='Input device name with double quotes "", i.e "Normal #1"', required=True)
     parser.add_argument('--action', '-a', choices=['export', 'import'], help='"Export" or "Import" data', required=True)
     parser.add_argument('--mode', '-m', choices=['all', 'specific']
-                        , help='Extract data from "all" device, or from "specific" device',
-                        required=True)
+                        , help='Extract data from "all" device, or from "specific" device', required=True)
     parser.add_argument('--data-type', '-d', choices=['measurements', 'alarms'], help='Export "alarms" or '
                                                                                       '"measurements"', required=True)
 
@@ -18,22 +18,14 @@ def argumentsParser():
         MODE = args.mode
         ACTION = args.action
         DATA_TYPE = args.data_type
+        DEVICE_NAME = args.device_name
     except:
         MODE = Environment.MODE
         DATA_TYPE = Environment.DATA_TYPE
         ACTION = Environment.ACTION
+        DEVICE_NAME = Environment.DEVICE_NAME
 
-    return MODE, DATA_TYPE, ACTION
-
-    """""
-    # Check if arguments are input right and print help message
-    try:
-        args = parser.parse_args()
-        return args
-    except SystemExit:
-        parser.print_help()
-        raise
-    """
+    return MODE, DATA_TYPE, ACTION, DEVICE_NAME
 
 
 def c8yPlatformConnection():
