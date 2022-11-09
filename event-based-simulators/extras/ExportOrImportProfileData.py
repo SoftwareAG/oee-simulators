@@ -107,7 +107,7 @@ if __name__ == '__main__':
     MODE, DATA_TYPE, ACTION, DEVICE_NAME = ArgumentsAndCredentialsHandler.argumentsParser()
     if ACTION == "export":
         createTo = datetime.now().replace(tzinfo=timezone.utc)
-        createFrom = createTo - timedelta(days=4)
+        createFrom = createTo - timedelta(weeks=4)
         logging.info(f"Export data which is created after/from: {createFrom}")
         logging.info(f"and created before/to: {createTo}")
         if MODE == 'all':
