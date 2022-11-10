@@ -74,7 +74,8 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
         sys.exit()
 
     deviceCount = 0
-    filePath = createFilePathFromDateTime(DEVICE_ID)
+    #filePath = createFilePathFromDateTime(DEVICE_ID)
+    filePath = createFilePathFromExternalId(DEVICE_ID)
     logger.info(f"Search for {DATA_TYPE} data from device {DEVICE_ID} ")
     for device in c8y.device_inventory.select(name=deviceName):
         deviceCount += 1
@@ -137,6 +138,24 @@ def createFilePathFromDateTime(deviceId):
     return filePath
 
 
+def get_external_ids():
+    external_id_response = requests.get(Environment.C8Y_BASE + '/identity/globalIds/' + str(Environment.DEVICE_ID) + '/externalIds',
+                                        headers=C8Y_HEADERS)
+    print(external_id_response.json()['externalIds'][0]['externalId'])
+    print('Test')
+def createFilePathFromExternalId(deviceId):
+    response = requests.get(f'{Environment.C8Y_BASE}/identity/globalIds/{deviceId}/externalIds',
+                            headers=C8Y_HEADERS)
+    deviceExternalId = response.json()
+    # Check if folder containing data files exists and make one if not
+    if not os.path.exists('export_data'):
+        os.makedirs('export_data')
+    relativeFilePath = f'export_data\{deviceExternalId}.json'
+    filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
+    logger.info(filePath)
+    return filePath
+
+
 def checkFileList():
     if not os.path.exists('export_data'):
         logger.debug("No folder with name export_data")
@@ -169,6 +188,7 @@ def SetTimePeriodToExportData(CREATE_FROM, CREATE_TO):
 
 # Main function to run the script
 if __name__ == '__main__':
+    get_external_ids()
     c8y = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
     DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO = ArgumentsAndCredentialsHandler.argumentsParser()
 
