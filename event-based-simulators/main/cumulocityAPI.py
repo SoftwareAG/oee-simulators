@@ -200,10 +200,10 @@ class CumulocityAPI:
         device_id = device['id']
         if device_id:
             log.info(f'new device created({device_id})')
-            return self.__add_external_id(device_id, external_id)
+            return self.add_external_id(device_id, external_id)
         return device_id
 
-    def __add_external_id(self, device_id, ext_id, type = C8Y_SIMULATORS_GROUP):
+    def add_external_id(self, device_id, ext_id, type = C8Y_SIMULATORS_GROUP):
         external_id = {
             'type': type,
             'externalId': ext_id
