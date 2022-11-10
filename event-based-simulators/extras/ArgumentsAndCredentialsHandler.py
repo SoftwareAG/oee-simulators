@@ -22,14 +22,16 @@ def argumentsParser():
         DATA_TYPE = Environment.DATA_TYPE
     DEVICE_ID = args.device_id
     if not DEVICE_ID:
-        DEVICE_ID = str(Environment.DEVICE_ID)
+        DEVICE_ID = Environment.DEVICE_ID
+        if DEVICE_ID:
+            DEVICE_ID = str(DEVICE_ID)
 
     CREATE_FROM = args.create_from
     if not CREATE_FROM:
-        CREATE_FROM = str(Environment.CREATE_FROM)
+        CREATE_FROM = Environment.CREATE_FROM
     CREATE_TO = args.create_to
     if not CREATE_TO:
-        CREATE_TO = str(Environment.CREATE_TO)
+        CREATE_TO = Environment.CREATE_TO
 
     return DATA_TYPE, ACTION, DEVICE_ID, CREATE_FROM, CREATE_TO
 

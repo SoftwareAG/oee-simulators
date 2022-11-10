@@ -11,8 +11,17 @@ from datetime import datetime, timedelta, timezone
 from os.path import isfile, join
 
 ####################################################
-logging = logging.getLogger('ExportImportProfileData')
-
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+logger = logging.getLogger('ExportImportProfileData')
+relativeFilePath = f"logs\log{datetime.strftime(datetime.now(), '%Y%m%d%H%M%S_%f')}.log"
+filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
+hdlr = logging.FileHandler(filePath)
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr)
+logger.setLevel(logging.DEBUG)
+####################################################
 # Setup for additional API request message
 user_and_pass_bytes = base64.b64encode(
     (Environment.C8Y_TENANT + "/" + Environment.C8Y_USER + ':' + Environment.C8Y_PASSWORD).encode('ascii'))  # bytes
@@ -23,77 +32,85 @@ C8Y_HEADERS = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + user_and_pass
 }
+
+
 #####################################################
 
 
 def exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo):
-    filePath = createFilePathFromDateTime(DATA_TYPE, None)
     # Loop through the list of device in Device management
     for device in c8y.device_inventory.select(type="c8y_EventBasedSimulator"):
-        print(f"Found device '{device.name}', id: #{device.id}, "
-              f"owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
-        print(f"List of {device.name}'s child devices: ")
+        logger.info(f"Found device '{device.name}', id: #{device.id}, "
+                     f"owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
+        logger.info(f"List of {device.name}'s child devices: ")
         for childDevice in device.child_devices:
-            print(f"Child device {childDevice.name}, id #{childDevice.id}")
+            logger.info(f"Child device {childDevice.name}, id #{childDevice.id}")
             if DATA_TYPE == "alarms":
-                listAlarms(c8y, childDevice, createFrom, createTo, filePath)
+                listAlarms(c8y, childDevice, createFrom, createTo, DATA_TYPE)
             elif DATA_TYPE == "measurements":
                 # listing measurements of child device
-                listMeasurements(c8y, childDevice, createFrom, createTo, filePath)
+                listMeasurements(c8y, childDevice, createFrom, createTo, DATA_TYPE)
+            else:
+                listAlarms(c8y, childDevice, createFrom, createTo, 'alarms')
+                listMeasurements(c8y, childDevice, createFrom, createTo, 'measurement')
 
 
 def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, DEVICE_ID):
-    print(f"Search for {DATA_TYPE} data from device {DEVICE_ID} ")
-    filePath = createFilePathFromDateTime(DATA_TYPE, DEVICE_ID)
+    logger.info(f"Search for {DATA_TYPE} data from device {DEVICE_ID} ")
     deviceCount = 0
     response = requests.get(f'{Environment.C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}',
                             headers=C8Y_HEADERS)
     deviceName = response.json()['name']
     for device in c8y.device_inventory.select(name=deviceName):
         deviceCount += 1
-        print(f"Child device {device.name}, id #{device.id}")
+        logger.info(f"Child device {device.name}, id #{device.id}")
         if DATA_TYPE == "alarms":
-            listAlarms(c8y, device, createFrom, createTo, filePath)
+            listAlarms(c8y, device, createFrom, createTo)
         elif DATA_TYPE == "measurements":
             # listing measurements of child device
-            listMeasurements(c8y, device, createFrom, createTo, filePath)
-
+            listMeasurements(c8y, device, createFrom, createTo)
+        else:
+            listAlarms(c8y, device, createFrom, createTo)
+            listMeasurements(c8y, device, createFrom, createTo)
     if deviceCount == 0:
-        print(f"No device with id {DEVICE_ID} found")
+        logger.deug(f"No device with id {DEVICE_ID} found")
 
 
-def listAlarms(c8y, device, createFrom, createTo, filePath):
+def listAlarms(c8y, device, createFrom, createTo, DATA_TYPE):
+    filePath = createFilePathFromDateTime(DATA_TYPE, device.id)
+    # Create a count variable as a json/dict key to save json data
     count = 0
     for alarm in c8y.alarms.select(source=device.id, created_after=createFrom, created_before=createTo):
-        print(
+        logger.info(
             f"Found alarm id #{alarm.id}, severity: {alarm.severity}, time: {alarm.time}, creation time: {alarm.creation_time}, update time : {alarm.updated_time}\n")
         count += 1
-        appendDataToJsonFile(alarm.to_json(), filePath, count)
+        appendDataToJsonFile(alarm.to_json(), filePath, count, 'alarms')
 
 
-def listMeasurements(c8y, device, createFrom, createTo, filePath):
+def listMeasurements(c8y, device, createFrom, createTo, DATA_TYPE):
+    filePath = createFilePathFromDateTime(DATA_TYPE, device.id)
     # Create a count variable as a json/dict key to save json data
     count = 0
     for measurement in c8y.measurements.select(source=device.id, after=createFrom, before=createTo):
-        print(f"Found measurement id #{measurement.id}\n")
+        logger.info(f"Found measurement id #{measurement.id}\n")
         count += 1
-        appendDataToJsonFile(measurement.to_json(), filePath, count)
+        appendDataToJsonFile(measurement.to_json(), filePath, count, 'measurements')
 
 
-def appendDataToJsonFile(jsonData, filePath, count, json_data={}):
+def appendDataToJsonFile(jsonData, filePath, count, data_type, json_data={}):
     try:
         # Load content of existing json data file
         with open(filePath, 'r') as f:
             json_data = json.load(f)
-            print(json_data)
+            logger.info(json_data)
     except:
-        print(f"Create new data json file {filePath}")
+        logger.debug(f"Create new data json file {filePath}")
 
     # Create new json file or add data to an existing json file
     with open(filePath, 'w') as f:
         json_data[f"{count}"] = jsonData
         json.dump(json_data, f, indent=2)
-        print("New data is added to file")
+        print(f"{data_type} data {count}th is added to file {filePath}")
 
 
 def createFilePathFromDateTime(DATA_TYPE, deviceId):
@@ -108,20 +125,20 @@ def createFilePathFromDateTime(DATA_TYPE, deviceId):
         dateTimeString = datetime.now().strftime(f"{DATA_TYPE}_%d_%m_%Y_%H_%M_%S")
     relativeFilePath = f'export_data\{dateTimeString}.json'
     filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
-    print(filePath)
+    logger.info(filePath)
     return filePath
 
 
 def checkFileList():
     if not os.path.exists('export_data'):
-        print("No folder with name export_data")
+        logger.debug("No folder with name export_data")
     else:
         onlyfiles = [f for f in os.listdir('export_data') if isfile(join('export_data', f))]
         return onlyfiles
 
 
 def SetTimePeriodToExportData(CREATE_FROM, CREATE_TO):
-    if not CREATE_FROM or not CREATE_TO:
+    if not CREATE_FROM or CREATE_TO:
         createTo = datetime.now().replace(tzinfo=timezone.utc)
         TimeUnit = Environment.TIME_UNIT
 
@@ -148,8 +165,8 @@ if __name__ == '__main__':
     DATA_TYPE, ACTION, DEVICE_ID, CREATE_FROM, CREATE_TO = ArgumentsAndCredentialsHandler.argumentsParser()
     if ACTION == "export":
         createFrom, createTo = SetTimePeriodToExportData(CREATE_FROM, CREATE_TO)
-        print(f"Export data which is created after/from: {createFrom}")
-        print(f"and created before/to: {createTo}")
+        logger.debug(f"Export data which is created after/from: {createFrom}")
+        logger.debug(f"and created before/to: {createTo}")
         if not DEVICE_ID:
             exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo)
         else:
@@ -158,8 +175,8 @@ if __name__ == '__main__':
         listOfFiles = checkFileList()
         try:
             listToStringWithNewLine = "\n".join(listOfFiles)
-            print("Which file do you want to upload?")
-            print(listToStringWithNewLine)
+            logger.info("Which file do you want to upload?")
+            logger.info(listToStringWithNewLine)
         except:
-            print(f"No files to upload")
+            logger.info(f"No files to upload")
         # TODO: Implement import function
