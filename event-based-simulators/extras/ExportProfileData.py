@@ -48,14 +48,15 @@ def exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo):
             logger.info(f"List of {device.name}'s child devices: ")
             for childDevice in device.child_devices:
                 logger.info(f"Child device {childDevice.name}, id #{childDevice.id}")
+                filePath = createFilePathFromDateTime(childDevice.id)
                 if DATA_TYPE == "alarms":
-                    listAlarms(c8y, childDevice, createFrom, createTo, DATA_TYPE)
+                    listAlarms(c8y, childDevice, createFrom, createTo, DATA_TYPE, filePath)
                 elif DATA_TYPE == "measurements":
                     # listing measurements of child device
-                    listMeasurements(c8y, childDevice, createFrom, createTo, DATA_TYPE)
+                    listMeasurements(c8y, childDevice, createFrom, createTo, DATA_TYPE, filePath)
                 else:
-                    listAlarms(c8y, childDevice, createFrom, createTo, 'alarms')
-                    listMeasurements(c8y, childDevice, createFrom, createTo, 'measurement')
+                    listAlarms(c8y, childDevice, createFrom, createTo, 'alarms', filePath)
+                    listMeasurements(c8y, childDevice, createFrom, createTo, 'measurements', filePath)
     except:
         logger.error(
             "Connection to Cumulocity platform failed. Check your required parameter in environment file again")
@@ -73,25 +74,25 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
         sys.exit()
 
     deviceCount = 0
+    filePath = createFilePathFromDateTime(DEVICE_ID)
     logger.info(f"Search for {DATA_TYPE} data from device {DEVICE_ID} ")
     for device in c8y.device_inventory.select(name=deviceName):
         deviceCount += 1
         logger.info(f"Child device {device.name}, id #{device.id}")
         if DATA_TYPE == "alarms":
-            listAlarms(c8y, device, createFrom, createTo, DATA_TYPE)
+            listAlarms(c8y, device, createFrom, createTo, DATA_TYPE, filePath)
         elif DATA_TYPE == "measurements":
             # listing measurements of child device
-            listMeasurements(c8y, device, createFrom, createTo, DATA_TYPE)
+            listMeasurements(c8y, device, createFrom, createTo, DATA_TYPE, filePath)
         else:
-            listAlarms(c8y, device, createFrom, createTo, 'alarms')
-            listMeasurements(c8y, device, createFrom, createTo, 'measurement')
+            listAlarms(c8y, device, createFrom, createTo, 'alarms', filePath)
+            listMeasurements(c8y, device, createFrom, createTo, 'measurement', filePath)
 
     if deviceCount == 0:
         logger.deug(f"No device with id {DEVICE_ID} found")
 
 
-def listAlarms(c8y, device, createFrom, createTo, DATA_TYPE, jsonDataList=[]):
-    filePath = createFilePathFromDateTime(DATA_TYPE, device.id)
+def listAlarms(c8y, device, createFrom, createTo, DATA_TYPE, filePath, jsonDataList=[]):
     # Create a count variable as a json/dict key to save json data
     count = 0
     for alarm in c8y.alarms.select(source=device.id, created_after=createFrom, created_before=createTo):
@@ -99,41 +100,37 @@ def listAlarms(c8y, device, createFrom, createTo, DATA_TYPE, jsonDataList=[]):
             f"Found alarm id #{alarm.id}, severity: {alarm.severity}, time: {alarm.time}, creation time: {alarm.creation_time}, update time : {alarm.updated_time}\n")
         count += 1
         jsonDataList.append(alarm.to_json())
-    appendDataToJsonFile(jsonDataList, filePath, count, 'alarms')
+    appendDataToJsonFile(jsonDataList, filePath, count, DATA_TYPE)
     print(f"Alarms of device #{device.id} has {count} data added to file {filePath}")
 
 
-def listMeasurements(c8y, device, createFrom, createTo, DATA_TYPE, jsonDataList=[]):
-    filePath = createFilePathFromDateTime(DATA_TYPE, device.id)
+def listMeasurements(c8y, device, createFrom, createTo, DATA_TYPE, filePath, jsonDataList=[]):
     # Create a count variable as a json/dict key to save json data
     count = 0
     for measurement in c8y.measurements.select(source=device.id, after=createFrom, before=createTo):
         logger.info(f"Found measurement id #{measurement.id}\n")
         count += 1
         jsonDataList.append(measurement.to_json())
-    appendDataToJsonFile(jsonDataList, filePath, count, 'measurements')
+    appendDataToJsonFile(jsonDataList, filePath, count, DATA_TYPE)
     print(f"Measurements of device #{device.id} has {count} data added to file {filePath}")
 
 
 def appendDataToJsonFile(jsonDataList, filePath, count, data_type, json_data={}):
     # Create new json file or add data to an existing json file
     with open(filePath, 'w') as f:
-        json.dump(jsonDataList, f, indent=2)
+        json_data[f"{data_type.capitalize()}"] = jsonDataList
+        json.dump(json_data, f, indent=2)
 
 
-def createFilePathFromDateTime(DATA_TYPE, deviceId):
+def createFilePathFromDateTime(deviceId):
     # Check if folder containing data files exists and make one if not
     if not os.path.exists('export_data'):
         os.makedirs('export_data')
     # Make data folder bases on device ID
     if not os.path.exists(f'export_data\{deviceId}'):
         os.makedirs(f'export_data\{deviceId}')
-    if deviceId:
-        # dd/mm/YY H:M:S
-        deviceId = deviceId.replace(" ", "")
-        dateTimeString = datetime.now().strftime(f"{deviceId}_{DATA_TYPE}_%d_%m_%Y_%H_%M_%S")
-    else:
-        dateTimeString = datetime.now().strftime(f"{DATA_TYPE}_%d_%m_%Y_%H_%M_%S")
+    deviceId = deviceId.replace(" ", "")
+    dateTimeString = datetime.now().strftime(f"{deviceId}_%d_%m_%Y_%H_%M_%S")
     relativeFilePath = f'export_data\{deviceId}\{dateTimeString}.json'
     filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
     logger.info(filePath)
