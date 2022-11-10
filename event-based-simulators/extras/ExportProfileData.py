@@ -2,6 +2,8 @@ import base64
 import json
 import logging
 import os
+import sys
+
 import requests
 
 import ArgumentsAndCredentialsHandler
@@ -39,28 +41,37 @@ C8Y_HEADERS = {
 
 def exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo):
     # Loop through the list of device in Device management
-    for device in c8y.device_inventory.select(type="c8y_EventBasedSimulator"):
-        logger.info(f"Found device '{device.name}', id: #{device.id}, "
-                     f"owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
-        logger.info(f"List of {device.name}'s child devices: ")
-        for childDevice in device.child_devices:
-            logger.info(f"Child device {childDevice.name}, id #{childDevice.id}")
-            if DATA_TYPE == "alarms":
-                listAlarms(c8y, childDevice, createFrom, createTo, DATA_TYPE)
-            elif DATA_TYPE == "measurements":
-                # listing measurements of child device
-                listMeasurements(c8y, childDevice, createFrom, createTo, DATA_TYPE)
-            else:
-                listAlarms(c8y, childDevice, createFrom, createTo, 'alarms')
-                listMeasurements(c8y, childDevice, createFrom, createTo, 'measurement')
+    try:
+        for device in c8y.device_inventory.select(type="c8y_EventBasedSimulator"):
+            logger.info(f"Found device '{device.name}', id: #{device.id}, "
+                         f"owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
+            logger.info(f"List of {device.name}'s child devices: ")
+            for childDevice in device.child_devices:
+                logger.info(f"Child device {childDevice.name}, id #{childDevice.id}")
+                if DATA_TYPE == "alarms":
+                    listAlarms(c8y, childDevice, createFrom, createTo, DATA_TYPE)
+                elif DATA_TYPE == "measurements":
+                    # listing measurements of child device
+                    listMeasurements(c8y, childDevice, createFrom, createTo, DATA_TYPE)
+                else:
+                    listAlarms(c8y, childDevice, createFrom, createTo, 'alarms')
+                    listMeasurements(c8y, childDevice, createFrom, createTo, 'measurement')
+    except:
+        logger.error("Connection to Cumulocity platform failed. Check your required parameter in environment file again")
+        sys.exit()
 
 
 def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, DEVICE_ID):
-    logger.info(f"Search for {DATA_TYPE} data from device {DEVICE_ID} ")
+    try:
+        response = requests.get(f'{Environment.C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}',
+                                headers=C8Y_HEADERS)
+        deviceName = response.json()['name']
+    except:
+        logger.error("Connection to Cumulocity platform failed. Check your required parameter in environment file again")
+        sys.exit()
+
     deviceCount = 0
-    response = requests.get(f'{Environment.C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}',
-                            headers=C8Y_HEADERS)
-    deviceName = response.json()['name']
+    logger.info(f"Search for {DATA_TYPE} data from device {DEVICE_ID} ")
     for device in c8y.device_inventory.select(name=deviceName):
         deviceCount += 1
         logger.info(f"Child device {device.name}, id #{device.id}")
