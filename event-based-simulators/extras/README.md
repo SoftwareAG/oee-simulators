@@ -29,12 +29,12 @@ pip install c8y_api
 ## Run the script
 If the environment **optional** parameters were not setup, they can be input as arguments when running the script
 ```shell
-ExportOrImportProfileData.py [-h] [--action {export,import}] [--mode {all,specific}] [--data-type {measurements,alarms}]
-
+ExportOrImportProfileData.py [-h] [--device-id DEVICE_ID]
+                                    [--action {export,import}]
+                                    [--data-type {measurements,alarms,all}]
 ```
 optional arguments:\
-  -h, --help                                                    : show this help message and exit. \
-  --action {export,import}, -a {export,import}                  : "Export" or "Import" data.\
-  --mode {all,specific}, -m {all,specific}                      : Extract data from "all" device, or from "specific" device.\
-  --data-type {measurements,alarms}, -d {measurements,alarms}   : Export "alarms" or "measurements".\
-  --device-name DEVICE_NAME, -n DEVICE_NAME                     : Input device name with double quotes "", i.e "Normal #1"\
+  -h, --help                                                              : show this help message and exit. \
+  --action {export,import}, -a {export,import}                            : "Export" or "Import" data.\
+  --data-type {measurements,alarms, all}, -d {measurements,alarms, all}   : Export "alarms" or "measurements".\
+  --device-id DEVICE_NAME, -i DEVICE_NAME                                 : Input device id\
