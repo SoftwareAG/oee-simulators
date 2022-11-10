@@ -100,6 +100,7 @@ def listAlarms(c8y, device, createFrom, createTo, DATA_TYPE, jsonDataList=[]):
         count += 1
         jsonDataList.append(alarm.to_json())
     appendDataToJsonFile(jsonDataList, filePath, count, 'alarms')
+    print(f"Alarms of device #{device.id} has {count} data added to file {filePath}")
 
 
 def listMeasurements(c8y, device, createFrom, createTo, DATA_TYPE, jsonDataList=[]):
@@ -111,14 +112,13 @@ def listMeasurements(c8y, device, createFrom, createTo, DATA_TYPE, jsonDataList=
         count += 1
         jsonDataList.append(measurement.to_json())
     appendDataToJsonFile(jsonDataList, filePath, count, 'measurements')
+    print(f"Measurements of device #{device.id} has {count} data added to file {filePath}")
 
 
 def appendDataToJsonFile(jsonDataList, filePath, count, data_type, json_data={}):
     # Create new json file or add data to an existing json file
     with open(filePath, 'w') as f:
-        json_data[f"{data_type.capitalize()}"] = jsonDataList
-        json.dump(json_data, f, indent=2)
-        print(f"{data_type} has {count} data added to file {filePath}")
+        json.dump(jsonDataList, f, indent=2)
 
 
 def createFilePathFromDateTime(DATA_TYPE, deviceId):
