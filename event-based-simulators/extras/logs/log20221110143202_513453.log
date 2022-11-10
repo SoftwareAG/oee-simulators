@@ -1,0 +1,14 @@
+2022-11-10 14:32:02,517 DEBUG Export data which is created after/from: 2022-11-10 10:32:02.517448+00:00
+2022-11-10 14:32:02,517 DEBUG and created before/to: 2022-11-10 14:32:02.517448+00:00
+2022-11-10 14:32:02,699 INFO Search for alarms data from device 975560 
+2022-11-10 14:32:02,817 INFO Child device Simulator Normal #1 - 1[OEE calculation profile], id #975560
+2022-11-10 14:32:02,818 INFO C:\SoftwareAG\Workspace\iotapp\OEEworkspace\oee-simulators\event-based-simulators\extras\export_data\975560\975560_alarms_10_11_2022_14_32_02.json
+2022-11-10 14:32:02,867 INFO Found alarm id #1991268, severity: MAJOR, time: 2022-11-10T13:02:34.750Z, creation time: 2022-11-10T13:02:34.988Z, update time : 2022-11-10T13:02:34.988Z
+
+2022-11-10 14:32:05,235 DEBUG Create new data json file C:\SoftwareAG\Workspace\iotapp\OEEworkspace\oee-simulators\event-based-simulators\extras\export_data\975560\975560_alarms_10_11_2022_14_32_02.json
+2022-11-10 14:32:17,535 INFO Found alarm id #1991265, severity: MAJOR, time: 2022-11-10T13:02:34.749Z, creation time: 2022-11-10T13:02:34.852Z, update time : 2022-11-10T13:02:34.852Z
+
+2022-11-10 14:32:44,705 INFO Found alarm id #1990296, severity: MAJOR, time: 2022-11-10T13:02:34.749Z, creation time: 2022-11-10T13:02:34.771Z, update time : 2022-11-10T13:02:34.771Z
+
+2022-11-10 14:32:49,021 INFO Found alarm id #1982117, severity: MAJOR, time: 2022-11-10T12:35:23.835Z, creation time: 2022-11-10T12:35:23.924Z, update time : 2022-11-10T12:35:23.924Z
+

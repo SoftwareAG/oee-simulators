@@ -44,7 +44,7 @@ def exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo):
     try:
         for device in c8y.device_inventory.select(type="c8y_EventBasedSimulator"):
             logger.info(f"Found device '{device.name}', id: #{device.id}, "
-                         f"owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
+                        f"owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
             logger.info(f"List of {device.name}'s child devices: ")
             for childDevice in device.child_devices:
                 logger.info(f"Child device {childDevice.name}, id #{childDevice.id}")
@@ -57,7 +57,8 @@ def exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo):
                     listAlarms(c8y, childDevice, createFrom, createTo, 'alarms')
                     listMeasurements(c8y, childDevice, createFrom, createTo, 'measurement')
     except:
-        logger.error("Connection to Cumulocity platform failed. Check your required parameter in environment file again")
+        logger.error(
+            "Connection to Cumulocity platform failed. Check your required parameter in environment file again")
         sys.exit()
 
 
@@ -67,7 +68,8 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
                                 headers=C8Y_HEADERS)
         deviceName = response.json()['name']
     except:
-        logger.error("Connection to Cumulocity platform failed. Check your required parameter in environment file again")
+        logger.error(
+            "Connection to Cumulocity platform failed. Check your required parameter in environment file again")
         sys.exit()
 
     deviceCount = 0
@@ -88,7 +90,7 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
         logger.deug(f"No device with id {DEVICE_ID} found")
 
 
-def listAlarms(c8y, device, createFrom, createTo, DATA_TYPE):
+def listAlarms(c8y, device, createFrom, createTo, DATA_TYPE, jsonDataList=[]):
     filePath = createFilePathFromDateTime(DATA_TYPE, device.id)
     # Create a count variable as a json/dict key to save json data
     count = 0
@@ -96,33 +98,27 @@ def listAlarms(c8y, device, createFrom, createTo, DATA_TYPE):
         logger.info(
             f"Found alarm id #{alarm.id}, severity: {alarm.severity}, time: {alarm.time}, creation time: {alarm.creation_time}, update time : {alarm.updated_time}\n")
         count += 1
-        appendDataToJsonFile(alarm.to_json(), filePath, count, 'alarms')
+        jsonDataList.append(alarm.to_json())
+    appendDataToJsonFile(jsonDataList, filePath, count, 'alarms')
 
 
-def listMeasurements(c8y, device, createFrom, createTo, DATA_TYPE):
+def listMeasurements(c8y, device, createFrom, createTo, DATA_TYPE, jsonDataList=[]):
     filePath = createFilePathFromDateTime(DATA_TYPE, device.id)
     # Create a count variable as a json/dict key to save json data
     count = 0
     for measurement in c8y.measurements.select(source=device.id, after=createFrom, before=createTo):
         logger.info(f"Found measurement id #{measurement.id}\n")
         count += 1
-        appendDataToJsonFile(measurement.to_json(), filePath, count, 'measurements')
+        jsonDataList.append(measurement.to_json())
+    appendDataToJsonFile(jsonDataList, filePath, count, 'measurements')
 
 
-def appendDataToJsonFile(jsonData, filePath, count, data_type, json_data={}):
-    try:
-        # Load content of existing json data file
-        with open(filePath, 'r') as f:
-            json_data = json.load(f)
-            logger.info(json_data)
-    except:
-        logger.debug(f"Create new data json file {filePath}")
-
+def appendDataToJsonFile(jsonDataList, filePath, count, data_type, json_data={}):
     # Create new json file or add data to an existing json file
     with open(filePath, 'w') as f:
-        json_data[f"{count}"] = jsonData
+        json_data[f"{data_type.capitalize()}"] = jsonDataList
         json.dump(json_data, f, indent=2)
-        print(f"{data_type} data {count}th is added to file {filePath}")
+        print(f"{data_type} has {count} data added to file {filePath}")
 
 
 def createFilePathFromDateTime(DATA_TYPE, deviceId):
@@ -187,4 +183,3 @@ if __name__ == '__main__':
         exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo)
     else:
         ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, DEVICE_ID)
-
