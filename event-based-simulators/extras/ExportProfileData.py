@@ -116,7 +116,6 @@ def appendDataToJsonFile(jsonData, filePath, count, data_type, json_data={}):
 
 def createFilePathFromDateTime(DATA_TYPE, deviceId):
     # Check if folder containing data files exists and make one if not
-    print(f"origin os path: {os.path}")
     if not os.path.exists('export_data'):
         os.makedirs('export_data')
     # Make data folder bases on device ID
@@ -130,8 +129,6 @@ def createFilePathFromDateTime(DATA_TYPE, deviceId):
         dateTimeString = datetime.now().strftime(f"{DATA_TYPE}_%d_%m_%Y_%H_%M_%S")
     relativeFilePath = f'export_data\{deviceId}\{dateTimeString}.json'
     filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
-    print("OS PATH after joining:")
-    print(os.path)
     logger.info(filePath)
     return filePath
 
