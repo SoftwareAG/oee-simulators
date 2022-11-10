@@ -120,32 +120,34 @@ def checkFileList():
         return onlyfiles
 
 
-def SetTimePeriodToExportData():
-    createTo = datetime.now().replace(tzinfo=timezone.utc)
-    TimeUnit = Environment.TIME_UNIT
+def SetTimePeriodToExportData(CREATE_FROM, CREATE_TO):
+    if not CREATE_FROM or not CREATE_TO:
+        createTo = datetime.now().replace(tzinfo=timezone.utc)
+        TimeUnit = Environment.TIME_UNIT
 
-    if TimeUnit == 'seconds' or not TimeUnit:
-        createFrom = createTo - timedelta(seconds=Environment.PERIOD_TO_EXPORT)
+        if TimeUnit == 'seconds' or not TimeUnit:
+            createFrom = createTo - timedelta(seconds=Environment.PERIOD_TO_EXPORT)
+            return createFrom, createTo
+
+        if TimeUnit == 'days':
+            createFrom = createTo - timedelta(days=Environment.PERIOD_TO_EXPORT)
+        elif TimeUnit == 'weeks':
+            createFrom = createTo - timedelta(weeks=Environment.PERIOD_TO_EXPORT)
+        elif TimeUnit == 'hours':
+            createFrom = createTo - timedelta(hours=Environment.PERIOD_TO_EXPORT)
+        elif TimeUnit == 'minutes':
+            createFrom = createTo - timedelta(minutes=Environment.PERIOD_TO_EXPORT)
         return createFrom, createTo
 
-    if TimeUnit == 'days':
-        createFrom = createTo - timedelta(days=Environment.PERIOD_TO_EXPORT)
-    elif TimeUnit == 'weeks':
-        createFrom = createTo - timedelta(weeks=Environment.PERIOD_TO_EXPORT)
-    elif TimeUnit == 'hours':
-        createFrom = createTo - timedelta(hours=Environment.PERIOD_TO_EXPORT)
-    elif TimeUnit == 'minutes':
-        createFrom = createTo - timedelta(minutes=Environment.PERIOD_TO_EXPORT)
-
-    return createFrom, createTo
+    return CREATE_FROM, CREATE_TO
 
 
 # Main function to run the script
 if __name__ == '__main__':
     c8y = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
-    DATA_TYPE, ACTION, DEVICE_ID = ArgumentsAndCredentialsHandler.argumentsParser()
+    DATA_TYPE, ACTION, DEVICE_ID, CREATE_FROM, CREATE_TO = ArgumentsAndCredentialsHandler.argumentsParser()
     if ACTION == "export":
-        createFrom, createTo = SetTimePeriodToExportData()
+        createFrom, createTo = SetTimePeriodToExportData(CREATE_FROM, CREATE_TO)
         print(f"Export data which is created after/from: {createFrom}")
         print(f"and created before/to: {createTo}")
         if not DEVICE_ID:

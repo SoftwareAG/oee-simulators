@@ -7,6 +7,8 @@ from c8y_api import CumulocityApi
 def argumentsParser():
     parser = argparse.ArgumentParser(description='Script to export or import profiles data')
     parser.add_argument('--device-id', '-i', type=str, help='Input device id')
+    parser.add_argument('--create-from', '-f', type=str, help='Input "create from" milestone')
+    parser.add_argument('--create-to', '-t', type=str, help='Input "create to" milestone')
     parser.add_argument('--action', '-a', choices=['export', 'import'], help='"Export" or "Import" data')
     parser.add_argument('--data-type', '-d', choices=['measurements', 'alarms', 'all'], help='Export "alarms" or '
                                                                                              '"measurements"')
@@ -22,7 +24,14 @@ def argumentsParser():
     if not DEVICE_ID:
         DEVICE_ID = str(Environment.DEVICE_ID)
 
-    return DATA_TYPE, ACTION, DEVICE_ID
+    CREATE_FROM = args.create_from
+    if not CREATE_FROM:
+        CREATE_FROM = str(Environment.CREATE_FROM)
+    CREATE_TO = args.create_to
+    if not CREATE_TO:
+        CREATE_TO = str(Environment.CREATE_TO)
+
+    return DATA_TYPE, ACTION, DEVICE_ID, CREATE_FROM, CREATE_TO
 
 
 def c8yPlatformConnection():
