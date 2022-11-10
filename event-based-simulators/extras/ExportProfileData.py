@@ -65,13 +65,14 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
         deviceCount += 1
         logger.info(f"Child device {device.name}, id #{device.id}")
         if DATA_TYPE == "alarms":
-            listAlarms(c8y, device, createFrom, createTo)
+            listAlarms(c8y, device, createFrom, createTo, DATA_TYPE)
         elif DATA_TYPE == "measurements":
             # listing measurements of child device
-            listMeasurements(c8y, device, createFrom, createTo)
+            listMeasurements(c8y, device, createFrom, createTo, DATA_TYPE)
         else:
-            listAlarms(c8y, device, createFrom, createTo)
-            listMeasurements(c8y, device, createFrom, createTo)
+            listAlarms(c8y, device, createFrom, createTo, 'alarms')
+            listMeasurements(c8y, device, createFrom, createTo, 'measurement')
+
     if deviceCount == 0:
         logger.deug(f"No device with id {DEVICE_ID} found")
 
@@ -115,16 +116,22 @@ def appendDataToJsonFile(jsonData, filePath, count, data_type, json_data={}):
 
 def createFilePathFromDateTime(DATA_TYPE, deviceId):
     # Check if folder containing data files exists and make one if not
+    print(f"origin os path: {os.path}")
     if not os.path.exists('export_data'):
         os.makedirs('export_data')
+    # Make data folder bases on device ID
+    if not os.path.exists(f'export_data\{deviceId}'):
+        os.makedirs(f'export_data\{deviceId}')
     if deviceId:
         # dd/mm/YY H:M:S
         deviceId = deviceId.replace(" ", "")
         dateTimeString = datetime.now().strftime(f"{deviceId}_{DATA_TYPE}_%d_%m_%Y_%H_%M_%S")
     else:
         dateTimeString = datetime.now().strftime(f"{DATA_TYPE}_%d_%m_%Y_%H_%M_%S")
-    relativeFilePath = f'export_data\{dateTimeString}.json'
+    relativeFilePath = f'export_data\{deviceId}\{dateTimeString}.json'
     filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
+    print("OS PATH after joining:")
+    print(os.path)
     logger.info(filePath)
     return filePath
 
@@ -162,21 +169,14 @@ def SetTimePeriodToExportData(CREATE_FROM, CREATE_TO):
 # Main function to run the script
 if __name__ == '__main__':
     c8y = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
-    DATA_TYPE, ACTION, DEVICE_ID, CREATE_FROM, CREATE_TO = ArgumentsAndCredentialsHandler.argumentsParser()
-    if ACTION == "export":
-        createFrom, createTo = SetTimePeriodToExportData(CREATE_FROM, CREATE_TO)
-        logger.debug(f"Export data which is created after/from: {createFrom}")
-        logger.debug(f"and created before/to: {createTo}")
-        if not DEVICE_ID:
-            exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo)
-        else:
-            ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, DEVICE_ID)
-    elif ACTION == "import":
-        listOfFiles = checkFileList()
-        try:
-            listToStringWithNewLine = "\n".join(listOfFiles)
-            logger.info("Which file do you want to upload?")
-            logger.info(listToStringWithNewLine)
-        except:
-            logger.info(f"No files to upload")
-        # TODO: Implement import function
+    DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO = ArgumentsAndCredentialsHandler.argumentsParser()
+
+    createFrom, createTo = SetTimePeriodToExportData(CREATE_FROM, CREATE_TO)
+    logger.debug(f"Export data which is created after/from: {createFrom}")
+    logger.debug(f"and created before/to: {createTo}")
+
+    if not DEVICE_ID:
+        exportAllProfileData(c8y, DATA_TYPE, createFrom, createTo)
+    else:
+        ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, DEVICE_ID)
+
