@@ -1,0 +1,36 @@
+{
+  "1": {
+    "type": "OEECalculationAlarm",
+    "text": "Error calculation interval 600s of configuration 975560:\n\nActualProductionAmount: 4.2451\nActualProductionTime: 600\nActualQualityAmount: 4.1762\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 4.1667\nIdealCycleAmount: 25\nIdealCycleTime: 144\nIdealMachineRuntime: 611.2944\nIdealProductionAmount: 4.1667\nIdealQualityTime: 601.3728\nOEE: 100.2288\nPerformance: 101.8824\nPerformanceLossAmount: -0.0784\nPerformanceLossTime: -11.2944\nPotentialProductionTime: 600\nQuality: 98.377\nQualityLossAmount: 0.0689\nQualityLossTime: 9.9216",
+    "creationTime": "2022-11-10T10:15:32.922Z",
+    "lastUpdated": "2022-11-10T10:15:32.922Z",
+    "status": "CLEARED",
+    "severity": "MAJOR",
+    "count": 1,
+    "time": "2022-11-10T10:15:32.905Z",
+    "history": {
+      "auditRecords": [],
+      "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+    },
+    "source": {
+      "id": "975560"
+    }
+  },
+  "2": {
+    "type": "OEECalculationAlarm",
+    "text": "Error calculation interval 600s of configuration 975560:\n\nActualProductionAmount: 4.4216\nActualProductionTime: 600\nActualQualityAmount: 3.4905\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 4.1667\nIdealCycleAmount: 25\nIdealCycleTime: 144\nIdealMachineRuntime: 636.7104\nIdealProductionAmount: 4.1667\nIdealQualityTime: 502.632\nOEE: 83.772\nPerformance: 106.1184\nPerformanceLossAmount: -0.2549\nPerformanceLossTime: -36.7104\nPotentialProductionTime: 600\nQuality: 78.942\nQualityLossAmount: 0.9311\nQualityLossTime: 134.0784",
+    "creationTime": "2022-11-10T10:08:45.675Z",
+    "lastUpdated": "2022-11-10T10:08:45.675Z",
+    "status": "CLEARED",
+    "severity": "MAJOR",
+    "count": 1,
+    "time": "2022-11-10T10:08:45.644Z",
+    "history": {
+      "auditRecords": [],
+      "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+    },
+    "source": {
+      "id": "975560"
+    }
+  }
+}
