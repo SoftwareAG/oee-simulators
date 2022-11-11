@@ -6,15 +6,14 @@ C8Y_PASSWORD = 'test'
 
 ### Optional
 # Input None if not set
-ACTION = 'export'  # 'import': upload json file in export_data to c8y, 'export': export data from c8y to json file
-DATA_TYPE = 'measurements'  # 'alarms': export alarms data, 'measurements': export measurements data, 'all' export both
-DEVICE_ID = '975560'
+DATA_TYPE = 'all'  # 'alarms': export alarms data, 'measurements': export measurements data, 'all' export both
+DEVICE_ID = None   # Input device ID or set to None
 
 # Set one of these two sections and None to all of the others
 ############################
 # Extract data with periods#
 ############################
-TIME_UNIT = 'days'  # weeks, days, hours, minutes, seconds
+TIME_UNIT = 'hours'  # weeks, days, hours, minutes, seconds
 PERIOD_TO_EXPORT = 4
 ####################################
 # Extract data with exact milestone#
