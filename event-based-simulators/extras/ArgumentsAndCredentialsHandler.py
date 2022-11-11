@@ -48,10 +48,8 @@ def handleImportArguments():
     LOG_LEVEL = logging.INFO
     if LOG_ARGUMENT == 'DEBUG':
         LOG_LEVEL = logging.DEBUG
-        
 
     return INPUT_FILE, LOG_LEVEL
-
 
 def c8yPlatformConnection():
     C8Y_BASE = Environment.C8Y_BASE

@@ -38,3 +38,23 @@ optional arguments:\
   --action {export,import}, -a {export,import}                            : "Export" or "Import" data.\
   --data-type {measurements,alarms, all}, -d {measurements,alarms, all}   : Export "alarms" or "measurements".\
   --device-id DEVICE_NAME, -i DEVICE_NAME                                 : Input device id\
+
+## Run the import script
+The [Import Script](./ImportData.py) can be used to import alarms and measurements into cumulocity. The [Export Script](./ExportOrImportProfileData.py) can be used to export a file for any managed object. This exact file can then be used for the import.
+```shell
+ImportData.py [-h] [--ifile INPUTFILE] [--log {DEBUG, INFO}]
+```
+### Logging
+Log-level: two log level can be set using the --log argument {DEBUG, INFO}. Log-level INFO is default. DEBUG can be used to get more output of the script execution.
+
+### INPUTFILE
+The inputfile that should be used for this script should has the external_id of the managed object as name. For example: ```sim_001_profile.json```
+
+The schema of the inputfile is:
+```json
+{
+  "alarms":[],
+  "measurements":[]
+}
+```
+Example files can be found [here](./export_data/)
