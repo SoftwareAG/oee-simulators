@@ -1,7 +1,8 @@
 # Generic scripts information
 This scripts folder contains:
-- The **ExportProfileData.py** which is used to export measurements or alarms data from devices.
-- The **Environment.py** which is used to set up environment parameters.
+- The [Export Script](./ExportOrImportProfileData.py) can be used to export a json file for any managed object. This json file can then be used for the import.
+- The [Environment File](./Environment.py) is used to set up environment parameters.
+- The [Import Script](./ImportData.py) can be used to import alarms and measurements into cumulocity.
 
 ## Setup environment parameters:
 Input necessary configuration in **Environment.py** file\
@@ -32,7 +33,7 @@ Follow the instructions in: https://github.com/SoftwareAG/cumulocity-python-api
 pip install c8y_api
 ```
 
-## Run the script
+## Run the export script
 If the environment **optional** parameters were not setup, they can be input as arguments when running the script
 ```shell
 ExportProfileData.py [-h] [--device-id DEVICE_ID]
@@ -45,7 +46,7 @@ optional arguments:\
   --device-id DEVICE_NAME, -i DEVICE_NAME                                 : Input device id\
 
 ## Run the import script
-The [Import Script](./ImportData.py) can be used to import alarms and measurements into cumulocity. The [Export Script](./ExportOrImportProfileData.py) can be used to export a file for any managed object. This exact file can then be used for the import.
+ 
 ```shell
 ImportData.py [-h] [--ifile INPUTFILE] [--log {DEBUG, INFO}] [--username C8Y_USERNAME] [--password C8Y_PASSWORD] [--baseurl C8Y_BASEURL] [--tenant C8Y_TENANT_ID]
 ```

@@ -6,7 +6,7 @@ import logging
 from c8y_api import CumulocityApi
 
 
-def argumentsParser():
+def handleExportArguments():
     parser = argparse.ArgumentParser(
         description='Script to export or import profiles data')
     parser.add_argument('--device-id', '-i', type=str, help='Input device id')

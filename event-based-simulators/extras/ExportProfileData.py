@@ -221,7 +221,7 @@ if __name__ == '__main__':
         print(f"Connect to tenant {Environment.C8Y_TENANT} failed")
         sys.exit()
 
-    DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO = ArgumentsAndCredentialsHandler.argumentsParser()
+    DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO = ArgumentsAndCredentialsHandler.handleExportArguments()
 
     createFrom, createTo = SetTimePeriodToExportData(CREATE_FROM, CREATE_TO)
     logger.debug(f"Export data which is created after/from: {createFrom}")
