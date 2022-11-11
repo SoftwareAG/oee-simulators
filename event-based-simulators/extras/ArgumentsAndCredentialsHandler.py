@@ -6,11 +6,15 @@ from c8y_api import CumulocityApi
 
 
 def argumentsParser():
-    parser = argparse.ArgumentParser(description='Script to export or import profiles data')
+    parser = argparse.ArgumentParser(
+        description='Script to export or import profiles data')
     parser.add_argument('--device-id', '-i', type=str, help='Input device id')
-    parser.add_argument('--create-from', '-f', type=str, help='Input "create from" milestone')
-    parser.add_argument('--create-to', '-t', type=str, help='Input "create to" milestone')
-    parser.add_argument('--action', '-a', choices=['export', 'import'], help='"Export" or "Import" data')
+    parser.add_argument('--create-from', '-f', type=str,
+                        help='Input "create from" milestone')
+    parser.add_argument('--create-to', '-t', type=str,
+                        help='Input "create to" milestone')
+    parser.add_argument(
+        '--action', '-a', choices=['export', 'import'], help='"Export" or "Import" data')
     parser.add_argument('--data-type', '-d', choices=['measurements', 'alarms', 'all'], help='Export "alarms" or '
                                                                                              '"measurements"')
 
@@ -36,12 +40,14 @@ def argumentsParser():
 
     return DATA_TYPE, ACTION, DEVICE_ID, CREATE_FROM, CREATE_TO
 
-def handleImportArguments():
-    parser = argparse.ArgumentParser(description='Script to import profiles data')
-    parser.add_argument('--ifile', '-i', type=str, help='Input file')
-    parser.add_argument('--log', '-l', choices=['INFO', 'DEBUG'], help='Log-level')
 
-    
+def handleImportArguments():
+    parser = argparse.ArgumentParser(
+        description='Script to import profiles data')
+    parser.add_argument('--ifile', '-i', type=str, help='Input file')
+    parser.add_argument(
+        '--log', '-l', choices=['INFO', 'DEBUG'], help='Log-level')
+
     args = parser.parse_args()
     INPUT_FILE = args.ifile
     LOG_ARGUMENT = args.log
@@ -50,6 +56,7 @@ def handleImportArguments():
         LOG_LEVEL = logging.DEBUG
 
     return INPUT_FILE, LOG_LEVEL
+
 
 def c8yPlatformConnection():
     C8Y_BASE = Environment.C8Y_BASE

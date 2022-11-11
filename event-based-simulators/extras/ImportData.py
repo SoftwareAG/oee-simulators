@@ -30,34 +30,44 @@ MEASUREMENTS_HEADERS = {
     'Authorization': 'Basic ' + user_and_pass
 }
 
+
 def getDeviceIdByExternalId(external_id):
     log.info(f'Searching for device with ext ID {external_id}')
-    response = requests.get(f'{Environment.C8Y_BASE}/identity/externalIds/{C8Y_PROFILE_GROUP}/{external_id}', headers=C8Y_HEADERS)
+    response = requests.get(
+        f'{Environment.C8Y_BASE}/identity/externalIds/{C8Y_PROFILE_GROUP}/{external_id}', headers=C8Y_HEADERS)
     if response.ok:
         device_id = response.json()['managedObject']['id']
-        log.info(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
+        log.info(
+            f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
         return device_id
-    log.warning(f'No device has been found for the external id "{C8Y_PROFILE_GROUP}/{external_id}".')
+    log.warning(
+        f'No device has been found for the external id "{C8Y_PROFILE_GROUP}/{external_id}".')
     return None
+
 
 def createAlarm(alarm):
-    response = requests.post(f'{Environment.C8Y_BASE}/alarm/alarms', headers=C8Y_HEADERS, data=json.dumps(alarm))
+    response = requests.post(
+        f'{Environment.C8Y_BASE}/alarm/alarms', headers=C8Y_HEADERS, data=json.dumps(alarm))
     if response.ok:
         return response.json()
     log.warning(response)
     return None
 
+
 def createMeasurements(measurements):
-    response = requests.post(f'{Environment.C8Y_BASE}/measurement/measurements', headers=MEASUREMENTS_HEADERS, data=json.dumps(measurements))
+    response = requests.post(f'{Environment.C8Y_BASE}/measurement/measurements',
+                             headers=MEASUREMENTS_HEADERS, data=json.dumps(measurements))
     if response.ok:
         return response.json()
     log.warning(response)
     return None
+
 
 def getTimeDifference(object, key):
     creation_Time = datetime.strptime(object[key], format)
     now = datetime.utcnow()
     return (now - creation_Time)
+
 
 def deleteUnwantedFields(alarm):
     del alarm['lastUpdated']
@@ -66,6 +76,7 @@ def deleteUnwantedFields(alarm):
     del alarm['history']
     return alarm
 
+
 def importAlarms(alarms, id):
     log.debug('Importing all alarms')
     log.debug(f'Alarms:{alarms}')
@@ -73,21 +84,25 @@ def importAlarms(alarms, id):
     for alarm in alarms:
         alarm['source']['id'] = id
         alarm = deleteUnwantedFields(alarm)
-        alarm['time'] = (datetime.strptime(alarm['time'], format) + timeShift).strftime(format)
+        alarm['time'] = (datetime.strptime(
+            alarm['time'], format) + timeShift).strftime(format)
         log.debug(f'Posting Alarm for device {id}: {alarm}')
         createAlarm(alarm)
+
 
 def importMeasurements(measurements, id):
     log.debug('Importing all measurements')
     log.debug(f'Measurements: {measurements}')
     timeShift = getTimeDifference(measurements[len(measurements)-1], 'time')
     for i in range(len(measurements)):
-        measurements[i]['time'] = (datetime.strptime(measurements[i]['time'], format) + timeShift).strftime(format)
+        measurements[i]['time'] = (datetime.strptime(
+            measurements[i]['time'], format) + timeShift).strftime(format)
         measurements[i]['source']['id'] = id
     measurements_object = {
-        "measurements":measurements
+        "measurements": measurements
     }
     createMeasurements(measurements=measurements_object)
+
 
 def load(filename):
     try:
@@ -97,10 +112,12 @@ def load(filename):
         log.error(e, type(e))
         return {}
 
+
 def extract_ext_id_from_filepath(filepath):
     filename = os.path.basename(filepath)
     return filename.split('.')[0]
-    
+
+
 if __name__ == '__main__':
     filepath, log_level = ArgumentsAndCredentialsHandler.handleImportArguments()
     logging.basicConfig(level=log_level, format=log_format)
@@ -113,10 +130,10 @@ if __name__ == '__main__':
     id = getDeviceIdByExternalId(external_id=external_id)
 
     if len(alarms) > 0:
-        importAlarms(alarms = alarms, id = id)
+        importAlarms(alarms=alarms, id=id)
     else:
         log.info("No Alarms to import")
     if len(measurements) > 0:
-        importMeasurements(measurements = measurements, id = id)
+        importMeasurements(measurements=measurements, id=id)
     else:
         log.info("No Measurements to import")
