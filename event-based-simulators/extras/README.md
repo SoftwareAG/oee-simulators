@@ -42,8 +42,11 @@ optional arguments:\
 ## Run the import script
 The [Import Script](./ImportData.py) can be used to import alarms and measurements into cumulocity. The [Export Script](./ExportOrImportProfileData.py) can be used to export a file for any managed object. This exact file can then be used for the import.
 ```shell
-ImportData.py [-h] [--ifile INPUTFILE] [--log {DEBUG, INFO}]
+ImportData.py [-h] [--ifile INPUTFILE] [--log {DEBUG, INFO}] [--username C8Y_USERNAME] [--password C8Y_PASSWORD] [--baseurl C8Y_BASEURL] [--tenant C8Y_TENANT_ID]
 ```
+### Credentials Arguments
+Credentials for the C8Y instance can be handed to the script using cli arguments as shown in the example above. The script will try to extract the crendentials from the [Environment File](./Environment.py) if no credentials are presented as arguments.
+
 ### Logging
 Log-level: two log level can be set using the --log argument {DEBUG, INFO}. Log-level INFO is default. DEBUG can be used to get more output of the script execution.
 
@@ -57,4 +60,4 @@ The schema of the inputfile is:
   "measurements":[]
 }
 ```
-Example files can be found [here](./export_data/)
+Example files can be found [here](./export_data/).
