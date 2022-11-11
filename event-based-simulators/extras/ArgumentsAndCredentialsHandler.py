@@ -1,5 +1,6 @@
 import argparse
 import Environment
+import logging
 
 from c8y_api import CumulocityApi
 
@@ -34,6 +35,24 @@ def argumentsParser():
         CREATE_TO = Environment.CREATE_TO
 
     return DATA_TYPE, ACTION, DEVICE_ID, CREATE_FROM, CREATE_TO
+
+def handleImportArguments():
+    parser = argparse.ArgumentParser(description='Script to import profiles data')
+    parser.add_argument('--ifile', '-i', type=str, help='Input file')
+    parser.add_argument('--log', '-l', choices=['INFO', 'DEBUG'], help='Log-level')
+
+    
+    args = parser.parse_args()
+    print(args)
+    INPUT_FILE = args.ifile
+    LOG_ARGUMENT = args.log
+    LOG_LEVEL = logging.INFO
+    print(LOG_ARGUMENT)
+    if LOG_ARGUMENT == 'DEBUG':
+        LOG_LEVEL = logging.DEBUG
+        
+
+    return INPUT_FILE, LOG_LEVEL
 
 
 def c8yPlatformConnection():

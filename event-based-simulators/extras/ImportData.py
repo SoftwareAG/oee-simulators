@@ -7,11 +7,11 @@ import json
 import requests
 import os
 from datetime import datetime
+import argparse
 
 import sys, getopt
 
 log_format = '[%(asctime)s] [%(levelname)s] - %(message)s'
-logging.basicConfig(level=logging.DEBUG, format=log_format)
 log = logging.getLogger('ImportData')
 c8y = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
 format = "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -52,8 +52,6 @@ def createAlarm(alarm):
     return None
 
 def createMeasurements(measurements):
-    #content-type: application/vnd.com.nsn.cumulocity.measurementcollection+json
-    #measurements[]
     response = requests.post(f'{Environment.C8Y_BASE}/measurement/measurements', headers=MEASUREMENTS_HEADERS, data=json.dumps(measurements))
     if response.ok:
         return response.json()
@@ -78,6 +76,8 @@ def deleteUnwantedFields(alarm):
     return alarm
 
 def importAlarms(alarms, id):
+    log.debug('Importing all alarms')
+    log.deubg(f'Alarms:{alarms}')
     timeShift = getTimeDifference(alarms[0], 'creationTime')
     alarms = replaceID(alarms, id)
     for alarm in alarms:
@@ -86,23 +86,17 @@ def importAlarms(alarms, id):
         log.debug(f'Posting Alarm for device {id}: {alarm}')
         createAlarm(alarm)
 
-    #get device by external id
-    #add alarms for this device
-    #replace ids with device id
-    log.info('Importing all alarms')
-
 def importMeasurements(measurements, id):
-    log.info("Importing all measurements")
+    log.debug('Importing all measurements')
+    log.debug(f'Measurements: {measurements}')
     timeShift = getTimeDifference(measurements[len(measurements)-1], 'time')
     for i in range(len(measurements)):
         measurements[i]['time'] = (datetime.strptime(measurements[i]['time'], format) + timeShift).strftime(format)
         measurements[i]['source']['id'] = id
-    #log.info(json.dumps(measurements))
     bodyObject = {
         "measurements":measurements
     }
-    response = createMeasurements(measurements=bodyObject)
-    log.info(response)
+    createMeasurements(measurements=bodyObject)
 
 
 def load(filename):
@@ -117,19 +111,9 @@ def extract_ext_id_from_filepath(filepath):
     filename = os.path.basename(filepath)
     return filename[:len(filename)-5]
     
-def main(argv):
-    filepath = ''
-    try:
-        opts, args = getopt.getopt(argv,"hi:o:",["ifile="])
-    except getopt.GetoptError:
-        log.error('No file input presented. Use -i filepath')
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == '-h':
-            log.info('test.py -i <inputfile>')
-            sys.exit()
-        elif opt in ("-i", "--ifile"):
-            filepath = arg
+if __name__ == '__main__':
+    filepath, log_level = ArgumentsAndCredentialsHandler.handleImportArguments()
+    logging.basicConfig(level=log_level, format=log_format)
 
     file_data = load(filepath)
     external_id = extract_ext_id_from_filepath(filepath)
@@ -146,7 +130,4 @@ def main(argv):
         importMeasurements(measurements = measurements, id = id)
     else:
         log.info("No Measurements to import")
-    #add import for measurements
-    
-if __name__ == "__main__":
-   main(sys.argv[1:])
+    log.debug('Finished :)')
