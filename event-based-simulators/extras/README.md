@@ -15,6 +15,14 @@ Required:
 Optional:
 - data type
 - device id
+- create from
+- create to
+- time unit
+- period to export
+
+Notice: 
+- if **'create from'** and **'create to'** are set, set **'time unit'** and **'period to export'** to **None**, and vice versa.
+- if you would like to export all data from every child devices, set **'device id'** to **None**
 
 ## Install cumulocity-python-api package
 Follow the instructions in: https://github.com/SoftwareAG/cumulocity-python-api
