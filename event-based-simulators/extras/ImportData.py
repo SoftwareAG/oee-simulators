@@ -85,11 +85,10 @@ def importMeasurements(measurements, id):
     for i in range(len(measurements)):
         measurements[i]['time'] = (datetime.strptime(measurements[i]['time'], format) + timeShift).strftime(format)
         measurements[i]['source']['id'] = id
-    bodyObject = {
+    measurements_object = {
         "measurements":measurements
     }
-    createMeasurements(measurements=bodyObject)
-
+    createMeasurements(measurements=measurements_object)
 
 def load(filename):
     try:
@@ -101,7 +100,7 @@ def load(filename):
 
 def extract_ext_id_from_filepath(filepath):
     filename = os.path.basename(filepath)
-    return filename[:len(filename)-5]
+    return filename.split('.')[0]
     
 if __name__ == '__main__':
     filepath, log_level = ArgumentsAndCredentialsHandler.handleImportArguments()
@@ -109,7 +108,7 @@ if __name__ == '__main__':
 
     file_data = load(filepath)
     external_id = extract_ext_id_from_filepath(filepath)
-    log.info(f'external id: {extract_ext_id_from_filepath(filepath)}')
+    log.debug(f'external id: {extract_ext_id_from_filepath(filepath)}')
     alarms = file_data.get("alarms", [])
     measurements = file_data.get("measurements", [])
     id = getDeviceIdByExternalId(external_id=external_id)
