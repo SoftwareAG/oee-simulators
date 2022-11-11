@@ -1,7 +1,6 @@
-import base64,json, logging, os, sys, requests
+import json, logging, os, sys, requests, base64
 
-import ArgumentsAndCredentialsHandler
-import Environment
+import ArgumentsAndCredentialsHandler, Environment
 
 from datetime import datetime, timedelta, timezone
 
@@ -27,25 +26,21 @@ C8Y_HEADERS = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + user_and_pass
 }
-
-
-#####################################################
+####################################################
 
 
 def exportAllProfileDataFromChildDevices(c8y, DATA_TYPE, createFrom, createTo):
-    # Loop through the list of device in Device management
-    try:
-        deviceManagedObject = c8y.device_inventory.select(type="c8y_EventBasedSimulator")
-    except:
-        logger.error(
-            "Connection to Cumulocity platform failed. Check your required parameters in environment file again")
-        sys.exit()
-
+    deviceCount = 0
+    deviceManagedObject = c8y.device_inventory.select(type="c8y_EventBasedSimulator")
     for device in deviceManagedObject:
+        deviceCount += 1
         logger.info(f"Found device '{device.name}', id: #{device.id}, "
                     f"owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
         logger.info(f"List of {device.name}'s child devices: ")
+
+        childDeviceCount = 0
         for childDevice in device.child_devices:
+            childDeviceCount += 1
             logger.info(f"Child device {childDevice.name}, id #{childDevice.id}")
             filePath = createFilePathFromExternalId(childDevice.id)
             if DATA_TYPE == "alarms":
@@ -54,7 +49,6 @@ def exportAllProfileDataFromChildDevices(c8y, DATA_TYPE, createFrom, createTo):
                 appendDataToJsonFile([], filePath, 'measurements')
                 logger.info(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
             elif DATA_TYPE == "measurements":
-                # listing measurements of child device
                 jsonMeasurementsList = listMeasurements(c8y, childDevice, createFrom, createTo)
                 appendDataToJsonFile(jsonMeasurementsList, filePath, DATA_TYPE)
                 appendDataToJsonFile([], filePath, 'alarms')
@@ -65,6 +59,11 @@ def exportAllProfileDataFromChildDevices(c8y, DATA_TYPE, createFrom, createTo):
                 jsonMeasurementsList = listMeasurements(c8y, childDevice, createFrom, createTo)
                 appendDataToJsonFile(jsonMeasurementsList, filePath, DATA_TYPE)
                 logger.info(f"Alarms and Measurements data is added to data file at {filePath}")
+        if childDeviceCount == 0:
+            logger.debug(f"No child device of device {device.name}, id #{device.id} found")
+
+    if deviceCount == 0:
+        logger.debug(f"No device in tenant {Environment.C8Y_TENANT} found")
 
 
 def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, DEVICE_ID):
@@ -98,14 +97,20 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
 
 
 def findDeviceNameById(DEVICE_ID):
-    try:
-        response = requests.get(f'{Environment.C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}',
-                                headers=C8Y_HEADERS)
-        deviceName = response.json()['name']
-    except:
+
+    response = requests.get(f'{Environment.C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}',
+                            headers=C8Y_HEADERS)
+    if not response.ok:
         logger.error(
-            "Connection to Cumulocity platform failed. Check your required parameters in environment file again")
+            f"Connection to url '{Environment.C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}' failed. Check your parameters in environment file again")
         sys.exit()
+    else:
+        try:
+            deviceName = response.json()['name']
+        except:
+            logger.error(f"Device #{DEVICE_ID} does not have name")
+            sys.exit()
+
     return deviceName
 
 
@@ -138,13 +143,19 @@ def appendDataToJsonFile(jsonDataList, filePath, data_type, json_data={}):
 
 
 def createFilePathFromExternalId(deviceId):
-    try:
-        externalIdResponse = requests.get(f'{Environment.C8Y_BASE}/identity/globalIds/{deviceId}/externalIds',
-                                          headers=C8Y_HEADERS)
-        deviceExternalId = externalIdResponse.json()['externalIds'][0]['externalId']
-    except:
-        logger.error(f"Could not find external id for the device with id {deviceId}")
+
+    externalIdResponse = requests.get(f'{Environment.C8Y_BASE}/identity/globalIds/{deviceId}/externalIds',
+                                      headers=C8Y_HEADERS)
+    if not externalIdResponse.ok:
+        logger.error(
+            f"Connection to url '{Environment.C8Y_BASE}/identity/globalIds/{deviceId}/externalIds' failed. Check your parameters in environment file again")
         sys.exit()
+    else:
+        try:
+            deviceExternalId = externalIdResponse.json()['externalIds'][0]['externalId']
+        except:
+            logger.error(f"Could not find external id for the device with id {deviceId}")
+            sys.exit()
 
     # Check if folder containing data files exists and make one if not
     if not os.path.exists('export_data'):
@@ -180,6 +191,14 @@ def SetTimePeriodToExportData(CREATE_FROM, CREATE_TO):
 # Main function to run the script
 if __name__ == '__main__':
     c8y = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
+    # Check if connection to tenant can be created
+    try:
+        requests.get(f'{Environment.C8Y_BASE}/tenant/currentTenant', headers=C8Y_HEADERS)
+        logger.debug(f"Connect to tenant {Environment.C8Y_TENANT} successfully")
+    except:
+        logger.debug(f"Connect to tenant {Environment.C8Y_TENANT} failed")
+        sys.exit()
+
     DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO = ArgumentsAndCredentialsHandler.argumentsParser()
 
     createFrom, createTo = SetTimePeriodToExportData(CREATE_FROM, CREATE_TO)

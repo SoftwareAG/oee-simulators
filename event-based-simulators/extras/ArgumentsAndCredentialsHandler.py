@@ -43,5 +43,4 @@ def c8yPlatformConnection():
                         tenant_id=C8Y_TENANT,  # the tenant ID of your Cumulocity tenant here
                         username=C8Y_USER,  # your Cumulocity IoT username
                         password=C8Y_PASSWORD)  # your Cumulocity IoT password
-
     return c8y
