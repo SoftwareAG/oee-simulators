@@ -60,11 +60,6 @@ def getTimeDifference(object, key):
     now = datetime.utcnow()
     return (now - creation_Time)
 
-def replaceID(alarms, id):
-    for alarm in alarms:
-        alarm['source']['id'] = id
-    return alarms
-
 def deleteUnwantedFields(alarm):
     del alarm['lastUpdated']
     del alarm['count']
@@ -74,10 +69,10 @@ def deleteUnwantedFields(alarm):
 
 def importAlarms(alarms, id):
     log.debug('Importing all alarms')
-    log.deubg(f'Alarms:{alarms}')
+    log.debug(f'Alarms:{alarms}')
     timeShift = getTimeDifference(alarms[0], 'creationTime')
-    alarms = replaceID(alarms, id)
     for alarm in alarms:
+        alarm['source']['id'] = id
         alarm = deleteUnwantedFields(alarm)
         alarm['time'] = (datetime.strptime(alarm['time'], format) + timeShift).strftime(format)
         log.debug(f'Posting Alarm for device {id}: {alarm}')
@@ -127,4 +122,3 @@ if __name__ == '__main__':
         importMeasurements(measurements = measurements, id = id)
     else:
         log.info("No Measurements to import")
-    log.debug('Finished :)')
