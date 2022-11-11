@@ -60,8 +60,8 @@ def createMeasurements(measurements):
     log.warning(response)
     return None
 
-def getTimeDifference(alarms, key):
-    creation_Time = datetime.strptime(alarms[0][key], format)
+def getTimeDifference(object, key):
+    creation_Time = datetime.strptime(object[key], format)
     now = datetime.utcnow()
     return (now - creation_Time)
 
@@ -78,7 +78,7 @@ def deleteUnwantedFields(alarm):
     return alarm
 
 def importAlarms(alarms, id):
-    timeShift = getTimeDifference(alarms, 'creationTime')
+    timeShift = getTimeDifference(alarms[0], 'creationTime')
     alarms = replaceID(alarms, id)
     for alarm in alarms:
         alarm = deleteUnwantedFields(alarm)
@@ -93,7 +93,7 @@ def importAlarms(alarms, id):
 
 def importMeasurements(measurements, id):
     log.info("Importing all measurements")
-    timeShift = getTimeDifference(measurements, 'time')
+    timeShift = getTimeDifference(measurements[len(measurements)-1], 'time')
     for i in range(len(measurements)):
         measurements[i]['time'] = (datetime.strptime(measurements[i]['time'], format) + timeShift).strftime(format)
         measurements[i]['source']['id'] = id
