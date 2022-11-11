@@ -38,40 +38,13 @@ def exportAllProfileDataFromChildDevices(c8y, DATA_TYPE, createFrom, createTo):
                     f"owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
         print(f"Found device '{device.name}', id: #{device.id} ")
         logger.info(f"List of {device.name}'s child devices: ")
-
-        childDeviceCount = 0
+        print(f"List of {device.name}'s child devices: ")
         for childDevice in device.child_devices:
-            childDeviceCount += 1
-            logger.info(f"Child device {childDevice.name}, id #{childDevice.id}")
-            print(f"Child device {childDevice.name}, id #{childDevice.id}")
-            deviceExternalId, deviceExternalIdType = checkDeviceExternalIdById(childDevice.id)
-            if not deviceExternalId:
-                continue
-            if isExternalIdHasEventBasedSimulatorProfileType(deviceExternalIdType):
-                filePath = createFilePath(fileName=deviceExternalId)
-            else:
-                continue
-            if DATA_TYPE == "alarms":
-                jsonAlarmsList = listAlarms(c8y, childDevice, createFrom, createTo)
-                appendDataToJsonFile(jsonAlarmsList, filePath, DATA_TYPE)
-                appendDataToJsonFile([], filePath, 'measurements')
-                logger.info(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
-            elif DATA_TYPE == "measurements":
-                jsonMeasurementsList = listMeasurements(c8y, childDevice, createFrom, createTo)
-                appendDataToJsonFile(jsonMeasurementsList, filePath, DATA_TYPE)
-                appendDataToJsonFile([], filePath, 'alarms')
-                logger.info(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
-            else:
-                jsonAlarmsList = listAlarms(c8y, childDevice, createFrom, createTo)
-                appendDataToJsonFile(jsonAlarmsList, filePath, 'alarms')
-                jsonMeasurementsList = listMeasurements(c8y, childDevice, createFrom, createTo)
-                appendDataToJsonFile(jsonMeasurementsList, filePath, 'measurements')
-                logger.info(f"Alarms and Measurements data is added to data file at {filePath}")
-        if childDeviceCount == 0:
-            logger.debug(f"No child device of device {device.name}, id #{device.id} found")
+            ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, childDevice.id)
 
     if deviceCount == 0:
         logger.debug(f"No device in tenant {Environment.C8Y_TENANT} found")
+        print(f"No device in tenant {Environment.C8Y_TENANT} found")
 
 
 def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, DEVICE_ID):
@@ -79,12 +52,13 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
     deviceCount = 0
     deviceExternalId, deviceExternalIdType = checkDeviceExternalIdById(DEVICE_ID)
     if not deviceExternalId:
-        sys.exit()
+        return
     if isExternalIdHasEventBasedSimulatorProfileType(deviceExternalIdType):
         filePath = createFilePath(fileName=deviceExternalId)
     else:
-        sys.exit()
-    logger.info(f"Search for {DATA_TYPE} data from device {DEVICE_ID} ")
+        return
+    logger.info(f"Search for {DATA_TYPE} data from device {deviceName}, id #{DEVICE_ID} ")
+    print(f"Search for {DATA_TYPE} data from device {deviceName}, id #{DEVICE_ID} ")
     for device in c8y.device_inventory.select(name=deviceName):
         deviceCount += 1
         logger.info(f"Child device {device.name}, id #{device.id}")
@@ -108,6 +82,7 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
 
     if deviceCount == 0:
         logger.debug(f"No device with id {DEVICE_ID} found")
+    return
 
 
 def findDeviceNameById(DEVICE_ID):
@@ -130,7 +105,6 @@ def findDeviceNameById(DEVICE_ID):
 def listAlarms(c8y, device, createFrom, createTo):
     jsonAlarmsList = []
     # Create a count variable as a json/dict key to save json data
-    print(jsonAlarmsList)
     count = 0
     for alarm in c8y.alarms.select(source=device.id, created_after=createFrom, created_before=createTo):
         logger.info(
@@ -177,6 +151,7 @@ def checkDeviceExternalIdById(deviceId):
         deviceExternalIdType = externalIdResponse.json()['externalIds'][0]['type']
     except:
         logger.error(f"Could not find external id for the device with id {deviceId}")
+        print(f"Could not find external id for the device with id {deviceId}")
         return None, None
 
     return deviceExternalId, deviceExternalIdType
