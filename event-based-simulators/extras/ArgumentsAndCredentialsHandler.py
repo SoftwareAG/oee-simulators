@@ -43,11 +43,9 @@ def handleImportArguments():
 
     
     args = parser.parse_args()
-    print(args)
     INPUT_FILE = args.ifile
     LOG_ARGUMENT = args.log
     LOG_LEVEL = logging.INFO
-    print(LOG_ARGUMENT)
     if LOG_ARGUMENT == 'DEBUG':
         LOG_LEVEL = logging.DEBUG
         
