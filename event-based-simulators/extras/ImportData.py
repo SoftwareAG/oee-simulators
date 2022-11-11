@@ -1,4 +1,5 @@
 import logging
+import urllib
 
 import ArgumentsAndCredentialsHandler
 import base64
@@ -35,8 +36,9 @@ MEASUREMENTS_HEADERS = {
 
 def getDeviceIdByExternalId(external_id):
     log.info(f'Searching for device with ext ID {external_id}')
+    encoded_external_id = encodeUrl(external_id)
     response = requests.get(
-        f'{c8y_baseurl}/identity/externalIds/{C8Y_PROFILE_GROUP}/{external_id}', headers=C8Y_HEADERS)
+        f'{c8y_baseurl}/identity/externalIds/{C8Y_PROFILE_GROUP}/{encoded_external_id}', headers=C8Y_HEADERS)
     if response.ok:
         device_id = response.json()['managedObject']['id']
         log.info(
@@ -118,6 +120,11 @@ def load(filename):
 def extract_ext_id_from_filepath(filepath):
     filename = os.path.basename(filepath)
     return filename.split('.')[0]
+
+
+def encodeUrl(url):
+    encodedUrl = urllib.parse.quote(url.encode('utf8'))
+    return encodedUrl
 
 
 if __name__ == '__main__':
