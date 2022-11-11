@@ -1,7 +1,6 @@
 import logging
 
 import ArgumentsAndCredentialsHandler
-import Environment
 import base64
 import json
 import requests
@@ -9,13 +8,16 @@ import os
 from datetime import datetime
 
 log_format = '[%(asctime)s] [%(levelname)s] - %(message)s'
-log = logging.getLogger('ImportData')
 format = "%Y-%m-%dT%H:%M:%S.%fZ"
-
+c8y_username, c8y_password, c8y_baseurl, c8y_tenant = '','','',''
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
 
+filepath, log_level, c8y_username, c8y_password, c8y_baseurl, c8y_tenant = ArgumentsAndCredentialsHandler.handleImportArguments()
+log = logging.getLogger('ImportData')
+logging.basicConfig(level=log_level, format=log_format)
+
 user_and_pass_bytes = base64.b64encode(
-    (Environment.C8Y_TENANT + "/" + Environment.C8Y_USER + ':' + Environment.C8Y_PASSWORD).encode('ascii'))  # bytes
+    (c8y_tenant + "/" + c8y_username + ':' + c8y_password).encode('ascii'))  # bytes
 user_and_pass = user_and_pass_bytes.decode('ascii')  # decode to str
 
 C8Y_HEADERS = {
@@ -34,7 +36,7 @@ MEASUREMENTS_HEADERS = {
 def getDeviceIdByExternalId(external_id):
     log.info(f'Searching for device with ext ID {external_id}')
     response = requests.get(
-        f'{Environment.C8Y_BASE}/identity/externalIds/{C8Y_PROFILE_GROUP}/{external_id}', headers=C8Y_HEADERS)
+        f'{c8y_baseurl}/identity/externalIds/{C8Y_PROFILE_GROUP}/{external_id}', headers=C8Y_HEADERS)
     if response.ok:
         device_id = response.json()['managedObject']['id']
         log.info(
@@ -47,7 +49,7 @@ def getDeviceIdByExternalId(external_id):
 
 def createAlarm(alarm):
     response = requests.post(
-        f'{Environment.C8Y_BASE}/alarm/alarms', headers=C8Y_HEADERS, data=json.dumps(alarm))
+        f'{c8y_baseurl}/alarm/alarms', headers=C8Y_HEADERS, data=json.dumps(alarm))
     if response.ok:
         return response.json()
     log.warning(response)
@@ -55,7 +57,7 @@ def createAlarm(alarm):
 
 
 def createMeasurements(measurements):
-    response = requests.post(f'{Environment.C8Y_BASE}/measurement/measurements',
+    response = requests.post(f'{c8y_baseurl}/measurement/measurements',
                              headers=MEASUREMENTS_HEADERS, data=json.dumps(measurements))
     if response.ok:
         return response.json()
@@ -119,9 +121,6 @@ def extract_ext_id_from_filepath(filepath):
 
 
 if __name__ == '__main__':
-    filepath, log_level = ArgumentsAndCredentialsHandler.handleImportArguments()
-    logging.basicConfig(level=log_level, format=log_format)
-
     file_data = load(filepath)
     external_id = extract_ext_id_from_filepath(filepath)
     log.debug(f'external id: {extract_ext_id_from_filepath(filepath)}')

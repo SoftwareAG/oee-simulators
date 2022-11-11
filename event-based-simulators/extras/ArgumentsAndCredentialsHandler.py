@@ -47,6 +47,14 @@ def handleImportArguments():
     parser.add_argument('--ifile', '-i', type=str, help='Input file')
     parser.add_argument(
         '--log', '-l', choices=['INFO', 'DEBUG'], help='Log-level')
+    parser.add_argument(
+        '--username', '-u', type=str, help='C8Y Username')
+    parser.add_argument(
+        '--password', '-p', type=str, help='C8Y Password')
+    parser.add_argument(
+        '--baseurl', '-b', type=str, help='C8Y Baseurl')
+    parser.add_argument(
+        '--tenant', '-t', type=str, help='C8Y TenantID')
 
     args = parser.parse_args()
     INPUT_FILE = args.ifile
@@ -55,7 +63,23 @@ def handleImportArguments():
     if LOG_ARGUMENT == 'DEBUG':
         LOG_LEVEL = logging.DEBUG
 
-    return INPUT_FILE, LOG_LEVEL
+    USERNAME = args.username
+    if not USERNAME:
+        USERNAME = Environment.C8Y_USER
+
+    PASSWORD = args.password
+    if not PASSWORD:
+        PASSWORD = Environment.C8Y_PASSWORD
+    
+    BASEURL = args.baseurl
+    if not BASEURL:
+        BASEURL = Environment.C8Y_BASE
+    
+    TENANT = args.tenant
+    if not TENANT:
+        TENANT = Environment.C8Y_TENANT
+
+    return INPUT_FILE, LOG_LEVEL, USERNAME, PASSWORD, BASEURL, TENANT
 
 
 def c8yPlatformConnection():
