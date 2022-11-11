@@ -7,9 +7,6 @@ import json
 import requests
 import os
 from datetime import datetime
-import argparse
-
-import sys, getopt
 
 log_format = '[%(asctime)s] [%(levelname)s] - %(message)s'
 log = logging.getLogger('ImportData')
