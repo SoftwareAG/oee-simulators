@@ -1,16 +1,9 @@
-import base64
-import json
-import logging
-import os
-import sys
-
-import requests
+import base64,json, logging, os, sys, requests
 
 import ArgumentsAndCredentialsHandler
 import Environment
 
 from datetime import datetime, timedelta, timezone
-from os.path import isfile, join
 
 ####################################################
 if not os.path.exists('logs'):

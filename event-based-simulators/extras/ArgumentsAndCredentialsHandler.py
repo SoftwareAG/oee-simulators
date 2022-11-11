@@ -1,4 +1,5 @@
 import argparse
+
 import Environment
 
 from c8y_api import CumulocityApi
