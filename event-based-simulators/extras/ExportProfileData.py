@@ -36,14 +36,20 @@ def exportAllProfileDataFromChildDevices(c8y, DATA_TYPE, createFrom, createTo):
         deviceCount += 1
         logger.info(f"Found device '{device.name}', id: #{device.id}, "
                     f"owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
+        print(f"Found device '{device.name}', id: #{device.id} ")
         logger.info(f"List of {device.name}'s child devices: ")
 
         childDeviceCount = 0
         for childDevice in device.child_devices:
             childDeviceCount += 1
             logger.info(f"Child device {childDevice.name}, id #{childDevice.id}")
-            filePath = createFilePathFromExternalId(childDevice.id)
-            if not filePath:
+            print(f"Child device {childDevice.name}, id #{childDevice.id}")
+            deviceExternalId, deviceExternalIdType = checkDeviceExternalIdById(childDevice.id)
+            if not deviceExternalId:
+                continue
+            if isExternalIdHasEventBasedSimulatorProfileType(deviceExternalIdType):
+                filePath = createFilePath(fileName=deviceExternalId)
+            else:
                 continue
             if DATA_TYPE == "alarms":
                 jsonAlarmsList = listAlarms(c8y, childDevice, createFrom, createTo)
@@ -71,8 +77,12 @@ def exportAllProfileDataFromChildDevices(c8y, DATA_TYPE, createFrom, createTo):
 def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, DEVICE_ID):
     deviceName = findDeviceNameById(DEVICE_ID)
     deviceCount = 0
-    filePath = createFilePathFromExternalId(DEVICE_ID)
-    if not filePath:
+    deviceExternalId, deviceExternalIdType = checkDeviceExternalIdById(DEVICE_ID)
+    if not deviceExternalId:
+        sys.exit()
+    if isExternalIdHasEventBasedSimulatorProfileType(deviceExternalIdType):
+        filePath = createFilePath(fileName=deviceExternalId)
+    else:
         sys.exit()
     logger.info(f"Search for {DATA_TYPE} data from device {DEVICE_ID} ")
     for device in c8y.device_inventory.select(name=deviceName):
@@ -101,7 +111,6 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
 
 
 def findDeviceNameById(DEVICE_ID):
-
     response = requests.get(f'{Environment.C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}',
                             headers=C8Y_HEADERS)
     if not response.ok:
@@ -118,8 +127,10 @@ def findDeviceNameById(DEVICE_ID):
     return deviceName
 
 
-def listAlarms(c8y, device, createFrom, createTo, jsonAlarmsList=[]):
+def listAlarms(c8y, device, createFrom, createTo):
+    jsonAlarmsList = []
     # Create a count variable as a json/dict key to save json data
+    print(jsonAlarmsList)
     count = 0
     for alarm in c8y.alarms.select(source=device.id, created_after=createFrom, created_before=createTo):
         logger.info(
@@ -129,7 +140,8 @@ def listAlarms(c8y, device, createFrom, createTo, jsonAlarmsList=[]):
     return jsonAlarmsList
 
 
-def listMeasurements(c8y, device, createFrom, createTo, jsonMeasurementsList=[]):
+def listMeasurements(c8y, device, createFrom, createTo):
+    jsonMeasurementsList = []
     # Create a count variable as a json/dict key to save json data
     count = 0
     for measurement in c8y.measurements.select(source=device.id, after=createFrom, before=createTo):
@@ -146,8 +158,7 @@ def appendDataToJsonFile(jsonDataList, filePath, data_type, json_data={}):
         json.dump(json_data, f, indent=2)
 
 
-def createFilePathFromExternalId(deviceId):
-
+def getExternalIdReponse(deviceId):
     externalIdResponse = requests.get(f'{Environment.C8Y_BASE}/identity/globalIds/{deviceId}/externalIds',
                                       headers=C8Y_HEADERS)
     if not externalIdResponse.ok:
@@ -155,18 +166,39 @@ def createFilePathFromExternalId(deviceId):
             f"Connection to url '{Environment.C8Y_BASE}/identity/globalIds/{deviceId}/externalIds' failed. Check your parameters in environment file again")
         sys.exit()
     else:
-        try:
-            deviceExternalId = externalIdResponse.json()['externalIds'][0]['externalId']
-        except:
-            logger.error(f"Could not find external id for the device with id {deviceId}")
-            return None
+        return externalIdResponse
 
+
+def checkDeviceExternalIdById(deviceId):
+    externalIdResponse = getExternalIdReponse(deviceId)
+
+    try:
+        deviceExternalId = externalIdResponse.json()['externalIds'][0]['externalId']
+        deviceExternalIdType = externalIdResponse.json()['externalIds'][0]['type']
+    except:
+        logger.error(f"Could not find external id for the device with id {deviceId}")
+        return None, None
+
+    return deviceExternalId, deviceExternalIdType
+
+
+def isExternalIdHasEventBasedSimulatorProfileType(deviceExternalIdType):
+
+    if deviceExternalIdType == "c8y_EventBasedSimulatorProfile":
+        return True
+    else:
+        logger.debug(f"The type {deviceExternalIdType} of external ID must be c8y_EventBasedSimulatorProfile")
+        print(f"The type {deviceExternalIdType} of external ID must be c8y_EventBasedSimulatorProfile")
+        return False
+
+
+def createFilePath(fileName):
     # Check if folder containing data files exists and make one if not
     if not os.path.exists('export_data'):
         os.makedirs('export_data')
-    relativeFilePath = f'export_data\{deviceExternalId}.json'
+    relativeFilePath = f'export_data\{fileName}.json'
     filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
-    logger.info(f"Log file path for device {deviceExternalId}, id #{deviceId}: {filePath}")
+    logger.info(f"Created successfully file path: {filePath}")
     return filePath
 
 

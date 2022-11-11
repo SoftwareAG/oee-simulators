@@ -1,0 +1,117 @@
+2022-11-11 14:03:07,446 DEBUG Connect to tenant t1249145768 successfully
+2022-11-11 14:03:07,447 DEBUG Export data which is created after/from: 2022-11-11 10:03:07.447535+00:00
+2022-11-11 14:03:07,447 DEBUG and created before/to: 2022-11-11 14:03:07.447535+00:00
+2022-11-11 14:03:07,600 INFO Found device 'Normal #1', id: #2214, owned by service_event-based-simulators, number of children: 1, type: c8y_EventBasedSimulator
+2022-11-11 14:03:07,600 INFO List of Normal #1's child devices: 
+2022-11-11 14:03:07,600 INFO Child device Simulator Normal #1 - 1[OEE calculation profile], id #975560
+2022-11-11 14:03:07,677 INFO Created successfully file path: C:\SoftwareAG\Workspace\iotapp\OEEworkspace\oee-simulators\event-based-simulators\extras\export_data\simulator_normal-#1.json
+2022-11-11 14:03:07,704 INFO Found alarm id #2069012, severity: MAJOR, time: 2022-11-11T12:43:19.518Z, creation time: 2022-11-11T12:43:19.553Z, update time : 2022-11-11T12:43:19.553Z
+
+2022-11-11 14:03:07,704 INFO Found alarm id #2070567, severity: MAJOR, time: 2022-11-11T11:45:05.837Z, creation time: 2022-11-11T11:45:05.863Z, update time : 2022-11-11T11:45:05.863Z
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2061912
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2066750
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2061135
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2061136
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2068210
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2070206
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2069576
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2064955
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2064956
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2065003
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2070413
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2065160
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2068566
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2070569
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2068682
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2072693
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2073392
+
+2022-11-11 14:03:08,129 INFO Found measurement id #2073393
+
+2022-11-11 14:03:08,130 INFO Found measurement id #2071964
+
+2022-11-11 14:03:08,130 INFO Found measurement id #2073505
+
+2022-11-11 14:03:08,130 INFO Found measurement id #2070870
+
+2022-11-11 14:03:08,130 INFO Found measurement id #2070871
+
+2022-11-11 14:03:08,130 INFO Found measurement id #2073666
+
+2022-11-11 14:03:08,130 INFO Found measurement id #2075665
+
+2022-11-11 14:03:08,161 INFO Alarms and Measurements data is added to data file at C:\SoftwareAG\Workspace\iotapp\OEEworkspace\oee-simulators\event-based-simulators\extras\export_data\simulator_normal-#1.json
+2022-11-11 14:03:08,161 INFO Found device 'Normal #2', id: #5106, owned by service_event-based-simulators, number of children: 1, type: c8y_EventBasedSimulator
+2022-11-11 14:03:08,161 INFO List of Normal #2's child devices: 
+2022-11-11 14:03:08,161 INFO Child device Simulator Normal #2 - 1[OEE calculation profile], id #977106
+2022-11-11 14:03:08,234 INFO Created successfully file path: C:\SoftwareAG\Workspace\iotapp\OEEworkspace\oee-simulators\event-based-simulators\extras\export_data\abc.json
+2022-11-11 14:03:08,258 INFO Found alarm id #2065600, severity: MAJOR, time: 2022-11-11T10:05:30.395Z, creation time: 2022-11-11T10:05:30.485Z, update time : 2022-11-11T10:05:30.485Z
+
+2022-11-11 14:03:08,317 INFO Found measurement id #2067012
+
+2022-11-11 14:03:08,317 INFO Found measurement id #2069589
+
+2022-11-11 14:03:08,317 INFO Found measurement id #2064964
+
+2022-11-11 14:03:08,317 INFO Found measurement id #2071475
+
+2022-11-11 14:03:08,317 INFO Found measurement id #2068786
+
+2022-11-11 14:03:08,317 INFO Found measurement id #2073434
+
+2022-11-11 14:03:08,317 INFO Found measurement id #2073612
+
+2022-11-11 14:03:08,347 INFO Alarms and Measurements data is added to data file at C:\SoftwareAG\Workspace\iotapp\OEEworkspace\oee-simulators\event-based-simulators\extras\export_data\abc.json
+2022-11-11 14:03:08,347 INFO Found device 'Normal #3', id: #3211, owned by service_event-based-simulators, number of children: 1, type: c8y_EventBasedSimulator
+2022-11-11 14:03:08,347 INFO List of Normal #3's child devices: 
+2022-11-11 14:03:08,347 INFO Child device Simulator Normal #3 - 1[OEE calculation profile], id #975561
+2022-11-11 14:03:08,430 ERROR Could not find external id for the device with id 975561
+2022-11-11 14:03:08,430 INFO Found device 'Normal with Short Shutdowns', id: #5108, owned by service_event-based-simulators, number of children: 1, type: c8y_EventBasedSimulator
+2022-11-11 14:03:08,430 INFO List of Normal with Short Shutdowns's child devices: 
+2022-11-11 14:03:08,431 INFO Child device Simulator Normal with Short Shutdowns - 1[OEE calculation profile], id #973533
+2022-11-11 14:03:08,535 DEBUG The type abc of external ID must be c8y_EventBasedSimulatorProfile
+2022-11-11 14:03:08,536 INFO Found device 'Slow Producer', id: #2215, owned by service_event-based-simulators, number of children: 1, type: c8y_EventBasedSimulator
+2022-11-11 14:03:08,536 INFO List of Slow Producer's child devices: 
+2022-11-11 14:03:08,536 INFO Child device Simulator Slow Producer - 1[OEE calculation profile], id #977108
+2022-11-11 14:03:08,834 ERROR Could not find external id for the device with id 977108
+2022-11-11 14:03:08,834 INFO Found device 'High Frequency Availability', id: #3212, owned by service_event-based-simulators, number of children: 1, type: c8y_EventBasedSimulator
+2022-11-11 14:03:08,834 INFO List of High Frequency Availability's child devices: 
+2022-11-11 14:03:08,834 INFO Child device Simulator Hi Frequency Availability - 1[OEE calculation profile], id #977109
+2022-11-11 14:03:08,930 ERROR Could not find external id for the device with id 977109
+2022-11-11 14:03:08,930 INFO Found device 'Slow Producer + Hight Frequency Availability', id: #2216, owned by service_event-based-simulators, number of children: 1, type: c8y_EventBasedSimulator
+2022-11-11 14:03:08,930 INFO List of Slow Producer + Hight Frequency Availability's child devices: 
+2022-11-11 14:03:08,930 INFO Child device Simulator HFA + SP - 1[OEE calculation profile], id #974582
+2022-11-11 14:03:09,009 ERROR Could not find external id for the device with id 974582
+2022-11-11 14:03:09,009 INFO Found device 'Ideal Producer', id: #5109, owned by service_event-based-simulators, number of children: 1, type: c8y_EventBasedSimulator
+2022-11-11 14:03:09,009 INFO List of Ideal Producer's child devices: 
+2022-11-11 14:03:09,009 INFO Child device Simulator Ideal Producer - 1[OEE calculation profile], id #972075
+2022-11-11 14:03:09,099 ERROR Could not find external id for the device with id 972075
+2022-11-11 14:03:09,099 INFO Found device 'Ideal Producer Q80', id: #2217, owned by service_event-based-simulators, number of children: 1, type: c8y_EventBasedSimulator
+2022-11-11 14:03:09,099 INFO List of Ideal Producer Q80's child devices: 
+2022-11-11 14:03:09,099 INFO Child device Simulator Ideal Producer Q80 - 1[OEE calculation profile], id #974583
+2022-11-11 14:03:09,171 ERROR Could not find external id for the device with id 974583
+2022-11-11 14:03:09,171 INFO Found device 'Ideal Producer A80', id: #3213, owned by service_event-based-simulators, number of children: 1, type: c8y_EventBasedSimulator
+2022-11-11 14:03:09,171 INFO List of Ideal Producer A80's child devices: 
+2022-11-11 14:03:09,172 INFO Child device Simulator Ideal Producer A90 - 1[OEE calculation profile], id #972076
+2022-11-11 14:03:09,245 ERROR Could not find external id for the device with id 972076
+2022-11-11 14:03:09,246 INFO Found device 'Ideal Producer with Categories', id: #967945, owned by service_event-based-simulators, number of children: 1, type: c8y_EventBasedSimulator
+2022-11-11 14:03:09,246 INFO List of Ideal Producer with Categories's child devices: 
+2022-11-11 14:03:09,246 INFO Child device Simulator Ideal Producer with Categories - 1[OEE calculation profile], id #975562
+2022-11-11 14:03:09,319 ERROR Could not find external id for the device with id 975562
