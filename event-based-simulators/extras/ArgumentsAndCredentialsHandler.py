@@ -34,7 +34,10 @@ def argumentsParser():
 
 
 def c8yPlatformConnection():
-    C8Y_BASE = Environment.C8Y_BASE
+    if Environment.C8Y_BASE[-1] == '/':
+        C8Y_BASE = Environment.C8Y_BASE[:-1]
+    else:
+        C8Y_BASE = Environment.C8Y_BASE
     C8Y_TENANT = Environment.C8Y_TENANT
     C8Y_USER = Environment.C8Y_USER
     C8Y_PASSWORD = Environment.C8Y_PASSWORD

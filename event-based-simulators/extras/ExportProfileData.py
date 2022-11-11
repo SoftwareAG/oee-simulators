@@ -86,11 +86,12 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
 
 
 def findDeviceNameById(DEVICE_ID):
-    response = requests.get(f'{Environment.C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}',
+    C8Y_BASE = removeSlashFromBaseUrl()
+    response = requests.get(f'{C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}',
                             headers=C8Y_HEADERS)
     if not response.ok:
         logger.error(
-            f"Connection to url '{Environment.C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}' failed. Check your parameters in environment file again")
+            f"Connection to url '{C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}' failed. Check your parameters in environment file again")
         sys.exit()
     else:
         try:
@@ -133,11 +134,12 @@ def appendDataToJsonFile(jsonDataList, filePath, data_type, json_data={}):
 
 
 def getExternalIdReponse(deviceId):
-    externalIdResponse = requests.get(f'{Environment.C8Y_BASE}/identity/globalIds/{deviceId}/externalIds',
+    C8Y_BASE = removeSlashFromBaseUrl()
+    externalIdResponse = requests.get(f'{C8Y_BASE}/identity/globalIds/{deviceId}/externalIds',
                                       headers=C8Y_HEADERS)
     if not externalIdResponse.ok:
         logger.error(
-            f"Connection to url '{Environment.C8Y_BASE}/identity/globalIds/{deviceId}/externalIds' failed. Check your parameters in environment file again")
+            f"Connection to url '{C8Y_BASE}/identity/globalIds/{deviceId}/externalIds' failed. Check your parameters in environment file again")
         sys.exit()
     else:
         return externalIdResponse
@@ -158,7 +160,6 @@ def checkDeviceExternalIdById(deviceId):
 
 
 def isExternalIdHasEventBasedSimulatorProfileType(deviceExternalIdType):
-
     if deviceExternalIdType == "c8y_EventBasedSimulatorProfile":
         return True
     else:
@@ -199,15 +200,25 @@ def SetTimePeriodToExportData(CREATE_FROM, CREATE_TO):
     return CREATE_FROM, CREATE_TO
 
 
+def removeSlashFromBaseUrl():
+    if Environment.C8Y_BASE[-1] == '/':
+        C8Y_BASE = Environment.C8Y_BASE[:-1]
+    else:
+        C8Y_BASE = Environment.C8Y_BASE
+    return C8Y_BASE
+
+
 # Main function to run the script
 if __name__ == '__main__':
     c8y = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
     # Check if connection to tenant can be created
+    C8Y_BASE = removeSlashFromBaseUrl()
     try:
-        requests.get(f'{Environment.C8Y_BASE}/tenant/currentTenant', headers=C8Y_HEADERS)
+        requests.get(f'{C8Y_BASE}/tenant/currentTenant', headers=C8Y_HEADERS)
         logger.debug(f"Connect to tenant {Environment.C8Y_TENANT} successfully")
     except:
         logger.debug(f"Connect to tenant {Environment.C8Y_TENANT} failed")
+        print(f"Connect to tenant {Environment.C8Y_TENANT} failed")
         sys.exit()
 
     DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO = ArgumentsAndCredentialsHandler.argumentsParser()
