@@ -43,3 +43,26 @@ optional arguments:\
   -h, --help                                                              : show this help message and exit. \
   --data-type {measurements,alarms, all}, -d {measurements,alarms, all}   : Export "alarms" or "measurements".\
   --device-id DEVICE_NAME, -i DEVICE_NAME                                 : Input device id\
+
+## Run the import script
+The [Import Script](./ImportData.py) can be used to import alarms and measurements into cumulocity. The [Export Script](./ExportOrImportProfileData.py) can be used to export a file for any managed object. This exact file can then be used for the import.
+```shell
+ImportData.py [-h] [--ifile INPUTFILE] [--log {DEBUG, INFO}] [--username C8Y_USERNAME] [--password C8Y_PASSWORD] [--baseurl C8Y_BASEURL] [--tenant C8Y_TENANT_ID]
+```
+### Credentials Arguments
+Credentials for the C8Y instance can be handed to the script using cli arguments as shown in the example above. The script will try to extract the crendentials from the [Environment File](./Environment.py) if no credentials are presented as arguments.
+
+### Logging
+Log-level: two log level can be set using the --log argument {DEBUG, INFO}. Log-level INFO is default. DEBUG can be used to get more output of the script execution.
+
+### INPUTFILE
+The inputfile that should be used for this script should has the external_id of the managed object as name. For example: ```sim_001_profile.json```
+
+The schema of the inputfile is:
+```json
+{
+  "alarms":[],
+  "measurements":[]
+}
+```
+Example files can be found [here](./export_data/).
