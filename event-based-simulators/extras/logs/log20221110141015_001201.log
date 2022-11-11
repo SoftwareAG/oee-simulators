@@ -1,3 +1,0 @@
-2022-11-10 14:10:15,002 DEBUG Export data which is created after/from: 2022-11-10 10:10:15.002199+00:00
-2022-11-10 14:10:15,003 DEBUG and created before/to: 2022-11-10 14:10:15.002199+00:00
-2022-11-10 14:10:19,115 ERROR Connection to Cumulocity platform failed. Check your required parameter in environment file again

@@ -43,6 +43,8 @@ def exportAllProfileDataFromChildDevices(c8y, DATA_TYPE, createFrom, createTo):
             childDeviceCount += 1
             logger.info(f"Child device {childDevice.name}, id #{childDevice.id}")
             filePath = createFilePathFromExternalId(childDevice.id)
+            if not filePath:
+                continue
             if DATA_TYPE == "alarms":
                 jsonAlarmsList = listAlarms(c8y, childDevice, createFrom, createTo)
                 appendDataToJsonFile(jsonAlarmsList, filePath, DATA_TYPE)
@@ -54,10 +56,10 @@ def exportAllProfileDataFromChildDevices(c8y, DATA_TYPE, createFrom, createTo):
                 appendDataToJsonFile([], filePath, 'alarms')
                 logger.info(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
             else:
-                jsonAlarmsList = listAlarms(c8y, device, createFrom, createTo)
-                appendDataToJsonFile(jsonAlarmsList, filePath, DATA_TYPE)
+                jsonAlarmsList = listAlarms(c8y, childDevice, createFrom, createTo)
+                appendDataToJsonFile(jsonAlarmsList, filePath, 'alarms')
                 jsonMeasurementsList = listMeasurements(c8y, childDevice, createFrom, createTo)
-                appendDataToJsonFile(jsonMeasurementsList, filePath, DATA_TYPE)
+                appendDataToJsonFile(jsonMeasurementsList, filePath, 'measurements')
                 logger.info(f"Alarms and Measurements data is added to data file at {filePath}")
         if childDeviceCount == 0:
             logger.debug(f"No child device of device {device.name}, id #{device.id} found")
@@ -70,6 +72,8 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
     deviceName = findDeviceNameById(DEVICE_ID)
     deviceCount = 0
     filePath = createFilePathFromExternalId(DEVICE_ID)
+    if not filePath:
+        sys.exit()
     logger.info(f"Search for {DATA_TYPE} data from device {DEVICE_ID} ")
     for device in c8y.device_inventory.select(name=deviceName):
         deviceCount += 1
@@ -155,7 +159,7 @@ def createFilePathFromExternalId(deviceId):
             deviceExternalId = externalIdResponse.json()['externalIds'][0]['externalId']
         except:
             logger.error(f"Could not find external id for the device with id {deviceId}")
-            sys.exit()
+            return None
 
     # Check if folder containing data files exists and make one if not
     if not os.path.exists('export_data'):
