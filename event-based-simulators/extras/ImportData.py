@@ -10,7 +10,6 @@ from datetime import datetime
 
 log_format = '[%(asctime)s] [%(levelname)s] - %(message)s'
 log = logging.getLogger('ImportData')
-c8y = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
 format = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
