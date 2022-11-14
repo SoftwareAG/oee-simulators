@@ -35,4 +35,10 @@ jobs:
           cd event-based-simulators
           zip oee-simulators.zip image.tar cumulocity.json
         
+      - name: upload Zip
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'oee-simulators'
+          path: 'event-based-simulators/oee-simulators.zip'
+
       #- name: upload to archive
