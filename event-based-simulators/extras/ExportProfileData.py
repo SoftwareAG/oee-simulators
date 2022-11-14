@@ -61,21 +61,17 @@ def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
         deviceCount += 1
         fileLogger.debug(f"Child device {device.name}, id #{device.id}")
         if DATA_TYPE == "alarms":
-            jsonAlarmsList = listAlarms(device, createFrom, createTo)
-            appendDataToJsonFile(jsonAlarmsList, filePath, DATA_TYPE)
+            exportAlarms(device, createFrom, createTo, filePath)
             appendDataToJsonFile([], filePath, 'measurements')
             fileLogger.debug(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
         elif DATA_TYPE == "measurements":
             # listing measurements of child device
-            jsonMeasurementsList = listMeasurements(device, createFrom, createTo)
-            appendDataToJsonFile(jsonMeasurementsList, filePath, DATA_TYPE)
+            exportMeasurements(device, createFrom, createTo, filePath)
             appendDataToJsonFile([], filePath, 'alarms')
             fileLogger.debug(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
         else:
-            jsonAlarmsList = listAlarms(device, createFrom, createTo)
-            appendDataToJsonFile(jsonAlarmsList, filePath, 'alarms')
-            jsonMeasurementsList = listMeasurements(device, createFrom, createTo)
-            appendDataToJsonFile(jsonMeasurementsList, filePath, 'measurements')
+            exportAlarms(device, createFrom, createTo, filePath)
+            exportMeasurements(device, createFrom, createTo, filePath)
             fileLogger.debug(f"Alarms and Measurements data is added to data file at {filePath}")
 
     if deviceCount == 0:
@@ -101,6 +97,11 @@ def findDeviceNameById(deviceId, baseUrl):
     return deviceName
 
 
+def exportAlarms(device, createFrom, createTo, filePath):
+    jsonAlarmsList = listAlarms(device, createFrom, createTo)
+    appendDataToJsonFile(jsonAlarmsList, filePath, 'alarms')
+
+
 def listAlarms(device, createFrom, createTo):
     jsonAlarmsList = []
     # Create a count variable as a json/dict key to save json data
@@ -110,6 +111,11 @@ def listAlarms(device, createFrom, createTo):
         count += 1
         jsonAlarmsList.append(alarm.to_json())
     return jsonAlarmsList
+
+
+def exportMeasurements(device, createFrom, createTo, filePath):
+    jsonMeasurementsList = listMeasurements(device, createFrom, createTo)
+    appendDataToJsonFile(jsonMeasurementsList, filePath, 'measurements')
 
 
 def listMeasurements(device, createFrom, createTo):
