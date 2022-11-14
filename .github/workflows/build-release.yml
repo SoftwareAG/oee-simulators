@@ -11,7 +11,7 @@ env:
   BUILD_OFFSET: 30
 
 jobs:
-  docker_build:
+  build_upload:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -41,5 +41,4 @@ jobs:
           name: 'oee-simulators'
           path: 'event_based_simulators/oee-simulators.zip'
 
-      #- name: get archive
       #- name: upload to archive
