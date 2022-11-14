@@ -26,7 +26,9 @@ class ProfileCreateMode(Enum):
     CREATE_IF_NOT_EXISTS = 2
 
 class OeeAPI:
-    CONF_REST_ENDPOINT = f'{C8Y_BASE}/service/oee-bundle/configurationmanager/2/configuration'
+    OEE_BASE = f'{C8Y_BASE}/service/oee-bundle'
+    CONF_REST_ENDPOINT = f'{OEE_BASE}/configurationmanager/2/configuration'
+    SHIFTPLAN_REST_ENDPOINT = f'{OEE_BASE}/mes/shiftplan'
     c8y_api = CumulocityAPI()
 
     templates = {}
@@ -127,7 +129,8 @@ class OeeAPI:
         log.info(f'profiles deleted: {deleted_profiles}')
 
     def get_profiles(self):
-        response = requests.get(f'{self.CONF_REST_ENDPOINT}', headers=C8Y_HEADERS)
+        log.info(f'Trying to get Profiles URL:{self.CONF_REST_ENDPOINT} with Headers: {C8Y_HEADERS}')
+        response = requests.get(self.CONF_REST_ENDPOINT, headers=C8Y_HEADERS)
         if response.ok:
             return response.json()
         log.warning(f'Cannot get profiles: {response}, content:{response.text}')
@@ -153,4 +156,27 @@ class OeeAPI:
         if ids:
             return self.c8y_api.get_external_ids(ids)
         log.warning(f'Didnt find any simulators: {ids}')
-        return []    
+        return []  
+    
+    def add_timeslots_for_shiftplan(self,shiftplan):
+        locationId = shiftplan.locationId
+        for timeslot in shiftplan.recurringTimeSlots:
+            self.add_timeslot(locationId, timeslot)
+        return True
+
+    def add_timeslot(self, locationId, timeslot):
+        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}/timeslot'
+        response = requests.post(url, headers=C8Y_HEADERS, data = json.dumps(timeslot))
+        if response.ok:
+            log.info(f'Timeslot for {locationId} was created')
+            return True
+        log.warning(f'Cannot create Timeslot for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
+        return False
+
+    def get_shiftplan(self, locationId, dateFrom, dateTo):
+        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}?dateFrom={dateFrom}&dateTo={dateTo}'
+        response = requests.get(url, headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json()
+        log.warning(f'Cannot get shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
+        return {'locationId':locationId,'timeslots':{}}

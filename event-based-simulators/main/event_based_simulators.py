@@ -1,5 +1,5 @@
-﻿import time, json, os, logging, requests, base64
-from datetime import datetime
+﻿import time, json, os, logging
+from datetime import datetime, timedelta
 from random import randint, uniform, choices
 
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
@@ -20,6 +20,13 @@ null = None
 false = False
 true = True
 ######################
+
+#array for shiftplans and polling interval
+shiftplans = []
+one_day = 86400 
+shiftplan_polling_interval = one_day
+log.info(f'Shiftplan polling interval is set to {shiftplan_polling_interval:,} secs')
+shiftplan_dateformat='%Y-%m-%dT%H:%M:%SZ'
 
 log.info(C8Y_BASE)
 log.info(C8Y_TENANT)
@@ -79,22 +86,81 @@ class PeriodicTask:
 
     def tick(self):
         if (time.time() - self.next_run) > 0:
-            self.__reschedule_and_run()                
+            self.__reschedule_and_run()    
+
+class Shiftplan:
+    def __init__(self, shiftplan_model) -> None:
+        self.locationId = ""
+        self.recurringTimeSlots = []
+        self.set_timeslots_for_shiftplan(shiftplan_model)
+        self.add_Shiftplan_to_OEE()
+        self.task = self.__create_task()
+
+    def set_timeslots_for_shiftplan(self, shiftplan):
+        self.locationId = shiftplan["locationId"]
+        self.recurringTimeSlots = list(map(lambda model: self.RecurringTimeSlot(model), shiftplan.get('recurringTimeSlots', [])))
+        return True
+
+    def add_Shiftplan_to_OEE(self):
+        oeeAPI.add_timeslots_for_shiftplan(self)
+        log.info(f'Added shiftplan to OEE for location: {self.locationId}')
+
+
+    def __create_task(self):   
+        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, self.getShiftplan)
+        
+        log.debug(f'create periodic task for pulling shiftplans running every {shiftplan_polling_interval}')      
+        return task
+
+    def getShiftplan(self):
+        log.info(f'Getting Shiftplan for location: {self.locationId}')    
+        self.setShiftplan(oeeAPI.get_shiftplan(self.locationId, f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + shiftplan_polling_interval:{shiftplan_dateformat}}'))
+        
+
+    def setShiftplan(self, shiftplan):
+        self.recurringTimeSlots = shiftplan.get('recurringTimeSlots', [])
+
+    def tick(self):
+        self.task.tick()
+
+    class RecurringTimeSlot:
+        def __init__(self, recurringTimeSlotModel):
+            self.id = recurringTimeSlotModel.get("id")
+            self.seriesPostfix = recurringTimeSlotModel.get("seriesPostfix")
+            self.slotType = recurringTimeSlotModel.get("slotType")
+            self.slotStart = recurringTimeSlotModel.get("slotStart")
+            self.slotEnd = recurringTimeSlotModel.get("slotEnd")
+            self.description = recurringTimeSlotModel.get("description")
+            self.active = recurringTimeSlotModel.get("active")
+            self.slotRecurrence = self.SlotRecurrence(recurringTimeSlotModel.get("slotRecurrence"))
+        
+        class SlotRecurrence:
+            def __init__(self, slotRecurrence):
+                self.weekdays = slotRecurrence.get("weekdays")
+            
 
 class MachineSimulator:
     
     def __init__(self, model) -> None:
         self.model = model        
         self.device_id = None
+        self.locationId = model.get("locationId", "")
         self.machine_up = False
         self.shutdown = False
         self.enabled = model.get('enabled', True)
         self.production_time_s = 0.0
         self.last_production_time_update = time.time()
+        self.out_of_production_time_logged = False
         if self.enabled:
             self.tasks = list(map(self.__create_task, self.model["events"]))
             self.production_speed_s = self.__get_production_speed_s(self.model["events"])
         # print(f'events: {self.model["events"]}')
+
+    def enable(self):
+        self.enabled = True
+
+    def disable(self):
+        self.enable = False
 
     def __get_production_speed_s(self, events) -> float:
         """Returns pieces/s""" 
@@ -139,7 +205,10 @@ class MachineSimulator:
         }
 
     def __log_ignore(self, event_definition):
-        print(f'{self.device_id} is down -> ignore event {event_definition["type"]}')        
+        log.info(f'Device: {self.device_id} [{self.model["label"]}] is down -> ignore event {event_definition["type"]}')
+
+    def __log_not_in_shift(self):
+        log.info(f'Device: {self.device_id} [{self.model["label"]}] is not in PRODUCTION shift -> ignore event')
 
     def __on_availability_event(self, event_definition, task):         
         
@@ -305,7 +374,13 @@ class MachineSimulator:
     
     def tick(self):
         if not self.enabled: return
-
+        if not self.is_in_productionTime():
+            if not self.out_of_production_time_logged:
+                self.__log_not_in_shift()
+            self.out_of_production_time_logged = True
+            return
+        else:
+            self.out_of_production_time_logged = False
         for task in self.tasks:
             task.tick()
 
@@ -354,12 +429,30 @@ class MachineSimulator:
             cumulocityAPI.send_event(base_event)
             return newTimestamp
 
+    def is_in_productionTime(self):
+        #profiles = oeeAPI.get_profiles()
+        
+        #if there are no shiftplans for a device, it should not be affected by production-time
+        no_shiftplan = True
+        for shiftplan in shiftplans:
+            if shiftplan.locationId == self.locationId:
+                no_shiftplan = False
+                for timeslot in shiftplan.recurringTimeSlots:
+                    if timeslot.slotType == "PRODUCTION":
+                        now = datetime.utcnow()
+                        start = datetime.strptime(timeslot.slotStart, shiftplan_dateformat)
+                        end = datetime.strptime(timeslot.slotEnd, shiftplan_dateformat)
+                        if start < now and end > now:
+                            return True
+        return no_shiftplan
+
+
 def load(filename):
     try:
         with open(filename) as f_obj:
             return json.load(f_obj)
     except Exception as e:
-        print(e, type(e))
+        log.error(e, type(e))
         return {}
 
     
@@ -372,12 +465,21 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 # create managed object for every simulator
 [item.get_or_create_device_id() for item in simulators]
 
+
+#read & update Shiftplans
+SHIFTPLANS_MODELS = load("shiftplans.json")
+shiftplans = list(map(lambda model: Shiftplan(model), SHIFTPLANS_MODELS))
+
 if CREATE_PROFILES.lower() == "true":
     [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
         for id in oeeAPI.get_simulator_external_ids()]
     os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
 
+
 while True:
+    for shiftplan in shiftplans:
+        shiftplan.tick()
+
     for simulator in simulators:
-        simulator.tick()        
+        simulator.tick()
     time.sleep(1)
