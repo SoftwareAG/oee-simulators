@@ -1,0 +1,43 @@
+# Build docker image, build cumulocity archive and release it to the repository
+
+name: Build & release oee-simulators
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+env:
+  BUILD_OFFSET: 30
+
+jobs:
+  docker_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: build docker image
+        run: |
+          cd event_based_simulators
+          docker build -t oee-simulators .
+          docker save -o image.tar oee-simulators
+          docker rmi oee-simulators
+          cd ..
+
+      - name: update versionnumber
+        run: |
+          SIMULATOR_VERSION=$(expr ${{ env.BUILD_OFFSET }} + ${GITHUB_RUN_NUMBER})
+          sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
+          
+      - name: Zip it!
+        run: zip oee-simulators.zip image.tar cumulocity.json
+        
+      - name: upload Zip
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'oee-simulators'
+          path: 'event_based_simulators/oee-simulators.zip'
+
+      #- name: get archive
+      #- name: upload to archive
