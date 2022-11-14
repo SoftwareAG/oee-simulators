@@ -29,7 +29,7 @@ C8Y_HEADERS = {
 ####################################################
 
 
-def exportAllProfileDataFromChildDevices(c8y, DATA_TYPE, createFrom, createTo):
+def exportAllProfileDataFromChildDevices(c8y, dataType, createFrom, createTo):
     deviceCount = 0
     deviceManagedObject = c8y.device_inventory.select(type="c8y_EventBasedSimulator")
     for device in deviceManagedObject:
@@ -40,39 +40,39 @@ def exportAllProfileDataFromChildDevices(c8y, DATA_TYPE, createFrom, createTo):
         logger.info(f"List of {device.name}'s child devices: ")
         print(f"List of {device.name}'s child devices: ")
         for childDevice in device.child_devices:
-            ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, childDevice.id)
+            ExportSpecificProfileDataWithDeviceId(c8y, dataType, createFrom, createTo, childDevice.id)
 
     if deviceCount == 0:
-        logger.debug(f"No device in tenant {Environment.C8Y_TENANT} found")
-        print(f"No device in tenant {Environment.C8Y_TENANT} found")
+        logger.debug(f"No device in tenant {c8y.tenant_id} found")
+        print(f"No device in tenant {c8y.tenant_id} found")
 
 
-def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, DEVICE_ID):
-    deviceName = findDeviceNameById(DEVICE_ID)
+def ExportSpecificProfileDataWithDeviceId(c8y, dataType, createFrom, createTo, deviceId):
+    deviceName = findDeviceNameById(deviceId, c8y.base_url)
     deviceCount = 0
-    deviceExternalId, deviceExternalIdType = checkDeviceExternalIdById(DEVICE_ID)
+    deviceExternalId, deviceExternalIdType = checkDeviceExternalIdById(deviceId, c8y.base_url)
     if not deviceExternalId:
         return
     if isExternalIdTypeEventBasedSimulatorProfile(deviceExternalIdType):
         filePath = createFilePath(fileName=deviceExternalId)
     else:
         return
-    logger.info(f"Search for {DATA_TYPE} data from device {deviceName}, id #{DEVICE_ID} ")
-    print(f"Search for {DATA_TYPE} data from device {deviceName}, id #{DEVICE_ID} ")
+    logger.info(f"Search for {dataType} data from device {deviceName}, id #{deviceId} ")
+    print(f"Search for {dataType} data from device {deviceName}, id #{deviceId} ")
     for device in c8y.device_inventory.select(name=deviceName):
         deviceCount += 1
         logger.info(f"Child device {device.name}, id #{device.id}")
-        if DATA_TYPE == "alarms":
+        if dataType == "alarms":
             jsonAlarmsList = listAlarms(c8y, device, createFrom, createTo)
-            appendDataToJsonFile(jsonAlarmsList, filePath, DATA_TYPE)
+            appendDataToJsonFile(jsonAlarmsList, filePath, dataType)
             appendDataToJsonFile([], filePath, 'measurements')
-            logger.info(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
-        elif DATA_TYPE == "measurements":
+            logger.info(f"{dataType.capitalize()} data is added to data file at {filePath}")
+        elif dataType == "measurements":
             # listing measurements of child device
             jsonMeasurementsList = listMeasurements(c8y, device, createFrom, createTo)
-            appendDataToJsonFile(jsonMeasurementsList, filePath, DATA_TYPE)
+            appendDataToJsonFile(jsonMeasurementsList, filePath, dataType)
             appendDataToJsonFile([], filePath, 'alarms')
-            logger.info(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
+            logger.info(f"{dataType.capitalize()} data is added to data file at {filePath}")
         else:
             jsonAlarmsList = listAlarms(c8y, device, createFrom, createTo)
             appendDataToJsonFile(jsonAlarmsList, filePath, 'alarms')
@@ -81,23 +81,22 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
             logger.info(f"Alarms and Measurements data is added to data file at {filePath}")
 
     if deviceCount == 0:
-        logger.debug(f"No device with id {DEVICE_ID} found")
+        logger.debug(f"No device with id {deviceId} found")
     return
 
 
-def findDeviceNameById(DEVICE_ID):
-    C8Y_BASE = removeSlashFromBaseUrl()
-    response = requests.get(f'{C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}',
+def findDeviceNameById(deviceId, baseUrl):
+    response = requests.get(f'{baseUrl}/inventory/managedObjects/{deviceId}',
                             headers=C8Y_HEADERS)
     if not response.ok:
         logger.error(
-            f"Connection to url '{C8Y_BASE}/inventory/managedObjects/{DEVICE_ID}' failed. Check your parameters in environment file again")
+            f"Connection to url '{baseUrl}/inventory/managedObjects/{deviceId}' failed. Check your parameters in environment file again")
         sys.exit()
     else:
         try:
             deviceName = response.json()['name']
         except:
-            logger.error(f"Device #{DEVICE_ID} does not have name")
+            logger.error(f"Device #{deviceId} does not have name")
             sys.exit()
 
     return deviceName
@@ -133,20 +132,19 @@ def appendDataToJsonFile(jsonDataList, filePath, data_type, json_data={}):
         json.dump(json_data, f, indent=2)
 
 
-def getExternalIdReponse(deviceId):
-    C8Y_BASE = removeSlashFromBaseUrl()
-    externalIdResponse = requests.get(f'{C8Y_BASE}/identity/globalIds/{deviceId}/externalIds',
+def getExternalIdReponse(deviceId, baseUrl):
+    externalIdResponse = requests.get(f'{baseUrl}/identity/globalIds/{deviceId}/externalIds',
                                       headers=C8Y_HEADERS)
     if not externalIdResponse.ok:
         logger.error(
-            f"Connection to url '{C8Y_BASE}/identity/globalIds/{deviceId}/externalIds' failed. Check your parameters in environment file again")
+            f"Connection to url '{baseUrl}/identity/globalIds/{deviceId}/externalIds' failed. Check your parameters in environment file again")
         sys.exit()
     else:
         return externalIdResponse
 
 
-def checkDeviceExternalIdById(deviceId):
-    externalIdResponse = getExternalIdReponse(deviceId)
+def checkDeviceExternalIdById(deviceId, baseUrl):
+    externalIdResponse = getExternalIdReponse(deviceId, baseUrl)
 
     try:
         deviceExternalId = externalIdResponse.json()['externalIds'][0]['externalId']
@@ -200,25 +198,16 @@ def SetTimePeriodToExportData(CREATE_FROM, CREATE_TO):
     return CREATE_FROM, CREATE_TO
 
 
-def removeSlashFromBaseUrl():
-    if Environment.C8Y_BASE[-1] == '/':
-        C8Y_BASE = Environment.C8Y_BASE[:-1]
-    else:
-        C8Y_BASE = Environment.C8Y_BASE
-    return C8Y_BASE
-
-
 # Main function to run the script
 if __name__ == '__main__':
     c8y = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
     # Check if connection to tenant can be created
-    C8Y_BASE = removeSlashFromBaseUrl()
     try:
-        requests.get(f'{C8Y_BASE}/tenant/currentTenant', headers=C8Y_HEADERS)
-        logger.debug(f"Connect to tenant {Environment.C8Y_TENANT} successfully")
+        requests.get(f'{c8y.base_url}/tenant/currentTenant', headers=C8Y_HEADERS)
+        logger.debug(f"Connect to tenant {c8y.tenant_id} successfully")
     except:
-        logger.debug(f"Connect to tenant {Environment.C8Y_TENANT} failed")
-        print(f"Connect to tenant {Environment.C8Y_TENANT} failed")
+        logger.debug(f"Connect to tenant {c8y.tenant_id} failed")
+        print(f"Connect to tenant {c8y.tenant_id} failed")
         sys.exit()
 
     DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO = ArgumentsAndCredentialsHandler.handleExportArguments()

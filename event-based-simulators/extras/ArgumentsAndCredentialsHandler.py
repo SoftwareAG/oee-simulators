@@ -1,19 +1,16 @@
-import argparse
+import argparse,logging
 
 import Environment
-import logging
 
 from c8y_api import CumulocityApi
 
 
 def handleExportArguments():
-    parser = argparse.ArgumentParser(
-        description='Script to export or import profiles data')
+    parser = argparse.ArgumentParser(description='Script to export or import profiles data')
     parser.add_argument('--device-id', '-i', type=str, help='Input device id')
     parser.add_argument('--create-from', '-f', type=str, help='Input "create from" milestone')
     parser.add_argument('--create-to', '-t', type=str, help='Input "create to" milestone')
-    parser.add_argument('--data-type', '-d', choices=['measurements', 'alarms', 'all'], help='Export "alarms" or '
-                                                                                             '"measurements"')
+    parser.add_argument('--data-type', '-d', choices=['measurements', 'alarms', 'all'], help='Export "alarms" or "measurements"')
 
     args = parser.parse_args()
     DATA_TYPE = args.data_type
@@ -64,11 +61,11 @@ def handleImportArguments():
     PASSWORD = args.password
     if not PASSWORD:
         PASSWORD = Environment.C8Y_PASSWORD
-    
+
     BASEURL = args.baseurl
     if not BASEURL:
         BASEURL = Environment.C8Y_BASE
-    
+
     TENANT = args.tenant
     if not TENANT:
         TENANT = Environment.C8Y_TENANT
@@ -76,11 +73,16 @@ def handleImportArguments():
     return INPUT_FILE, LOG_LEVEL, USERNAME, PASSWORD, BASEURL, TENANT
 
 
-def c8yPlatformConnection():
-    if Environment.C8Y_BASE[-1] == '/':
-        C8Y_BASE = Environment.C8Y_BASE[:-1]
+def removeSlashFromBaseUrl(baseUrl):
+    if baseUrl[-1] == '/':
+        newBaseurl = baseUrl[:-1]
     else:
-        C8Y_BASE = Environment.C8Y_BASE
+        newBaseurl = baseUrl
+    return newBaseurl
+
+
+def c8yPlatformConnection():
+    C8Y_BASE = removeSlashFromBaseUrl(Environment.C8Y_BASE)
     C8Y_TENANT = Environment.C8Y_TENANT
     C8Y_USER = Environment.C8Y_USER
     C8Y_PASSWORD = Environment.C8Y_PASSWORD
