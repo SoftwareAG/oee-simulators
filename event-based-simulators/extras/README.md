@@ -36,9 +36,7 @@ pip install c8y_api
 ## Run the export script
 If the environment **optional** parameters were not setup, they can be input as arguments when running the script
 ```shell
-ExportProfileData.py [-h] [--device-id DEVICE_ID]
-                                    [--action {export,import}]
-                                    [--data-type {measurements,alarms,all}]
+ExportProfileData.py [-h] [--device-id DEVICE_ID] [--data-type {measurements,alarms,all}]
 ```
 optional arguments:\
   -h, --help                                                              : show this help message and exit. \
