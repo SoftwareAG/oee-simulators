@@ -53,7 +53,7 @@ def ExportSpecificProfileDataWithDeviceId(c8y, DATA_TYPE, createFrom, createTo, 
     deviceExternalId, deviceExternalIdType = checkDeviceExternalIdById(DEVICE_ID)
     if not deviceExternalId:
         return
-    if isExternalIdHasEventBasedSimulatorProfileType(deviceExternalIdType):
+    if isExternalIdTypeEventBasedSimulatorProfile(deviceExternalIdType):
         filePath = createFilePath(fileName=deviceExternalId)
     else:
         return
@@ -159,7 +159,7 @@ def checkDeviceExternalIdById(deviceId):
     return deviceExternalId, deviceExternalIdType
 
 
-def isExternalIdHasEventBasedSimulatorProfileType(deviceExternalIdType):
+def isExternalIdTypeEventBasedSimulatorProfile(deviceExternalIdType):
     if deviceExternalIdType == "c8y_EventBasedSimulatorProfile":
         return True
     else:
