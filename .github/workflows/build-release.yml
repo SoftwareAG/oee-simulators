@@ -23,10 +23,10 @@ jobs:
           docker build -t oee-simulators .
           docker save -o image.tar oee-simulators
           docker rmi oee-simulators
-          cd ..
 
       - name: update versionnumber
         run: |
+          cd event-based-simulators
           SIMULATOR_VERSION=$(expr ${{ env.BUILD_OFFSET }} + ${GITHUB_RUN_NUMBER})
           sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
           
