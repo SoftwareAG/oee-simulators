@@ -7,22 +7,20 @@ from datetime import datetime
 timeFormat = "%Y-%m-%dT%H:%M:%S.%fZ"
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 file_log_level = logging.DEBUG
-c8y_username, c8y_password, c8y_baseurl, c8y_tenant = '', '', '', ''
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
-filepath, console_log_level, c8y_username, c8y_password, c8y_baseurl, c8y_tenant = ArgumentsAndCredentialsHandler.handleImportArguments()
+filepath, console_log_level, c8y = ArgumentsAndCredentialsHandler.handleImportArguments()
 ####################################################
 relativeFilePath = f"logs\import_{datetime.strftime(datetime.now(), logTimeFormat)}.log"
 filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
 fileLogger, consoleLogger = ArgumentsAndCredentialsHandler.setupLogger(fileLoggerName='ImportProfileData', consoleLoggerName='ConsoleImportProfileData', filePath=filePath, fileLogLevel=file_log_level, consoleLogLevel=console_log_level)
 #####################################################
 # Check if connection to tenant can be created
-try:
-    requests.get(f'{c8y_baseurl}/tenant/currentTenant', headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS)
-    fileLogger.info(f"Connect to tenant {c8y_tenant} successfully")
-    consoleLogger.info(f"Connect to tenant {c8y_tenant} successfully")
-except:
-    fileLogger.error(f"Connect to tenant {c8y_tenant} failed")
-    consoleLogger.error(f"Connect to tenant {c8y_tenant} failed")
+if ArgumentsAndCredentialsHandler.checkTenantConnection(c8y.base_url):
+    fileLogger.info(f"Connect to tenant {c8y.tenant_id} successfully")
+    consoleLogger.info(f"Connect to tenant {c8y.tenant_id} successfully")
+else:
+    fileLogger.error(f"Connect to tenant {c8y.tenant_id} failed")
+    consoleLogger.error(f"Connect to tenant {c8y.tenant_id} failed")
     sys.exit()
 ######################################################
 
@@ -31,7 +29,7 @@ def getDeviceIdByExternalId(external_id):
     consoleLogger.info(f'Searching for device with ext ID {external_id}')
     encoded_external_id = encodeUrl(external_id)
     response = requests.get(
-        f'{c8y_baseurl}/identity/externalIds/{C8Y_PROFILE_GROUP}/{encoded_external_id}', headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS)
+        f'{c8y.base_url}/identity/externalIds/{C8Y_PROFILE_GROUP}/{encoded_external_id}', headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS)
     if response.ok:
         device_id = response.json()['managedObject']['id']
         fileLogger.info(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
@@ -44,7 +42,7 @@ def getDeviceIdByExternalId(external_id):
 
 def createAlarm(alarm):
     response = requests.post(
-        f'{c8y_baseurl}/alarm/alarms', headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS, data=json.dumps(alarm))
+        f'{c8y.base_url}/alarm/alarms', headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS, data=json.dumps(alarm))
     if response.ok:
         return response.json()
     fileLogger.warning(response)
@@ -52,7 +50,7 @@ def createAlarm(alarm):
 
 
 def createMeasurements(measurements):
-    response = requests.post(f'{c8y_baseurl}/measurement/measurements',
+    response = requests.post(f'{c8y.base_url}/measurement/measurements',
                              headers=ArgumentsAndCredentialsHandler.MEASUREMENTS_HEADERS, data=json.dumps(measurements))
     if response.ok:
         return response.json()

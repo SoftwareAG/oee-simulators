@@ -1,6 +1,8 @@
 import argparse, logging, base64, os
 import sys
 
+import requests
+
 import Environment
 
 from c8y_api import CumulocityApi
@@ -100,7 +102,12 @@ def handleExportArguments():
     if not TENANT:
         TENANT = Environment.C8Y_TENANT
 
-    return DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO, LOG_LEVEL, USERNAME, PASSWORD, BASEURL, TENANT
+    c8y = CumulocityApi(base_url=BASEURL,  # the url of your Cumulocity tenant here
+                        tenant_id=TENANT,  # the tenant ID of your Cumulocity tenant here
+                        username=USERNAME,  # your Cumulocity IoT username
+                        password=PASSWORD)  # your Cumulocity IoT password
+
+    return DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y
 
 
 def handleImportArguments():
@@ -136,7 +143,12 @@ def handleImportArguments():
     if not TENANT:
         TENANT = Environment.C8Y_TENANT
 
-    return INPUT_FILE, LOG_LEVEL, USERNAME, PASSWORD, BASEURL, TENANT
+    c8y = CumulocityApi(base_url=BASEURL,  # the url of your Cumulocity tenant here
+                        tenant_id=TENANT,  # the tenant ID of your Cumulocity tenant here
+                        username=USERNAME,  # your Cumulocity IoT username
+                        password=PASSWORD)  # your Cumulocity IoT password
+
+    return INPUT_FILE, LOG_LEVEL, c8y
 
 
 def removeSlashFromBaseUrl(baseUrl):
@@ -147,14 +159,10 @@ def removeSlashFromBaseUrl(baseUrl):
     return newBaseurl
 
 
-def c8yPlatformConnection():
-    C8Y_BASE = removeSlashFromBaseUrl(Environment.C8Y_BASE)
-    C8Y_TENANT = Environment.C8Y_TENANT
-    C8Y_USER = Environment.C8Y_USER
-    C8Y_PASSWORD = Environment.C8Y_PASSWORD
-
-    c8y = CumulocityApi(base_url=C8Y_BASE,  # the url of your Cumulocity tenant here
-                        tenant_id=C8Y_TENANT,  # the tenant ID of your Cumulocity tenant here
-                        username=C8Y_USER,  # your Cumulocity IoT username
-                        password=C8Y_PASSWORD)  # your Cumulocity IoT password
-    return c8y
+def checkTenantConnection(baseUrl):
+    # Check if connection to tenant can be created
+    try:
+        requests.get(f'{baseUrl}/tenant/currentTenant', headers=C8Y_HEADERS)
+        return True
+    except:
+        return False

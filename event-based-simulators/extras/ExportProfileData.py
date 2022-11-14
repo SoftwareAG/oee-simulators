@@ -7,8 +7,7 @@ from datetime import datetime, timedelta, timezone
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
 C8Y_OEE_SIMULATOR_DEVICES_GROUP = "c8y_EventBasedSimulator"
-c8y = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
-DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO, LOG_LEVEL, USERNAME, PASSWORD, BASEURL, TENANT = ArgumentsAndCredentialsHandler.handleExportArguments()
+DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y = ArgumentsAndCredentialsHandler.handleExportArguments()
 ####################################################
 file_log_level = logging.DEBUG
 console_log_level = LOG_LEVEL
@@ -17,11 +16,10 @@ filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
 fileLogger, consoleLogger = ArgumentsAndCredentialsHandler.setupLogger(fileLoggerName='ExportProfileData', consoleLoggerName='ConsoleExportProfileData', filePath=filePath, fileLogLevel=file_log_level, consoleLogLevel=console_log_level)
 #####################################################
 # Check if connection to tenant can be created
-try:
-    requests.get(f'{c8y.base_url}/tenant/currentTenant', headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS)
+if ArgumentsAndCredentialsHandler.checkTenantConnection(c8y.base_url):
     fileLogger.info(f"Connect to tenant {c8y.tenant_id} successfully")
     consoleLogger.info(f"Connect to tenant {c8y.tenant_id} successfully")
-except:
+else:
     fileLogger.error(f"Connect to tenant {c8y.tenant_id} failed")
     consoleLogger.error(f"Connect to tenant {c8y.tenant_id} failed")
     sys.exit()
