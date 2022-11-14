@@ -129,7 +129,7 @@ def listMeasurements(c8y, device, createFrom, createTo):
 def appendDataToJsonFile(jsonDataList, filePath, data_type, json_data={}):
     # Create new json file or add data to an existing json file
     with open(filePath, 'w') as f:
-        json_data[f"{data_type.capitalize()}"] = jsonDataList
+        json_data[f"{data_type}"] = jsonDataList
         json.dump(json_data, f, indent=2)
 
 

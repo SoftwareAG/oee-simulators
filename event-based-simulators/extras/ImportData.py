@@ -131,8 +131,8 @@ if __name__ == '__main__':
     file_data = load(filepath)
     external_id = extract_ext_id_from_filepath(filepath)
     log.debug(f'external id: {extract_ext_id_from_filepath(filepath)}')
-    alarms = file_data.get("Alarms", [])
-    measurements = file_data.get("Measurements", [])
+    alarms = file_data.get("alarms", [])
+    measurements = file_data.get("measurements", [])
     id = getDeviceIdByExternalId(external_id=external_id)
 
     if len(alarms) > 0:
