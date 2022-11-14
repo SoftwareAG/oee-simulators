@@ -8,7 +8,7 @@ logTimeFormat = "%Y%m%d%H%M%S_%f"
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
 C8Y_OEE_SIMULATOR_DEVICES_GROUP = "c8y_EventBasedSimulator"
 c8y = ArgumentsAndCredentialsHandler.c8yPlatformConnection()
-DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO, LOG_LEVEL = ArgumentsAndCredentialsHandler.handleExportArguments()
+DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO, LOG_LEVEL, USERNAME, PASSWORD, BASEURL, TENANT = ArgumentsAndCredentialsHandler.handleExportArguments()
 ####################################################
 file_log_level = logging.DEBUG
 console_log_level = LOG_LEVEL

@@ -36,12 +36,26 @@ pip install c8y_api
 ## Run the export script
 If the environment **optional** parameters were not setup, they can be input as arguments when running the script
 ```shell
-ExportProfileData.py [-h] [--device-id DEVICE_ID] [--data-type {measurements,alarms,all}]
+ExportProfileData.py [-h] [--device-id DEVICE_ID]
+                            [--create-from CREATE_FROM]
+                            [--create-to CREATE_TO]
+                            [--data-type {measurements,alarms,all}]
+                            [--log {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+                            [--username USERNAME] [--password PASSWORD]
+                            [--baseurl BASEURL] [--tenant TENANT]
+
 ```
 optional arguments:\
-  -h, --help                                                              : show this help message and exit. \
-  --data-type {measurements,alarms, all}, -d {measurements,alarms, all}   : Export "alarms" or "measurements".\
-  --device-id DEVICE_NAME, -i DEVICE_NAME                                 : Input device id\
+  -h, --help : show this help message and exit\
+  --device-id DEVICE_ID, -i DEVICE_ID : Input device id\
+  --create-from CREATE_FROM, -from CREATE_FROM : Input "create from" milestone\
+  --create-to CREATE_TO, -to CREATE_TO : Input "create to" milestone\
+  --data-type {measurements,alarms,all}, -d {measurements,alarms,all} : Export "alarms" or "measurements"\
+  --log {DEBUG,INFO,WARNING,ERROR,CRITICAL}, -l {DEBUG,INFO,WARNING,ERROR,CRITICAL} : Log-level\
+  --username USERNAME, -u USERNAME : C8Y Username\
+  --password PASSWORD, -p PASSWORD : C8Y Password\
+  --baseurl BASEURL, -b BASEURL : C8Y Baseurl\
+  --tenant TENANT, -t TENANT : C8Y TenantID\
 
 ## Run the import script
  

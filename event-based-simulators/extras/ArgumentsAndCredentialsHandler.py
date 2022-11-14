@@ -51,19 +51,26 @@ def setupLogger(fileLoggerName, consoleLoggerName, filePath, fileLogLevel, conso
 def handleExportArguments():
     parser = argparse.ArgumentParser(description='Script to export or import profiles data')
     parser.add_argument('--device-id', '-i', type=str, help='Input device id')
-    parser.add_argument('--create-from', '-f', type=str, help='Input "create from" milestone')
-    parser.add_argument('--create-to', '-t', type=str, help='Input "create to" milestone')
+    parser.add_argument('--create-from', '-from', type=str, help='Input "create from" milestone')
+    parser.add_argument('--create-to', '-to', type=str, help='Input "create to" milestone')
     parser.add_argument('--data-type', '-d', choices=['measurements', 'alarms', 'all'], help='Export "alarms" or "measurements"')
     parser.add_argument('--log', '-l', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help='Log-level')
+    parser.add_argument('--username', '-u', type=str, help='C8Y Username')
+    parser.add_argument('--password', '-p', type=str, help='C8Y Password')
+    parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
+    parser.add_argument('--tenant', '-t', type=str, help='C8Y TenantID')
     args = parser.parse_args()
+
     DATA_TYPE = args.data_type
     if not DATA_TYPE:
         DATA_TYPE = Environment.DATA_TYPE
+
     DEVICE_ID = args.device_id
     if not DEVICE_ID:
         DEVICE_ID = Environment.DEVICE_ID
         if DEVICE_ID:
             DEVICE_ID = str(DEVICE_ID)
+
     LOG_LEVEL = args.log
     if not LOG_LEVEL:
         LOG_LEVEL = logging.INFO
@@ -71,11 +78,28 @@ def handleExportArguments():
     CREATE_FROM = args.create_from
     if not CREATE_FROM:
         CREATE_FROM = Environment.CREATE_FROM
+
     CREATE_TO = args.create_to
     if not CREATE_TO:
         CREATE_TO = Environment.CREATE_TO
 
-    return DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO, LOG_LEVEL
+    USERNAME = args.username
+    if not USERNAME:
+        USERNAME = Environment.C8Y_USER
+
+    PASSWORD = args.password
+    if not PASSWORD:
+        PASSWORD = Environment.C8Y_PASSWORD
+
+    BASEURL = args.baseurl
+    if not BASEURL:
+        BASEURL = Environment.C8Y_BASE
+
+    TENANT = args.tenant
+    if not TENANT:
+        TENANT = Environment.C8Y_TENANT
+
+    return DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO, LOG_LEVEL, USERNAME, PASSWORD, BASEURL, TENANT
 
 
 def handleImportArguments():
