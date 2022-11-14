@@ -94,6 +94,7 @@ def handleExportArguments():
     BASEURL = args.baseurl
     if not BASEURL:
         BASEURL = Environment.C8Y_BASE
+    BASEURL = removeSlashFromBaseUrl(BASEURL)
 
     TENANT = args.tenant
     if not TENANT:
@@ -129,6 +130,7 @@ def handleImportArguments():
     BASEURL = args.baseurl
     if not BASEURL:
         BASEURL = Environment.C8Y_BASE
+    BASEURL = removeSlashFromBaseUrl(BASEURL)
 
     TENANT = args.tenant
     if not TENANT:

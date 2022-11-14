@@ -1,4 +1,4 @@
-import logging, urllib, json, requests, os
+import logging, urllib, json, requests, os, sys
 
 import ArgumentsAndCredentialsHandler
 
@@ -15,17 +15,27 @@ relativeFilePath = f"logs\import_{datetime.strftime(datetime.now(), logTimeForma
 filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
 fileLogger, consoleLogger = ArgumentsAndCredentialsHandler.setupLogger(fileLoggerName='ImportProfileData', consoleLoggerName='ConsoleImportProfileData', filePath=filePath, fileLogLevel=file_log_level, consoleLogLevel=console_log_level)
 #####################################################
-
+# Check if connection to tenant can be created
+try:
+    requests.get(f'{c8y_baseurl}/tenant/currentTenant', headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS)
+    fileLogger.info(f"Connect to tenant {c8y_tenant} successfully")
+    consoleLogger.info(f"Connect to tenant {c8y_tenant} successfully")
+except:
+    fileLogger.error(f"Connect to tenant {c8y_tenant} failed")
+    consoleLogger.error(f"Connect to tenant {c8y_tenant} failed")
+    sys.exit()
+######################################################
 
 def getDeviceIdByExternalId(external_id):
     fileLogger.info(f'Searching for device with ext ID {external_id}')
+    consoleLogger.info(f'Searching for device with ext ID {external_id}')
     encoded_external_id = encodeUrl(external_id)
     response = requests.get(
         f'{c8y_baseurl}/identity/externalIds/{C8Y_PROFILE_GROUP}/{encoded_external_id}', headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS)
     if response.ok:
         device_id = response.json()['managedObject']['id']
-        fileLogger.info(
-            f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
+        fileLogger.info(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
+        consoleLogger.info(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
         return device_id
     fileLogger.warning(
         f'No device has been found for the external id "{C8Y_PROFILE_GROUP}/{external_id}".')

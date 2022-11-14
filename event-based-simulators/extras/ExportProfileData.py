@@ -20,6 +20,7 @@ fileLogger, consoleLogger = ArgumentsAndCredentialsHandler.setupLogger(fileLogge
 try:
     requests.get(f'{c8y.base_url}/tenant/currentTenant', headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS)
     fileLogger.info(f"Connect to tenant {c8y.tenant_id} successfully")
+    consoleLogger.info(f"Connect to tenant {c8y.tenant_id} successfully")
 except:
     fileLogger.error(f"Connect to tenant {c8y.tenant_id} failed")
     consoleLogger.error(f"Connect to tenant {c8y.tenant_id} failed")
