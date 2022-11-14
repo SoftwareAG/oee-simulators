@@ -39,6 +39,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: 'oee-simulators'
-          path: 'event_based_simulators/oee-simulators.zip'
+          path: 'event-based-simulators/oee-simulators.zip'
 
       #- name: upload to archive
