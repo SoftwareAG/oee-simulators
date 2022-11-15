@@ -34,7 +34,7 @@ pip install c8y_api
 ```
 
 ## Run the export script
-If the environment **optional** parameters were not setup, they can be input as arguments when running the script
+If the environment **optional** parameters were not setup, they can be input as arguments when running the script.
 ```shell
 ExportProfileData.py [-h] [--device-id DEVICE_ID]
                             [--create-from CREATE_FROM]
@@ -45,6 +45,7 @@ ExportProfileData.py [-h] [--device-id DEVICE_ID]
                             [--baseurl BASEURL] [--tenant TENANT]
 
 ```
+
 optional arguments:\
   -h, --help : show this help message and exit\
   --device-id DEVICE_ID, -i DEVICE_ID : Input device id\
@@ -57,19 +58,34 @@ optional arguments:\
   --baseurl BASEURL, -b BASEURL : C8Y Baseurl\
   --tenant TENANT, -t TENANT : C8Y TenantID\
 
-## Run the import script
- 
-```shell
-ImportData.py [-h] [--ifile INPUTFILE] [--log {DEBUG, INFO}] [--username C8Y_USERNAME] [--password C8Y_PASSWORD] [--baseurl C8Y_BASEURL] [--tenant C8Y_TENANT_ID]
-```
 ### Credentials Arguments
 Credentials for the C8Y instance can be handed to the script using cli arguments as shown in the example above. The script will try to extract the crendentials from the [Environment File](./Environment.py) if no credentials are presented as arguments.
 
 ### Logging
-Log-level: two log level can be set using the --log argument {DEBUG, INFO}. Log-level INFO is default. DEBUG can be used to get more output of the script execution.
+Log-level: five log levels can be set using the --log argument {DEBUG, INFO, WARNING, ERROR, CRITICAL}. From left to right is the decreasing order of log info amount can be seen: DEBUG>INFO>WARNING>ERROR>CRITICAL. For example, if INFO level is set, DEBUG level messages can not be seen.
 
-### INPUTFILE
-The inputfile that should be used for this script should has the external_id of the managed object as name. For example: ```sim_001_profile.json```
+### Export time period
+Input both create-from and create-to to set export time. The time format should be: "%Y-%m-%dT%H:%M:%S.%fZ" (i.e 2022-11-14T13:45:15.893Z)
+
+
+## Run the import script
+ 
+```shell
+ImportData.py [-h] --ifile INPUTFILE [--log {DEBUG, INFO, WARNING, ERROR, CRITICAL}] [--username C8Y_USERNAME] [--password C8Y_PASSWORD] [--baseurl C8Y_BASEURL] [--tenant C8Y_TENANT_ID]
+```
+Example:
+```shell
+python ImportData.py --ifile export_data\simulator_normal-#1.json --log DEBUG --username admin --password abcxzy123
+```
+### INPUTFILE **REQUIRED**
+The inputfile that should be used for this script should has the external_id of the managed object as name. For example: ```sim_001_profile.json```.
+
+### Credentials Arguments
+Credentials for the C8Y instance can be handed to the script using cli arguments as shown in the example above. The script will try to extract the crendentials from the [Environment File](./Environment.py) if no credentials are presented as arguments.
+
+### Logging
+Log-level: five log levels can be set using the --log argument {DEBUG, INFO, WARNING, ERROR, CRITICAL}. From left to right is the decreasing order of log info amount can be seen: DEBUG>INFO>WARNING>ERROR>CRITICAL. For example, if INFO level is set, DEBUG level messages can not be seen.
+
 
 The schema of the inputfile is:
 ```json

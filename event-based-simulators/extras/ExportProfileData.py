@@ -4,11 +4,13 @@ import ArgumentsAndCredentialsHandler, Environment
 
 from datetime import datetime, timedelta, timezone
 
+# Global variables and constants
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
 C8Y_OEE_SIMULATOR_DEVICES_GROUP = "c8y_EventBasedSimulator"
 DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y = ArgumentsAndCredentialsHandler.handleExportArguments()
 ####################################################
+# Setup Log
 file_log_level = logging.DEBUG
 console_log_level = LOG_LEVEL
 relativeFilePath = f"logs\export_{datetime.strftime(datetime.now(), logTimeFormat)}.log"
@@ -183,6 +185,9 @@ def createFilePath(Id):
 
 def SetTimePeriodToExportData():
     if not CREATE_FROM or CREATE_TO:
+        fileLogger.debug(f'CREATE_FROM and/or CREATE_TO were not set. Using default setup to export {Environment.PERIOD_TO_EXPORT}{Environment.TIME_UNIT} ago from now')
+        consoleLogger.debug(f'CREATE_FROM and/or CREATE_TO were not set. Using default setup to export {Environment.PERIOD_TO_EXPORT}{Environment.TIME_UNIT} ago from now')
+
         createTo = datetime.now().replace(tzinfo=timezone.utc)
         TimeUnit = Environment.TIME_UNIT
 

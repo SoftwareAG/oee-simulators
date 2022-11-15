@@ -4,12 +4,14 @@ import ArgumentsAndCredentialsHandler
 
 from datetime import datetime
 
+# Global variables and constants
 timeFormat = "%Y-%m-%dT%H:%M:%S.%fZ"
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 file_log_level = logging.DEBUG
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
 filepath, console_log_level, c8y = ArgumentsAndCredentialsHandler.handleImportArguments()
 ####################################################
+# Setup Log
 relativeFilePath = f"logs\import_{datetime.strftime(datetime.now(), logTimeFormat)}.log"
 filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
 fileLogger, consoleLogger = ArgumentsAndCredentialsHandler.setupLogger(fileLoggerName='ImportProfileData', consoleLoggerName='ConsoleImportProfileData', filePath=filePath, fileLogLevel=file_log_level, consoleLogLevel=console_log_level)
@@ -23,6 +25,7 @@ else:
     consoleLogger.error(f"Connect to tenant {c8y.tenant_id} failed")
     sys.exit()
 ######################################################
+
 
 def getDeviceIdByExternalId(external_id):
     fileLogger.info(f'Searching for device with ext ID {external_id}')
