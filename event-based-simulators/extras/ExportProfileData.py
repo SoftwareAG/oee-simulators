@@ -36,22 +36,22 @@ else:
 
 
 def exportAllProfileDataFromChildDevices(createFrom, createTo):
-    deviceCount = 0
+    deviceInTenantCount = 0
     deviceManagedObject = c8y.device_inventory.select(type=C8Y_OEE_SIMULATOR_DEVICES_GROUP)
     for device in deviceManagedObject:
-        deviceCount += 1
+        deviceInTenantCount += 1
         logDebug(f"Found device '{device.name}', id: #{device.id}, owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
         logDebug(f"List of {device.name}'s child devices: ")
         for childDevice in device.child_devices:
             ExportSpecificProfileDataWithDeviceId(createFrom=createFrom,createTo=createTo, deviceId=childDevice.id)
 
-    if deviceCount == 0:
+    if deviceInTenantCount == 0:
         logInfo(f"No device in tenant {c8y.tenant_id} found")
 
 
 def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
     deviceName = findDeviceNameById(deviceId, c8y.base_url)
-    deviceCount = 0
+    deviceWithIdCount = 0
     deviceExternalId, deviceExternalIdType = checkDeviceExternalIdById(deviceId, c8y.base_url)
     if not deviceExternalId:
         return
@@ -61,7 +61,7 @@ def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
         return
     logDebug(f"Search for {DATA_TYPE} data from device {deviceName}, id #{deviceId}")
     for device in c8y.device_inventory.select(name=deviceName):
-        deviceCount += 1
+        deviceWithIdCount += 1
         fileLogger.debug(f"Child device {device.name}, id #{device.id}")
         if DATA_TYPE == "alarms":
             exportAlarms(device, createFrom, createTo, filePath)
@@ -77,7 +77,7 @@ def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
             exportMeasurements(device, createFrom, createTo, filePath)
             fileLogger.debug(f"Alarms and Measurements data is added to data file at {filePath}")
 
-    if deviceCount == 0:
+    if deviceWithIdCount == 0:
         fileLogger.info(f"No device with id {deviceId} found")
     return
 
@@ -105,11 +105,8 @@ def exportAlarms(device, createFrom, createTo, filePath):
 
 def listAlarms(device, createFrom, createTo):
     jsonAlarmsList = []
-    # Create a count variable as a json/dict key to save json data
-    count = 0
     for alarm in c8y.alarms.select(source=device.id, created_after=createFrom, created_before=createTo):
         fileLogger.debug(f"Found alarm id #{alarm.id}, severity: {alarm.severity}, time: {alarm.time}, creation time: {alarm.creation_time}, update time : {alarm.updated_time}\n")
-        count += 1
         jsonAlarmsList.append(alarm.to_json())
     return jsonAlarmsList
 
@@ -121,11 +118,8 @@ def exportMeasurements(device, createFrom, createTo, filePath):
 
 def listMeasurements(device, createFrom, createTo):
     jsonMeasurementsList = []
-    # Create a count variable as a json/dict key to save json data
-    count = 0
     for measurement in c8y.measurements.select(source=device.id, after=createFrom, before=createTo):
         fileLogger.debug(f"Found measurement id #{measurement.id}\n")
-        count += 1
         jsonMeasurementsList.append(measurement.to_json())
     return jsonMeasurementsList
 
