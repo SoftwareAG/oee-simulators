@@ -15,28 +15,30 @@ filepath, console_log_level, c8y = ArgumentsAndCredentialsHandler.handleImportAr
 relativeFilePath = f"logs\import_{datetime.strftime(datetime.now(), logTimeFormat)}.log"
 filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
 fileLogger, consoleLogger = ArgumentsAndCredentialsHandler.setupLogger(fileLoggerName='ImportProfileData', consoleLoggerName='ConsoleImportProfileData', filePath=filePath, fileLogLevel=file_log_level, consoleLogLevel=console_log_level)
+def logInfo(content):
+  fileLogger.info(content)
+  consoleLogger.info(content)
+def logError(content):
+  fileLogger.error(content)
+  consoleLogger.error(content)
 #####################################################
 # Check if connection to tenant can be created
 if ArgumentsAndCredentialsHandler.checkTenantConnection(c8y.base_url):
-    fileLogger.info(f"Connect to tenant {c8y.tenant_id} successfully")
-    consoleLogger.info(f"Connect to tenant {c8y.tenant_id} successfully")
+    logInfo(f"Connect to tenant {c8y.tenant_id} successfully")
 else:
-    fileLogger.error(f"Connect to tenant {c8y.tenant_id} failed")
-    consoleLogger.error(f"Connect to tenant {c8y.tenant_id} failed")
+    logError(f"Connect to tenant {c8y.tenant_id} failed")
     sys.exit()
 ######################################################
 
 
 def getDeviceIdByExternalId(external_id):
-    fileLogger.info(f'Searching for device with ext ID {external_id}')
-    consoleLogger.info(f'Searching for device with ext ID {external_id}')
+    logInfo(f'Searching for device with ext ID {external_id}')
     encoded_external_id = encodeUrl(external_id)
     response = requests.get(
         f'{c8y.base_url}/identity/externalIds/{C8Y_PROFILE_GROUP}/{encoded_external_id}', headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS)
     if response.ok:
         device_id = response.json()['managedObject']['id']
-        fileLogger.info(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
-        consoleLogger.info(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
+        logInfo(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
         return device_id
     fileLogger.warning(
         f'No device has been found for the external id "{C8Y_PROFILE_GROUP}/{external_id}".')
