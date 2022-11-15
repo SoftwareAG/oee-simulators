@@ -167,10 +167,8 @@ def handleImportArguments():
 
 def removeTrailingSlashFromBaseUrl(baseUrl):
     if baseUrl[-1] == '/':
-        newBaseurl = baseUrl[:-1]
-    else:
-        newBaseurl = baseUrl
-    return newBaseurl
+        return baseUrl[:-1]
+    return baseUrl
 
 
 def checkTenantConnection(baseUrl):
