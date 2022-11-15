@@ -6,14 +6,13 @@ This scripts folder contains:
 
 ## Setup environment parameters:
 Input necessary configuration in **Environment.py** file\
-
-Required:
+Credentials:
 - base url
 - tenant ID 
 - username 
 - password
 
-Optional:
+Additional parameters:
 - data type
 - device id
 - create from
@@ -36,7 +35,7 @@ pip install c8y_api
 ## Run the export script
 If the environment **optional** parameters were not setup, they can be input as arguments when running the script.
 ```shell
-ExportProfileData.py [-h] [--device-id DEVICE_ID]
+ExportProfileData.py [-h]   [--device-id DEVICE_ID]
                             [--create-from CREATE_FROM]
                             [--create-to CREATE_TO]
                             [--data-type {measurements,alarms,all}]
@@ -71,7 +70,10 @@ Input both create-from and create-to to set export time. The time format should 
 ## Run the import script
  
 ```shell
-ImportData.py [-h] --ifile INPUTFILE [--log {DEBUG, INFO, WARNING, ERROR, CRITICAL}] [--username C8Y_USERNAME] [--password C8Y_PASSWORD] [--baseurl C8Y_BASEURL] [--tenant C8Y_TENANT_ID]
+ImportData.py [-h]  --ifile INPUTFILE 
+                    [--log {DEBUG, INFO, WARNING, ERROR, CRITICAL}] 
+                    [--username USERNAME] [--password PASSWORD]
+                    [--baseurl BASEURL] [--tenant TENANT]
 ```
 Example:
 ```shell
