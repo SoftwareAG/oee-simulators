@@ -63,7 +63,7 @@ class OeeAPI:
                 log.info(f'profile {profile["id"]} added to the device {device_id}')
             else:
                 log.info(f'cannot add profile {profile["id"]} to the device {device_id}')
-            self.c8y_api.add_external_id(mo_id=profile["id"], ext_id=f'{external_id.lower()}_profile', type="c8y_EventBasedSimulatorProfile")
+            self.c8y_api.add_external_id(device_id=profile["id"], ext_id=f'{external_id.lower()}_profile', type="c8y_EventBasedSimulatorProfile")
         return profile
     
     def activate(self, profile):
