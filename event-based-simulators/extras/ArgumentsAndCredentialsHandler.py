@@ -100,7 +100,7 @@ def handleExportArguments():
     BASEURL = args.baseurl
     if not BASEURL:
         BASEURL = Environment.C8Y_BASE
-    BASEURL = removeSlashFromBaseUrl(BASEURL)
+    BASEURL = removeTrailingSlashFromBaseUrl(BASEURL)
 
     TENANT = args.tenant
     if not TENANT:
@@ -151,7 +151,7 @@ def handleImportArguments():
     BASEURL = args.baseurl
     if not BASEURL:
         BASEURL = Environment.C8Y_BASE
-    BASEURL = removeSlashFromBaseUrl(BASEURL)
+    BASEURL = removeTrailingSlashFromBaseUrl(BASEURL)
 
     TENANT = args.tenant
     if not TENANT:
@@ -165,7 +165,7 @@ def handleImportArguments():
     return INPUT_FILE, LOG_LEVEL, c8y
 
 
-def removeSlashFromBaseUrl(baseUrl):
+def removeTrailingSlashFromBaseUrl(baseUrl):
     if baseUrl[-1] == '/':
         newBaseurl = baseUrl[:-1]
     else:
