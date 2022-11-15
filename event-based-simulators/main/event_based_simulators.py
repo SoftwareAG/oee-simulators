@@ -52,7 +52,7 @@ cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()
 
 microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
-CREATE_PROFILES = microservice_options.get("CREATE_PROFILES", False)
+CREATE_PROFILES = microservice_options.get("CREATE_PROFILES", "True")
 CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
 log.info(f'CREATE_PROFILES:{CREATE_PROFILES}')
 
