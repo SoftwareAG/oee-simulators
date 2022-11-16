@@ -1,4 +1,5 @@
 import logging, urllib, json, requests, os, sys
+from os.path import isfile, join
 
 import ArgumentsAndCredentialsHandler
 
@@ -9,12 +10,15 @@ timeFormat = "%Y-%m-%dT%H:%M:%S.%fZ"
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 file_log_level = logging.DEBUG
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
-filepath, console_log_level, c8y = ArgumentsAndCredentialsHandler.handleImportArguments()
+dataFileFolderPath, console_log_level, c8y = ArgumentsAndCredentialsHandler.handleImportArguments()
 ####################################################
 # Setup Log
 relativeFilePath = f"logs\import_{datetime.strftime(datetime.now(), logTimeFormat)}.log"
-filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
-fileLogger, consoleLogger = ArgumentsAndCredentialsHandler.setupLogger(fileLoggerName='ImportProfileData', consoleLoggerName='ConsoleImportProfileData', filePath=filePath, fileLogLevel=file_log_level, consoleLogLevel=console_log_level)
+logFilePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
+fileLogger, consoleLogger = ArgumentsAndCredentialsHandler.setupLogger(fileLoggerName='ImportProfileData', consoleLoggerName='ConsoleImportProfileData', filePath=logFilePath, fileLogLevel=file_log_level, consoleLogLevel=console_log_level)
+def logDebug(content):
+  fileLogger.debug(content)
+  consoleLogger.debug(content)
 def logInfo(content):
   fileLogger.info(content)
   consoleLogger.info(content)
@@ -104,9 +108,9 @@ def importMeasurements(measurements, id):
     createMeasurements(measurements=measurements_object)
 
 
-def load(filename):
+def loadFile(filePath):
     try:
-        with open(filename) as f_obj:
+        with open(filePath) as f_obj:
             return json.load(f_obj)
     except Exception as e:
         fileLogger.error(e, type(e))
@@ -123,19 +127,42 @@ def encodeUrl(url):
     return encodedUrl
 
 
-if __name__ == '__main__':
-    file_data = load(filepath)
-    external_id = extract_ext_id_from_filepath(filepath)
-    fileLogger.debug(f'external id: {extract_ext_id_from_filepath(filepath)}')
-    alarms = file_data.get("alarms", [])
-    measurements = file_data.get("measurements", [])
-    id = getDeviceIdByExternalId(external_id=external_id)
+def checkFileList(filePath):
+    if not os.path.exists(filePath):
+        consoleLogger.debug(f"No data folder with name {filePath} found")
+    else:
+        listOfFiles = [file for file in os.listdir(filePath) if isfile(join(filePath, file))]
+        return listOfFiles
 
-    if len(alarms) > 0:
-        importAlarms(alarms=alarms, id=id)
+
+def replaceFileNameWithFilePathInList(listOfFiles):
+    for fileListCount in range(len(listOfFiles)):
+        dataFileName = listOfFiles[fileListCount]
+        dataFilePath = dataFileFolderPath + "\ ".strip() + dataFileName
+        listOfFiles[fileListCount] = dataFilePath
+    return listOfFiles
+
+
+if __name__ == '__main__':
+    if dataFileFolderPath == "export_data":
+        listOfFiles = checkFileList(filePath=dataFileFolderPath)
+        listOfFilePaths = replaceFileNameWithFilePathInList(listOfFiles)
     else:
-        fileLogger.info("No Alarms to import")
-    if len(measurements) > 0:
-        importMeasurements(measurements=measurements, id=id)
-    else:
-        fileLogger.info("No Measurements to import")
+        listOfFilePaths = [dataFileFolderPath]
+
+    for filePath in listOfFilePaths:
+        file_data = loadFile(filePath)
+        external_id = extract_ext_id_from_filepath(filePath)
+        fileLogger.debug(f'external id: {external_id}')
+        alarms = file_data.get("alarms", [])
+        measurements = file_data.get("measurements", [])
+        id = getDeviceIdByExternalId(external_id=external_id)
+
+        if len(alarms) > 0:
+            importAlarms(alarms=alarms, id=id)
+        else:
+            fileLogger.info("No Alarms to import")
+        if len(measurements) > 0:
+            importMeasurements(measurements=measurements, id=id)
+        else:
+            fileLogger.info("No Measurements to import")

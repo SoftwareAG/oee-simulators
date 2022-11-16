@@ -4,7 +4,8 @@ import Environment
 
 from c8y_api import CumulocityApi
 
-logFileFormatter = logging.Formatter('[%(asctime)s] [%(levelname)s] - %(message)s')
+logFormat = '[%(asctime)s] [%(levelname)s] - %(message)s'
+logFileFormatter = logging.Formatter(logFormat)
 ####################################################
 # Setup for additional API request message
 user_and_pass_bytes = base64.b64encode(
@@ -116,7 +117,7 @@ def handleExportArguments():
 
 def handleImportArguments():
     parser = argparse.ArgumentParser(description='Script to import profiles data')
-    parser.add_argument('--ifile', '-i', type=str, help='Input file', required=True)
+    parser.add_argument('--ifile', '-i', type=str, help='Input file')
     parser.add_argument('--log', '-l', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help='Log-level')
     parser.add_argument('--username', '-u', type=str, help='C8Y Username')
     parser.add_argument('--password', '-p', type=str, help='C8Y Password')
@@ -127,7 +128,9 @@ def handleImportArguments():
 
     INPUT_FILE = args.ifile
     if not INPUT_FILE:
-        sys.exit()
+        if not os.path.exists('export_data'):
+            sys.exit()
+        INPUT_FILE = 'export_data'
 
     LOG_ARGUMENT = args.log
     LOG_LEVEL = logging.INFO
