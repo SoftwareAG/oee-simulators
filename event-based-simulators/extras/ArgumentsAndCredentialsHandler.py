@@ -7,23 +7,24 @@ from c8y_api import CumulocityApi
 logFormat = '[%(asctime)s] [%(levelname)s] - %(message)s'
 logFileFormatter = logging.Formatter(logFormat)
 ####################################################
-# Setup for additional API request message
-user_and_pass_bytes = base64.b64encode(
-    (Environment.C8Y_TENANT + "/" + Environment.C8Y_USER + ':' + Environment.C8Y_PASSWORD).encode('ascii'))  # bytes
-user_and_pass = user_and_pass_bytes.decode('ascii')  # decode to str
+def setupHeadersForAPIRequest(tenant_id, username, password):
+    # Setup for additional API request message
+    user_and_pass_bytes = base64.b64encode(
+        (tenant_id + "/" + username + ':' + password).encode('ascii'))  # bytes
+    user_and_pass = user_and_pass_bytes.decode('ascii')  # decode to str
 
-C8Y_HEADERS = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'Basic ' + user_and_pass
-}
+    C8Y_HEADERS = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Basic ' + user_and_pass
+    }
 
-MEASUREMENTS_HEADERS = {
-    'Content-Type': 'application/vnd.com.nsn.cumulocity.measurementcollection+json',
-    'Accept': 'application/json',
-    'Authorization': 'Basic ' + user_and_pass
-}
-####################################################
+    MEASUREMENTS_HEADERS = {
+        'Content-Type': 'application/vnd.com.nsn.cumulocity.measurementcollection+json',
+        'Accept': 'application/json',
+        'Authorization': 'Basic ' + user_and_pass
+    }
+    return C8Y_HEADERS, MEASUREMENTS_HEADERS
 
 
 def setupLogger(fileLoggerName, consoleLoggerName, filePath, fileLogLevel, consoleLogLevel):
@@ -176,7 +177,7 @@ def removeTrailingSlashFromBaseUrl(baseUrl):
     return baseUrl
 
 
-def checkTenantConnection(baseUrl):
+def checkTenantConnection(baseUrl, C8Y_HEADERS):
     # Check if connection to tenant can be created
     try:
         requests.get(f'{baseUrl}/tenant/currentTenant', headers=C8Y_HEADERS)

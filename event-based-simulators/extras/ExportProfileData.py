@@ -9,6 +9,7 @@ logTimeFormat = "%Y%m%d%H%M%S_%f"
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
 C8Y_OEE_SIMULATOR_DEVICES_GROUP = "c8y_EventBasedSimulator"
 DATA_TYPE, DEVICE_ID_LIST, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y = ArgumentsAndCredentialsHandler.handleExportArguments()
+C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.setupHeadersForAPIRequest(tenant_id=c8y.tenant_id, username= c8y.username, password=c8y.password)
 ####################################################
 # Setup Log
 file_log_level = logging.DEBUG
@@ -27,7 +28,7 @@ def logError(content):
   consoleLogger.error(content)
 #####################################################
 # Check if connection to tenant can be created
-if ArgumentsAndCredentialsHandler.checkTenantConnection(c8y.base_url):
+if ArgumentsAndCredentialsHandler.checkTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS):
     logInfo(f"Connect to tenant {c8y.tenant_id} successfully")
 else:
     logError(f"Connect to tenant {c8y.tenant_id} failed")
@@ -86,7 +87,7 @@ def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
 
 def findDeviceNameById(deviceId, baseUrl):
     response = requests.get(f'{baseUrl}/inventory/managedObjects/{deviceId}',
-                            headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS)
+                            headers=C8Y_HEADERS)
     if not response.ok:
         logError(f"Connection to url '{baseUrl}/inventory/managedObjects/{deviceId}' failed. Check your parameters in environment file again")
         sys.exit()
@@ -135,7 +136,7 @@ def appendDataToJsonFile(jsonDataList, filePath, data_type, json_data={}):
 
 def getExternalIdReponse(deviceId, baseUrl):
     externalIdResponse = requests.get(f'{baseUrl}/identity/globalIds/{deviceId}/externalIds',
-                                      headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS)
+                                      headers=C8Y_HEADERS)
     if not externalIdResponse.ok:
         logError(f"Connection to url '{baseUrl}/identity/globalIds/{deviceId}/externalIds' failed. Check your parameters in environment file again")
         sys.exit()

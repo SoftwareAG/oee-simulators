@@ -11,6 +11,7 @@ logTimeFormat = "%Y%m%d%H%M%S_%f"
 file_log_level = logging.DEBUG
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
 json_filename_list_to_import, console_log_level, c8y = ArgumentsAndCredentialsHandler.handleImportArguments()
+C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.setupHeadersForAPIRequest(tenant_id=c8y.tenant_id, username= c8y.username, password=c8y.password)
 ####################################################
 # Setup Log
 relativeFilePath = f"logs\import_{datetime.strftime(datetime.now(), logTimeFormat)}.log"
@@ -27,7 +28,7 @@ def logError(content):
   consoleLogger.error(content)
 #####################################################
 # Check if connection to tenant can be created
-if ArgumentsAndCredentialsHandler.checkTenantConnection(c8y.base_url):
+if ArgumentsAndCredentialsHandler.checkTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS):
     logInfo(f"Connect to tenant {c8y.tenant_id} successfully")
 else:
     logError(f"Connect to tenant {c8y.tenant_id} failed")
@@ -39,7 +40,7 @@ def getDeviceIdByExternalId(external_id):
     logInfo(f'Searching for device with ext ID {external_id}')
     encoded_external_id = encodeUrl(external_id)
     response = requests.get(
-        f'{c8y.base_url}/identity/externalIds/{C8Y_PROFILE_GROUP}/{encoded_external_id}', headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS)
+        f'{c8y.base_url}/identity/externalIds/{C8Y_PROFILE_GROUP}/{encoded_external_id}', headers=C8Y_HEADERS)
     if response.ok:
         device_id = response.json()['managedObject']['id']
         logInfo(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
@@ -51,7 +52,7 @@ def getDeviceIdByExternalId(external_id):
 
 def createAlarm(alarm):
     response = requests.post(
-        f'{c8y.base_url}/alarm/alarms', headers=ArgumentsAndCredentialsHandler.C8Y_HEADERS, data=json.dumps(alarm))
+        f'{c8y.base_url}/alarm/alarms', headers=C8Y_HEADERS, data=json.dumps(alarm))
     if response.ok:
         return response.json()
     fileLogger.warning(response)
@@ -60,7 +61,7 @@ def createAlarm(alarm):
 
 def createMeasurements(measurements):
     response = requests.post(f'{c8y.base_url}/measurement/measurements',
-                             headers=ArgumentsAndCredentialsHandler.MEASUREMENTS_HEADERS, data=json.dumps(measurements))
+                             headers=MEASUREMENTS_HEADERS, data=json.dumps(measurements))
     if response.ok:
         return response.json()
     fileLogger.warning(response)
