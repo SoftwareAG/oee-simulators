@@ -130,10 +130,14 @@ def encodeUrl(url):
 
 
 def checkFileList(filePath):
+    listOfFiles = []
     if not os.path.exists(filePath):
         consoleLogger.debug(f"No data folder with name {filePath} found")
     else:
-        listOfFiles = [file for file in os.listdir(filePath) if isfile(join(filePath, file))]
+        #listOfFiles = [file for file in os.listdir(filePath) if isfile(join(filePath, file))]
+        for file in os.listdir(filePath):
+            if isfile(join(filePath, file)):
+                listOfFiles.append(file)
         return listOfFiles
 
 
