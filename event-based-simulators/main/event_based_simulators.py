@@ -98,10 +98,11 @@ class Shiftplan:
 
     def set_timeslots_for_shiftplan(self, shiftplan):
         self.locationId = shiftplan["locationId"]
-        self.recurringTimeSlots = list(map(lambda model: self.RecurringTimeSlot(model), shiftplan.get('recurringTimeSlots', [])))
+        self.recurringTimeSlots = shiftplan["recurringTimeslots"]
         return True
 
     def add_Shiftplan_to_OEE(self):
+        log.info(f"{self.recurringTimeSlots}")
         oeeAPI.add_timeslots_for_shiftplan(self)
         log.info(f'Added shiftplan to OEE for location: {self.locationId}')
 
