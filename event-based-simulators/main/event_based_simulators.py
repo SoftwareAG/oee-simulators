@@ -107,14 +107,14 @@ class Shiftplan:
 
 
     def __create_task(self):   
-        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, self.getShiftplan)
+        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, self.getShiftplan())
         
         log.debug(f'create periodic task for pulling shiftplans running every {shiftplan_polling_interval}')      
         return task
 
     def getShiftplan(self):
-        log.info(f'Getting Shiftplan for location: {self.locationId}')    
-        self.setShiftplan(oeeAPI.get_shiftplan(self.locationId, f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + shiftplan_polling_interval:{shiftplan_dateformat}}'))
+        log.info(f'Getting Shiftplan for location: {self.locationId}')
+        self.setShiftplan(oeeAPI.get_shiftplan(self.locationId, f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + timedelta(seconds=shiftplan_polling_interval):{shiftplan_dateformat}}'))
         
 
     def setShiftplan(self, shiftplan):
