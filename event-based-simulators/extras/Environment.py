@@ -7,7 +7,7 @@ C8Y_PASSWORD = 'test'
 ### Optional
 # Input None if not set
 DATA_TYPE = 'all'  # 'alarms': export alarms data, 'measurements': export measurements data, 'all' export both
-DEVICE_ID = None   # Input device ID or set to None
+DEVICE_ID = None   # Input device ID(s) (i.e. DEVICE_ID = 123456, 234567) or set to None
 
 # Set one of these two sections and None to all of the others
 ############################

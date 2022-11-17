@@ -50,7 +50,7 @@ def setupLogger(fileLoggerName, consoleLoggerName, filePath, fileLogLevel, conso
 
 def handleExportArguments():
     parser = argparse.ArgumentParser(description='Script to export or import profiles data')
-    parser.add_argument('--device-id', '-i', type=str, help='Input device id')
+    parser.add_argument('--device-id', '-i', type=str, help='Input device id / List of device ids', nargs='+')
     parser.add_argument('--create-from', '-from', type=str, help='Input "create from" milestone')
     parser.add_argument('--create-to', '-to', type=str, help='Input "create to" milestone')
     parser.add_argument('--data-type', '-d', choices=['measurements', 'alarms', 'all'], help='Export "alarms" or "measurements"')
@@ -65,11 +65,12 @@ def handleExportArguments():
     if not DATA_TYPE:
         DATA_TYPE = Environment.DATA_TYPE
 
-    DEVICE_ID = args.device_id
-    if not DEVICE_ID:
-        DEVICE_ID = Environment.DEVICE_ID
-        if DEVICE_ID:
-            DEVICE_ID = str(DEVICE_ID)
+    DEVICE_ID_LIST = args.device_id
+    if not DEVICE_ID_LIST:
+        DEVICE_ID_LIST = []
+        if Environment.DEVICE_ID:
+            for deviceId in Environment.DEVICE_ID:
+                DEVICE_ID_LIST.append(deviceId)
 
     LOG_ARGUMENT = args.log
     LOG_LEVEL = logging.INFO
@@ -112,7 +113,7 @@ def handleExportArguments():
                         username=USERNAME,  # your Cumulocity IoT username
                         password=PASSWORD)  # your Cumulocity IoT password
 
-    return DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y
+    return DATA_TYPE, DEVICE_ID_LIST, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y
 
 
 def handleImportArguments():

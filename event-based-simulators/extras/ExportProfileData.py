@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
 C8Y_OEE_SIMULATOR_DEVICES_GROUP = "c8y_EventBasedSimulator"
-DATA_TYPE, DEVICE_ID, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y = ArgumentsAndCredentialsHandler.handleExportArguments()
+DATA_TYPE, DEVICE_ID_LIST, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y = ArgumentsAndCredentialsHandler.handleExportArguments()
 ####################################################
 # Setup Log
 file_log_level = logging.DEBUG
@@ -78,7 +78,9 @@ def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
             fileLogger.debug(f"Alarms and Measurements data is added to data file at {filePath}")
 
     if deviceWithIdCount == 0:
-        fileLogger.info(f"No device with id {deviceId} found")
+        fileLogger.info(f"No data for device with id #{deviceId} is exported")
+    else:
+        logInfo(f"Exported successfully data for device with id #{deviceId}, external id: {deviceExternalId}")
     return
 
 
@@ -159,7 +161,7 @@ def isExternalIdTypeEventBasedSimulatorProfile(deviceExternalIdType):
     if deviceExternalIdType == C8Y_PROFILE_GROUP:
         return True
     else:
-        logInfo(f"The type {deviceExternalIdType} of external ID must be {C8Y_PROFILE_GROUP}")
+        logInfo(f"The type {deviceExternalIdType} of external ID must match with type {C8Y_PROFILE_GROUP}")
         return False
 
 
@@ -203,7 +205,8 @@ if __name__ == '__main__':
     fileLogger.info(f"Export data which is created after/from: {createFrom}")
     fileLogger.info(f"and created before/to: {createTo}")
 
-    if not DEVICE_ID:
+    if not DEVICE_ID_LIST:
         exportAllProfileDataFromChildDevices(createFrom=createFrom, createTo=createTo)
     else:
-        ExportSpecificProfileDataWithDeviceId(createFrom=createFrom, createTo=createTo, deviceId=DEVICE_ID)
+        for deviceId in DEVICE_ID_LIST:
+            ExportSpecificProfileDataWithDeviceId(createFrom=createFrom, createTo=createTo, deviceId=deviceId)

@@ -44,10 +44,14 @@ ExportProfileData.py [-h]   [--device-id DEVICE_ID]
                             [--baseurl BASEURL] [--tenant TENANT]
 
 ```
+Example:
+```shell
+python ExportProfileData.py --device-id 123456 254676 --create-from 2022-11-16T07:39:35.780Z --create-to 2022-11-16T07:49:35.780Z
+```
 
 optional arguments:\
   -h, --help : show this help message and exit\
-  --device-id DEVICE_ID, -i DEVICE_ID : Input device id\
+  --device-id DEVICE_ID, -i DEVICE_ID : Input device id / list of device ids\
   --create-from CREATE_FROM, -from CREATE_FROM : Input "create from" milestone\
   --create-to CREATE_TO, -to CREATE_TO : Input "create to" milestone\
   --data-type {measurements,alarms,all}, -d {measurements,alarms,all} : Export "alarms" or "measurements"\
