@@ -8,105 +8,105 @@ from datetime import datetime, timedelta, timezone
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
 C8Y_OEE_SIMULATOR_DEVICES_GROUP = "c8y_EventBasedSimulator"
-DATA_TYPE, DEVICE_ID_LIST, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y = ArgumentsAndCredentialsHandler.handleExportArguments()
-C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.setupHeadersForAPIRequest(tenant_id=c8y.tenant_id, username= c8y.username, password=c8y.password)
+DATA_TYPE, DEVICE_ID_LIST, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y = ArgumentsAndCredentialsHandler.HandleExportArguments()
+C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.SetupHeadersForAPIRequest(tenant_id=c8y.tenant_id, username= c8y.username, password=c8y.password)
 ####################################################
 # Setup Log
 file_log_level = logging.DEBUG
 console_log_level = LOG_LEVEL
 relativeFilePath = f"logs\export_{datetime.strftime(datetime.now(), logTimeFormat)}.log"
 filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
-fileLogger, consoleLogger = ArgumentsAndCredentialsHandler.setupLogger(fileLoggerName='ExportProfileData', consoleLoggerName='ConsoleExportProfileData', filePath=filePath, fileLogLevel=file_log_level, consoleLogLevel=console_log_level)
-def logDebug(content):
+fileLogger, consoleLogger = ArgumentsAndCredentialsHandler.SetupLogger(file_logger_name='ExportProfileData', console_logger_name='ConsoleExportProfileData', filepath=filePath, file_log_level=file_log_level, console_log_level=console_log_level)
+def LogDebug(content):
   fileLogger.debug(content)
   consoleLogger.debug(content)
-def logInfo(content):
+def LogInfo(content):
   fileLogger.info(content)
   consoleLogger.info(content)
-def logError(content):
+def LogError(content):
   fileLogger.error(content)
   consoleLogger.error(content)
 #####################################################
 # Check if connection to tenant can be created
-if ArgumentsAndCredentialsHandler.checkTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS):
-    logInfo(f"Connect to tenant {c8y.tenant_id} successfully")
+if ArgumentsAndCredentialsHandler.CheckTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS):
+    LogInfo(f"Connect to tenant {c8y.tenant_id} successfully")
 else:
-    logError(f"Connect to tenant {c8y.tenant_id} failed")
+    LogError(f"Connect to tenant {c8y.tenant_id} failed")
     sys.exit()
 ######################################################
 
 
-def exportAllProfileDataFromChildDevices(createFrom, createTo):
+def ExportAllProfileDataFromChildDevices(createFrom, createTo):
     deviceInTenantCount = 0
     deviceManagedObject = c8y.device_inventory.select(type=C8Y_OEE_SIMULATOR_DEVICES_GROUP)
     for device in deviceManagedObject:
         deviceInTenantCount += 1
-        logDebug(f"Found device '{device.name}', id: #{device.id}, owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
-        logDebug(f"List of {device.name}'s child devices: ")
+        LogDebug(f"Found device '{device.name}', id: #{device.id}, owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
+        LogDebug(f"List of {device.name}'s child devices: ")
         for childDevice in device.child_devices:
             ExportSpecificProfileDataWithDeviceId(createFrom=createFrom,createTo=createTo, deviceId=childDevice.id)
 
     if deviceInTenantCount == 0:
-        logInfo(f"No device in tenant {c8y.tenant_id} found")
+        LogInfo(f"No device in tenant {c8y.tenant_id} found")
 
 
 def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
-    deviceName = findDeviceNameById(deviceId, c8y.base_url)
+    deviceName = FindDeviceNameById(deviceId, c8y.base_url)
     deviceWithIdCount = 0
-    deviceExternalId, deviceExternalIdType = checkDeviceExternalIdById(deviceId, c8y.base_url)
+    deviceExternalId, deviceExternalIdType = CheckDeviceExternalIdById(deviceId, c8y.base_url)
     if not deviceExternalId:
         return
-    if isExternalIdTypeEventBasedSimulatorProfile(deviceExternalIdType):
-        filePath = createFilePath(Id=deviceExternalId)
+    if IsExternalIdTypeEventBasedSimulatorProfile(deviceExternalIdType):
+        filePath = CreateFilePath(Id=deviceExternalId)
     else:
         return
-    logDebug(f"Search for {DATA_TYPE} data from device {deviceName}, id #{deviceId}")
+    LogDebug(f"Search for {DATA_TYPE} data from device {deviceName}, id #{deviceId}")
     for device in c8y.device_inventory.select(name=deviceName):
         deviceWithIdCount += 1
         fileLogger.debug(f"Child device {device.name}, id #{device.id}")
         if DATA_TYPE == "alarms":
-            exportAlarms(device, createFrom, createTo, filePath)
-            appendDataToJsonFile([], filePath, 'measurements')
+            ExportAlarms(device, createFrom, createTo, filePath)
+            AppendDataToJsonFile([], filePath, 'measurements')
             fileLogger.debug(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
         elif DATA_TYPE == "measurements":
             # listing measurements of child device
-            exportMeasurements(device, createFrom, createTo, filePath)
-            appendDataToJsonFile([], filePath, 'alarms')
+            ExportMeasurements(device, createFrom, createTo, filePath)
+            AppendDataToJsonFile([], filePath, 'alarms')
             fileLogger.debug(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
         else:
-            exportAlarms(device, createFrom, createTo, filePath)
-            exportMeasurements(device, createFrom, createTo, filePath)
+            ExportAlarms(device, createFrom, createTo, filePath)
+            ExportMeasurements(device, createFrom, createTo, filePath)
             fileLogger.debug(f"Alarms and Measurements data is added to data file at {filePath}")
 
     if deviceWithIdCount == 0:
         fileLogger.info(f"No data for device with id #{deviceId} is exported")
     else:
-        logInfo(f"Exported successfully data for device with id #{deviceId}, external id: {deviceExternalId}")
+        LogInfo(f"Exported successfully data for device with id #{deviceId}, external id: {deviceExternalId}")
     return
 
 
-def findDeviceNameById(deviceId, baseUrl):
+def FindDeviceNameById(deviceId, baseUrl):
     response = requests.get(f'{baseUrl}/inventory/managedObjects/{deviceId}',
                             headers=C8Y_HEADERS)
     if not response.ok:
-        logError(f"Connection to url '{baseUrl}/inventory/managedObjects/{deviceId}' failed. Check your parameters in environment file again")
+        LogError(f"Connection to url '{baseUrl}/inventory/managedObjects/{deviceId}' failed. Check your parameters in environment file again")
         sys.exit()
     else:
         try:
             deviceName = response.json()['name']
         except:
-            logError(f"Device #{deviceId} does not have name")
+            LogError(f"Device #{deviceId} does not have name")
             sys.exit()
 
     return deviceName
 
 
-def exportAlarms(device, createFrom, createTo, filePath):
-    jsonAlarmsList = listAlarms(device, createFrom, createTo)
-    appendDataToJsonFile(jsonAlarmsList, filePath, 'alarms')
+def ExportAlarms(device, createFrom, createTo, filePath):
+    jsonAlarmsList = ListAlarms(device, createFrom, createTo)
+    AppendDataToJsonFile(jsonAlarmsList, filePath, 'alarms')
 
 
-def listAlarms(device, createFrom, createTo):
+def ListAlarms(device, createFrom, createTo):
     jsonAlarmsList = []
     for alarm in c8y.alarms.select(source=device.id, created_after=createFrom, created_before=createTo):
         fileLogger.debug(f"Found alarm id #{alarm.id}, severity: {alarm.severity}, time: {alarm.time}, creation time: {alarm.creation_time}, update time : {alarm.updated_time}\n")
@@ -114,12 +114,12 @@ def listAlarms(device, createFrom, createTo):
     return jsonAlarmsList
 
 
-def exportMeasurements(device, createFrom, createTo, filePath):
-    jsonMeasurementsList = listMeasurements(device, createFrom, createTo)
-    appendDataToJsonFile(jsonMeasurementsList, filePath, 'measurements')
+def ExportMeasurements(device, createFrom, createTo, filePath):
+    jsonMeasurementsList = ListMeasurements(device, createFrom, createTo)
+    AppendDataToJsonFile(jsonMeasurementsList, filePath, 'measurements')
 
 
-def listMeasurements(device, createFrom, createTo):
+def ListMeasurements(device, createFrom, createTo):
     jsonMeasurementsList = []
     for measurement in c8y.measurements.select(source=device.id, after=createFrom, before=createTo):
         fileLogger.debug(f"Found measurement id #{measurement.id}\n")
@@ -127,46 +127,46 @@ def listMeasurements(device, createFrom, createTo):
     return jsonMeasurementsList
 
 
-def appendDataToJsonFile(jsonDataList, filePath, data_type, json_data={}):
+def AppendDataToJsonFile(jsonDataList, filePath, data_type, json_data={}):
     # Create new json file or add data to an existing json file
     with open(filePath, 'w') as f:
         json_data[f"{data_type}"] = jsonDataList
         json.dump(json_data, f, indent=2)
 
 
-def getExternalIdReponse(deviceId, baseUrl):
+def GetExternalIdReponse(deviceId, baseUrl):
     externalIdResponse = requests.get(f'{baseUrl}/identity/globalIds/{deviceId}/externalIds',
                                       headers=C8Y_HEADERS)
     if not externalIdResponse.ok:
-        logError(f"Connection to url '{baseUrl}/identity/globalIds/{deviceId}/externalIds' failed. Check your parameters in environment file again")
+        LogError(f"Connection to url '{baseUrl}/identity/globalIds/{deviceId}/externalIds' failed. Check your parameters in environment file again")
         sys.exit()
     else:
         return externalIdResponse
 
 
-def checkDeviceExternalIdById(deviceId, baseUrl):
-    externalIdResponse = getExternalIdReponse(deviceId, baseUrl)
+def CheckDeviceExternalIdById(deviceId, baseUrl):
+    externalIdResponse = GetExternalIdReponse(deviceId, baseUrl)
 
     try:
         deviceExternalId = externalIdResponse.json()['externalIds'][0]['externalId']
         deviceExternalIdType = externalIdResponse.json()['externalIds'][0]['type']
-        logInfo(f"Found external id: {deviceExternalId} with type: {deviceExternalIdType} for the device with id {deviceId}")
+        LogInfo(f"Found external id: {deviceExternalId} with type: {deviceExternalIdType} for the device with id {deviceId}")
     except:
-        logInfo(f"Could not find external id for the device with id {deviceId}")
+        LogInfo(f"Could not find external id for the device with id {deviceId}")
         return None, None
 
     return deviceExternalId, deviceExternalIdType
 
 
-def isExternalIdTypeEventBasedSimulatorProfile(deviceExternalIdType):
+def IsExternalIdTypeEventBasedSimulatorProfile(deviceExternalIdType):
     if deviceExternalIdType == C8Y_PROFILE_GROUP:
         return True
     else:
-        logInfo(f"The type {deviceExternalIdType} of external ID must match with type {C8Y_PROFILE_GROUP}")
+        LogInfo(f"The type {deviceExternalIdType} of external ID must match with type {C8Y_PROFILE_GROUP}")
         return False
 
 
-def createFilePath(Id):
+def CreateFilePath(Id):
     # Check if folder containing data files exists and make one if not
     if not os.path.exists('export_data'):
         os.makedirs('export_data')
@@ -178,7 +178,7 @@ def createFilePath(Id):
 
 def SetTimePeriodToExportData():
     if not CREATE_FROM or CREATE_TO:
-        logDebug(f'CREATE_FROM and/or CREATE_TO were not set. Using default setup to export {Environment.PERIOD_TO_EXPORT}{Environment.TIME_UNIT} ago from now')
+        LogDebug(f'CREATE_FROM and/or CREATE_TO were not set. Using default setup to export {Environment.PERIOD_TO_EXPORT}{Environment.TIME_UNIT} ago from now')
 
         createTo = datetime.now().replace(tzinfo=timezone.utc)
         TimeUnit = Environment.TIME_UNIT
@@ -207,7 +207,7 @@ if __name__ == '__main__':
     fileLogger.info(f"and created before/to: {createTo}")
 
     if not DEVICE_ID_LIST:
-        exportAllProfileDataFromChildDevices(createFrom=createFrom, createTo=createTo)
+        ExportAllProfileDataFromChildDevices(createFrom=createFrom, createTo=createTo)
     else:
         for deviceId in DEVICE_ID_LIST:
             ExportSpecificProfileDataWithDeviceId(createFrom=createFrom, createTo=createTo, deviceId=deviceId)
