@@ -35,7 +35,7 @@ pip install c8y_api
 ## Run the export script
 If the environment **optional** parameters were not setup, they can be input as arguments when running the script.
 ```shell
-ExportProfileData.py [-h]   [--device-id DEVICE_ID]
+ExportProfileData.py [-h]   [--device-ids DEVICE_ID]
                             [--create-from CREATE_FROM]
                             [--create-to CREATE_TO]
                             [--data-type {measurements,alarms,all}]
@@ -46,12 +46,12 @@ ExportProfileData.py [-h]   [--device-id DEVICE_ID]
 ```
 Example:
 ```shell
-python ExportProfileData.py --device-id 123456 254676 --create-from 2022-11-16T07:39:35.780Z --create-to 2022-11-16T07:49:35.780Z
+python ExportProfileData.py --device-ids 123456 254676 --create-from 2022-11-16T07:39:35.780Z --create-to 2022-11-16T07:49:35.780Z
 ```
 
 optional arguments:\
   -h, --help : show this help message and exit\
-  --device-id DEVICE_ID, -i DEVICE_ID : Input device id / list of device ids\
+  --device-ids DEVICE_IDS, -i DEVICE_IDS : Input device id / list of device ids\
   --create-from CREATE_FROM, -from CREATE_FROM : Input "create from" milestone\
   --create-to CREATE_TO, -to CREATE_TO : Input "create to" milestone\
   --data-type {measurements,alarms,all}, -d {measurements,alarms,all} : Export "alarms" or "measurements"\
@@ -74,18 +74,18 @@ Input both create-from and create-to to set export time. The time format should 
 ## Run the import script
  
 ```shell
-ImportData.py [-h]  [--ifile INPUTFILE] 
+ImportData.py [-h]  [--ifiles INPUTFILES] 
                     [--log {DEBUG, INFO, WARNING, ERROR, CRITICAL}] 
                     [--username USERNAME] [--password PASSWORD]
                     [--baseurl BASEURL] [--tenant TENANT]
 ```
 Example:
 ```shell
-python ImportData.py --ifile export_data\simulator_normal-#1.json --log DEBUG --username admin --password abcxzy123
+python ImportData.py --ifiles sim_001_profile sim_002_profile --log DEBUG --username admin --password abcxzy123
 ```
 ### INPUTFILE 
-The inputfile that should be used for this script should has the external_id of the managed object as name. For example: ```sim_001_profile.json```.\
-If The inputfile is not defined, all the json data files in export_data folder will be imported.
+Filename (without extension "json") of one or multiple input file can be input. For example: ```sim_001_profile sim_002_profile```.\
+If the inputfile is not defined, all the json data files in export_data folder will be imported.
 
 ### Credentials Arguments
 Credentials for the C8Y instance can be handed to the script using cli arguments as shown in the example above. The script will try to extract the crendentials from the [Environment File](./Environment.py) if no credentials are presented as arguments.

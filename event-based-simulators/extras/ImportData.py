@@ -10,7 +10,7 @@ timeFormat = "%Y-%m-%dT%H:%M:%S.%fZ"
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 file_log_level = logging.DEBUG
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
-dataFileFolderPath, console_log_level, c8y = ArgumentsAndCredentialsHandler.handleImportArguments()
+json_filename_list_to_import, console_log_level, c8y = ArgumentsAndCredentialsHandler.handleImportArguments()
 ####################################################
 # Setup Log
 relativeFilePath = f"logs\import_{datetime.strftime(datetime.now(), logTimeFormat)}.log"
@@ -129,32 +129,41 @@ def encodeUrl(url):
     return encodedUrl
 
 
-def checkFileList(filePath):
-    listOfFiles = []
-    if not os.path.exists(filePath):
-        consoleLogger.debug(f"No data folder with name {filePath} found")
+def checkFileList(filepath):
+    list_of_files = []
+    if not os.path.exists(filepath):
+        consoleLogger.debug(f"No data folder with name {filepath} found")
     else:
         #listOfFiles = [file for file in os.listdir(filePath) if isfile(join(filePath, file))]
-        for file in os.listdir(filePath):
-            if isfile(join(filePath, file)):
-                listOfFiles.append(file)
-        return listOfFiles
+        for file in os.listdir(filepath):
+            if isfile(join(filepath, file)):
+                list_of_files.append(file)
+        return list_of_files
 
 
-def replaceFileNameWithFilePathInList(listOfFiles):
-    for fileListCount in range(len(listOfFiles)):
-        dataFileName = listOfFiles[fileListCount]
-        dataFilePath = dataFileFolderPath + "\ ".strip() + dataFileName
-        listOfFiles[fileListCount] = dataFilePath
-    return listOfFiles
+def replaceFileNameWithFilePathInList(list_of_files):
+    list_of_file_paths = []
+    for data_file_name in list_of_files:
+        data_file_path = 'export_data' + "\ ".strip() + data_file_name
+        list_of_file_paths.append(data_file_path)
+    return list_of_file_paths
+
+
+def addJsonExtensionToFileNameList(list_of_filenames):
+    list_of_file_names_with_extension = []
+    for filename in list_of_filenames:
+        filename = f'{filename}.json'
+        list_of_file_names_with_extension.append(filename)
+    return list_of_file_names_with_extension
 
 
 if __name__ == '__main__':
-    if dataFileFolderPath == "export_data":
-        listOfFiles = checkFileList(filePath=dataFileFolderPath)
-        listOfFilePaths = replaceFileNameWithFilePathInList(listOfFiles)
+    if json_filename_list_to_import:
+        listOfFileNamesWithExtension = addJsonExtensionToFileNameList(list_of_filenames=json_filename_list_to_import)
+        listOfFilePaths = replaceFileNameWithFilePathInList(list_of_files=listOfFileNamesWithExtension)
     else:
-        listOfFilePaths = [dataFileFolderPath]
+        listOfFiles = checkFileList(filepath='export_data')
+        listOfFilePaths = replaceFileNameWithFilePathInList(list_of_files=listOfFiles)
 
     for filePath in listOfFilePaths:
         file_data = loadFile(filePath)

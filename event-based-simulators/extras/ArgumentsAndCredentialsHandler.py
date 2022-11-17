@@ -50,7 +50,7 @@ def setupLogger(fileLoggerName, consoleLoggerName, filePath, fileLogLevel, conso
 
 def handleExportArguments():
     parser = argparse.ArgumentParser(description='Script to export or import profiles data')
-    parser.add_argument('--device-id', '-i', type=str, help='Input device id / List of device ids', nargs='+')
+    parser.add_argument('--device-ids', '-i', type=str, help='Input device id / List of device ids', nargs='+')
     parser.add_argument('--create-from', '-from', type=str, help='Input "create from" milestone')
     parser.add_argument('--create-to', '-to', type=str, help='Input "create to" milestone')
     parser.add_argument('--data-type', '-d', choices=['measurements', 'alarms', 'all'], help='Export "alarms" or "measurements"')
@@ -58,14 +58,14 @@ def handleExportArguments():
     parser.add_argument('--username', '-u', type=str, help='C8Y Username')
     parser.add_argument('--password', '-p', type=str, help='C8Y Password')
     parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
-    parser.add_argument('--tenant', '-t', type=str, help='C8Y TenantID')
+    parser.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID')
     args = parser.parse_args()
 
     DATA_TYPE = args.data_type
     if not DATA_TYPE:
         DATA_TYPE = Environment.DATA_TYPE
 
-    DEVICE_ID_LIST = args.device_id
+    DEVICE_ID_LIST = args.device_ids
     if not DEVICE_ID_LIST:
         DEVICE_ID_LIST = []
         if Environment.DEVICE_ID:
@@ -104,7 +104,7 @@ def handleExportArguments():
         BASEURL = Environment.C8Y_BASE
     BASEURL = removeTrailingSlashFromBaseUrl(BASEURL)
 
-    TENANT = args.tenant
+    TENANT = args.tenant_id
     if not TENANT:
         TENANT = Environment.C8Y_TENANT
 
@@ -118,20 +118,21 @@ def handleExportArguments():
 
 def handleImportArguments():
     parser = argparse.ArgumentParser(description='Script to import profiles data')
-    parser.add_argument('--ifile', '-i', type=str, help='Input file')
+    parser.add_argument('--ifiles', '-i', type=str, help='Input file', nargs='+')
     parser.add_argument('--log', '-l', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help='Log-level')
     parser.add_argument('--username', '-u', type=str, help='C8Y Username')
     parser.add_argument('--password', '-p', type=str, help='C8Y Password')
     parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
-    parser.add_argument('--tenant', '-t', type=str, help='C8Y TenantID')
+    parser.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID')
 
     args = parser.parse_args()
 
-    INPUT_FILE = args.ifile
-    if not INPUT_FILE:
-        if not os.path.exists('export_data'):
-            sys.exit()
-        INPUT_FILE = 'export_data'
+    if not os.path.exists("export_data"):
+        logging.info("No export_data folder found")
+        sys.exit()
+    INPUT_FILE_LIST = args.ifiles
+    if not INPUT_FILE_LIST:
+        INPUT_FILE_LIST = []
 
     LOG_ARGUMENT = args.log
     LOG_LEVEL = logging.INFO
@@ -157,7 +158,7 @@ def handleImportArguments():
         BASEURL = Environment.C8Y_BASE
     BASEURL = removeTrailingSlashFromBaseUrl(BASEURL)
 
-    TENANT = args.tenant
+    TENANT = args.tenant_id
     if not TENANT:
         TENANT = Environment.C8Y_TENANT
 
@@ -166,7 +167,7 @@ def handleImportArguments():
                         username=USERNAME,  # your Cumulocity IoT username
                         password=PASSWORD)  # your Cumulocity IoT password
 
-    return INPUT_FILE, LOG_LEVEL, c8y
+    return INPUT_FILE_LIST, LOG_LEVEL, c8y
 
 
 def removeTrailingSlashFromBaseUrl(baseUrl):
