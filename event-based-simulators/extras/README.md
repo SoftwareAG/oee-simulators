@@ -70,7 +70,7 @@ Input both create-from and create-to to set export time. The time format should 
 ## Run the import script
  
 ```shell
-ImportData.py [-h]  --ifile INPUTFILE 
+ImportData.py [-h]  [--ifile INPUTFILE] 
                     [--log {DEBUG, INFO, WARNING, ERROR, CRITICAL}] 
                     [--username USERNAME] [--password PASSWORD]
                     [--baseurl BASEURL] [--tenant TENANT]
@@ -79,8 +79,9 @@ Example:
 ```shell
 python ImportData.py --ifile export_data\simulator_normal-#1.json --log DEBUG --username admin --password abcxzy123
 ```
-### INPUTFILE **REQUIRED**
-The inputfile that should be used for this script should has the external_id of the managed object as name. For example: ```sim_001_profile.json```.
+### INPUTFILE 
+The inputfile that should be used for this script should has the external_id of the managed object as name. For example: ```sim_001_profile.json```.\
+If The inputfile is not defined, all the json data files in export_data folder will be imported.
 
 ### Credentials Arguments
 Credentials for the C8Y instance can be handed to the script using cli arguments as shown in the example above. The script will try to extract the crendentials from the [Environment File](./Environment.py) if no credentials are presented as arguments.

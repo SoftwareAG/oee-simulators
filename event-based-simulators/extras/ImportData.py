@@ -92,6 +92,7 @@ def importAlarms(alarms, id):
             alarm['time'], timeFormat) + timeShift).strftime(timeFormat)
         fileLogger.debug(f'Posting Alarm for device {id}: {alarm}')
         createAlarm(alarm)
+    logInfo("Alarms import finished")
 
 
 def importMeasurements(measurements, id):
@@ -106,6 +107,7 @@ def importMeasurements(measurements, id):
         "measurements": measurements
     }
     createMeasurements(measurements=measurements_object)
+    logInfo("Measurements import finished")
 
 
 def loadFile(filePath):
@@ -165,4 +167,4 @@ if __name__ == '__main__':
         if len(measurements) > 0:
             importMeasurements(measurements=measurements, id=id)
         else:
-            fileLogger.info("No Measurements to import")
+            logInfo("No Measurements to import")
