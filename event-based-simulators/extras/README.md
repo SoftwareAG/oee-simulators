@@ -41,7 +41,7 @@ ExportProfileData.py [-h]   [--device-ids DEVICE_ID]
                             [--data-type {measurements,alarms,all}]
                             [--log {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                             [--username USERNAME] [--password PASSWORD]
-                            [--baseurl BASEURL] [--tenant TENANT]
+                            [--baseurl BASEURL] [--tenant-id TENANT-ID]
 
 ```
 Example:
@@ -59,7 +59,7 @@ optional arguments:\
   --username USERNAME, -u USERNAME : C8Y Username\
   --password PASSWORD, -p PASSWORD : C8Y Password\
   --baseurl BASEURL, -b BASEURL : C8Y Baseurl\
-  --tenant TENANT, -t TENANT : C8Y TenantID\
+  --tenant-id TENANT-ID, -t TENANT-ID : C8Y TenantID\
 
 ### Credentials Arguments
 Credentials for the C8Y instance can be handed to the script using cli arguments as shown in the example above. The script will try to extract the crendentials from the [Environment File](./Environment.py) if no credentials are presented as arguments.
@@ -77,7 +77,7 @@ Input both create-from and create-to to set export time. The time format should 
 ImportData.py [-h]  [--ifiles INPUTFILES] 
                     [--log {DEBUG, INFO, WARNING, ERROR, CRITICAL}] 
                     [--username USERNAME] [--password PASSWORD]
-                    [--baseurl BASEURL] [--tenant TENANT]
+                    [--baseurl BASEURL] [--tenant-id TENANT-ID]
 ```
 Example:
 ```shell
