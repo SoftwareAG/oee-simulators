@@ -9,7 +9,7 @@ VERSION = '1.0.31'
 def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
-logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
 log = logging.getLogger("sims")
 log.info(f"version: {VERSION}")
 log.info(f"started at {current_timestamp()}")
@@ -108,16 +108,15 @@ class Shiftplan:
 
     def __create_task(self):   
         task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, self.getShiftplan())
-        
-        log.debug(f'create periodic task for pulling shiftplans running every {shiftplan_polling_interval}')      
+        log.debug(f'Create periodic task for pulling shiftplans running every {shiftplan_polling_interval}')
         return task
 
     def getShiftplan(self):
         log.info(f'Getting Shiftplan for location: {self.locationId}')
         self.setShiftplan(oeeAPI.get_shiftplan(self.locationId, f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + timedelta(seconds=shiftplan_polling_interval):{shiftplan_dateformat}}'))
-        
 
     def setShiftplan(self, shiftplan):
+        log.info(f'Setting Shiftplan for location: {self.locationId}')
         self.recurringTimeSlots = shiftplan.get('recurringTimeSlots', [])
 
     def tick(self):
