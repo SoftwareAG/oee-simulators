@@ -10,8 +10,8 @@ timeFormat = "%Y-%m-%dT%H:%M:%S.%fZ"
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 file_log_level = logging.DEBUG
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
-json_filename_list_to_import, console_log_level, c8y = ArgumentsAndCredentialsHandler.HandleImportArguments()
-C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.SetupHeadersForAPIRequest(tenant_id=c8y.tenant_id, username= c8y.username, password=c8y.password)
+json_filename_list_to_import, console_log_level, c8y, password = ArgumentsAndCredentialsHandler.HandleImportArguments()
+C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.SetupHeadersForAPIRequest(tenant_id=c8y.tenant_id, username= c8y.username, password=password)
 ####################################################
 # Setup Log
 relativeFilePath = f"logs\import_{datetime.strftime(datetime.now(), logTimeFormat)}.log"

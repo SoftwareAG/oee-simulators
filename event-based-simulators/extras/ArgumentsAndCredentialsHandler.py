@@ -114,7 +114,7 @@ def HandleExportArguments():
                         username=username,  # your Cumulocity IoT username
                         password=password)  # your Cumulocity IoT password
 
-    return data_type, device_ids_list, create_from, create_to, log_level, c8y
+    return data_type, device_ids_list, create_from, create_to, log_level, c8y, password
 
 
 def HandleImportArguments():
@@ -168,7 +168,7 @@ def HandleImportArguments():
                         username=USERNAME,  # your Cumulocity IoT username
                         password=PASSWORD)  # your Cumulocity IoT password
 
-    return INPUT_FILE_LIST, LOG_LEVEL, c8y
+    return INPUT_FILE_LIST, LOG_LEVEL, c8y, PASSWORD
 
 
 def RemoveTrailingSlashFromBaseUrl(baseUrl):
