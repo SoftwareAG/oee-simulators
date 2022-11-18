@@ -1,3 +1,5 @@
 **/*/image.tar
 **/*/*.zip
+.idea/
+__pycache__/
 

@@ -1,6 +1,6 @@
 {
 	"apiVersion": "1",
-	"version": "1.0.31",
+	"version": "@project.version@",
 	"provider": {
   		"name": "IoT & Analytics Mobile Accelerators (event-based simulators)",
 		"support":"iot-analytics-mobile-accelerator@softwareag.com"
