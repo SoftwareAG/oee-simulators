@@ -9,8 +9,6 @@ on:
           type: string
           description: GitHub Release Message
           default: "GitHub Release Message"
-  push:
-    branches: [main, COE-722]
 
 env:
   BUILD_OFFSET: 25
