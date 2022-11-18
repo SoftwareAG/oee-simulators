@@ -21,35 +21,37 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+        with:
+          path: 'repo'
 
       - name: update versionnumber
         run: |
-          cd event-based-simulators
+          cd repo/event-based-simulators
           SIMULATOR_VERSION=$(expr ${{ env.BUILD_OFFSET }} + ${GITHUB_RUN_NUMBER})
           sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
           echo "RELEASE_VERSION=${SIMULATOR_VERSION}" >> $GITHUB_ENV
 
       - name: Zip the source-code
         run: |
-          zip event-based-simulators.zip event-based-simulators
+          zip source-code.zip repo
 
       - name: build docker image
         run: |
-          cd event-based-simulators
+          cd repo/event-based-simulators
           docker build -t oee-simulators .
           docker save -o image.tar oee-simulators
           docker rmi oee-simulators
 
       - name: Zip it!
         run: |
-          cd event-based-simulators
+          cd repo/event-based-simulators
           zip oee-simulators.zip image.tar cumulocity.json
         
       - name: upload Zip
         uses: actions/upload-artifact@v2
         with:
           name: 'oee-simulators'
-          path: 'event-based-simulators/oee-simulators.zip'
+          path: 'repo/event-based-simulators/oee-simulators.zip'
 
       - name: Create Release
         uses: actions/create-release@v1
@@ -69,7 +71,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: 'event-based-simulators/oee-simulators.zip'
+          asset_path: 'repo/event-based-simulators/oee-simulators.zip'
           asset_name: oee-sims-1.0.${{ env.RELEASE_VERSION }}.zip
           asset_content_type: application/zip
 
