@@ -4,6 +4,11 @@ name: Build & release oee-simulators
 
 on:
   workflow_dispatch:
+    inputs:
+        release_body:
+          type: string
+          description: GitHub Release Message
+          default: "GitHub Release Message"
   push:
     branches: [main, COE-722]
 
@@ -17,6 +22,17 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
+      - name: update versionnumber
+        run: |
+          cd event-based-simulators
+          SIMULATOR_VERSION=$(expr ${{ env.BUILD_OFFSET }} + ${GITHUB_RUN_NUMBER})
+          sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
+          echo "RELEASE_VERSION=${SIMULATOR_VERSION}" >> $GITHUB_ENV
+
+      - name: Zip the source-code
+        run: |
+          zip event-based-simulators.zip event-based-simulators
+
       - name: build docker image
         run: |
           cd event-based-simulators
@@ -24,13 +40,6 @@ jobs:
           docker save -o image.tar oee-simulators
           docker rmi oee-simulators
 
-      - name: update versionnumber
-        run: |
-          cd event-based-simulators
-          SIMULATOR_VERSION=$(expr ${{ env.BUILD_OFFSET }} + ${GITHUB_RUN_NUMBER})
-          sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
-          echo "RELEASE_VERSION=${SIMULATOR_VERSION}" >> $GITHUB_ENV
-          
       - name: Zip it!
         run: |
           cd event-based-simulators
@@ -50,6 +59,7 @@ jobs:
           prerelease: false
           release_name: v1.0.${{ env.RELEASE_VERSION }}
           tag_name: v1.0.${{ env.RELEASE_VERSION }}
+          body: ${{ github.event.inputs.release_body }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
@@ -61,4 +71,14 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: 'event-based-simulators/oee-simulators.zip'
           asset_name: oee-sims-1.0.${{ env.RELEASE_VERSION }}.zip
+          asset_content_type: application/zip
+
+      - name: upload source-code zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: 'event-based-simulators.zip'
+          asset_name: Source Code (zip)
           asset_content_type: application/zip
