@@ -50,7 +50,6 @@ jobs:
           prerelease: false
           release_name: v1.0.${{ env.RELEASE_VERSION }}
           tag_name: v1.0.${{ env.RELEASE_VERSION }}
-          body_path: Release v1.0.${{ env.RELEASE_VERSION }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
