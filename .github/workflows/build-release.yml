@@ -33,7 +33,7 @@ jobs:
 
       - name: Zip the source-code
         run: |
-          zip source-code.zip repo
+          zip -r source-code.zip repo
 
       - name: build docker image
         run: |
