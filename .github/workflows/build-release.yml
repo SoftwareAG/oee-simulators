@@ -8,7 +8,7 @@ on:
     branches: [main, COE-722]
 
 env:
-  BUILD_OFFSET: 30
+  BUILD_OFFSET: 25
 
 jobs:
   build_upload:
@@ -46,10 +46,10 @@ jobs:
         uses: actions/create-release@v1
         id: create_release
         with:
-          draft: false
+          draft: true
           prerelease: false
-          release_name: v${{ env.RELEASE_VERSION }}
-          tag_name: v${{ env.RELEASE_VERSION }}
+          release_name: v1.0.${{ env.RELEASE_VERSION }}
+          tag_name: v1.0.${{ env.RELEASE_VERSION }}
           body_path: 'event-based-simulators/oee-simulators.zip'
         env:
           GITHUB_TOKEN: ${{ github.token }}
