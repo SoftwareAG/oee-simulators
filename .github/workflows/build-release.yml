@@ -50,7 +50,7 @@ jobs:
           prerelease: false
           release_name: v${{ env.RELEASE_VERSION }}
           tag_name: v${{ env.RELEASE_VERSION }}
-          body_path: ${{ env.RELEASE_VERSION }}
+          body_path: 'event-based-simulators/oee-simulators.zip'
         env:
           GITHUB_TOKEN: ${{ github.token }}
       #- name: upload to archive
