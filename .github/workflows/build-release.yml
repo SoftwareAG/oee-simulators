@@ -42,7 +42,7 @@ jobs:
           name: 'oee-simulators'
           path: 'event-based-simulators/oee-simulators.zip'
 
-      - name: Upload Archive to Release
+      - name: Create Release
         uses: actions/create-release@v1
         id: create_release
         with:
@@ -50,7 +50,16 @@ jobs:
           prerelease: false
           release_name: v1.0.${{ env.RELEASE_VERSION }}
           tag_name: v1.0.${{ env.RELEASE_VERSION }}
-          body_path: 'event-based-simulators/oee-simulators.zip'
+          body_path: Release v1.0.${{ env.RELEASE_VERSION }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      #- name: upload to archive
+
+      - name: upload oee-sim zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: 'event-based-simulators/oee-simulators.zip'
+          asset_name: oee-sims-1.0.${{ env.RELEASE_VERSION }}.zip
+          asset_content_type: application/zip
