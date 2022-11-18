@@ -9,7 +9,7 @@ VERSION = '1.0.31'
 def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
-logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INFO)
 log = logging.getLogger("sims")
 log.info(f"version: {VERSION}")
 log.info(f"started at {current_timestamp()}")
@@ -102,7 +102,6 @@ class Shiftplan:
         return True
 
     def add_Shiftplan_to_OEE(self):
-        log.info(f"{self.recurringTimeSlots}")
         oeeAPI.add_timeslots_for_shiftplan(self)
         log.info(f'Added shiftplan to OEE for location: {self.locationId}')
 
