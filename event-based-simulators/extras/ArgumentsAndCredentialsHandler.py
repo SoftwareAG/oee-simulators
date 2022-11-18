@@ -69,9 +69,14 @@ def HandleExportArguments():
     device_ids_list = args.device_ids
     if not device_ids_list:
         device_ids_list = []
+        abc = Environment.DEVICE_ID
         if Environment.DEVICE_ID:
-            for device_id in Environment.DEVICE_ID:
-                device_ids_list.append(device_id)
+            logging.info(type(Environment.DEVICE_ID))
+            if type(Environment.DEVICE_ID) == tuple:
+                for device_id in Environment.DEVICE_ID:
+                    device_ids_list.append(device_id)
+            else:
+                device_ids_list.append(Environment.DEVICE_ID)
 
     log_argument = args.log
     log_level = logging.INFO
@@ -180,7 +185,7 @@ def RemoveTrailingSlashFromBaseUrl(baseUrl):
 def CheckTenantConnection(baseUrl, C8Y_HEADERS):
     # Check if connection to tenant can be created
     try:
-        requests.get(f'{baseUrl}/tenant/currentTenant', headers=C8Y_HEADERS)
-        return True
+        response = requests.get(f'{baseUrl}/tenant/currentTenant', headers=C8Y_HEADERS)
+        return response
     except:
-        return False
+        return None

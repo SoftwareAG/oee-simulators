@@ -28,9 +28,14 @@ def LogError(content):
   consoleLogger.error(content)
 #####################################################
 # Check if connection to tenant can be created
-if ArgumentsAndCredentialsHandler.CheckTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS):
+tenantConnectionResponse = ArgumentsAndCredentialsHandler.CheckTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS)
+if tenantConnectionResponse:
     LogInfo(f"Connect to tenant {c8y.tenant_id} successfully")
 else:
+    if tenantConnectionResponse is None:
+        LogError(f"Wrong base url setup. Check again the URL: {c8y.base_url}")
+    else:
+        LogError(tenantConnectionResponse.json())
     LogError(f"Connect to tenant {c8y.tenant_id} failed")
     sys.exit()
 ######################################################
@@ -89,7 +94,7 @@ def FindDeviceNameById(deviceId, baseUrl):
     response = requests.get(f'{baseUrl}/inventory/managedObjects/{deviceId}',
                             headers=C8Y_HEADERS)
     if not response.ok:
-        LogError(f"Connection to url '{baseUrl}/inventory/managedObjects/{deviceId}' failed. Check your parameters in environment file again")
+        LogError(response.json())
         sys.exit()
     else:
         try:
@@ -138,7 +143,7 @@ def GetExternalIdReponse(deviceId, baseUrl):
     externalIdResponse = requests.get(f'{baseUrl}/identity/globalIds/{deviceId}/externalIds',
                                       headers=C8Y_HEADERS)
     if not externalIdResponse.ok:
-        LogError(f"Connection to url '{baseUrl}/identity/globalIds/{deviceId}/externalIds' failed. Check your parameters in environment file again")
+        LogError(externalIdResponse.json())
         sys.exit()
     else:
         return externalIdResponse

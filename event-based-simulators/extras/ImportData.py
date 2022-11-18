@@ -23,14 +23,22 @@ def LogDebug(content):
 def LogInfo(content):
   fileLogger.info(content)
   consoleLogger.info(content)
+def LogWarning(content):
+  fileLogger.warning(content)
+  consoleLogger.warning(content)
 def LogError(content):
   fileLogger.error(content)
   consoleLogger.error(content)
 #####################################################
 # Check if connection to tenant can be created
-if ArgumentsAndCredentialsHandler.CheckTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS):
+tenantConnectionResponse = ArgumentsAndCredentialsHandler.CheckTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS)
+if tenantConnectionResponse:
     LogInfo(f"Connect to tenant {c8y.tenant_id} successfully")
 else:
+    if tenantConnectionResponse is None:
+        LogError(f"Wrong base url setup. Check again the URL: {c8y.base_url}")
+    else:
+        LogError(tenantConnectionResponse.json())
     LogError(f"Connect to tenant {c8y.tenant_id} failed")
     sys.exit()
 ######################################################
@@ -45,8 +53,7 @@ def GetDeviceIdByExternalId(external_id):
         device_id = response.json()['managedObject']['id']
         LogInfo(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
         return device_id
-    fileLogger.warning(
-        f'No device has been found for the external id "{C8Y_PROFILE_GROUP}/{external_id}".')
+    LogWarning(response.json())
     return None
 
 
@@ -55,7 +62,7 @@ def CreateAlarm(alarm):
         f'{c8y.base_url}/alarm/alarms', headers=C8Y_HEADERS, data=json.dumps(alarm))
     if response.ok:
         return response.json()
-    fileLogger.warning(response)
+    LogWarning(response.json())
     return None
 
 
@@ -64,7 +71,7 @@ def CreateMeasurements(measurements):
                              headers=MEASUREMENTS_HEADERS, data=json.dumps(measurements))
     if response.ok:
         return response.json()
-    fileLogger.warning(response)
+    LogWarning(response.json())
     return None
 
 
