@@ -98,7 +98,7 @@ class Shiftplan:
 
     def set_timeslots_for_shiftplan(self, shiftplan):
         self.locationId = shiftplan["locationId"]
-        self.recurringTimeSlots = list(map(lambda model: self.RecurringTimeSlot(model), shiftplan.get('recurringTimeSlots', [])))
+        self.recurringTimeSlots = shiftplan["recurringTimeslots"]
         return True
 
     def add_Shiftplan_to_OEE(self):
@@ -107,17 +107,16 @@ class Shiftplan:
 
 
     def __create_task(self):   
-        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, self.getShiftplan)
-        
-        log.debug(f'create periodic task for pulling shiftplans running every {shiftplan_polling_interval}')      
+        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, self.getShiftplan())
+        log.debug(f'Create periodic task for pulling shiftplans running every {shiftplan_polling_interval}')
         return task
 
     def getShiftplan(self):
-        log.info(f'Getting Shiftplan for location: {self.locationId}')    
-        self.setShiftplan(oeeAPI.get_shiftplan(self.locationId, f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + shiftplan_polling_interval:{shiftplan_dateformat}}'))
-        
+        log.info(f'Getting Shiftplan for location: {self.locationId}')
+        self.setShiftplan(oeeAPI.get_shiftplan(self.locationId, f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + timedelta(seconds=shiftplan_polling_interval):{shiftplan_dateformat}}'))
 
     def setShiftplan(self, shiftplan):
+        log.info(f'Setting Shiftplan for location: {self.locationId}')
         self.recurringTimeSlots = shiftplan.get('recurringTimeSlots', [])
 
     def tick(self):
