@@ -231,3 +231,15 @@ class CumulocityAPI:
         else:
             self.log_warning_on_bad_repsonse(response)
             return ""
+
+    def createISAType(self, type, hierachy, description, oeetarget):
+        isaObjectRequestBody = {
+            "hierarchy": hierachy,
+            "isISAObject":{},
+            "description": description,
+            "detailedDescription": description,
+            "type": type,
+            "oeetarget": oeetarget,
+            "orderByIndex":0,
+        }
+        return self.create_managed_object(json.dumps(isaObjectRequestBody))
