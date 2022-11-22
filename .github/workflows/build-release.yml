@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@latest
+        uses: actions/checkout@v2.5.0
         with:
           path: 'repo'
 
