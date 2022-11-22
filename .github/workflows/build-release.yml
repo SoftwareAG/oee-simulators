@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@latest
         with:
           path: 'repo'
 
@@ -46,7 +46,7 @@ jobs:
           zip oee-simulators.zip image.tar cumulocity.json
         
       - name: upload Zip
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: 'oee-simulators'
           path: 'repo/event-based-simulators/oee-simulators.zip'
