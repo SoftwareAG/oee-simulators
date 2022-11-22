@@ -5,18 +5,14 @@ from random import randint, uniform, choices
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
 from oeeAPI import OeeAPI, ProfileCreateMode
 
-VERSION = '1.0.31'
 def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INFO)
 log = logging.getLogger("sims")
-log.info(f"version: {VERSION}")
 log.info(f"started at {current_timestamp()}")
 
-
 # JSON-PYTHON mapping, to get json.load() working
-null = None
 false = False
 true = True
 ######################
@@ -28,10 +24,9 @@ shiftplan_polling_interval = one_day
 log.info(f'Shiftplan polling interval is set to {shiftplan_polling_interval:,} secs')
 shiftplan_dateformat='%Y-%m-%dT%H:%M:%SZ'
 
-log.info(C8Y_BASE)
-log.info(C8Y_TENANT)
-log.info(C8Y_USER)
-#log.info(C8Y_PASSWORD)
+log.debug(C8Y_BASE)
+log.debug(C8Y_TENANT)
+log.debug(C8Y_USER)
 
 def try_event(probability: float):
     ''' Returns True if event occurs.        
