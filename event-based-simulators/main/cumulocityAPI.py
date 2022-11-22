@@ -45,11 +45,11 @@ class CumulocityAPI:
             response = requests.post(C8Y_BASE + '/event/events', headers=C8Y_HEADERS, data=json.dumps(event))
             if response.ok:
                 return response.json()
-            self.log_warning_on_bad_repsonse(response)
+            self.log_warning_on_bad_response(response)
             return None
             
 
-    def log_warning_on_bad_repsonse(self, response):
+    def log_warning_on_bad_response(self, response):
         if not response.ok:
             log.warning(f'response status code is not ok: {response}, content: {response.text}')
 
@@ -90,7 +90,7 @@ class CumulocityAPI:
                 log.warn(f'cannot convert "${response.text}" to number. exception: {e}')
                 return 0
         else:
-            self.log_warning_on_bad_repsonse(response)
+            self.log_warning_on_bad_response(response)
             return 0
     
     def create_managed_object(self, fragment: str):
@@ -100,7 +100,7 @@ class CumulocityAPI:
         response = requests.post(C8Y_BASE + '/inventory/managedObjects', headers=C8Y_HEADERS, data=fragment)
         if response.ok:
             return response.json()
-        self.log_warning_on_bad_repsonse(response)
+        self.log_warning_on_bad_response(response)
         #TODO: check for errors
         return {}
 
@@ -111,7 +111,7 @@ class CumulocityAPI:
         response = requests.get(C8Y_BASE + f'/inventory/managedObjects/{id}', headers=C8Y_HEADERS)
         if response.ok:
             return response.json()
-        self.log_warning_on_bad_repsonse(response)
+        self.log_warning_on_bad_response(response)
         #TODO: check for errors
         return {}
     
@@ -122,7 +122,7 @@ class CumulocityAPI:
         response = requests.get(C8Y_BASE + f'/inventory/managedObjects?type={self.OEE_CALUCLATION_CATEGORY}', headers=C8Y_HEADERS)
         if response.ok:
             return response.json()['managedObjects']
-        self.log_warning_on_bad_repsonse(response)        
+        self.log_warning_on_bad_response(response)        
         return {}
 
     def delete_managed_object(self, id: str):
@@ -132,7 +132,7 @@ class CumulocityAPI:
         response = requests.delete(C8Y_BASE + f'/inventory/managedObjects/{id}', headers=C8Y_HEADERS)
         if response.ok:
             return 1
-        self.log_warning_on_bad_repsonse(response)
+        self.log_warning_on_bad_response(response)
         #TODO: check for errors
         return 0
 
@@ -144,7 +144,7 @@ class CumulocityAPI:
         response = requests.put(f'{C8Y_BASE}/inventory/managedObjects/{device_id}', headers=C8Y_HEADERS, data=fragment)
         if response.ok:
             return response.json()
-        self.log_warning_on_bad_repsonse(response)
+        self.log_warning_on_bad_response(response)
         return {}
 
     def add_child_object(self, device_id: str, child_id: str):
@@ -157,7 +157,7 @@ class CumulocityAPI:
         if response.ok:
             return response.json()
 
-        self.log_warning_on_bad_repsonse(response)
+        self.log_warning_on_bad_response(response)
         return {}
 
     def find_simulators(self):
@@ -209,7 +209,7 @@ class CumulocityAPI:
             'externalId': ext_id
         }
         response = requests.post(C8Y_BASE + '/identity/globalIds/' + device_id + '/externalIds', headers=C8Y_HEADERS, data=json.dumps(external_id))
-        self.log_warning_on_bad_repsonse(response)
+        self.log_warning_on_bad_response(response)
         return device_id
 
     def get_tenant_option_by_category(self, category):
@@ -226,10 +226,10 @@ class CumulocityAPI:
             try:
                 return response.json()['managedObjects'][0]['id']
             except Exception as e:
-                log.warn(f'Cannot get id of profile: "${response.text}". exception: {e}')
+                log.warn(f'Cannot get id of profile: "{response.text}". exception: {e}')
                 return ""
         else:
-            self.log_warning_on_bad_repsonse(response)
+            self.log_warning_on_bad_response(response)
             return ""
 
     def createISAType(self, type, hierachy, description, oeetarget):
