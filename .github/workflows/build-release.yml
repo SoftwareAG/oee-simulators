@@ -54,7 +54,7 @@ jobs:
           path: 'repo/event-based-simulators/oee-simulators.zip'
 
       - name: Create Release
-        uses: actions/create-release@v1.1.4
+        uses: actions/create-release@v1.11.2
         id: create_release
         with:
           draft: true
