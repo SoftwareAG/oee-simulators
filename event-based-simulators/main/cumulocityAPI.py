@@ -218,3 +218,16 @@ class CumulocityAPI:
             return response.json()
         log.warn(f'Could not get any tenant options for category {category}. Response status code is: {response}, content: {response.text}')
         return {}
+
+    def get_profile_id(self, deviceID):
+        request_query = f'{C8Y_BASE}/inventory/managedObjects?type={self.OEE_CALCULATION_PROFILE_TYPE}&text={deviceID}'
+        response = requests.get(request_query, headers=C8Y_HEADERS)
+        if response.ok:
+            try:
+                return response.json()['managedObjects'][0]['id']
+            except Exception as e:
+                log.warn(f'Cannot get id of profile: "${response.text}". exception: {e}')
+                return ""
+        else:
+            self.log_warning_on_bad_repsonse(response)
+            return ""

@@ -180,3 +180,34 @@ class OeeAPI:
             return response.json()
         log.warning(f'Cannot get shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
         return {'locationId':locationId,'timeslots':{}}
+
+    def create_asset_hierachy(self, deviceIDs):
+        #First create LINE with all devices
+        lineHierarchy = []
+        for deviceID in deviceIDs:
+            profileID = self.c8y_api.get_profile_id(deviceID=deviceID)
+            if profileID != "":
+                lineHierarchy.append({"profileID":profileID, "ID":deviceID})
+            
+        lineRequestBody = {
+            "hierarchy": lineHierarchy,
+            "isISAObject":{},
+            "description": "Simulator LINE",
+            "detailedDescription": "Simulator-line",
+            "type": "LINE",
+            "oeetarget": 80,
+            "orderByIndex":0,
+        }
+        lineMO = self.c8y_api.create_managed_object(json.dumps(lineRequestBody))
+
+        if lineMO != "":
+            siteRequestBody = {
+                "hierarchy":[{"profileID": null, "ID": lineMO['id']}],
+                "isISAObject":{},
+                "description": "Simulator SITE",
+                "type": "SITE",
+                "oeetarget": 80,
+                "orderByIndex":0,
+            }
+            siteMO = self.c8y_api.create_managed_object(json.dumps(siteRequestBody))
+            log.info(f'Created asset hierachy. Line-ID {lineMO["id"]} Site-ID {siteMO["id"]}')

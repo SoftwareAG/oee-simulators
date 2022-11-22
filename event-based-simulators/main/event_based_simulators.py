@@ -54,6 +54,7 @@ oeeAPI = OeeAPI()
 microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
 CREATE_PROFILES = microservice_options.get("CREATE_PROFILES", "True")
 CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
+CREATE_ASSET_HIERACHY = microservice_options.get("CREATE_ASSET_HIERACHY", "False")
 log.info(f'CREATE_PROFILES:{CREATE_PROFILES}')
 
 class Task:
@@ -473,6 +474,12 @@ if CREATE_PROFILES.lower() == "true":
     [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
         for id in oeeAPI.get_simulator_external_ids()]
     os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
+
+if CREATE_ASSET_HIERACHY.lower() == "true":
+    log.info("Creating the OEE asset hierachy")
+    ids = []
+    [ids.append(simulator.device_id) for simulator in simulators]
+    oeeAPI.create_asset_hierachy(deviceIDs=ids)
 
 
 while True:
