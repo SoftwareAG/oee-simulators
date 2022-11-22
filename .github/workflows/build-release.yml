@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2.5.0
+        uses: actions/checkout@v3
         with:
           path: 'repo'
 
@@ -54,7 +54,7 @@ jobs:
           path: 'repo/event-based-simulators/oee-simulators.zip'
 
       - name: Create Release
-        uses: actions/create-release@v1.11.2
+        uses: actions/create-release@v1.1.4
         id: create_release
         with:
           draft: true
