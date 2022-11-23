@@ -166,7 +166,7 @@
     {
         "type": "Simulator",
         "id": "sim_007",
-        "label": "Slow Producer + Hight Frequency Availability",
+        "label": "Slow Producer + High Frequency Availability",
         "comment": "",
         "enabled": true,
         "events": [
