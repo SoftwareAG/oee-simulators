@@ -7,8 +7,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minHits": 5,
-                "maxHits": 10,
+                "minimumFrequency": 5,
+                "maximumFrequency": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -16,10 +16,10 @@
             },
             {
                 "type": "Piece_Produced",
-                "hits": 25,
+                "frequency": 25,
                 "followedBy": {
                     "type": "Piece_Ok",
-                    "hits": 20
+                    "frequency": 20
                 }
             }
         ]
@@ -32,8 +32,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minHits": 5,
-                "maxHits": 10,                
+                "minimumFrequency": 5,
+                "maximumFrequency": 10,                
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -41,14 +41,14 @@
             },
             {
                 "type": "Pieces_Produced",
-                "hits": 6,
-                "countMinHits": 1,
-                "countMaxHits": 10,
+                "frequency": 6,
+                "countMinimumFrequency": 1,
+                "countMaximumFrequency": 10,
                 "followedBy": {
                     "type": "Pieces_Ok",
-                    "countMinHits": 0,
-                    "countMaxHits": 10,
-                    "hits": 6
+                    "countMinimumFrequency": 0,
+                    "countMaximumFrequency": 10,
+                    "frequency": 6
                 }
             }
         ]
@@ -61,8 +61,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minHits": 5,
-                "maxHits": 10,
+                "minimumFrequency": 5,
+                "maximumFrequency": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -70,14 +70,14 @@
             },
             {
                 "type": "Pieces_Produced",
-                "hits": 6,
-                "countMinHits": 0,
-                "countMaxHits": 10
+                "frequency": 6,
+                "countMinimumFrequency": 0,
+                "countMaximumFrequency": 10
             },
             {
                 "type": "Piece_Quality",
-                "minHits": 2,
-                "maxHits": 3,
+                "minimumFrequency": 2,
+                "maximumFrequency": 3,
                 "statusOkProbability": 0.9
             }
         ]
@@ -90,8 +90,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minHits": 5,
-                "maxHits": 10,
+                "minimumFrequency": 5,
+                "maximumFrequency": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -99,15 +99,15 @@
             },
             {
                 "type": "Piece_Produced",
-                "hits": 25,
+                "frequency": 25,
                 "followedBy": {
                     "type": "Piece_Ok",
-                    "hits": 20
+                    "frequency": 20
                 }
             },
             {
                 "type": "Shutdown",
-                "hits": 2,
+                "frequency": 2,
                 "maxDuration": 5
             }                   
         ]
@@ -121,8 +121,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minHits": 5,
-                "maxHits": 10,
+                "minimumFrequency": 5,
+                "maximumFrequency": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -130,10 +130,10 @@
             },
             {
                 "type": "Piece_Produced",
-                "hits": 0.25,
+                "frequency": 0.25,
                 "followedBy": {
                     "type": "Piece_Ok",
-                    "hits": 0.25
+                    "frequency": 0.25
                 }
             }                
         ]
@@ -147,7 +147,7 @@
         "events": [
             {
                 "type": "Availability",
-                "hits": 360,                    
+                "frequency": 360,                    
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -155,10 +155,10 @@
             },
             {
                 "type": "Piece_Produced",
-                "hits": 25,
+                "frequency": 25,
                 "followedBy": {
                     "type": "Piece_Ok",
-                    "hits": 20
+                    "frequency": 20
                 }
             }                
         ]
@@ -172,7 +172,7 @@
         "events": [
             {
                 "type": "Availability",
-                "hits": 360,                    
+                "frequency": 360,                    
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -180,10 +180,10 @@
             },
             {
                 "type": "Piece_Produced",
-                "hits": 0.25,
+                "frequency": 0.25,
                 "followedBy": {
                     "type": "Piece_Ok",
-                    "hits": 0.25
+                    "frequency": 0.25
                 }
             }                
         ]
@@ -197,7 +197,7 @@
         "events": [
             {
                 "type": "Availability",
-                "hits": 360,                    
+                "frequency": 360,                    
                 "status": ["up", "down"],
                 "probabilities": [1.0, 0.0],
                 "durations": [0, 0],
@@ -205,10 +205,10 @@
             },
             {
                 "type": "Piece_Produced",
-                "hits": 60,
+                "frequency": 60,
                 "followedBy": {
                     "type": "Piece_Ok",
-                    "hits": 60
+                    "frequency": 60
                 }
             }                
         ]
@@ -222,7 +222,7 @@
         "events": [
             {
                 "type": "Availability",
-                "hits": 120,                    
+                "frequency": 120,                    
                 "status": ["up", "down"],
                 "probabilities": [1.0, 0.0],
                 "durations": [0, 0],
@@ -230,10 +230,10 @@
             },
             {
                 "type": "Piece_Produced",
-                "hits": 60,
+                "frequency": 60,
                 "followedBy": {
                     "type": "Piece_Ok",
-                    "hits": 48
+                    "frequency": 48
                 }
             }                
         ]
@@ -247,7 +247,7 @@
         "events": [
             {
                 "type": "Availability",
-                "hits": 120,                    
+                "frequency": 120,                    
                 "status": ["up", "down"],
                 "probabilities": [0.8, 0.2],
                 "durations": [0, 0],
@@ -255,14 +255,14 @@
             },
             {
                 "type": "Pieces_Produced",
-                "hits": 60,
-                "countMinHits": 5,
-                "countMaxHits": 5,
+                "frequency": 60,
+                "countMinimumFrequency": 5,
+                "countMaximumFrequency": 5,
                 "followedBy": {
                     "type": "Pieces_Ok",
-                    "countMinHits": 5,
-                    "countMaxHits": 5,
-                    "hits": 60
+                    "countMinimumFrequency": 5,
+                    "countMaximumFrequency": 5,
+                    "frequency": 60
                 }
             }              
         ]
@@ -276,7 +276,7 @@
         "events": [
             {
                 "type": "Availability",
-                "hits": 120,                    
+                "frequency": 120,                    
                 "status": ["up", "Planned maintenance", "Manual stop"],
                 "probabilities": [0.9, 0.07, 0.03],
                 "durations": [0, 600, 120],
@@ -284,14 +284,14 @@
             },
             {
                 "type": "Pieces_Produced",
-                "hits": 60,
-                "countMinHits": 5,
-                "countMaxHits": 5,
+                "frequency": 60,
+                "countMinimumFrequency": 5,
+                "countMaximumFrequency": 5,
                 "followedBy": {
                     "type": "Pieces_Ok",
-                    "countMinHits": 5,
-                    "countMaxHits": 5,
-                    "hits": 60
+                    "countMinimumFrequency": 5,
+                    "countMaximumFrequency": 5,
+                    "frequency": 60
                 }
             }              
         ]
@@ -304,8 +304,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minHits": 5,
-                "maxHits": 10,
+                "minimumFrequency": 5,
+                "maximumFrequency": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -313,10 +313,10 @@
             },
             {
                 "type": "Piece_Produced",
-                "hits": 25,
+                "frequency": 25,
                 "followedBy": {
                     "type": "Piece_Ok",
-                    "hits": 20
+                    "frequency": 20
                 }
             }
         ]
@@ -329,8 +329,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minHits": 5,
-                "maxHits": 10,
+                "minimumFrequency": 5,
+                "maximumFrequency": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -338,10 +338,10 @@
             },
             {
                 "type": "Piece_Produced",
-                "hits": 25,
+                "frequency": 25,
                 "followedBy": {
                     "type": "Piece_Ok",
-                    "hits": 20
+                    "frequency": 20
                 }
             }
         ]
@@ -354,8 +354,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minHits": 5,
-                "maxHits": 10,
+                "minimumFrequency": 5,
+                "maximumFrequency": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -363,10 +363,10 @@
             },
             {
                 "type": "Piece_Produced",
-                "hits": 25,
+                "frequency": 25,
                 "followedBy": {
                     "type": "Piece_Ok",
-                    "hits": 20
+                    "frequency": 20
                 }
             }
         ]
@@ -379,8 +379,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minHits": 5,
-                "maxHits": 10,
+                "minimumFrequency": 5,
+                "maximumFrequency": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -388,10 +388,10 @@
             },
             {
                 "type": "Piece_Produced",
-                "hits": 25,
+                "frequency": 25,
                 "followedBy": {
                     "type": "Piece_Ok",
-                    "hits": 20
+                    "frequency": 20
                 }
             }
         ]

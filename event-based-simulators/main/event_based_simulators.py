@@ -162,12 +162,12 @@ class MachineSimulator:
         for event_definition in events:
             event_type = event_definition.get("type") or ""
             if event_type == "Piece_Produced":
-                hits = event_definition.get("hits")
-                return hits / 3600.0
+                frequency = event_definition.get("frequency")
+                return frequency / 3600.0
             if event_type == "Pieces_Produced":
-                hits = event_definition.get("hits")
-                max_count = event_definition.get("countMaxHits")
-                return hits * max_count / 3600.0
+                frequency = event_definition.get("frequency")
+                countMaximumFrequency = event_definition.get("countMaximumFrequency")
+                return frequency * countMaximumFrequency / 3600.0
 
         return 0.0
 
@@ -249,7 +249,7 @@ class MachineSimulator:
 
         self.__produce_pieces()
         
-        pieces_per_hour = event_definition.get("hits") or 1
+        pieces_per_hour = event_definition.get("frequency") or 1
 
         if self.__pick_one_piece(pieces_per_hour / 3600.0):
             event = self.__type_fragment(event_definition)
@@ -270,14 +270,12 @@ class MachineSimulator:
 
         self.__produce_pieces()           
 
-        # count_min_hits = event_definition.get("countMinHits") or 0
-        count_max_hits = event_definition.get("countMaxHits") or 10
+        countMaximumFrequency = event_definition.get("countMaximumFrequency") or 10
 
-        hits = event_definition.get("hits") or 1
+        frequency = event_definition.get("frequency") or 1
 
         event = self.__type_fragment(event_definition)
-        # pieces_produced = randint(count_min_hits, count_max_hits)
-        pieces_produced = self.__pick_pieces(hits * count_max_hits / 3600.0)
+        pieces_produced = self.__pick_pieces(frequency * countMaximumFrequency / 3600.0)
         event.update({"count": pieces_produced})
         event.update(self.__get_production_info())
 
@@ -299,15 +297,15 @@ class MachineSimulator:
     def __on_pieces_ok_event(self, event_definition, task):
         event = self.__type_fragment(event_definition)
 
-        count_min_hits = event_definition.get("countMinHits") or 0
-        count_max_hits = event_definition.get("countMaxHits") or 10
+        countMinimumFrequency = event_definition.get("countMinimumFrequency") or 0
+        countMaximumFrequency = event_definition.get("countMaximumFrequency") or 10
 
         piece_produced_timestamp = None
         if hasattr(task, 'extra'):
             piece_produced_timestamp = task.extra["timestamp"]
-            count_max_hits = task.extra.get("pieces_produced") or count_max_hits
+            countMaximumFrequency = task.extra.get("pieces_produced") or countMaximumFrequency
 
-        event.update({"count": randint(min(count_min_hits, count_max_hits), count_max_hits)})
+        event.update({"count": randint(min(countMinimumFrequency, countMaximumFrequency), countMaximumFrequency)})
 
         self.__send_event(event, piece_produced_timestamp)
 
@@ -343,18 +341,18 @@ class MachineSimulator:
     def __send_following_event(self, event_definition, timestamp = None, extra_params = {}):        
         if "followedBy" in event_definition:
             followed_by_definition = event_definition["followedBy"]
-            followed_by_hits = followed_by_definition["hits"]
-            this_hits = event_definition["hits"]
+            followed_by_frequency = followed_by_definition["frequency"]
+            this_frequency = event_definition["frequency"]
 
             # should followedBy event be sent?
-            if try_event(followed_by_hits / this_hits):
+            if try_event(followed_by_frequency / this_frequency):
                 followed_by_task = self.create_one_time_task(followed_by_definition)
                 followed_by_task.extra["timestamp"] = timestamp
                 followed_by_task.extra.update(extra_params)
                 self.tasks.append(followed_by_task)                
                 log.debug(f'{self.device_id} task({id(followed_by_task)}) added: {json.dumps(followed_by_definition)}, tasks: {len(self.tasks)}')      
             else:
-                  log.debug(f'{self.device_id} followedBy task missed. probability = {1 - followed_by_hits / this_hits} , def: {json.dumps(followed_by_definition)}')         
+                  log.debug(f'{self.device_id} followedBy task missed. probability = {1 - followed_by_frequency / this_frequency} , def: {json.dumps(followed_by_definition)}')         
 
     def create_one_time_task(self, event_definition, start_in_seconds = 2, event_callback = None):
         callback = event_callback or MachineSimulator.event_mapping[event_definition["type"]]
@@ -393,17 +391,17 @@ class MachineSimulator:
                      'Shutdown': __on_shutdown_event}
 
     def __create_task(self, event_definition):
-        min_hits_per_hour = event_definition.get("minHits", event_definition.get("hits"))
-        max_hits_per_hour = event_definition.get("maxHits", event_definition.get("hits"))
+        min_frequency_per_hour = event_definition.get("minimumFrequency", event_definition.get("frequency"))
+        max_frequency_per_hour = event_definition.get("maximumFrequency", event_definition.get("frequency"))
 
-        min_interval_in_seconds = int(3600 / max_hits_per_hour)
-        max_interval_in_seconds = int(3600 / min_hits_per_hour)
+        min_interval_in_seconds = int(3600 / max_frequency_per_hour)
+        max_interval_in_seconds = int(3600 / min_frequency_per_hour)
 
         event_callback = lambda task:  {MachineSimulator.event_mapping[event_definition["type"]](self, event_definition, task)}
 
         task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, event_callback)
         
-        log.debug(f'create periodic task for {event_definition["type"]} ({min_hits_per_hour}, {max_hits_per_hour})')        
+        log.debug(f'create periodic task for {event_definition["type"]} ({min_frequency_per_hour}, {max_frequency_per_hour})')        
         # event_callback()
         return task
     
