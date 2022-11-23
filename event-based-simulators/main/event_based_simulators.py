@@ -5,18 +5,14 @@ from random import randint, uniform, choices
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
 from oeeAPI import OeeAPI, ProfileCreateMode
 
-VERSION = '1.0.31'
 def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INFO)
 log = logging.getLogger("sims")
-log.info(f"version: {VERSION}")
 log.info(f"started at {current_timestamp()}")
 
-
 # JSON-PYTHON mapping, to get json.load() working
-null = None
 false = False
 true = True
 ######################
@@ -28,10 +24,9 @@ shiftplan_polling_interval = one_day
 log.info(f'Shiftplan polling interval is set to {shiftplan_polling_interval:,} secs')
 shiftplan_dateformat='%Y-%m-%dT%H:%M:%SZ'
 
-log.info(C8Y_BASE)
-log.info(C8Y_TENANT)
-log.info(C8Y_USER)
-#log.info(C8Y_PASSWORD)
+log.debug(C8Y_BASE)
+log.debug(C8Y_TENANT)
+log.debug(C8Y_USER)
 
 def try_event(probability: float):
     ''' Returns True if event occurs.        
@@ -54,6 +49,7 @@ oeeAPI = OeeAPI()
 microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
 CREATE_PROFILES = microservice_options.get("CREATE_PROFILES", "True")
 CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
+CREATE_ASSET_HIERACHY = microservice_options.get("CREATE_ASSET_HIERACHY", "False")
 log.info(f'CREATE_PROFILES:{CREATE_PROFILES}')
 
 class Task:
@@ -473,6 +469,12 @@ if CREATE_PROFILES.lower() == "true":
     [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
         for id in oeeAPI.get_simulator_external_ids()]
     os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
+
+if CREATE_ASSET_HIERACHY.lower() == "true":
+    log.info("Creating the OEE asset hierachy")
+    ids = []
+    [ids.append(simulator.device_id) for simulator in simulators]
+    oeeAPI.create_asset_hierachy(deviceIDs=ids)
 
 
 while True:
