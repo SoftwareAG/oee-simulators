@@ -11,14 +11,14 @@ on:
           default: "GitHub Release Message"
 
 env:
-  BUILD_OFFSET: 25
+  BUILD_OFFSET: 20
 
 jobs:
   build_upload:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: 'repo'
 
@@ -46,13 +46,13 @@ jobs:
           zip oee-simulators.zip image.tar cumulocity.json
         
       - name: upload Zip
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.1.1
         with:
           name: 'oee-simulators'
           path: 'repo/event-based-simulators/oee-simulators.zip'
 
       - name: Create Release
-        uses: actions/create-release@v1
+        uses: actions/create-release@v1.1.4
         id: create_release
         with:
           draft: false
@@ -64,7 +64,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: upload oee-sim zip
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -74,7 +74,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: upload source-code zip
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
