@@ -21,20 +21,21 @@ if LOG_LEVEL == "DEBUG":
     logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
 else:
     logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INFO)
+##########################################
 
 log = logging.getLogger("sims")
 log.info(f"started at {current_timestamp()}")
 log.debug(f'Tenant options: {microservice_options}')
 log.info(f'CREATE_PROFILES:{CREATE_PROFILES}')
-###########################################
 
 
-#array for shiftplans and polling interval
+#Setting up the Array for shiftplans and time for polling interval
 shiftplans = []
 one_day = 86400 
 shiftplan_polling_interval = one_day
 log.info(f'Shiftplan polling interval is set to {shiftplan_polling_interval:,} secs')
 shiftplan_dateformat='%Y-%m-%dT%H:%M:%SZ'
+##########################################
 
 log.debug(C8Y_BASE)
 log.debug(C8Y_TENANT)
