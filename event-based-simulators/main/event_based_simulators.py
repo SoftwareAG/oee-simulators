@@ -8,9 +8,26 @@ from oeeAPI import OeeAPI, ProfileCreateMode
 def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
-logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INFO)
+cumulocityAPI = CumulocityAPI()
+oeeAPI = OeeAPI()
+
+#Get Tenant Options and configure Simulator
+microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
+CREATE_PROFILES = microservice_options.get("CREATE_PROFILES", "True")
+CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
+CREATE_ASSET_HIERACHY = microservice_options.get("CREATE_ASSET_HIERACHY", "False")
+LOG_LEVEL = microservice_options.get("LOG_LEVEL", "INFO")
+if LOG_LEVEL == "DEBUG":
+    logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
+else:
+    logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INFO)
+
 log = logging.getLogger("sims")
 log.info(f"started at {current_timestamp()}")
+log.debug(f'Tenant options: {microservice_options}')
+log.info(f'CREATE_PROFILES:{CREATE_PROFILES}')
+###########################################
+
 
 #array for shiftplans and polling interval
 shiftplans = []
@@ -37,18 +54,6 @@ def get_random_status(statusses, durations, probabilites):
         return "up", 0
     choice = choices([i for i in range(len(probabilites))], probabilites)[0]
     return statusses[choice], durations[choice]
-
-cumulocityAPI = CumulocityAPI()
-oeeAPI = OeeAPI()
-
-#Get Tenant Options and configure Simulator
-microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
-log.debug(f'Tenant options: {microservice_options}')
-CREATE_PROFILES = microservice_options.get("CREATE_PROFILES", "True")
-CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
-CREATE_ASSET_HIERACHY = microservice_options.get("CREATE_ASSET_HIERACHY", "False")
-log.info(f'CREATE_PROFILES:{CREATE_PROFILES}')
-###########################################
 
 class Task:
     def __init__(self, start_in_seconds: int, run_block) -> None:
