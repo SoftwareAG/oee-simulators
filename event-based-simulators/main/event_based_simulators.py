@@ -12,11 +12,6 @@ logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INF
 log = logging.getLogger("sims")
 log.info(f"started at {current_timestamp()}")
 
-# JSON-PYTHON mapping, to get json.load() working
-false = False
-true = True
-######################
-
 #array for shiftplans and polling interval
 shiftplans = []
 one_day = 86400 
@@ -46,11 +41,14 @@ def get_random_status(statusses, durations, probabilites):
 cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()
 
+#Get Tenant Options and configure Simulator
 microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
+log.debug(f'Tenant options: {microservice_options}')
 CREATE_PROFILES = microservice_options.get("CREATE_PROFILES", "True")
 CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
 CREATE_ASSET_HIERACHY = microservice_options.get("CREATE_ASSET_HIERACHY", "False")
 log.info(f'CREATE_PROFILES:{CREATE_PROFILES}')
+###########################################
 
 class Task:
     def __init__(self, start_in_seconds: int, run_block) -> None:
@@ -68,8 +66,6 @@ class PeriodicTask:
         self.min_interval_in_seconds = minInterval
         self.max_interval_in_seconds = maxInterval
         self.next_run = self.__calculate_next_run()
-        # TODO: 
-        # self.__run_and_reschedule()
      
     def __calculate_next_run(self) -> int: 
         return time.time() + randint(self.min_interval_in_seconds, self.max_interval_in_seconds)
@@ -95,20 +91,18 @@ class Shiftplan:
     def set_timeslots_for_shiftplan(self, shiftplan):
         self.locationId = shiftplan["locationId"]
         self.recurringTimeSlots = shiftplan["recurringTimeslots"]
-        return True
 
     def add_Shiftplan_to_OEE(self):
         oeeAPI.add_timeslots_for_shiftplan(self)
         log.info(f'Added shiftplan to OEE for location: {self.locationId}')
 
-
     def __create_task(self):   
-        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, self.getShiftplan())
+        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, self.fetchNewShiftplan())
         log.debug(f'Create periodic task for pulling shiftplans running every {shiftplan_polling_interval}')
         return task
 
-    def getShiftplan(self):
-        log.info(f'Getting Shiftplan for location: {self.locationId}')
+    def fetchNewShiftplan(self):
+        log.debug(f'Getting Shiftplan for location: {self.locationId}')
         self.setShiftplan(oeeAPI.get_shiftplan(self.locationId, f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + timedelta(seconds=shiftplan_polling_interval):{shiftplan_dateformat}}'))
 
     def setShiftplan(self, shiftplan):
@@ -149,13 +143,7 @@ class MachineSimulator:
         if self.enabled:
             self.tasks = list(map(self.__create_task, self.model["events"]))
             self.production_speed_s = self.__get_production_speed_s(self.model["events"])
-        # print(f'events: {self.model["events"]}')
-
-    def enable(self):
-        self.enabled = True
-
-    def disable(self):
-        self.enable = False
+            log.debug(f'events: {self.model["events"]}')
 
     def __get_production_speed_s(self, events) -> float:
         """Returns pieces/s""" 
@@ -176,21 +164,21 @@ class MachineSimulator:
         self.last_production_time_update = time.time()
         if self.machine_up and not self.shutdown:
             self.production_time_s = self.production_time_s + production_time
-            # print(f'{self.device_id} production time: {self.production_time_s}s')
+            log.debug(f'{self.device_id} production time: {self.production_time_s}s')
 
     def __pick_one_piece(self, pieces_per_seconds: float):
         piece_production_time = 1.0 / pieces_per_seconds
         if (self.production_time_s > piece_production_time):
             self.production_time_s = self.production_time_s - piece_production_time
-            # print(f'{self.device_id} one piece produced, remained time: {self.production_time_s}s')
+            log.debug(f'{self.device_id} one piece produced, remained time: {self.production_time_s}s')
             return True
-        # print(f'{self.device_id} piece not yet produced, production time: {self.production_time_s}s')
+        log.debug(f'{self.device_id} piece not yet produced, production time: {self.production_time_s}s')
         return False
     
     def __pick_pieces(self, pieces_per_seconds: float):
         pieces_produced = int(pieces_per_seconds * self.production_time_s)
         self.production_time_s = self.production_time_s - pieces_produced / pieces_per_seconds
-        # print(f'{self.device_id} pieces produced: {pieces_produced}, remained time: {self.production_time_s}s')
+        log.debug(f'{self.device_id} pieces produced: {pieces_produced}, remained time: {self.production_time_s}s')
         return pieces_produced
 
     def __type_fragment(self, event_definition, text = None):
@@ -423,13 +411,11 @@ class MachineSimulator:
             return newTimestamp
 
     def is_in_productionTime(self):
-        #profiles = oeeAPI.get_profiles()
-        
         #if there are no shiftplans for a device, it should not be affected by production-time
-        no_shiftplan = True
+        has_no_shiftplan = True
         for shiftplan in shiftplans:
             if shiftplan.locationId == self.locationId:
-                no_shiftplan = False
+                has_no_shiftplan = False
                 for timeslot in shiftplan.recurringTimeSlots:
                     if timeslot.slotType == "PRODUCTION":
                         now = datetime.utcnow()
@@ -437,7 +423,7 @@ class MachineSimulator:
                         end = datetime.strptime(timeslot.slotEnd, shiftplan_dateformat)
                         if start < now and end > now:
                             return True
-        return no_shiftplan
+        return has_no_shiftplan
 
 
 def load(filename):
