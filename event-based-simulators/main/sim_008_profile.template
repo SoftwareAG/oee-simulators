@@ -8,7 +8,7 @@
     "amountUnit": "",
     "name": "Simulator Ideal Producer - ${counter}",
     "tenantId": "${tenantId}",
-    "locationId": "Matrix",
+    "locationId": "",
     "external": false,
     "testConfiguration": false,
     "subscriptions": [
