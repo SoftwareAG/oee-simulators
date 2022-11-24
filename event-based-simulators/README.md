@@ -63,7 +63,7 @@ The creation of profiles can be configured using the tenant options on the given
 Tenant options should fall under the category-name: "event-based-simulators"
 
 Two Options can be configured:
-- CREATE_PROFILES - holds a boolean with 'true' or 'false' to indicate if the profiles should be created. Default: 'false'
+- CREATE_PROFILES - holds a string with 'CREATE' or 'CREATE_IF_NOT_EXISTS' to indicate if the profiles should be overwritten or only created if they not already exist. Default: 'CREATE_IF_NOT_EXISTS'
 - CREATE_PROFILES_ARGUMENTS - can be used to set a string that is passed down as arguments to the profile creation script [Execution from command line / CLI arguments](#execution-from-command-line). 
 - CREATE_ASSET_HIERACHY - holds a boolen with 'true' or 'false' to indicate wether the Simulator should create the asset hierachy for OEE. If set to true it will create one SITE with one LINE that holds all devices and their profiles. Default: 'false'
 - LOG_LEVEL - sets the used logging-level of the simulator. Choose between INFO and DEBUG. DEBUG does give a more detailed output of the Simulator's configuration and decisions. Default: 'INFO'

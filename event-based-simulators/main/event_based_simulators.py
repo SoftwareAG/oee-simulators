@@ -13,7 +13,7 @@ oeeAPI = OeeAPI()
 
 #Get Tenant Options and configure Simulator
 microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
-CREATE_PROFILES = microservice_options.get("CREATE_PROFILES", "True")
+PROFILE_CREATE_MODE = ProfileCreateMode[microservice_options.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
 CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
 CREATE_ASSET_HIERACHY = microservice_options.get("CREATE_ASSET_HIERACHY", "False")
 LOG_LEVEL = microservice_options.get("LOG_LEVEL", "INFO")
@@ -26,7 +26,7 @@ else:
 log = logging.getLogger("sims")
 log.info(f"started at {current_timestamp()}")
 log.debug(f'Tenant options: {microservice_options}')
-log.info(f'CREATE_PROFILES:{CREATE_PROFILES}')
+log.info(f'CREATE_PROFILES:{PROFILE_CREATE_MODE}')
 
 
 #Setting up the Array for shiftplans and time for polling interval
@@ -455,9 +455,10 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 SHIFTPLANS_MODELS = load("shiftplans.json")
 shiftplans = list(map(lambda model: Shiftplan(model), SHIFTPLANS_MODELS))
 
-if CREATE_PROFILES.lower() == "true":
-    [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
+if PROFILE_CREATE_MODE:    
+    [oeeAPI.create_and_activate_profile(id, PROFILE_CREATE_MODE) 
         for id in oeeAPI.get_simulator_external_ids()]
+
     os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
 
 if CREATE_ASSET_HIERACHY.lower() == "true":
