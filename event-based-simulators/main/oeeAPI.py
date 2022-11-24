@@ -1,14 +1,8 @@
-import time, json, os, logging, requests
-from datetime import datetime
+import json, logging, requests
 from enum import Enum
 
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_HEADERS, CumulocityAPI
 
-# JSON-PYTHON mapping, to get json.load() working
-null = None
-false = False
-true = True
-######################
 
 log = logging.getLogger("OeeAPI")
 
@@ -191,5 +185,5 @@ class OeeAPI:
         lineMO = self.c8y_api.createISAType(type="LINE", hierachy=lineHierarchy, description="Simulator LINE", oeetarget=80)
 
         if lineMO != {}:
-            siteMO = self.c8y_api.createISAType(type="SITE", hierachy=[{"profileID": null, "ID": lineMO['id']}], description="Simulator SITE", oeetarget=80)
+            siteMO = self.c8y_api.createISAType(type="SITE", hierachy=[{"profileID": None, "ID": lineMO['id']}], description="Simulator SITE", oeetarget=80)
             log.info(f'Created asset hierachy. Line-ID {lineMO["id"]} Site-ID {siteMO["id"]}')
