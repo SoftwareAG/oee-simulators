@@ -3,7 +3,6 @@ from enum import Enum
 
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_HEADERS, CumulocityAPI
 
-
 log = logging.getLogger("OeeAPI")
 
 def to_variable(name: str):

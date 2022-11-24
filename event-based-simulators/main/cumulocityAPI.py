@@ -18,8 +18,6 @@ C8Y_HEADERS = {
 
 log = logging.getLogger("C8yAPI")
 
-OEE_DATA_MODEL_FIELD_NAME = "@com_adamos_oee_datamodel_MachineOEEConfiguration"
-
 class CumulocityAPI:
 
     C8Y_SIMULATORS_GROUP = "c8y_EventBasedSimulator"
