@@ -103,7 +103,7 @@ class Shiftplan:
         log.info(f'Added shiftplan to OEE for location: {self.locationId}')
 
     def __create_task(self):   
-        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, self.fetchNewShiftplan)
+        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, Shiftplan.fetchNewShiftplan)
         log.debug(f'Create periodic task for pulling shiftplans - location {self.locationId} - running every {shiftplan_polling_interval}')
         return task
 
