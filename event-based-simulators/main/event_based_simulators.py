@@ -18,6 +18,7 @@ PROFILE_CREATE_MODE = ProfileCreateMode[microservice_options.get("CREATE_PROFILE
 CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
 CREATE_ASSET_HIERACHY = microservice_options.get("CREATE_ASSET_HIERACHY", "False")
 LOG_LEVEL = microservice_options.get("LOG_LEVEL", "INFO")
+DELETE_PROFILES = microservice_options.get("DELETE_PROFILES", "False")
 if LOG_LEVEL == "DEBUG":
     logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
 else:
@@ -456,6 +457,10 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 #read & update Shiftplans
 SHIFTPLANS_MODELS = load("shiftplans.json")
 shiftplans = list(map(lambda model: Shiftplan(model), SHIFTPLANS_MODELS))
+
+if DELETE_PROFILES.lower() == "true":
+    log.debug(f'Deleting all Profiles')
+    oeeAPI.delete_all_simulators_profiles()
 
 if PROFILE_CREATE_MODE:    
     [oeeAPI.create_and_activate_profile(id, PROFILE_CREATE_MODE) 

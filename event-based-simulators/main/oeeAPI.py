@@ -111,11 +111,11 @@ class OeeAPI:
     
     def delete_all_simulators_profiles(self):
         simulator_ids = self.get_simulator_ids()
-
+        
         profiles = self.get_profiles()
         deleted_profiles = 0
         for profile in profiles:
-            if profile['deviceId'] in simulator_ids and profile["locationId"] == "Matrix":
+            if profile['deviceId'] in simulator_ids:
                 if self.remove_profile(profile):
                     deleted_profiles = deleted_profiles + 1
 
