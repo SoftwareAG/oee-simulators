@@ -11,6 +11,7 @@ def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
 cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()
 
+#TODO: Parameter to delete all Profiles
 #Get Tenant Options and configure Simulator
 microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
 PROFILE_CREATE_MODE = ProfileCreateMode[microservice_options.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
@@ -102,8 +103,9 @@ class Shiftplan:
         oeeAPI.add_timeslots_for_shiftplan(self)
         log.info(f'Added shiftplan to OEE for location: {self.locationId}')
 
-    def __create_task(self):   
-        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, Shiftplan.fetchNewShiftplan)
+    def __create_task(self):
+        task_callback = lambda:  {self.fetchNewShiftplan()}
+        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, task_callback)
         log.debug(f'Create periodic task for pulling shiftplans - location {self.locationId} - running every {shiftplan_polling_interval}')
         return task
 
