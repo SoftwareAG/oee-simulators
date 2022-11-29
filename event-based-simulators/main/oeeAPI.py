@@ -185,8 +185,7 @@ class OeeAPI:
         line_id = self.get_id_of_asset_hierachy_line(line_description)
         if line_id == '':
             line_id = self.c8y_api.createISAType(type="LINE", hierachy=None, description=line_description, oeetarget=80)
-            if lineMO != {}:
-                siteMO = self.c8y_api.createISAType(type="SITE", hierachy=[{"profileID": None, "ID": lineMO['id']}], description="Simulator SITE", oeetarget=80)
+            self.c8y_api.createISAType(type="SITE", hierachy=[{"profileID": None, "ID": line_id}], description="Simulator SITE", oeetarget=80)
         
         lineMO = self.c8y_api.updateISAType(id=line_id, type="LINE", hierachy=lineHierarchy, description=line_description, oeetarget=80)
         log.info(f'Created asset hierachy. Line-ID {lineMO}')
