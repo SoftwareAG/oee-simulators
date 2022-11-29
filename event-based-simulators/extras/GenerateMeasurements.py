@@ -41,10 +41,10 @@ else:
 '''
 ######################################################
 # Start and end date are mandatory and need to be in ISO8601 format (e.g. 2020-10-26T10:00:00.000).
-sim_time = datetime.fromisoformat("2020-10-26T10:00:00.000")
-sim_end_time = datetime.fromisoformat("2020-10-27T10:00:00.000")
+sim_time = datetime.utcnow()
+sim_end_time = sim_time + timedelta(hours=1)
 
-List_Of_Measurements = ['Availability', 'AvailabilityLossTime', 'PerformanceLossTime', 'ActualProductionTime',
+LIST_OF_MEASUREMENTS = ['Availability', 'AvailabilityLossTime', 'PerformanceLossTime', 'ActualProductionTime',
                         'QualityLossAmount', 'IdealQualityTime', 'IdealCycleAmount', 'AvailabilityLossAmount',
                         'IdealMachineRuntime', 'IdealProductionAmount', 'OEE', 'ActualQualityAmount',
                         'ActualProductionAmount', 'IdealAmount', 'PerformanceLossAmount', 'Quality', 'IdealCycleTime',
@@ -117,51 +117,35 @@ def CreateFilePath(Id):
 
 
 def ExportMeasurements(filePath):
-    jsonMeasurementsList = jsonMeasurementList()
+    jsonMeasurementsList = JsonMeasurementList(device_id=123456, distribution='normal')
     AppendDataToJsonFile(jsonMeasurementsList, filePath, 'measurements')
 
 
-def jsonMeasurementList():
-    jsonMeasurementsList = []
+def JsonMeasurementList(device_id, distribution):
     time_pointer = sim_time
     time_count = 1
-    while time_pointer < sim_end_time:
-        if time_count == 3:
-            for measurementKey in List_Of_Measurements:
-                CreateIndividualMeasurementDict(measurement_key=measurementKey,
-                                                json_measurements_list=jsonMeasurementsList,
-                                                measurement_series='600s', distribution='normal')
-            for measurementKey in List_Of_Measurements:
-                CreateIndividualMeasurementDict(measurement_key=measurementKey,
-                                                json_measurements_list=jsonMeasurementsList,
-                                                measurement_series='1800s',
-                                                distribution='normal')
-
-        if time_count == 6:
-            for measurementKey in List_Of_Measurements:
-                CreateIndividualMeasurementDict(measurement_key=measurementKey,
-                                                json_measurements_list=jsonMeasurementsList,
-                                                measurement_series='600s',
-                                                distribution='normal')
-            for measurementKey in List_Of_Measurements:
-                CreateIndividualMeasurementDict(measurement_key=measurementKey,
-                                                json_measurements_list=jsonMeasurementsList,
-                                                measurement_series='1800s',
-                                                distribution='normal')
-            for measurementKey in List_Of_Measurements:
-                CreateIndividualMeasurementDict(measurement_key=measurementKey,
-                                                json_measurements_list=jsonMeasurementsList,
-                                                measurement_series='3600s',
-                                                distribution='normal')
-            time_count = 0
-
+    jsonMeasurementList = []
+    while time_pointer <= sim_end_time:
+        extraInfoDict = {
+            "type": "OEEMeasurements",
+            "time": f"{time_pointer}",
+            "source": {
+                "id": f"{device_id}"
+            }
+        }
+        for measurementKey in LIST_OF_MEASUREMENTS:
+            newMeasurement = CreateMeasurement(distribution)
+            jsonMeasurementsDict = CreateIndividualMeasurementDict(measurement_key=measurementKey,
+                                                                   measurement_series='600s',
+                                                                   new_measurement=newMeasurement)
+            extraInfoDict.update(jsonMeasurementsDict)
+        jsonMeasurementList.append(extraInfoDict)
         time_count += 1
         time_pointer += timedelta(seconds=600)
-    return jsonMeasurementsList
+    return jsonMeasurementList
 
 
-def CreateIndividualMeasurementDict(measurement_key, json_measurements_list, measurement_series, distribution):
-    new_measurement = CreateMeasurement(distribution)
+def CreateIndividualMeasurementDict(measurement_key, measurement_series, new_measurement):
     measurement_dict = {
         f"{measurement_key}":
             {f"{measurement_series}":
@@ -171,8 +155,7 @@ def CreateIndividualMeasurementDict(measurement_key, json_measurements_list, mea
                 }
             }
     }
-    json_measurements_list.append(measurement_dict)
-    return json_measurements_list
+    return measurement_dict
 
 
 def CreateMeasurement(distribution):
@@ -211,5 +194,7 @@ def UpdateDataFromJsonFile():
 
 
 if __name__ == '__main__':
-    log.info(UpdateDataFromJsonFile())
+    filePath = CreateFilePath(Id=123456)
+    ExportMeasurements(filePath=filePath)
+    log.info("FINISH")
     # ListAllChildDevices()
