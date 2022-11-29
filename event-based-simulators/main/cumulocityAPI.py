@@ -166,7 +166,7 @@ class CumulocityAPI:
         external_ids = []
         for id in device_ids:
             external_id_response = requests.get(C8Y_BASE + '/identity/globalIds/' + id + '/externalIds', headers=C8Y_HEADERS)
-            if external_id_response.ok:
+            if external_id_response.ok and len(external_id_response.json()['externalIds'])>0:
                 external_ids.append(external_id_response.json()['externalIds'][0]['externalId'])
         return external_ids
 
@@ -233,3 +233,22 @@ class CumulocityAPI:
             "orderByIndex":0,
         }
         return self.create_managed_object(json.dumps(isaObjectRequestBody))
+
+    def updateISAType(self, id, type, hierachy, description, oeetarget):
+        isaObjectRequestBody = {
+            "hierarchy": hierachy,
+            "isISAObject":{},
+            "description": description,
+            "detailedDescription": description,
+            "type": type,
+            "oeetarget": oeetarget,
+            "orderByIndex":0,
+        }
+        return self.update_managed_object(id, json.dumps(isaObjectRequestBody))
+
+    def getISAObjects(self):
+        request_query = f'{C8Y_BASE}/inventory/managedObjects?pageSize=1000&withTotalPages=false&fragmentType=isISAObject'
+        response = requests.get(request_query, headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json()['managedObjects']
+        return []

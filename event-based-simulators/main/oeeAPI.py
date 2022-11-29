@@ -111,7 +111,7 @@ class OeeAPI:
     
     def delete_all_simulators_profiles(self):
         simulator_ids = self.get_simulator_ids()
-        
+
         profiles = self.get_profiles()
         deleted_profiles = 0
         for profile in profiles:
@@ -174,15 +174,26 @@ class OeeAPI:
         log.warning(f'Cannot get shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
         return {'locationId':locationId,'timeslots':{}}
 
-    def create_asset_hierachy(self, deviceIDs):
+    def create_or_update_asset_hierachy(self, deviceIDs):
+        line_description = "Simulator LINE"
         lineHierarchy = []
         for deviceID in deviceIDs:
             profileID = self.c8y_api.get_profile_id(deviceID=deviceID)
             if profileID != "":
                 lineHierarchy.append({"profileID":profileID, "ID":deviceID})
-            
-        lineMO = self.c8y_api.createISAType(type="LINE", hierachy=lineHierarchy, description="Simulator LINE", oeetarget=80)
 
-        if lineMO != {}:
-            siteMO = self.c8y_api.createISAType(type="SITE", hierachy=[{"profileID": None, "ID": lineMO['id']}], description="Simulator SITE", oeetarget=80)
-            log.info(f'Created asset hierachy. Line-ID {lineMO["id"]} Site-ID {siteMO["id"]}')
+        line_id = self.get_id_of_asset_hierachy_line(line_description)
+        if line_id == '':
+            line_id = self.c8y_api.createISAType(type="LINE", hierachy=None, description=line_description, oeetarget=80)
+            if lineMO != {}:
+                siteMO = self.c8y_api.createISAType(type="SITE", hierachy=[{"profileID": None, "ID": lineMO['id']}], description="Simulator SITE", oeetarget=80)
+        
+        lineMO = self.c8y_api.updateISAType(id=line_id, type="LINE", hierachy=lineHierarchy, description=line_description, oeetarget=80)
+        log.info(f'Created asset hierachy. Line-ID {lineMO}')
+
+    def get_id_of_asset_hierachy_line(self, text):
+        objects = self.c8y_api.getISAObjects()
+        for object in objects:
+            if object['description'] == text:
+                return object['id']
+        return ''
