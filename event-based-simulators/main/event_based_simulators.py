@@ -11,7 +11,6 @@ def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
 cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()
 
-#TODO: Parameter to delete all Profiles
 #Get Tenant Options and configure Simulator
 microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
 PROFILE_CREATE_MODE = ProfileCreateMode[microservice_options.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
@@ -462,11 +461,11 @@ if DELETE_PROFILES.lower() == "true":
     log.debug(f'Deleting all Profiles')
     oeeAPI.delete_all_simulators_profiles()
 
-if PROFILE_CREATE_MODE:    
-    [oeeAPI.create_and_activate_profile(id, PROFILE_CREATE_MODE) 
-        for id in oeeAPI.get_simulator_external_ids()]
+#Create Simulator Profiles
+[oeeAPI.create_and_activate_profile(id, PROFILE_CREATE_MODE) 
+    for id in oeeAPI.get_simulator_external_ids()]
 
-    os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
+os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
 
 if CREATE_ASSET_HIERACHY.lower() == "true":
     log.info("Creating the OEE asset hierachy")
