@@ -2,6 +2,7 @@ import sys
 import json, os, logging, requests, base64
 from datetime import datetime, timedelta, time
 from random import randint, uniform, choices, gauss
+from statistics import mean
 
 from c8y_api import CumulocityApi
 
@@ -123,39 +124,92 @@ def ExportMeasurements(filePath):
 
 def JsonMeasurementList(device_id, distribution):
     time_pointer = sim_time
-    time_count = 1
+    time_count = 0
     jsonMeasurementList = []
+    storageMeasurementDict = CreateStorageMeasurementDict()
+    storageMeasurementDict_1800s = CreateStorageMeasurementDict()
     while time_pointer <= sim_end_time:
-        extraInfoDict = {
-            "type": "OEEMeasurements",
-            "time": f"{time_pointer}",
-            "source": {
-                "id": f"{device_id}"
-            }
-        }
+        time_count += 1
+        measurementsTemplateDict = CreateExtraInfoDict(time_pointer, device_id)
+        # 600s
         for measurementKey in LIST_OF_MEASUREMENTS:
             newMeasurement = CreateMeasurement(distribution)
-            jsonMeasurementsDict = CreateIndividualMeasurementDict(measurement_key=measurementKey,
-                                                                   measurement_series='600s',
+            measurementsDict = CreateIndividualMeasurementDict(measurement_key=measurementKey,
+                                                               measurement_series='600s',
+                                                               new_measurement=newMeasurement)
+
+            measurementsTemplateDict.update(measurementsDict)
+            storageMeasurementDict[f"{measurementKey}"].append(newMeasurement)
+        jsonMeasurementList.append(measurementsTemplateDict)
+
+        # 1800s
+        if time_count == 3 or time_count == 6:
+            measurementsTemplateDict = CreateExtraInfoDict(time_pointer, device_id)
+            for measurementKey in LIST_OF_MEASUREMENTS:
+                newMeasurement = CalculateMeanValue(storage_measurement_dict=storageMeasurementDict,
+                                                    measurement_key=measurementKey)
+                measurementsDict = CreateIndividualMeasurementDict(measurement_key=measurementKey,
+                                                                   measurement_series='1800s',
                                                                    new_measurement=newMeasurement)
-            extraInfoDict.update(jsonMeasurementsDict)
-        jsonMeasurementList.append(extraInfoDict)
-        time_count += 1
+
+                measurementsTemplateDict.update(measurementsDict)
+                storageMeasurementDict_1800s[f"{measurementKey}"].append(newMeasurement)
+            jsonMeasurementList.append(measurementsTemplateDict)
+
+        # 3600s
+        if time_count == 6:
+            measurementsTemplateDict = CreateExtraInfoDict(time_pointer, device_id)
+            for measurementKey in LIST_OF_MEASUREMENTS:
+                newMeasurement = CalculateMeanValue(storage_measurement_dict=storageMeasurementDict_1800s,
+                                                    measurement_key=measurementKey)
+                measurementsDict = CreateIndividualMeasurementDict(measurement_key=measurementKey,
+                                                                   measurement_series='3600s',
+                                                                   new_measurement=newMeasurement)
+
+                measurementsTemplateDict.update(measurementsDict)
+            jsonMeasurementList.append(measurementsTemplateDict)
+            storageMeasurementDict = CreateStorageMeasurementDict()
+            storageMeasurementDict_1800s = CreateStorageMeasurementDict()
+            time_count = 0
+
         time_pointer += timedelta(seconds=600)
+
     return jsonMeasurementList
+
+
+def CreateExtraInfoDict(time_pointer, device_id):
+    extraInfoDict = {
+        "type": "OEEMeasurements",
+        "time": f"{time_pointer}",
+        "source": {
+            "id": f"{device_id}"
+        }
+    }
+    return extraInfoDict
 
 
 def CreateIndividualMeasurementDict(measurement_key, measurement_series, new_measurement):
     measurement_dict = {
         f"{measurement_key}":
-            {f"{measurement_series}":
-                {
-                    "unit": "",
-                    "value": f"{new_measurement}"
-                }
+            {
+                f"{measurement_series}":
+                    {
+                        "unit": "",
+                        "value": f"{new_measurement}"
+                    }
             }
     }
     return measurement_dict
+
+
+def CreateStorageMeasurementDict():
+    storage_measurement_dict = {}
+    for measurement_key in LIST_OF_MEASUREMENTS:
+        new_key = {
+            f"{measurement_key}": []
+        }
+        storage_measurement_dict.update(new_key)
+    return storage_measurement_dict
 
 
 def CreateMeasurement(distribution):
@@ -182,15 +236,9 @@ def AppendDataToJsonFile(jsonDataList, filePath, data_type='measurements', json_
         json.dump(json_data, f, indent=2)
 
 
-def UpdateDataFromJsonFile():
-    with open("measurements_template.json", "r") as jsonFile:
-        data = json.load(jsonFile)
-        dict = data['measurements'][0]['Availability']
-    return data
-    # data["location"] = "NewPath"
-
-    # with open("measurements_template.json", "w") as jsonFile:
-    #    json.dump(data, jsonFile)
+def CalculateMeanValue(storage_measurement_dict, measurement_key):
+    meanValue = mean(storage_measurement_dict[f"{measurement_key}"])
+    return meanValue
 
 
 if __name__ == '__main__':
