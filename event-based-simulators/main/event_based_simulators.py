@@ -349,8 +349,8 @@ class MachineSimulator:
                 for timeslot in shiftplan.recurringTimeSlots:
                     if timeslot.slotType == "PRODUCTION":
                         now = datetime.utcnow()
-                        start = datetime.strptime(timeslot.slotStart, Shiftplan.shiftplan_dateformat)
-                        end = datetime.strptime(timeslot.slotEnd, Shiftplan.shiftplan_dateformat)
+                        start = datetime.strptime(timeslot.slotStart, Shiftplan.dateformat)
+                        end = datetime.strptime(timeslot.slotEnd, Shiftplan.dateformat)
                         if start < now and end > now:
                             return True
         return has_no_shiftplan
