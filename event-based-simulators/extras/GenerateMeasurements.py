@@ -1,14 +1,13 @@
-import sys
-import json, os, logging, requests, base64
-from datetime import datetime, timedelta, time
-from random import randint, uniform, choices, gauss
-from statistics import mean
+import sys, json, os, logging, requests
 
+from datetime import datetime, timedelta
+from random import randint, uniform, gauss
+from statistics import mean
 from c8y_api import CumulocityApi
 
 import ArgumentsAndCredentialsHandler, Environment
 
-C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
+C8Y_PROFILE_GROUP = "c8y_EventBasedSimulatorProfile"
 C8Y_OEE_SIMULATOR_DEVICES_GROUP = "c8y_EventBasedSimulator"
 c8y = CumulocityApi(base_url=Environment.C8Y_BASE,  # the url of your Cumulocity tenant here
                     tenant_id=Environment.C8Y_TENANT,  # the tenant ID of your Cumulocity tenant here
@@ -22,11 +21,10 @@ def current_timestamp(format="%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
 
-logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
+logging.basicConfig(format="%(asctime)s %(name)s:%(message)s", level=logging.DEBUG)
 log = logging.getLogger("Measurements-generator")
 log.info(f"started at {current_timestamp()}")
 #####################################################
-'''
 # Check if connection to tenant can be created
 tenantConnectionResponse = ArgumentsAndCredentialsHandler.CheckTenantConnection(baseUrl=Environment.C8Y_BASE,
                                                                                 C8Y_HEADERS=C8Y_HEADERS)
@@ -39,11 +37,10 @@ else:
         log.error(tenantConnectionResponse.json())
     log.error(f"Connect to tenant {Environment.C8Y_TENANT} failed")
     sys.exit()
-'''
 ######################################################
 # Start and end date are mandatory and need to be in ISO8601 format (e.g. 2020-10-26T10:00:00.000).
-sim_time = datetime.utcnow()
-sim_end_time = sim_time + timedelta(hours=1)
+simStartTime = datetime.utcnow()
+simEndTime = simStartTime + timedelta(hours=1)
 
 LIST_OF_MEASUREMENTS = ['Availability', 'AvailabilityLossTime', 'PerformanceLossTime', 'ActualProductionTime',
                         'QualityLossAmount', 'IdealQualityTime', 'IdealCycleAmount', 'AvailabilityLossAmount',
@@ -63,13 +60,13 @@ def ListAllChildDevices():
         for childDevice in device.child_devices:
             deviceExternalId, deviceExternalIdType = CheckDeviceExternalIdById(childDevice.id, c8y.base_url)
             if not deviceExternalId:
-                return
+                continue
             if IsExternalIdTypeEventBasedSimulatorProfile(deviceExternalIdType):
                 filePath = CreateFilePath(Id=deviceExternalId)
             else:
-                return
+                continue
             listOfChildDevicesExternalIds.append(deviceExternalId)
-            ExportMeasurements(filePath=filePath)
+            ExportMeasurements(filePath=filePath, device_id=childDevice.id)
     if deviceInTenantCount == 0:
         log.info(f"No device in tenant {c8y.tenant_id} found")
 
@@ -117,111 +114,111 @@ def CreateFilePath(Id):
     return filePath
 
 
-def ExportMeasurements(filePath):
-    jsonMeasurementsList = JsonMeasurementList(device_id=123456, distribution='normal')
+def ExportMeasurements(filePath, device_id):
+    jsonMeasurementsList = CreateJsonMeasurementList(deviceId=device_id, distribution='normal')
     AppendDataToJsonFile(jsonMeasurementsList, filePath, 'measurements')
 
 
-def JsonMeasurementList(device_id, distribution):
-    time_pointer = sim_time
-    time_count = 0
+def CreateJsonMeasurementList(deviceId, distribution):
+    timePointer = simStartTime
+    timeCount = 0
     jsonMeasurementList = []
     storageMeasurementDict = CreateStorageMeasurementDict()
     storageMeasurementDict_1800s = CreateStorageMeasurementDict()
-    while time_pointer <= sim_end_time:
-        time_count += 1
-        measurementsTemplateDict = CreateExtraInfoDict(time_pointer, device_id)
+    while timePointer <= simEndTime:
+        timeCount += 1
+        measurementsTemplateDict = CreateExtraInfoDict(timePointer, deviceId)
         # 600s
         for measurementKey in LIST_OF_MEASUREMENTS:
             newMeasurement = CreateMeasurement(distribution)
-            measurementsDict = CreateIndividualMeasurementDict(measurement_key=measurementKey,
-                                                               measurement_series='600s',
-                                                               new_measurement=newMeasurement)
+            measurementsDict = CreateIndividualMeasurementDict(measurementKey=measurementKey,
+                                                               measurementSeries='600s',
+                                                               newMeasurement=newMeasurement)
 
             measurementsTemplateDict.update(measurementsDict)
             storageMeasurementDict[f"{measurementKey}"].append(newMeasurement)
         jsonMeasurementList.append(measurementsTemplateDict)
 
         # 1800s
-        if time_count == 3 or time_count == 6:
-            measurementsTemplateDict = CreateExtraInfoDict(time_pointer, device_id)
+        if timeCount == 3 or timeCount == 6:
+            measurementsTemplateDict = CreateExtraInfoDict(timePointer, deviceId)
             for measurementKey in LIST_OF_MEASUREMENTS:
-                newMeasurement = CalculateMeanValue(storage_measurement_dict=storageMeasurementDict,
-                                                    measurement_key=measurementKey)
-                measurementsDict = CreateIndividualMeasurementDict(measurement_key=measurementKey,
-                                                                   measurement_series='1800s',
-                                                                   new_measurement=newMeasurement)
+                newMeasurement = CalculateMeanValue(storageMeasurementDict=storageMeasurementDict,
+                                                    measurementKey=measurementKey)
+                measurementsDict = CreateIndividualMeasurementDict(measurementKey=measurementKey,
+                                                                   measurementSeries='1800s',
+                                                                   newMeasurement=newMeasurement)
 
                 measurementsTemplateDict.update(measurementsDict)
                 storageMeasurementDict_1800s[f"{measurementKey}"].append(newMeasurement)
             jsonMeasurementList.append(measurementsTemplateDict)
 
         # 3600s
-        if time_count == 6:
-            measurementsTemplateDict = CreateExtraInfoDict(time_pointer, device_id)
+        if timeCount == 6:
+            measurementsTemplateDict = CreateExtraInfoDict(timePointer, deviceId)
             for measurementKey in LIST_OF_MEASUREMENTS:
-                newMeasurement = CalculateMeanValue(storage_measurement_dict=storageMeasurementDict_1800s,
-                                                    measurement_key=measurementKey)
-                measurementsDict = CreateIndividualMeasurementDict(measurement_key=measurementKey,
-                                                                   measurement_series='3600s',
-                                                                   new_measurement=newMeasurement)
+                newMeasurement = CalculateMeanValue(storageMeasurementDict=storageMeasurementDict_1800s,
+                                                    measurementKey=measurementKey)
+                measurementsDict = CreateIndividualMeasurementDict(measurementKey=measurementKey,
+                                                                   measurementSeries='3600s',
+                                                                   newMeasurement=newMeasurement)
 
                 measurementsTemplateDict.update(measurementsDict)
             jsonMeasurementList.append(measurementsTemplateDict)
             storageMeasurementDict = CreateStorageMeasurementDict()
             storageMeasurementDict_1800s = CreateStorageMeasurementDict()
-            time_count = 0
+            timeCount = 0
 
-        time_pointer += timedelta(seconds=600)
+        timePointer += timedelta(seconds=600)
 
     return jsonMeasurementList
 
 
-def CreateExtraInfoDict(time_pointer, device_id):
+def CreateExtraInfoDict(timePointer, deviceId):
     extraInfoDict = {
         "type": "OEEMeasurements",
-        "time": f"{time_pointer}",
+        "time": f"{timePointer}",
         "source": {
-            "id": f"{device_id}"
+            "id": f"{deviceId}"
         }
     }
     return extraInfoDict
 
 
-def CreateIndividualMeasurementDict(measurement_key, measurement_series, new_measurement):
-    measurement_dict = {
-        f"{measurement_key}":
+def CreateIndividualMeasurementDict(measurementKey, measurementSeries, newMeasurement):
+    measurementDict = {
+        f"{measurementKey}":
             {
-                f"{measurement_series}":
+                f"{measurementSeries}":
                     {
                         "unit": "",
-                        "value": f"{new_measurement}"
+                        "value": f"{newMeasurement}"
                     }
             }
     }
-    return measurement_dict
+    return measurementDict
 
 
 def CreateStorageMeasurementDict():
-    storage_measurement_dict = {}
-    for measurement_key in LIST_OF_MEASUREMENTS:
+    storageMeasurementDict = {}
+    for measurementKey in LIST_OF_MEASUREMENTS:
         new_key = {
-            f"{measurement_key}": []
+            f"{measurementKey}": []
         }
-        storage_measurement_dict.update(new_key)
-    return storage_measurement_dict
+        storageMeasurementDict.update(new_key)
+    return storageMeasurementDict
 
 
 def CreateMeasurement(distribution):
     MeasurementValue = 0.0
     if distribution == "uniform":
-        min_value = 0
-        max_value = 100
-        MeasurementValue = round(uniform(min_value, max_value), 2)
+        minValue = 0
+        maxValue = 100
+        MeasurementValue = round(uniform(minValue, maxValue), 2)
     elif distribution == "uniformint":
-        min_value = 0
-        max_value = 200
-        MeasurementValue = randint(min_value, max_value)
+        minValue = 0
+        maxValue = 200
+        MeasurementValue = randint(minValue, maxValue)
     elif distribution == "normal":
         mu = 20
         sigma = 0.5
@@ -229,20 +226,19 @@ def CreateMeasurement(distribution):
     return MeasurementValue
 
 
-def AppendDataToJsonFile(jsonDataList, filePath, data_type='measurements', json_data={}):
+def AppendDataToJsonFile(jsonDataList, filePath, dataType='measurements', jsonData={}):
     # Create new json file or add data to an existing json file
     with open(filePath, 'w') as f:
-        json_data[f"{data_type}"] = jsonDataList
-        json.dump(json_data, f, indent=2)
+        jsonData[f"{dataType}"] = jsonDataList
+        json.dump(jsonData, f, indent=2)
 
 
-def CalculateMeanValue(storage_measurement_dict, measurement_key):
-    meanValue = mean(storage_measurement_dict[f"{measurement_key}"])
+def CalculateMeanValue(storageMeasurementDict, measurementKey):
+    meanValue = mean(storageMeasurementDict[f"{measurementKey}"])
     return meanValue
 
 
 if __name__ == '__main__':
-    filePath = CreateFilePath(Id=123456)
-    ExportMeasurements(filePath=filePath)
+    ListAllChildDevices()
     log.info("FINISH")
     # ListAllChildDevices()
