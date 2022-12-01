@@ -8,7 +8,7 @@
     "amountUnit": "",
     "name": "Simulator Normal #3 - ${counter}",
     "tenantId": "${tenantId}",
-    "locationId": "Matrix",
+    "locationId": "",
     "external": false,
     "testConfiguration": false,
     "subscriptions": [
