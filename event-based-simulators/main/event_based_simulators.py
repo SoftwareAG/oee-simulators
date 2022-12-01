@@ -8,21 +8,35 @@ from oeeAPI import OeeAPI, ProfileCreateMode
 def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
-logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INFO)
+cumulocityAPI = CumulocityAPI()
+oeeAPI = OeeAPI()
+
+#Get Tenant Options and configure Simulator
+microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
+PROFILE_CREATE_MODE = ProfileCreateMode[microservice_options.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
+CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
+CREATE_ASSET_HIERACHY = microservice_options.get("CREATE_ASSET_HIERACHY", "False")
+LOG_LEVEL = microservice_options.get("LOG_LEVEL", "INFO")
+DELETE_PROFILES = microservice_options.get("DELETE_PROFILES", "False")
+if LOG_LEVEL == "DEBUG":
+    logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
+else:
+    logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INFO)
+##########################################
+
 log = logging.getLogger("sims")
 log.info(f"started at {current_timestamp()}")
+log.debug(f'Tenant options: {microservice_options}')
+log.info(f'CREATE_PROFILES:{PROFILE_CREATE_MODE}')
 
-# JSON-PYTHON mapping, to get json.load() working
-false = False
-true = True
-######################
 
-#array for shiftplans and polling interval
+#Setting up the Array for shiftplans and time for polling interval
 shiftplans = []
 one_day = 86400 
 shiftplan_polling_interval = one_day
 log.info(f'Shiftplan polling interval is set to {shiftplan_polling_interval:,} secs')
 shiftplan_dateformat='%Y-%m-%dT%H:%M:%SZ'
+##########################################
 
 log.debug(C8Y_BASE)
 log.debug(C8Y_TENANT)
@@ -43,15 +57,6 @@ def get_random_status(statusses, durations, probabilites):
     choice = choices([i for i in range(len(probabilites))], probabilites)[0]
     return statusses[choice], durations[choice]
 
-cumulocityAPI = CumulocityAPI()
-oeeAPI = OeeAPI()
-
-microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
-CREATE_PROFILES = microservice_options.get("CREATE_PROFILES", "True")
-CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
-CREATE_ASSET_HIERACHY = microservice_options.get("CREATE_ASSET_HIERACHY", "False")
-log.info(f'CREATE_PROFILES:{CREATE_PROFILES}')
-
 class Task:
     def __init__(self, start_in_seconds: int, run_block) -> None:
         self.extra = {}
@@ -68,8 +73,6 @@ class PeriodicTask:
         self.min_interval_in_seconds = minInterval
         self.max_interval_in_seconds = maxInterval
         self.next_run = self.__calculate_next_run()
-        # TODO: 
-        # self.__run_and_reschedule()
      
     def __calculate_next_run(self) -> int: 
         return time.time() + randint(self.min_interval_in_seconds, self.max_interval_in_seconds)
@@ -95,20 +98,19 @@ class Shiftplan:
     def set_timeslots_for_shiftplan(self, shiftplan):
         self.locationId = shiftplan["locationId"]
         self.recurringTimeSlots = shiftplan["recurringTimeslots"]
-        return True
 
     def add_Shiftplan_to_OEE(self):
         oeeAPI.add_timeslots_for_shiftplan(self)
         log.info(f'Added shiftplan to OEE for location: {self.locationId}')
 
-
-    def __create_task(self):   
-        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, self.getShiftplan())
-        log.debug(f'Create periodic task for pulling shiftplans running every {shiftplan_polling_interval}')
+    def __create_task(self):
+        task_callback = lambda:  {self.fetchNewShiftplan()}
+        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, task_callback)
+        log.debug(f'Create periodic task for pulling shiftplans - location {self.locationId} - running every {shiftplan_polling_interval}')
         return task
 
-    def getShiftplan(self):
-        log.info(f'Getting Shiftplan for location: {self.locationId}')
+    def fetchNewShiftplan(self):
+        log.debug(f'Getting Shiftplan for location: {self.locationId}')
         self.setShiftplan(oeeAPI.get_shiftplan(self.locationId, f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + timedelta(seconds=shiftplan_polling_interval):{shiftplan_dateformat}}'))
 
     def setShiftplan(self, shiftplan):
@@ -149,25 +151,19 @@ class MachineSimulator:
         if self.enabled:
             self.tasks = list(map(self.__create_task, self.model["events"]))
             self.production_speed_s = self.__get_production_speed_s(self.model["events"])
-        # print(f'events: {self.model["events"]}')
-
-    def enable(self):
-        self.enabled = True
-
-    def disable(self):
-        self.enable = False
+            log.debug(f'events: {self.model["events"]}')
 
     def __get_production_speed_s(self, events) -> float:
         """Returns pieces/s""" 
         for event_definition in events:
             event_type = event_definition.get("type") or ""
             if event_type == "Piece_Produced":
-                hits = event_definition.get("hits")
-                return hits / 3600.0
+                frequency = event_definition.get("frequency")
+                return frequency / 3600.0
             if event_type == "Pieces_Produced":
-                hits = event_definition.get("hits")
-                max_count = event_definition.get("countMaxHits")
-                return hits * max_count / 3600.0
+                frequency = event_definition.get("frequency")
+                countMaximumFrequency = event_definition.get("countMaximumFrequency")
+                return frequency * countMaximumFrequency / 3600.0
 
         return 0.0
 
@@ -176,21 +172,21 @@ class MachineSimulator:
         self.last_production_time_update = time.time()
         if self.machine_up and not self.shutdown:
             self.production_time_s = self.production_time_s + production_time
-            # print(f'{self.device_id} production time: {self.production_time_s}s')
+            log.debug(f'{self.device_id} production time: {self.production_time_s}s')
 
     def __pick_one_piece(self, pieces_per_seconds: float):
         piece_production_time = 1.0 / pieces_per_seconds
         if (self.production_time_s > piece_production_time):
             self.production_time_s = self.production_time_s - piece_production_time
-            # print(f'{self.device_id} one piece produced, remained time: {self.production_time_s}s')
+            log.debug(f'{self.device_id} one piece produced, remained time: {self.production_time_s}s')
             return True
-        # print(f'{self.device_id} piece not yet produced, production time: {self.production_time_s}s')
+        log.debug(f'{self.device_id} piece not yet produced, production time: {self.production_time_s}s')
         return False
     
     def __pick_pieces(self, pieces_per_seconds: float):
         pieces_produced = int(pieces_per_seconds * self.production_time_s)
         self.production_time_s = self.production_time_s - pieces_produced / pieces_per_seconds
-        # print(f'{self.device_id} pieces produced: {pieces_produced}, remained time: {self.production_time_s}s')
+        log.debug(f'{self.device_id} pieces produced: {pieces_produced}, remained time: {self.production_time_s}s')
         return pieces_produced
 
     def __type_fragment(self, event_definition, text = None):
@@ -249,7 +245,7 @@ class MachineSimulator:
 
         self.__produce_pieces()
         
-        pieces_per_hour = event_definition.get("hits") or 1
+        pieces_per_hour = event_definition.get("frequency") or 1
 
         if self.__pick_one_piece(pieces_per_hour / 3600.0):
             event = self.__type_fragment(event_definition)
@@ -270,14 +266,12 @@ class MachineSimulator:
 
         self.__produce_pieces()           
 
-        # count_min_hits = event_definition.get("countMinHits") or 0
-        count_max_hits = event_definition.get("countMaxHits") or 10
+        countMaximumFrequency = event_definition.get("countMaximumFrequency") or 10
 
-        hits = event_definition.get("hits") or 1
+        frequency = event_definition.get("frequency") or 1
 
         event = self.__type_fragment(event_definition)
-        # pieces_produced = randint(count_min_hits, count_max_hits)
-        pieces_produced = self.__pick_pieces(hits * count_max_hits / 3600.0)
+        pieces_produced = self.__pick_pieces(frequency * countMaximumFrequency / 3600.0)
         event.update({"count": pieces_produced})
         event.update(self.__get_production_info())
 
@@ -299,15 +293,15 @@ class MachineSimulator:
     def __on_pieces_ok_event(self, event_definition, task):
         event = self.__type_fragment(event_definition)
 
-        count_min_hits = event_definition.get("countMinHits") or 0
-        count_max_hits = event_definition.get("countMaxHits") or 10
+        countMinimumFrequency = event_definition.get("countMinimumFrequency") or 0
+        countMaximumFrequency = event_definition.get("countMaximumFrequency") or 10
 
         piece_produced_timestamp = None
         if hasattr(task, 'extra'):
             piece_produced_timestamp = task.extra["timestamp"]
-            count_max_hits = task.extra.get("pieces_produced") or count_max_hits
+            countMaximumFrequency = task.extra.get("pieces_produced") or countMaximumFrequency
 
-        event.update({"count": randint(min(count_min_hits, count_max_hits), count_max_hits)})
+        event.update({"count": randint(min(countMinimumFrequency, countMaximumFrequency), countMaximumFrequency)})
 
         self.__send_event(event, piece_produced_timestamp)
 
@@ -343,18 +337,18 @@ class MachineSimulator:
     def __send_following_event(self, event_definition, timestamp = None, extra_params = {}):        
         if "followedBy" in event_definition:
             followed_by_definition = event_definition["followedBy"]
-            followed_by_hits = followed_by_definition["hits"]
-            this_hits = event_definition["hits"]
+            followed_by_frequency = followed_by_definition["frequency"]
+            this_frequency = event_definition["frequency"]
 
             # should followedBy event be sent?
-            if try_event(followed_by_hits / this_hits):
+            if try_event(followed_by_frequency / this_frequency):
                 followed_by_task = self.create_one_time_task(followed_by_definition)
                 followed_by_task.extra["timestamp"] = timestamp
                 followed_by_task.extra.update(extra_params)
                 self.tasks.append(followed_by_task)                
                 log.debug(f'{self.device_id} task({id(followed_by_task)}) added: {json.dumps(followed_by_definition)}, tasks: {len(self.tasks)}')      
             else:
-                  log.debug(f'{self.device_id} followedBy task missed. probability = {1 - followed_by_hits / this_hits} , def: {json.dumps(followed_by_definition)}')         
+                  log.debug(f'{self.device_id} followedBy task missed. probability = {1 - followed_by_frequency / this_frequency} , def: {json.dumps(followed_by_definition)}')         
 
     def create_one_time_task(self, event_definition, start_in_seconds = 2, event_callback = None):
         callback = event_callback or MachineSimulator.event_mapping[event_definition["type"]]
@@ -393,17 +387,17 @@ class MachineSimulator:
                      'Shutdown': __on_shutdown_event}
 
     def __create_task(self, event_definition):
-        min_hits_per_hour = event_definition.get("minHits", event_definition.get("hits"))
-        max_hits_per_hour = event_definition.get("maxHits", event_definition.get("hits"))
+        min_frequency_per_hour = event_definition.get("minimumFrequency", event_definition.get("frequency"))
+        max_frequency_per_hour = event_definition.get("maximumFrequency", event_definition.get("frequency"))
 
-        min_interval_in_seconds = int(3600 / max_hits_per_hour)
-        max_interval_in_seconds = int(3600 / min_hits_per_hour)
+        min_interval_in_seconds = int(3600 / max_frequency_per_hour)
+        max_interval_in_seconds = int(3600 / min_frequency_per_hour)
 
         event_callback = lambda task:  {MachineSimulator.event_mapping[event_definition["type"]](self, event_definition, task)}
 
         task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, event_callback)
         
-        log.debug(f'create periodic task for {event_definition["type"]} ({min_hits_per_hour}, {max_hits_per_hour})')        
+        log.debug(f'create periodic task for {event_definition["type"]} ({min_frequency_per_hour}, {max_frequency_per_hour})')        
         # event_callback()
         return task
     
@@ -425,13 +419,11 @@ class MachineSimulator:
             return newTimestamp
 
     def is_in_productionTime(self):
-        #profiles = oeeAPI.get_profiles()
-        
         #if there are no shiftplans for a device, it should not be affected by production-time
-        no_shiftplan = True
+        has_no_shiftplan = True
         for shiftplan in shiftplans:
             if shiftplan.locationId == self.locationId:
-                no_shiftplan = False
+                has_no_shiftplan = False
                 for timeslot in shiftplan.recurringTimeSlots:
                     if timeslot.slotType == "PRODUCTION":
                         now = datetime.utcnow()
@@ -439,7 +431,7 @@ class MachineSimulator:
                         end = datetime.strptime(timeslot.slotEnd, shiftplan_dateformat)
                         if start < now and end > now:
                             return True
-        return no_shiftplan
+        return has_no_shiftplan
 
 
 def load(filename):
@@ -465,16 +457,21 @@ simulators = list(map(lambda model: MachineSimulator(model), SIMULATOR_MODELS))
 SHIFTPLANS_MODELS = load("shiftplans.json")
 shiftplans = list(map(lambda model: Shiftplan(model), SHIFTPLANS_MODELS))
 
-if CREATE_PROFILES.lower() == "true":
-    [oeeAPI.create_and_activate_profile(id, ProfileCreateMode.CREATE_IF_NOT_EXISTS) 
-        for id in oeeAPI.get_simulator_external_ids()]
-    os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
+if DELETE_PROFILES.lower() == "true":
+    log.debug(f'Deleting all Profiles')
+    oeeAPI.delete_all_simulators_profiles()
+
+#Create Simulator Profiles
+[oeeAPI.create_and_activate_profile(id, PROFILE_CREATE_MODE) 
+    for id in oeeAPI.get_simulator_external_ids()]
+
+os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
 
 if CREATE_ASSET_HIERACHY.lower() == "true":
     log.info("Creating the OEE asset hierachy")
     ids = []
     [ids.append(simulator.device_id) for simulator in simulators]
-    oeeAPI.create_asset_hierachy(deviceIDs=ids)
+    oeeAPI.create_or_update_asset_hierachy(deviceIDs=ids)
 
 
 while True:

@@ -8,7 +8,7 @@
     "amountUnit": "",
     "name": "Simulator Ideal Producer Q80 - ${counter}",
     "tenantId": "${tenantId}",
-    "locationId": "Matrix",
+    "locationId": "",
     "external": false,
     "testConfiguration": false,
     "subscriptions": [

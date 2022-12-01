@@ -1,6 +1,4 @@
-import time, json, os, logging, requests, base64
-from datetime import datetime
-from random import randint, uniform
+import json, os, logging, requests, base64
 
 C8Y_BASE = os.environ.get('C8Y_BASEURL') or 'http://localhost:8080'
 C8Y_TENANT = os.environ.get('C8Y_TENANT') or 't100'
@@ -18,14 +16,7 @@ C8Y_HEADERS = {
     'Authorization': 'Basic ' + user_and_pass
 }
 
-# JSON-PYTHON mapping, to get json.load() working
-null = None
-false = False
-true = True
-######################
 log = logging.getLogger("C8yAPI")
-
-OEE_DATA_MODEL_FIELD_NAME = "@com_adamos_oee_datamodel_MachineOEEConfiguration"
 
 class CumulocityAPI:
 
@@ -175,9 +166,8 @@ class CumulocityAPI:
         external_ids = []
         for id in device_ids:
             external_id_response = requests.get(C8Y_BASE + '/identity/globalIds/' + id + '/externalIds', headers=C8Y_HEADERS)
-            if external_id_response.ok:
+            if external_id_response.ok and len(external_id_response.json()['externalIds'])>0:
                 external_ids.append(external_id_response.json()['externalIds'][0]['externalId'])
-        
         return external_ids
 
     def get_device_by_external_id(self, external_id):
@@ -243,3 +233,22 @@ class CumulocityAPI:
             "orderByIndex":0,
         }
         return self.create_managed_object(json.dumps(isaObjectRequestBody))
+
+    def updateISAType(self, id, type, hierachy, description, oeetarget):
+        isaObjectRequestBody = {
+            "hierarchy": hierachy,
+            "isISAObject":{},
+            "description": description,
+            "detailedDescription": description,
+            "type": type,
+            "oeetarget": oeetarget,
+            "orderByIndex":0,
+        }
+        return self.update_managed_object(id, json.dumps(isaObjectRequestBody))
+
+    def getISAObjects(self):
+        request_query = f'{C8Y_BASE}/inventory/managedObjects?pageSize=1000&withTotalPages=false&fragmentType=isISAObject'
+        response = requests.get(request_query, headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json()['managedObjects']
+        return []
