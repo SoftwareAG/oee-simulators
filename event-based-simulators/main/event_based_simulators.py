@@ -1,9 +1,13 @@
 ﻿import time, json, os, logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from random import randint, uniform, choices
 
-from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
+from cumulocityAPI import (C8Y_BASE, C8Y_TENANT, C8Y_USER,
+                           CumulocityAPI)
 from oeeAPI import OeeAPI, ProfileCreateMode
+from shiftplan import Shiftplan
+from task import PeriodicTask, Task
+
 
 def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
@@ -32,10 +36,7 @@ log.info(f'CREATE_PROFILES:{PROFILE_CREATE_MODE}')
 
 #Setting up the Array for shiftplans and time for polling interval
 shiftplans = []
-one_day = 86400 
-shiftplan_polling_interval = one_day
-log.info(f'Shiftplan polling interval is set to {shiftplan_polling_interval:,} secs')
-shiftplan_dateformat='%Y-%m-%dT%H:%M:%SZ'
+log.info(f'Shiftplan polling interval is set to {Shiftplan.polling_interval:,} secs')
 ##########################################
 
 log.debug(C8Y_BASE)
@@ -56,85 +57,6 @@ def get_random_status(statusses, durations, probabilites):
         return "up", 0
     choice = choices([i for i in range(len(probabilites))], probabilites)[0]
     return statusses[choice], durations[choice]
-
-class Task:
-    def __init__(self, start_in_seconds: int, run_block) -> None:
-        self.extra = {}
-        self.run_block = run_block
-        self.next_run = time.time() + start_in_seconds
-    
-    def tick(self):
-        if (time.time() - self.next_run) > 0:
-            self.run_block(self)
-
-class PeriodicTask:
-    def __init__(self, minInterval: int, maxInterval: int, run_block) -> None:
-        self.run_block = run_block
-        self.min_interval_in_seconds = minInterval
-        self.max_interval_in_seconds = maxInterval
-        self.next_run = self.__calculate_next_run()
-     
-    def __calculate_next_run(self) -> int: 
-        return time.time() + randint(self.min_interval_in_seconds, self.max_interval_in_seconds)
-    
-    def __reschedule_and_run(self):
-        duration = self.run_block(self)
-        duration = duration.pop() or 0  # Why is duration a set?
-        self.next_run = self.__calculate_next_run() + duration
-        log.debug(f"Reschedule next run and wait for additional {duration} seconds. Next run is at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.next_run))}")
-
-    def tick(self):
-        if (time.time() - self.next_run) > 0:
-            self.__reschedule_and_run()    
-
-class Shiftplan:
-    def __init__(self, shiftplan_model) -> None:
-        self.locationId = ""
-        self.recurringTimeSlots = []
-        self.set_timeslots_for_shiftplan(shiftplan_model)
-        self.add_Shiftplan_to_OEE()
-        self.task = self.__create_task()
-
-    def set_timeslots_for_shiftplan(self, shiftplan):
-        self.locationId = shiftplan["locationId"]
-        self.recurringTimeSlots = shiftplan["recurringTimeslots"]
-
-    def add_Shiftplan_to_OEE(self):
-        oeeAPI.add_timeslots_for_shiftplan(self)
-        log.info(f'Added shiftplan to OEE for location: {self.locationId}')
-
-    def __create_task(self):
-        task_callback = lambda:  {self.fetchNewShiftplan()}
-        task = PeriodicTask(shiftplan_polling_interval, shiftplan_polling_interval, task_callback)
-        log.debug(f'Create periodic task for pulling shiftplans - location {self.locationId} - running every {shiftplan_polling_interval}')
-        return task
-
-    def fetchNewShiftplan(self):
-        log.debug(f'Getting Shiftplan for location: {self.locationId}')
-        self.setShiftplan(oeeAPI.get_shiftplan(self.locationId, f'{datetime.utcnow():{shiftplan_dateformat}}', f'{datetime.utcnow() + timedelta(seconds=shiftplan_polling_interval):{shiftplan_dateformat}}'))
-
-    def setShiftplan(self, shiftplan):
-        log.info(f'Setting Shiftplan for location: {self.locationId}')
-        self.recurringTimeSlots = shiftplan.get('recurringTimeSlots', [])
-
-    def tick(self):
-        self.task.tick()
-
-    class RecurringTimeSlot:
-        def __init__(self, recurringTimeSlotModel):
-            self.id = recurringTimeSlotModel.get("id")
-            self.seriesPostfix = recurringTimeSlotModel.get("seriesPostfix")
-            self.slotType = recurringTimeSlotModel.get("slotType")
-            self.slotStart = recurringTimeSlotModel.get("slotStart")
-            self.slotEnd = recurringTimeSlotModel.get("slotEnd")
-            self.description = recurringTimeSlotModel.get("description")
-            self.active = recurringTimeSlotModel.get("active")
-            self.slotRecurrence = self.SlotRecurrence(recurringTimeSlotModel.get("slotRecurrence"))
-        
-        class SlotRecurrence:
-            def __init__(self, slotRecurrence):
-                self.weekdays = slotRecurrence.get("weekdays")
-            
 
 class MachineSimulator:
     
@@ -427,8 +349,8 @@ class MachineSimulator:
                 for timeslot in shiftplan.recurringTimeSlots:
                     if timeslot.slotType == "PRODUCTION":
                         now = datetime.utcnow()
-                        start = datetime.strptime(timeslot.slotStart, shiftplan_dateformat)
-                        end = datetime.strptime(timeslot.slotEnd, shiftplan_dateformat)
+                        start = datetime.strptime(timeslot.slotStart, Shiftplan.shiftplan_dateformat)
+                        end = datetime.strptime(timeslot.slotEnd, Shiftplan.shiftplan_dateformat)
                         if start < now and end > now:
                             return True
         return has_no_shiftplan
