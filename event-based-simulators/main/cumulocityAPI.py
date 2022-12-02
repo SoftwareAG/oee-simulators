@@ -38,7 +38,17 @@ class CumulocityAPI:
                 return response.json()
             self.log_warning_on_bad_response(response)
             return None
-            
+
+    def create_measurements(self, measurements):
+        if self.mocking:
+            log.info(f"mock: create measurements {json.dumps(measurements)} by the request to {C8Y_BASE}/measurement/measurements")
+            return json.dumps({'response': 200})
+        else:
+            response = requests.post(C8Y_BASE + '/measurement/measurements', headers=C8Y_HEADERS, data=json.dumps(measurements))
+            if response.ok:
+                return response.json()
+            self.log_warning_on_bad_response(response)
+            return None
 
     def log_warning_on_bad_response(self, response):
         if not response.ok:
