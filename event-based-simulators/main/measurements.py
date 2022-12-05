@@ -42,6 +42,9 @@ class Measurements:
 
     def send_create_measurements(self):
         json_measurement_list = []
+        if not self.simulated_data:
+            log.info(f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
+            return
         for data_dict in self.simulated_data:
             log.info('Send create measurements requests')
             base_dict = Measurements.create_extra_info_dict(self=self, data=data_dict)
