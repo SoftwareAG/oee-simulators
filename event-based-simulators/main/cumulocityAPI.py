@@ -1,9 +1,9 @@
 import json, os, logging, requests, base64
 
-C8Y_BASE = os.environ.get('C8Y_BASEURL') or 'http://localhost:8080'
-C8Y_TENANT = os.environ.get('C8Y_TENANT') or 't100'
-C8Y_USER = os.environ.get('C8Y_USER') or 'test'
-C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD') or 'test'
+C8Y_BASE = "https://mobile-naph.eu-latest.cumulocity.com"
+C8Y_TENANT = "t1249145768"
+C8Y_USER = "admin"
+C8Y_PASSWORD = "wertITC$2022"
 
 MOCK_REQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
 
@@ -15,7 +15,11 @@ C8Y_HEADERS = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + user_and_pass
 }
-
+MEASUREMENTS_HEADERS = {
+        'Content-Type': 'application/vnd.com.nsn.cumulocity.measurementcollection+json',
+        'Accept': 'application/json',
+        'Authorization': 'Basic ' + user_and_pass
+    }
 log = logging.getLogger("C8yAPI")
 
 class CumulocityAPI:
@@ -44,7 +48,7 @@ class CumulocityAPI:
             log.info(f"mock: create measurements {json.dumps(measurements)} by the request to {C8Y_BASE}/measurement/measurements")
             return json.dumps({'response': 200})
         else:
-            response = requests.post(C8Y_BASE + '/measurement/measurements', headers=C8Y_HEADERS, data=json.dumps(measurements))
+            response = requests.post(C8Y_BASE + '/measurement/measurements', headers=MEASUREMENTS_HEADERS, data=json.dumps(measurements))
             if response.ok:
                 return response.json()
             self.log_warning_on_bad_response(response)
