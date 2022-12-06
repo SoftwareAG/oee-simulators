@@ -2,8 +2,7 @@
 from datetime import datetime
 from random import randint, uniform, choices
 
-from cumulocityAPI import (C8Y_BASE, C8Y_TENANT, C8Y_USER,
-                           CumulocityAPI)
+from cumulocityAPI import (C8Y_BASE, C8Y_TENANT, C8Y_USER, CumulocityAPI)
 from oeeAPI import OeeAPI, ProfileCreateMode
 from shiftplan import Shiftplan
 from task import PeriodicTask, Task
@@ -20,7 +19,7 @@ microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-
 PROFILE_CREATE_MODE = ProfileCreateMode[microservice_options.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
 CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
 CREATE_ASSET_HIERACHY = microservice_options.get("CREATE_ASSET_HIERACHY", "False")
-LOG_LEVEL = microservice_options.get("LOG_LEVEL", "INFO")
+LOG_LEVEL = microservice_options.get("LOG_LEVEL", "DEBUG")
 DELETE_PROFILES = microservice_options.get("DELETE_PROFILES", "False")
 if LOG_LEVEL == "DEBUG":
     logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
@@ -61,7 +60,7 @@ def get_random_status(statusses, durations, probabilites):
 class MachineSimulator:
     
     def __init__(self, model) -> None:
-        self.model = model        
+        self.model = model
         self.device_id = None
         self.locationId = model.get("locationId", "")
         self.machine_up = False
