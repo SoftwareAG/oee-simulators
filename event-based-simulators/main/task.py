@@ -28,7 +28,7 @@ class PeriodicTask:
         duration = self.run_block(self)
         duration = duration.pop() or 0  # Why is duration a set?
         self.next_run = self.__calculate_next_run() + duration
-        log.debug(f"Reschedule next run and wait for additional {duration} seconds. Next run is at {time.strftime('%Y-%m-%d %H:%M:%S', datetime.fromtimestamp(self.next_run))}")
+        log.debug(f"Reschedule next run and wait for additional {duration} seconds. Next run is at {datetime.fromtimestamp(self.next_run).strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]}")
 
     def tick(self):
         if (time.time() - self.next_run) > 0:
