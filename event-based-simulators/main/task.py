@@ -1,5 +1,6 @@
 import time, logging
 from random import randint
+from datetime import datetime
 
 log = logging.getLogger("task")
 
@@ -21,13 +22,13 @@ class PeriodicTask:
         self.next_run = self.__calculate_next_run()
      
     def __calculate_next_run(self) -> int: 
-        return time.time() + randint(self.min_interval_in_seconds, self.max_interval_in_seconds)
+        return datetime.timestamp(datetime.utcnow()) + randint(self.min_interval_in_seconds, self.max_interval_in_seconds)
     
     def __reschedule_and_run(self):
         duration = self.run_block(self)
         duration = duration.pop() or 0  # Why is duration a set?
         self.next_run = self.__calculate_next_run() + duration
-        log.debug(f"Reschedule next run and wait for additional {duration} seconds. Next run is at {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(self.next_run))}")
+        log.debug(f"Reschedule next run and wait for additional {duration} seconds. Next run is at {time.strftime('%Y-%m-%d %H:%M:%S', datetime.fromtimestamp(self.next_run))}")
 
     def tick(self):
         if (time.time() - self.next_run) > 0:

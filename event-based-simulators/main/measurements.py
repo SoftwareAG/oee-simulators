@@ -1,8 +1,7 @@
-import sys
-import json, os, logging, requests, base64
-from datetime import datetime, timedelta, time
+import time, json, os, logging
+from datetime import datetime
 from random import randint, uniform, choices, gauss
-from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, CumulocityAPI
+from cumulocityAPI import CumulocityAPI
 from task import PeriodicTask, Task
 
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
@@ -17,20 +16,19 @@ class Measurements:
         self.device_id = None
         self.enabled = model.get('enabled', True)
         self.simulated_data = []
-        self.measurements_definition = self.model["measurements"]
+        self.measurements_definitions = self.model["measurements"]
         self.timestamp = datetime.utcnow()
         if self.enabled:
             self.tasks = list(map(self.__create_task, self.model["measurements"]))
 
     def __create_task(self, measurement_definition):
-        min_per_hour = measurement_definition.get("minimumFrequency", measurement_definition.get("frequency"))
-        max_per_hour = measurement_definition.get("maximumFrequency", measurement_definition.get("frequency"))
+        min_frequency_per_hour = measurement_definition.get("minimumFrequency", measurement_definition.get("frequency"))
+        max_frequency_per_hour = measurement_definition.get("maximumFrequency", measurement_definition.get("frequency"))
 
-        min_interval_in_seconds = int(3600 / min_per_hour)
-        max_interval_in_seconds = int(3600 / max_per_hour)
+        min_interval_in_seconds = int(3600 / max_frequency_per_hour)
+        max_interval_in_seconds = int(3600 / min_frequency_per_hour)
 
-        event_callback = lambda task, timestamp: {
-            Measurements.generate_measurement(self, measurement_definition, task, timestamp)}
+        event_callback = lambda task: {Measurements.generate_measurement(self)}
 
         task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, event_callback)
         return task
@@ -41,18 +39,20 @@ class Measurements:
             task.tick()
 
     def send_create_measurements(self):
-        json_measurement_list = []
+        json_measurements_list = []
         if not self.simulated_data:
-            log.info(f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
+            log.info(
+                f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
             return
         for data_dict in self.simulated_data:
-            log.info('Send create measurements requests')
             base_dict = Measurements.create_extra_info_dict(self=self, data=data_dict)
             measurement_dict = Measurements.create_individual_measurement_dict(self=self, data=data_dict)
             base_dict.update(measurement_dict)
-            json_measurement_list.append(base_dict)
-        cumulocityAPI.create_measurements(self=self, measurements=json_measurement_list)
-        log.info("Finished create new measurements")
+            json_measurements_list.append(base_dict)
+        for item in json_measurements_list:
+            log.info('Send create measurements requests')
+            cumulocityAPI.create_measurements(measurement=item)
+        log.info(f"Finished create new measurements for {self.model.get('label')}")
 
     def create_extra_info_dict(self, data):
         extraInfoDict = {
@@ -71,35 +71,46 @@ class Measurements:
                     f"{data.get('series')}":
                         {
                             "unit": f"{data.get('unit')}",
-                            "value": f"{data.get('value')}"
+                            "value": data.get('value')
                         }
                 }
         }
         return measurementDict
 
     def generate_measurement(self):
-        for measurement_def in self.measurements_definition:
-            distribution = measurement_def.get("valueDistribution", "uniform")
+        next_timestamp = Measurements.create_next_timestamp(self)
+        timestamp_measurement_definition_pointer = 0
+        for measurement_definition in self.measurements_definitions:
+            distribution = measurement_definition.get("valueDistribution", "uniform")
             value = 0.0
             if (distribution == "uniform"):
-                min_value = measurement_def.get("minimumValue", measurement_def.get("value"))
-                max_value = measurement_def.get("maximumValue", measurement_def.get("value"))
+                min_value = measurement_definition.get("minimumValue", measurement_definition.get("value"))
+                max_value = measurement_definition.get("maximumValue", measurement_definition.get("value"))
                 value = round(uniform(min_value, max_value), 2)
             elif (distribution == "uniformint"):
-                min_value = measurement_def.get("minimumValue", measurement_def.get("value"))
-                max_value = measurement_def.get("maximumValue", measurement_def.get("value"))
+                min_value = measurement_definition.get("minimumValue", measurement_definition.get("value"))
+                max_value = measurement_definition.get("maximumValue", measurement_definition.get("value"))
                 value = randint(min_value, max_value)
             elif (distribution == "normal"):
-                mu = measurement_def.get("mu")
-                sigma = measurement_def.get("sigma")
+                mu = measurement_definition.get("mu")
+                sigma = measurement_definition.get("sigma")
                 value = round(gauss(mu, sigma), 2)
             self.simulated_data.append({
-                'type': measurement_def.get("type"),
-                'series': measurement_def.get("series"),
+                'type': measurement_definition.get("type"),
+                'series': measurement_definition.get("series"),
                 'value': value,
-                'unit': measurement_def.get("unit"),
-                'time': f"{self.timestamp}"
+                'unit': measurement_definition.get("unit"),
+                'time': self.timestamp.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + 'Z',
+                'next_time': next_timestamp[timestamp_measurement_definition_pointer].strftime("%Y-%m-%dT%H:%M:%S.%f")[
+                             :-3] + 'Z'
             })
+            timestamp_measurement_definition_pointer += 1
+
+    def create_next_timestamp(self):
+        next_timestamp = []
+        for task in self.tasks:
+            next_timestamp.append(datetime.fromtimestamp(task.next_run))
+        return next_timestamp
 
     def get_or_create_device_id(self):
         sim_id = self.model['id']
@@ -116,6 +127,7 @@ def load(filename):
         return {}
 
 
+###################################################################################
 log.info(f'cwd:{os.getcwd()}')
 SIMULATOR_MODELS = load("simulators.json")
 
@@ -124,13 +136,9 @@ simulators = list(map(lambda model: Measurements(model), SIMULATOR_MODELS))
 # set device id for each managed object in simulators
 [item.get_or_create_device_id() for item in simulators]
 
-for item in simulators:
-    Measurements.generate_measurement(item)
-    Measurements.send_create_measurements(item)
-
 while True:
     for simulator in simulators:
+        Measurements.generate_measurement(simulator)
+        Measurements.send_create_measurements(simulator)
         simulator.tick()
     time.sleep(1)
-
-log.info(f'Finished simulation')
