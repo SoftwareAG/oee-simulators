@@ -59,8 +59,7 @@ zip oee-simulators.zip image.tar cumulocity.json
 
 ### Creating profiles automatically
 
-The creation of profiles can be configured using the tenant options on the given c8y tenant. 
-Tenant options should fall under the category-name: "event-based-simulators"
+The creation of profiles can be configured using the Tenant Options on the given Cumulocity tenant. See the [Cumulocity REST API](https://cumulocity.com/api/10.14.0/#tag/Options) documentation for details. The Tenant Options must use the category: "event-based-simulators"
 
 Some Options can be configured:
 - CREATE_PROFILES - holds a string with 'CREATE' or 'CREATE_IF_NOT_EXISTS' to indicate if the profiles should be overwritten or only created if they not already exist. Default: 'CREATE_IF_NOT_EXISTS'
