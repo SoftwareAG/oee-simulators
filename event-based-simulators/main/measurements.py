@@ -120,29 +120,5 @@ class Measurements:
         self.device_id = cumulocityAPI.get_or_create_device(sim_id, label)
 
 
-def load(filename):
-    try:
-        with open(filename) as f_obj:
-            return json.load(f_obj)
-    except Exception as e:
-        print(e, type(e))
-        return {}
-
-
 def datetime_to_string(date_time, time_string_format="%Y-%m-%dT%H:%M:%S.%f"):
     return date_time.strftime(time_string_format)[:-3] + 'Z'
-
-
-###################################################################################
-log.info(f'cwd:{os.getcwd()}')
-SIMULATOR_MODELS = load("simulators.json")
-
-simulators = list(map(lambda model: Measurements(model), SIMULATOR_MODELS))
-
-# set device id for each managed object in simulators
-[item.get_or_create_device_id() for item in simulators]
-
-while True:
-    for simulator in simulators:
-        simulator.tick()
-    time.sleep(1)

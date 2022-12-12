@@ -6,6 +6,7 @@ from cumulocityAPI import (C8Y_BASE, C8Y_TENANT, C8Y_USER, CumulocityAPI)
 from oeeAPI import OeeAPI, ProfileCreateMode
 from shiftplan import Shiftplan
 from task import PeriodicTask, Task
+from measurements import Measurements
 
 
 def current_timestamp(format = "%Y-%m-%dT%H:%M:%S.%f"):
@@ -388,6 +389,10 @@ if DELETE_PROFILES.lower() == "true":
 
 os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
 
+#Generate measurements
+Measurements_model = load("simulators.json")
+measurements = list(map(lambda model: Measurements(model), Measurements_model))
+
 if CREATE_ASSET_HIERACHY.lower() == "true":
     log.info("Creating the OEE asset hierachy")
     ids = []
@@ -401,4 +406,7 @@ while True:
 
     for simulator in simulators:
         simulator.tick()
+
+    for measurement in measurements:
+        measurement.tick()
     time.sleep(1)
