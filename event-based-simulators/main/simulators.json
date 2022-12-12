@@ -31,8 +31,8 @@
                 "valueDistribution": "normal",
                 "mu": 20.0,
                 "sigma": 0.5,
-                "minimumFrequency": 60.0,
-                "maximumFrequency": 60.0
+                "minimumFrequency": 600.0,
+                "maximumFrequency": 3600.0
             },
             {
                 "type": "c8y_Temperature",
@@ -43,6 +43,26 @@
                 "maximumValue": 60.0,
                 "minimumFrequency": 60.0,
                 "maximumFrequency": 60.0
+            },
+            {
+                "type": "Wind",
+                "series": "Wind.Speed",
+                "unit": "m/s",
+                "valueDistribution": "uniform",
+                "minimumValue": 0.0,
+                "maximumValue": 30.0,
+                "minimumFrequency": 12.0,
+                "maximumFrequency": 12.0
+            },
+            {
+                "type": "Wind",
+                "series": "Wind.Direction",
+                "unit": "°",
+                "valueDistribution": "uniformint",
+                "minimumValue": 0,
+                "maximumValue": 359,
+                "minimumFrequency": 4.0,
+                "maximumFrequency": 4.0
             }
         ]
     },
@@ -75,26 +95,6 @@
             }
         ],
         "measurements": [
-            {
-                "type": "c8y_Temperature",
-                "series": "c8y_Temperature.T1",
-                "unit": "C",
-                "valueDistribution": "normal",
-                "mu": 20.0,
-                "sigma": 0.5,
-                "minimumFrequency": 60.0,
-                "maximumFrequency": 60.0
-            },
-            {
-                "type": "c8y_Temperature",
-                "series": "c8y_Temperature.T2",
-                "unit": "C",
-                "valueDistribution": "uniform",
-                "minimumValue": -20.0,
-                "maximumValue": 60.0,
-                "minimumFrequency": 60.0,
-                "maximumFrequency": 60.0
-            }
         ]
     },
     {
@@ -153,8 +153,8 @@
                 "valueDistribution": "uniformint",
                 "minimumValue": 0,
                 "maximumValue": 1,
-                "minimumFrequency": 60.0,
-                "maximumFrequency": 15.0
+                "minimumFrequency": 15.0,
+                "maximumFrequency": 60.0
             }
         ]
     },

@@ -18,9 +18,8 @@ class Measurements:
         self.simulated_data = []
         self.measurements_definitions = self.model["measurements"]
         self.current_time = datetime.utcnow()
-        self.is_first_time = True
-        if self.enabled and len(self.measurements_definitions) > 0 :
-            self.tasks = self.__create_task(self.measurements_definitions[0])
+        if self.enabled:
+            self.tasks = list(map(self.__create_task, self.model["measurements"]))
 
     def __create_task(self, measurement_definition):
         min_frequency_per_hour = measurement_definition.get("minimumFrequency", measurement_definition.get("frequency"))
@@ -29,33 +28,35 @@ class Measurements:
         min_interval_in_seconds = int(3600 / max_frequency_per_hour)
         max_interval_in_seconds = int(3600 / min_frequency_per_hour)
 
-        measurements_callback = lambda task: {self.main_function}(task)
+        measurement_callback = lambda task: {Measurements.measurement_functions(self, measurement_definition, task)}
 
-        task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, measurements_callback)
+        task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, measurement_callback)
+        log.debug(f'create periodic task for measurement {measurement_definition["series"]} with frequency in range ({min_frequency_per_hour}/hour, {max_frequency_per_hour}/hour)')
         return task
 
     def tick(self):
         if not self.enabled: return
-        #for task in self.tasks:
-        self.tasks.tick()
+        for task in self.tasks:
+            task.tick()
 
-    def main_function(self, measurement_definition):
-        print('abc')
+    def measurement_functions(self, measurement_definition, task):
+        Measurements.generate_measurement(self=self, measurement_definition=measurement_definition)
+        Measurements.send_create_measurements(self=self, measurement_definition=measurement_definition)
 
-    def generate_measurement(self, measurement_definition, next_datetime):
-        print(f"Generating value of measurement {measurement_definition.get('series')} of device {self.model.get('id')}")
+    def generate_measurement(self, measurement_definition):
+        log.info(f"Generating value of measurement {measurement_definition.get('series')} of device {self.model.get('id')}")
         self.simulated_data = []
         distribution = measurement_definition.get("valueDistribution", "uniform")
         value = 0.0
-        if (distribution == "uniform"):
+        if distribution == "uniform":
             min_value = measurement_definition.get("minimumValue", measurement_definition.get("value"))
             max_value = measurement_definition.get("maximumValue", measurement_definition.get("value"))
             value = round(uniform(min_value, max_value), 2)
-        elif (distribution == "uniformint"):
+        elif distribution == "uniformint":
             min_value = measurement_definition.get("minimumValue", measurement_definition.get("value"))
             max_value = measurement_definition.get("maximumValue", measurement_definition.get("value"))
             value = randint(min_value, max_value)
-        elif (distribution == "normal"):
+        elif distribution == "normal":
             mu = measurement_definition.get("mu")
             sigma = measurement_definition.get("sigma")
             value = round(gauss(mu, sigma), 2)
@@ -65,11 +66,7 @@ class Measurements:
             'value': value,
             'unit': measurement_definition.get("unit"),
             'time': self.current_time,
-            'next_time': next_datetime
         })
-        measurement_definition.update({'next_time': next_datetime})
-        log.info(f"Next simulated time of {self.model.get('id')}: {measurement_definition.get('next_time')}")
-        print("abc")
 
     def create_next_timestamp(self):
         next_timestamp = []
@@ -84,12 +81,12 @@ class Measurements:
             log.info(
                 f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
             return
-    #for data_dict in self.simulated_data:
+        # for data_dict in self.simulated_data:
         base_dict = Measurements.create_extra_info_dict(self=self, data=self.simulated_data[0])
         measurement_dict = Measurements.create_individual_measurement_dict(self=self, data=self.simulated_data[0])
         base_dict.update(measurement_dict)
         json_measurements_list.append(base_dict)
-    #for item in json_measurements_list:
+        # for item in json_measurements_list:
         log.info('Send create measurements requests')
         cumulocityAPI.create_measurements(measurement=json_measurements_list[0])
         log.info(f"Created new {measurement_definition.get('type')} measurement, series {measurement_definition.get('series')} with value {self.simulated_data[0].get('value')}{self.simulated_data[0].get('unit')} for device {self.model.get('label')}")
@@ -116,7 +113,6 @@ class Measurements:
                 }
         }
         return measurementDict
-
 
     def get_or_create_device_id(self):
         sim_id = self.model['id']
@@ -145,37 +141,7 @@ simulators = list(map(lambda model: Measurements(model), SIMULATOR_MODELS))
 
 # set device id for each managed object in simulators
 [item.get_or_create_device_id() for item in simulators]
-count = 1
-'''
-while True:
 
-    for simulator in simulators:
-        log.info(f"Running measurements generation for device with id {simulator.model.get('id')} time {count}")
-        if simulator.is_first_time:
-            next_datetime = Measurements.create_next_timestamp(simulator)
-            for pointer in range(len(simulator.measurements_definitions)):
-                print(pointer)
-                print(f"measurement definition: {simulator.measurements_definitions[pointer]}")
-                print(f"Next datetime: {next_datetime[pointer]}")
-                Measurements.generate_measurement(self=simulator, measurement_definition=simulator.measurements_definitions[pointer], next_datetime=next_datetime[pointer])
-                Measurements.send_create_measurements(self=simulator, measurement_definition=simulator.measurements_definitions[pointer])
-            simulator.is_first_time = False
-        else:
-            next_datetime = Measurements.create_next_timestamp(simulator)
-            for pointer in range(len(simulator.measurements_definitions)):
-                log.info(simulator.measurements_definitions[pointer].get('next_time'))
-                log.info(datetime.utcnow())
-                if simulator.measurements_definitions[pointer].get('next_time') <= datetime.utcnow():
-                    Measurements.generate_measurement(self=simulator,
-                                                      measurement_definition=simulator.measurements_definitions[pointer],
-                                                      next_datetime=next_datetime[pointer])
-                    Measurements.send_create_measurements(self=simulator,
-                                                          measurement_definition=simulator.measurements_definitions[
-                                                              pointer])
-    count += 1
-    simulator.tick()
-    time.sleep(1)
-'''
 while True:
     for simulator in simulators:
         simulator.tick()
