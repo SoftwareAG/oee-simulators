@@ -1,9 +1,9 @@
 import json, os, logging, requests, base64
 
-C8Y_BASE = 'http://localhost:8080'
-C8Y_TENANT = 't100'
-C8Y_USER = 'test'
-C8Y_PASSWORD = 'test'
+C8Y_BASE = os.environ.get('C8Y_BASEURL') or 'http://localhost:8080'
+C8Y_TENANT = os.environ.get('C8Y_TENANT') or 't100'
+C8Y_USER = os.environ.get('C8Y_USER') or 'test'
+C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD') or 'test'
 
 MOCK_REQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
 
