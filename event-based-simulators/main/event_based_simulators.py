@@ -392,6 +392,7 @@ os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
 #Generate measurements
 Measurements_model = load("simulators.json")
 measurements = list(map(lambda model: Measurements(model), Measurements_model))
+[item.get_or_create_device_id() for item in measurements]
 
 if CREATE_ASSET_HIERACHY.lower() == "true":
     log.info("Creating the OEE asset hierachy")
