@@ -22,7 +22,8 @@
                     "frequency": 20
                 }
             }
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -51,7 +52,8 @@
                     "frequency": 6
                 }
             }
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -80,7 +82,8 @@
                 "maximumFrequency": 3,
                 "statusOkProbability": 0.9
             }
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -110,7 +113,8 @@
                 "frequency": 2,
                 "maxDuration": 5
             }                   
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -136,7 +140,8 @@
                     "frequency": 0.25
                 }
             }                
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -161,7 +166,8 @@
                     "frequency": 20
                 }
             }                
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -186,7 +192,8 @@
                     "frequency": 0.25
                 }
             }                
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -211,7 +218,8 @@
                     "frequency": 60
                 }
             }                
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -236,7 +244,8 @@
                     "frequency": 48
                 }
             }                
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -265,7 +274,8 @@
                     "frequency": 60
                 }
             }              
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -294,7 +304,8 @@
                     "frequency": 60
                 }
             }              
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -319,7 +330,8 @@
                     "frequency": 20
                 }
             }
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -344,7 +356,8 @@
                     "frequency": 20
                 }
             }
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -369,7 +382,8 @@
                     "frequency": 20
                 }
             }
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
@@ -394,13 +408,15 @@
                     "frequency": 20
                 }
             }
-        ]
+        ],
+        "measurements": []
     },
     {
         "type": "Simulator",
         "id": "sim_0016",
         "label": "Measurement Simulator #1",
         "enabled": true,
+        "events": [],
         "measurements": [
             {
                 "type": "Wind",
@@ -422,7 +438,6 @@
                 "minimumFrequency": 4.0,
                 "maximumFrequency": 4.0
             }
-
         ]
     }
 ]
