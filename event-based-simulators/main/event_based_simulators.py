@@ -88,6 +88,10 @@ class MachineSimulator:
                     log.debug(f'events: {self.model["events"]}')
                 else:
                     log.debug(f'measurements: {self.model["measurements"]}')
+            self.task_list_pointer = {
+                "event": 0,
+                "measurement": 1
+            }
 
     def __get_production_speed_s(self, events) -> float:
         """Returns pieces/s"""
@@ -308,11 +312,9 @@ class MachineSimulator:
                 return
             else:
                 self.out_of_production_time_logged = False
-            for task in self.tasks[0]:
-                task.tick()
-        else:
-            for task in self.tasks[1]:
-                task.tick()
+
+        for task in self.tasks[self.task_list_pointer.get(self.current_work)]:
+            task.tick()
 
     def get_or_create_device_id(self):
         sim_id = self.model['id']
