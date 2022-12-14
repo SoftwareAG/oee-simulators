@@ -15,11 +15,6 @@ C8Y_HEADERS = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + user_and_pass
 }
-MEASUREMENTS_COLLECTION_HEADERS = {
-    'Content-Type': 'application/vnd.com.nsn.cumulocity.measurementcollection+json',
-    'Accept': 'application/json',
-    'Authorization': 'Basic ' + user_and_pass
-}
 MEASUREMENT_HEADERS = {
     'Content-Type': 'application/vnd.com.nsn.cumulocity.measurement+json',
     'Accept': 'application/json',
