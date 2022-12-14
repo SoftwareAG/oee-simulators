@@ -8,10 +8,10 @@ class Task:
     def __init__(self, start_in_seconds: int, run_block) -> None:
         self.extra = {}
         self.run_block = run_block
-        self.next_run = time.time() + start_in_seconds
+        self.next_run = datetime.timestamp(datetime.utcnow()) + start_in_seconds
     
     def tick(self):
-        if (time.time() - self.next_run) > 0:
+        if (datetime.timestamp(datetime.utcnow()) - self.next_run) > 0:
             self.run_block(self)
 
 class PeriodicTask:
@@ -31,5 +31,5 @@ class PeriodicTask:
         log.debug(f"Reschedule next run and wait for additional {duration} seconds. Next run is at {datetime.fromtimestamp(self.next_run).strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]}")
 
     def tick(self):
-        if (time.time() - self.next_run) > 0:
+        if (datetime.timestamp(datetime.utcnow()) - self.next_run) > 0:
             self.__reschedule_and_run()    

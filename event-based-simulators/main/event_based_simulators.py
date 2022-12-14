@@ -70,7 +70,7 @@ class MachineSimulator:
         self.shutdown = False
         self.enabled = model.get('enabled', True)
         self.production_time_s = 0.0
-        self.last_production_time_update = time.time()
+        self.last_production_time_update = datetime.timestamp(datetime.utcnow())
         self.out_of_production_time_logged = False
         # for measurements
         self.simulated_data = []
@@ -78,14 +78,15 @@ class MachineSimulator:
         self.current_time = datetime.utcnow()
         ###
         if self.enabled:
+            self.tasks = []
             for self.current_work in ["event", "measurement"]:
-                self.tasks = list(map(self.__create_task, self.model["events"], self.model["measurements"]))
+                self.tasks.append(list(map(self.__create_task, self.model["events"], self.model["measurements"])))
                 if self.current_work == "event":
                     self.production_speed_s = self.__get_production_speed_s(self.model["events"])
                     log.debug(f'events: {self.model["events"]}')
                 else:
                     log.debug(f'measurements: {self.model["measurements"]}')
-        print("abc")
+
     def __get_production_speed_s(self, events) -> float:
         """Returns pieces/s"""
         for event_definition in events:
@@ -101,8 +102,8 @@ class MachineSimulator:
         return 0.0
 
     def __produce_pieces(self):
-        production_time = time.time() - self.last_production_time_update
-        self.last_production_time_update = time.time()
+        production_time = datetime.timestamp(datetime.utcnow()) - self.last_production_time_update
+        self.last_production_time_update = datetime.timestamp(datetime.utcnow())
         if self.machine_up and not self.shutdown:
             self.production_time_s = self.production_time_s + production_time
             log.debug(f'{self.device_id} production time: {self.production_time_s}s')
@@ -285,8 +286,7 @@ class MachineSimulator:
 
     def create_one_time_task(self, event_definition, start_in_seconds=2, event_callback=None):
         callback = event_callback or MachineSimulator.event_mapping[event_definition["type"]]
-        task = Task(start_in_seconds,
-                    lambda task: {self.__execute_callback_and_remove_task(callback, event_definition, task)})
+        task = Task(start_in_seconds, lambda task: {self.__execute_callback_and_remove_task(callback, event_definition, task)})
         return task
 
     def __execute_callback_and_remove_task(self, callback, event_definition, task):
@@ -306,12 +306,11 @@ class MachineSimulator:
                 return
             else:
                 self.out_of_production_time_logged = False
-            # for task in self.tasks:
-            for pointer in range(0, 2):
-                self.tasks[pointer].tick()
+            for task in self.tasks[0]:
+                task.tick()
         else:
-            for pointer in range(2, 4):
-                self.tasks[pointer].tick()
+            for task in self.tasks[1]:
+                task.tick()
 
     def get_or_create_device_id(self):
         sim_id = self.model['id']
@@ -331,15 +330,11 @@ class MachineSimulator:
             min_frequency_per_hour = event_definition.get("minimumFrequency", event_definition.get("frequency"))
             max_frequency_per_hour = event_definition.get("maximumFrequency", event_definition.get("frequency"))
 
-            #callback = lambda task: {MachineSimulator.event_mapping[event_definition["type"]](self, event_definition, task)}
-
             log.debug(f'create periodic task for {event_definition["type"]} ({min_frequency_per_hour}, {max_frequency_per_hour})')
 
         elif self.current_work == "measurement":
             min_frequency_per_hour = measurement_definition.get("minimumFrequency", measurement_definition.get("frequency"))
             max_frequency_per_hour = measurement_definition.get("maximumFrequency", measurement_definition.get("frequency"))
-
-            #callback = lambda task: {MachineSimulator.measurement_functions(self, measurement_definition, task)}
 
             log.debug(f'create periodic task for measurement {measurement_definition["series"]} with frequency in range ({min_frequency_per_hour}/hour, {max_frequency_per_hour}/hour)')
 
@@ -352,15 +347,15 @@ class MachineSimulator:
 
         return task
 
-
-
     def lambda_functions(self, event_definition, measurement_definition):
         if self.current_work == "event":
             event_callback = lambda task: {MachineSimulator.event_mapping[event_definition["type"]](self, event_definition, task)}
             return event_callback
+
         elif self.current_work == "measurement":
             measurement_callback = lambda task: {MachineSimulator.measurement_functions(self, measurement_definition, task)}
             return measurement_callback
+
     def __send_event(self, event_fragment, timestamp=None):
         newTimestamp = timestamp or current_timestamp()
         base_event = {
@@ -393,21 +388,7 @@ class MachineSimulator:
                             return True
         return has_no_shiftplan
 
-    # Measurements functions###################################################################################################
-    def __create_task_measurements(self, measurement_definition):
-        min_frequency_per_hour = measurement_definition.get("minimumFrequency", measurement_definition.get("frequency"))
-        max_frequency_per_hour = measurement_definition.get("maximumFrequency", measurement_definition.get("frequency"))
-
-        min_interval_in_seconds = int(3600 / max_frequency_per_hour)
-        max_interval_in_seconds = int(3600 / min_frequency_per_hour)
-
-        measurement_callback = lambda task: {MachineSimulator.measurement_functions(self, measurement_definition, task)}
-
-        task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, measurement_callback)
-        log.debug(
-            f'create periodic task for measurement {measurement_definition["series"]} with frequency in range ({min_frequency_per_hour}/hour, {max_frequency_per_hour}/hour)')
-        return task
-
+    # Measurements functions #
     def measurement_functions(self, measurement_definition, task):
         MachineSimulator.generate_measurement(self=self, measurement_definition=measurement_definition)
         MachineSimulator.send_create_measurements(self=self, measurement_definition=measurement_definition)
