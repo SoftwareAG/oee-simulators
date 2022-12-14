@@ -69,10 +69,12 @@ class CumulocityAPI:
         if self.mocking:
             log.info(f"mock: get or create device with external id {sim_id}")
             return sim_id
+
         # Check if device already created
         return self.get_device_by_external_id(sim_id) or self.__create_device(sim_id, label)
     def count_all_profiles(self):
         return self.__count_all(self.OEE_CALCULATION_PROFILE_TYPE)
+
     def count_all_categories(self):
         return self.__count_all(self.OEE_CALCULATION_CATEGORY)
     def __count_all(self, oee_type):
@@ -102,6 +104,7 @@ class CumulocityAPI:
         else:
             self.log_warning_on_bad_response(response)
             return 0
+
     def create_managed_object(self, fragment: str):
         if self.mocking:
             log.info(f'mock: create_managed_object()')
@@ -123,6 +126,7 @@ class CumulocityAPI:
         self.log_warning_on_bad_response(response)
         #TODO: check for errors
         return {}
+
     def get_calculation_categories(self):
         if self.mocking:
             log.info(f'mock: get_managed_object()')
@@ -141,7 +145,7 @@ class CumulocityAPI:
         if response.ok:
             return 1
         self.log_warning_on_bad_response(response)
-        # TODO: check for errors
+        #TODO: check for errors
         return 0
 
     def update_managed_object(self, device_id, fragment):
@@ -197,6 +201,7 @@ class CumulocityAPI:
             return device_id
         log.warning(f'No device has been found for the external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}".')
         return None
+
     def __create_device(self, external_id, name):
         log.info(f'Creating a new device with following external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}"')
         device = {
