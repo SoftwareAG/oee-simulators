@@ -54,7 +54,7 @@ class CumulocityAPI:
                 f"mock: create measurements {json.dumps(measurement)} by the request to {C8Y_BASE}/measurement/measurements")
             return json.dumps({'response': 200})
         else:
-            response = requests.post(C8Y_BASE + '/measurement/measurements', headers=MEASUREMENTS_HEADERS,
+            response = requests.post(C8Y_BASE + '/measurement/measurements', headers=MEASUREMENT_HEADERS,
                                      data=json.dumps(measurement))
             if response.ok:
                 return response.json()
