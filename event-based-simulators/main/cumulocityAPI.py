@@ -69,16 +69,12 @@ class CumulocityAPI:
         if self.mocking:
             log.info(f"mock: get or create device with external id {sim_id}")
             return sim_id
-
         # Check if device already created
         return self.get_device_by_external_id(sim_id) or self.__create_device(sim_id, label)
-
     def count_all_profiles(self):
         return self.__count_all(self.OEE_CALCULATION_PROFILE_TYPE)
-
     def count_all_categories(self):
         return self.__count_all(self.OEE_CALCULATION_CATEGORY)
-
     def __count_all(self, oee_type):
         if self.mocking:
             log.info(f'mock: count_all types({oee_type})')
@@ -106,7 +102,6 @@ class CumulocityAPI:
         else:
             self.log_warning_on_bad_response(response)
             return 0
-
     def create_managed_object(self, fragment: str):
         if self.mocking:
             log.info(f'mock: create_managed_object()')
@@ -115,7 +110,7 @@ class CumulocityAPI:
         if response.ok:
             return response.json()
         self.log_warning_on_bad_response(response)
-        # TODO: check for errors
+        #TODO: check for errors
         return {}
 
     def get_managed_object(self, id: str):
@@ -126,15 +121,13 @@ class CumulocityAPI:
         if response.ok:
             return response.json()
         self.log_warning_on_bad_response(response)
-        # TODO: check for errors
+        #TODO: check for errors
         return {}
-
     def get_calculation_categories(self):
         if self.mocking:
             log.info(f'mock: get_managed_object()')
             return [{'id': '0'}]
-        response = requests.get(C8Y_BASE + f'/inventory/managedObjects?type={self.OEE_CALCULATION_CATEGORY}',
-                                headers=C8Y_HEADERS)
+        response = requests.get(C8Y_BASE + f'/inventory/managedObjects?type={self.OEE_CALCULATION_CATEGORY}', headers=C8Y_HEADERS)
         if response.ok:
             return response.json()['managedObjects']
         self.log_warning_on_bad_response(response)
@@ -180,9 +173,7 @@ class CumulocityAPI:
         if self.mocking:
             log.info(f'mock: find_simulators()')
             return []
-        response = requests.get(
-            f'{C8Y_BASE}/inventory/managedObjects?type={self.C8Y_SIMULATORS_GROUP}&fragmentType=c8y_IsDevice&pageSize=100',
-            headers=C8Y_HEADERS)
+        response = requests.get(f'{C8Y_BASE}/inventory/managedObjects?type={self.C8Y_SIMULATORS_GROUP}&fragmentType=c8y_IsDevice&pageSize=100', headers=C8Y_HEADERS)
         if response.ok:
             mangaged_objects = response.json()['managedObjects']
             return [mo['id'] for mo in mangaged_objects]
@@ -192,15 +183,13 @@ class CumulocityAPI:
     def get_external_ids(self, device_ids):
         external_ids = []
         for id in device_ids:
-            external_id_response = requests.get(C8Y_BASE + '/identity/globalIds/' + id + '/externalIds',
-                                                headers=C8Y_HEADERS)
+            external_id_response = requests.get(C8Y_BASE + '/identity/globalIds/' + id + '/externalIds', headers=C8Y_HEADERS)
             if external_id_response.ok and len(external_id_response.json()['externalIds']) > 0:
                 external_ids.append(external_id_response.json()['externalIds'][0]['externalId'])
         return external_ids
 
     def get_device_by_external_id(self, external_id):
-        response = requests.get(f'{C8Y_BASE}/identity/externalIds/{self.C8Y_SIMULATORS_GROUP}/{external_id}',
-                                headers=C8Y_HEADERS)
+        response = requests.get(f'{C8Y_BASE}/identity/externalIds/{self.C8Y_SIMULATORS_GROUP}/{external_id}', headers=C8Y_HEADERS)
         if response.ok:
             device_id = response.json()['managedObject']['id']
             log.info(
@@ -208,7 +197,6 @@ class CumulocityAPI:
             return device_id
         log.warning(f'No device has been found for the external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}".')
         return None
-
     def __create_device(self, external_id, name):
         log.info(f'Creating a new device with following external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}"')
         device = {
@@ -228,8 +216,7 @@ class CumulocityAPI:
             'type': type,
             'externalId': ext_id
         }
-        response = requests.post(C8Y_BASE + '/identity/globalIds/' + device_id + '/externalIds', headers=C8Y_HEADERS,
-                                 data=json.dumps(external_id))
+        response = requests.post(C8Y_BASE + '/identity/globalIds/' + device_id + '/externalIds', headers=C8Y_HEADERS, data=json.dumps(external_id))
         self.log_warning_on_bad_response(response)
         return device_id
 
@@ -237,8 +224,7 @@ class CumulocityAPI:
         response = requests.get(C8Y_BASE + f'/tenant/options/{category}', headers=C8Y_HEADERS)
         if response.ok:
             return response.json()
-        log.warn(
-            f'Could not get any tenant options for category {category}. Response status code is: {response}, content: {response.text}')
+        log.warn(f'Could not get any tenant options for category {category}. Response status code is: {response}, content: {response.text}')
         return {}
 
     def get_profile_id(self, deviceID):
