@@ -7,8 +7,8 @@ C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD') or 'test'
 
 MOCK_REQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
 
-user_and_pass_bytes = base64.b64encode((C8Y_TENANT + "/" + C8Y_USER + ':' + C8Y_PASSWORD).encode('ascii'))  # bytes
-user_and_pass = user_and_pass_bytes.decode('ascii')  # decode to str
+user_and_pass_bytes = base64.b64encode((C8Y_TENANT + "/" + C8Y_USER + ':' + C8Y_PASSWORD).encode('ascii')) # bytes
+user_and_pass = user_and_pass_bytes.decode('ascii') # decode to str
 
 C8Y_HEADERS = {
     'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ MEASUREMENTS_COLLECTION_HEADERS = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + user_and_pass
 }
-MEASUREMENTS_HEADERS = {
+MEASUREMENT_HEADERS = {
     'Content-Type': 'application/vnd.com.nsn.cumulocity.measurement+json',
     'Accept': 'application/json',
     'Authorization': 'Basic ' + user_and_pass
@@ -31,7 +31,7 @@ log = logging.getLogger("C8yAPI")
 class CumulocityAPI:
     C8Y_SIMULATORS_GROUP = "c8y_EventBasedSimulator"
     OEE_CALCULATION_PROFILE_TYPE = "OEECalculationProfile"
-    OEE_CALUCLATION_CATEGORY = "OEECategoryConfiguration"
+    OEE_CALCULATION_CATEGORY = "OEECategoryConfiguration"
 
     def __init__(self) -> None:
         self.mocking = MOCK_REQUESTS.lower() == 'true'
@@ -77,7 +77,7 @@ class CumulocityAPI:
         return self.__count_all(self.OEE_CALCULATION_PROFILE_TYPE)
 
     def count_all_categories(self):
-        return self.__count_all(self.OEE_CALUCLATION_CATEGORY)
+        return self.__count_all(self.OEE_CALCULATION_CATEGORY)
 
     def __count_all(self, oee_type):
         if self.mocking:
@@ -133,7 +133,7 @@ class CumulocityAPI:
         if self.mocking:
             log.info(f'mock: get_managed_object()')
             return [{'id': '0'}]
-        response = requests.get(C8Y_BASE + f'/inventory/managedObjects?type={self.OEE_CALUCLATION_CATEGORY}',
+        response = requests.get(C8Y_BASE + f'/inventory/managedObjects?type={self.OEE_CALCULATION_CATEGORY}',
                                 headers=C8Y_HEADERS)
         if response.ok:
             return response.json()['managedObjects']

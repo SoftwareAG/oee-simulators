@@ -16,12 +16,14 @@ cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()
 
 # Get Tenant Options and configure Simulator
-microservice_options = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
-PROFILE_CREATE_MODE = ProfileCreateMode[microservice_options.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
-CREATE_PROFILES_ARGUMENTS = microservice_options.get("CREATE_PROFILES_ARGUMENTS", "")
-CREATE_ASSET_HIERACHY = microservice_options.get("CREATE_ASSET_HIERACHY", "False")
-LOG_LEVEL = microservice_options.get("LOG_LEVEL", "DEBUG")
-DELETE_PROFILES = microservice_options.get("DELETE_PROFILES", "False")
+MICROSERVICE_OPTIONS = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
+PROFILE_CREATE_MODE = ProfileCreateMode[MICROSERVICE_OPTIONS.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
+CREATE_PROFILES_ARGUMENTS = MICROSERVICE_OPTIONS.get("CREATE_PROFILES_ARGUMENTS", "")
+CREATE_ASSET_HIERACHY = MICROSERVICE_OPTIONS.get("CREATE_ASSET_HIERACHY", "False")
+LOG_LEVEL = MICROSERVICE_OPTIONS.get("LOG_LEVEL", "INFO")
+DELETE_PROFILES = MICROSERVICE_OPTIONS.get("DELETE_PROFILES", "False")
+ACTIONS_LIST = ["event", "measurement"]
+
 if LOG_LEVEL == "DEBUG":
     logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
 else:
@@ -30,7 +32,7 @@ else:
 
 log = logging.getLogger("sims")
 log.info(f"started at {current_timestamp()}")
-log.debug(f'Tenant options: {microservice_options}')
+log.debug(f'Tenant options: {MICROSERVICE_OPTIONS}')
 log.info(f'CREATE_PROFILES:{PROFILE_CREATE_MODE}')
 
 # Setting up the Array for shiftplans and time for polling interval
@@ -79,7 +81,7 @@ class MachineSimulator:
         ###
         if self.enabled:
             self.tasks = []
-            for self.current_work in ["event", "measurement"]:
+            for self.current_work in ACTIONS_LIST:
                 self.tasks.append(list(map(self.__create_task, self.model["events"], self.model["measurements"])))
                 if self.current_work == "event":
                     self.production_speed_s = self.__get_production_speed_s(self.model["events"])
@@ -391,7 +393,7 @@ class MachineSimulator:
     # Measurements functions #
     def measurement_functions(self, measurement_definition, task):
         MachineSimulator.generate_measurement(self=self, measurement_definition=measurement_definition)
-        MachineSimulator.send_create_measurements(self=self, measurement_definition=measurement_definition)
+        MachineSimulator.send_measurements(self=self, measurement_definition=measurement_definition)
 
     def generate_measurement(self, measurement_definition):
         log.info(
@@ -419,7 +421,7 @@ class MachineSimulator:
             'time': self.current_time,
         })
 
-    def send_create_measurements(self, measurement_definition):
+    def send_measurements(self, measurement_definition):
         json_measurements_list = []
         if not self.simulated_data:
             log.info(
@@ -506,7 +508,7 @@ while True:
         shiftplan.tick()
 
     for simulator in simulators:
-        for current_work in ["event", "measurement"]:
+        for current_work in ACTIONS_LIST:
             simulator.current_work = current_work
             simulator.tick()
     time.sleep(1)
