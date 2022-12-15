@@ -20,7 +20,7 @@ MICROSERVICE_OPTIONS = cumulocityAPI.get_tenant_option_by_category("event-based-
 PROFILE_CREATE_MODE = ProfileCreateMode[MICROSERVICE_OPTIONS.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
 CREATE_PROFILES_ARGUMENTS = MICROSERVICE_OPTIONS.get("CREATE_PROFILES_ARGUMENTS", "")
 CREATE_ASSET_HIERACHY = MICROSERVICE_OPTIONS.get("CREATE_ASSET_HIERACHY", "False")
-LOG_LEVEL = MICROSERVICE_OPTIONS.get("LOG_LEVEL", "INFO")
+LOG_LEVEL = MICROSERVICE_OPTIONS.get("LOG_LEVEL", "DEBUG")
 DELETE_PROFILES = MICROSERVICE_OPTIONS.get("DELETE_PROFILES", "False")
 ACTIONS_LIST = ["event", "measurement"]
 
@@ -76,18 +76,26 @@ class MachineSimulator:
         self.out_of_production_time_logged = False
         # for measurements
         self.simulated_data = []
-        self.measurements_definitions = self.model["measurements"]
+        try:
+            self.measurements_definitions = self.model["measurements"]
+        except:
+            self.measurements_definitions = []
+        try:
+            self.event_definitions = self.model["events"]
+        except:
+            self.event_definitions = []
         self.current_time = datetime.utcnow()
         ###
         if self.enabled:
             self.tasks = []
             for self.current_work in ACTIONS_LIST:
-                self.tasks.append(list(map(self.__create_task, self.model["events"], self.model["measurements"])))
                 if self.current_work == "event":
-                    self.production_speed_s = self.__get_production_speed_s(self.model["events"])
-                    log.debug(f'events: {self.model["events"]}')
+                    self.tasks.append(list(map(self.__create_task, self.event_definitions)))
+                    self.production_speed_s = self.__get_production_speed_s(self.event_definitions)
+                    log.debug(f'events: {self.event_definitions}')
                 else:
-                    log.debug(f'measurements: {self.model["measurements"]}')
+                    self.tasks.append(list(map(self.__create_task, self.measurements_definitions)))
+                    log.debug(f'measurements: {self.measurements_definitions}')
             self.task_list_pointer = {
                 "event": 0,
                 "measurement": 1
@@ -329,35 +337,35 @@ class MachineSimulator:
                      'Piece_Quality': __on_piece_quality_event,
                      'Shutdown': __on_shutdown_event}
 
-    def __create_task(self, event_definition, measurement_definition):
-        if self.current_work == "event":
-            min_frequency_per_hour = event_definition.get("minimumFrequency", event_definition.get("frequency"))
-            max_frequency_per_hour = event_definition.get("maximumFrequency", event_definition.get("frequency"))
+    def __create_task(self, definition):
+        min_frequency_per_hour = definition.get("minimumFrequency", definition.get("frequency"))
+        max_frequency_per_hour = definition.get("maximumFrequency", definition.get("frequency"))
 
-            log.debug(f'create periodic task for {event_definition["type"]} ({min_frequency_per_hour}, {max_frequency_per_hour})')
-
-        elif self.current_work == "measurement":
-            min_frequency_per_hour = measurement_definition.get("minimumFrequency", measurement_definition.get("frequency"))
-            max_frequency_per_hour = measurement_definition.get("maximumFrequency", measurement_definition.get("frequency"))
-
-            log.debug(f'create periodic task for measurement {measurement_definition["series"]} with frequency in range ({min_frequency_per_hour}/hour, {max_frequency_per_hour}/hour)')
-
-        callback = MachineSimulator.lambda_functions(self, event_definition, measurement_definition)
+        callback = MachineSimulator.lambda_functions(self, definition)
 
         min_interval_in_seconds = int(3600 / max_frequency_per_hour)
         max_interval_in_seconds = int(3600 / min_frequency_per_hour)
+
+        if self.current_work == "event" and definition:
+            log.debug(f'Machine {self.model.get("label")}, id {self.model.get("id")}: create periodic task for {definition["type"]}, interval in range ({min_interval_in_seconds}, {max_interval_in_seconds}) seconds')
+        elif self.current_work == "event" and not definition:
+            log.debug(f'No definition of event in machine {self.model.get("label")}, id {self.model.get("id")}')
+        elif self.current_work == "measurement" and definition:
+            log.debug(f'create periodic task for measurement {definition["series"]}, interval in range ({min_frequency_per_hour}/hour, {max_frequency_per_hour}/hour)')
+        elif self.current_work == "measurement" and not definition:
+            log.debug(f'No definition of measurement in machine {self.model.get("label")}, id {self.model.get("id")}')
 
         task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, callback)
 
         return task
 
-    def lambda_functions(self, event_definition, measurement_definition):
+    def lambda_functions(self, definition):
         if self.current_work == "event":
-            event_callback = lambda task: {MachineSimulator.event_mapping[event_definition["type"]](self, event_definition, task)}
+            event_callback = lambda task: {MachineSimulator.event_mapping[definition["type"]](self, definition, task)}
             return event_callback
 
         elif self.current_work == "measurement":
-            measurement_callback = lambda task: {MachineSimulator.measurement_functions(self, measurement_definition, task)}
+            measurement_callback = lambda task: {MachineSimulator.measurement_functions(self, definition, task)}
             return measurement_callback
 
     def __send_event(self, event_fragment, timestamp=None):
@@ -434,10 +442,9 @@ class MachineSimulator:
         measurement_dict = MachineSimulator.create_individual_measurement_dict(self=self, data=self.simulated_data[0])
         base_dict.update(measurement_dict)
         json_measurements_list.append(base_dict)
-        # for item in json_measurements_list:
         log.info('Send create measurements requests')
         cumulocityAPI.create_measurements(measurement=json_measurements_list[0])
-        log.info(
+        print(
             f"Created new {measurement_definition.get('type')} measurement, series {measurement_definition.get('series')} with value {self.simulated_data[0].get('value')}{self.simulated_data[0].get('unit')} for device {self.model.get('label')}")
 
     def create_extra_info_dict(self, data):
