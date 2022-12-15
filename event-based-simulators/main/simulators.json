@@ -485,8 +485,8 @@
                 "valueDistribution": "uniformint",
                 "minimumValue": 0,
                 "maximumValue": 1,
-                "minimumFrequency": 60.0,
-                "maximumFrequency": 15.0
+                "minimumFrequency": 15.0,
+                "maximumFrequency": 60.0
             }
         ]
     }
