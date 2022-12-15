@@ -3,7 +3,26 @@
         "type": "Simulator",
         "id": "sim_001",
         "label": "Normal #1",
-        "enabled": true
+        "enabled": true,
+        "events": [
+            {
+                "type": "Availability",
+                "minimumFrequency": 5,
+                "maximumFrequency": 10,
+                "status": ["up", "down"],
+                "probabilities": [0.9, 0.1],
+                "durations": [0, 0],
+                "forceStatusDown": true
+            },
+            {
+                "type": "Piece_Produced",
+                "frequency": 25,
+                "followedBy": {
+                    "type": "Piece_Ok",
+                    "frequency": 20
+                }
+            }
+        ]
     },
     {
         "type": "Simulator",
@@ -32,8 +51,7 @@
                     "frequency": 6
                 }
             }
-        ],
-        "measurements": []
+        ]
     },
     {
         "type": "Simulator",
@@ -61,28 +79,6 @@
                 "minimumFrequency": 2,
                 "maximumFrequency": 3,
                 "statusOkProbability": 0.9
-            }
-        ],
-        "measurements": [
-            {
-                "type": "c8y_Temperature",
-                "series": "c8y_Temperature.T1",
-                "unit": "C",
-                "valueDistribution": "normal",
-                "mu": 20.0,
-                "sigma": 0.5,
-                "minimumFrequency": 1800.0,
-                "maximumFrequency": 3600.0
-            },
-            {
-                "type": "c8y_Temperature",
-                "series": "c8y_Temperature.T2",
-                "unit": "C",
-                "valueDistribution": "uniform",
-                "minimumValue": -20.0,
-                "maximumValue": 60.0,
-                "minimumFrequency": 2700.0,
-                "maximumFrequency": 3600.0
             }
         ]
     },
@@ -114,38 +110,6 @@
                 "frequency": 2,
                 "maxDuration": 5
             }                   
-        ],
-        "measurements": [
-            {
-                "type": "c8y_GeneratedPower",
-                "series": "GeneratedPower.Current",
-                "unit": "kW",
-                "valueDistribution": "uniform",
-                "minimumValue": 0.0,
-                "maximumValue": 100.0,
-                "minimumFrequency": 1800.0,
-                "maximumFrequency": 3600.0
-            },
-            {
-                "type": "c8y_GeneratedPower",
-                "series": "c8y_GeneratedPower.Daily",
-                "unit": "kWh",
-                "valueDistribution": "uniform",
-                "minimumValue": 0.0,
-                "maximumValue": 3000.0,
-                "minimumFrequency": 0.042,
-                "maximumFrequency": 0.042
-            },
-            {
-                "type": "Status",
-                "series": "Status.S",
-                "unit": "",
-                "valueDistribution": "uniformint",
-                "minimumValue": 0,
-                "maximumValue": 1,
-                "minimumFrequency": 15.0,
-                "maximumFrequency": 60.0
-            }
         ]
     },
     {
@@ -172,8 +136,7 @@
                     "frequency": 0.25
                 }
             }                
-        ],
-        "measurements": []
+        ]
     },
     {
         "type": "Simulator",
@@ -198,8 +161,7 @@
                     "frequency": 20
                 }
             }                
-        ],
-        "measurements": []
+        ]
     },
     {
         "type": "Simulator",
@@ -224,8 +186,7 @@
                     "frequency": 0.25
                 }
             }                
-        ],
-        "measurements": []
+        ]
     },
     {
         "type": "Simulator",
@@ -250,8 +211,7 @@
                     "frequency": 60
                 }
             }                
-        ],
-        "measurements": []
+        ]
     },
     {
         "type": "Simulator",
@@ -276,8 +236,7 @@
                     "frequency": 48
                 }
             }                
-        ],
-        "measurements": []
+        ]
     },
     {
         "type": "Simulator",
@@ -306,8 +265,7 @@
                     "frequency": 60
                 }
             }              
-        ],
-        "measurements": []
+        ]
     },
     {
         "type": "Simulator",
@@ -336,8 +294,7 @@
                     "frequency": 60
                 }
             }              
-        ],
-        "measurements": []
+        ]
     },
     {
         "type": "Simulator",
@@ -362,8 +319,7 @@
                     "frequency": 20
                 }
             }
-        ],
-        "measurements": []
+        ]
     },
     {
         "type": "Simulator",
@@ -388,8 +344,7 @@
                     "frequency": 20
                 }
             }
-        ],
-        "measurements": []
+        ]
     },
     {
         "type": "Simulator",
@@ -414,8 +369,7 @@
                     "frequency": 20
                 }
             }
-        ],
-        "measurements": []
+        ]
     },
     {
         "type": "Simulator",
@@ -440,15 +394,41 @@
                     "frequency": 20
                 }
             }
-        ],
-        "measurements": []
+        ]
     },
     {
         "type": "Simulator",
         "id": "sim_0016",
         "label": "Measurement Simulator #1",
         "enabled": true,
-        "events": [],
+        "measurements": [
+            {
+                "type": "c8y_Temperature",
+                "series": "c8y_Temperature.T1",
+                "unit": "C",
+                "valueDistribution": "normal",
+                "mu": 20.0,
+                "sigma": 0.5,
+                "minimumFrequency": 1800.0,
+                "maximumFrequency": 3600.0
+            },
+            {
+                "type": "c8y_Temperature",
+                "series": "c8y_Temperature.T2",
+                "unit": "C",
+                "valueDistribution": "uniform",
+                "minimumValue": -20.0,
+                "maximumValue": 60.0,
+                "minimumFrequency": 1200.0,
+                "maximumFrequency": 3600.0
+            }
+        ]
+    },
+    {
+        "type": "Simulator",
+        "id": "sim_0017",
+        "label": "Measurement Simulator #2",
+        "enabled": true,
         "measurements": [
             {
                 "type": "Wind",
@@ -457,8 +437,8 @@
                 "valueDistribution": "uniform",
                 "minimumValue": 0.0,
                 "maximumValue": 30.0,
-                "minimumFrequency": 12.0,
-                "maximumFrequency": 12.0
+                "minimumFrequency": 1800.0,
+                "maximumFrequency": 3600.0
             },
             {
                 "type": "Wind",
@@ -467,8 +447,46 @@
                 "valueDistribution": "uniformint",
                 "minimumValue": 0,
                 "maximumValue": 359,
+                "minimumFrequency": 1800.0,
+                "maximumFrequency": 3600.0
+            }
+        ]
+    },
+    {
+        "type": "Simulator",
+        "id": "sim_0018",
+        "label": "Measurement Simulator #3",
+        "enabled": true,
+        "measurements": [
+            {
+                "type": "c8y_GeneratedPower",
+                "series": "GeneratedPower.Current",
+                "unit": "kW",
+                "valueDistribution": "uniform",
+                "minimumValue": 0.0,
+                "maximumValue": 100.0,
                 "minimumFrequency": 4.0,
                 "maximumFrequency": 4.0
+            },
+            {
+                "type": "c8y_GeneratedPower",
+                "series": "c8y_GeneratedPower.Daily",
+                "unit": "kWh",
+                "valueDistribution": "uniform",
+                "minimumValue": 0.0,
+                "maximumValue": 3000.0,
+                "minimumFrequency": 0.042,
+                "maximumFrequency": 0.042
+            },
+            {
+                "type": "Status",
+                "series": "Status.S",
+                "unit": "",
+                "valueDistribution": "uniformint",
+                "minimumValue": 0,
+                "maximumValue": 1,
+                "minimumFrequency": 60.0,
+                "maximumFrequency": 15.0
             }
         ]
     }

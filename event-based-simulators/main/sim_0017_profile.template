@@ -6,7 +6,7 @@
     "shortShutdowns": null,
     "version": "2.0.0",
     "amountUnit": "",
-    "name": "Simulator Normal #16 - ${counter}",
+    "name": "Simulator Normal #17 - ${counter}",
     "tenantId": "${tenantId}",
     "locationId": "",
     "external": false,
