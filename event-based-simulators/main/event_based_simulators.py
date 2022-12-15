@@ -19,8 +19,8 @@ oeeAPI = OeeAPI()
 MICROSERVICE_OPTIONS = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
 PROFILE_CREATE_MODE = ProfileCreateMode[MICROSERVICE_OPTIONS.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
 CREATE_PROFILES_ARGUMENTS = MICROSERVICE_OPTIONS.get("CREATE_PROFILES_ARGUMENTS", "")
-CREATE_ASSET_HIERACHY = MICROSERVICE_OPTIONS.get("CREATE_ASSET_HIERACHY", "False")
-LOG_LEVEL = MICROSERVICE_OPTIONS.get("LOG_LEVEL", "DEBUG")
+CREATE_ASSET_HIERARCHY = MICROSERVICE_OPTIONS.get("CREATE_ASSET_HIERACHY", "False")
+LOG_LEVEL = MICROSERVICE_OPTIONS.get("LOG_LEVEL", "INFO")
 DELETE_PROFILES = MICROSERVICE_OPTIONS.get("DELETE_PROFILES", "False")
 ACTIONS_LIST = ["event", "measurement"]
 
@@ -55,8 +55,7 @@ def get_random_status(statusses, durations, probabilites):
     '''returns a random status and duration of the given lists of status, durations and probabilites.    
     '''
     if len(statusses) != len(probabilites) or len(durations) != len(probabilites):
-        log.info(
-            "Length of statusses, duration and probabilites does not match. Set status to up")
+        log.info("Length of statusses, duration and probabilites does not match. Set status to up")
         return "up", 0
     choice = choices([i for i in range(len(probabilites))], probabilites)[0]
     return statusses[choice], durations[choice]
@@ -292,11 +291,9 @@ class MachineSimulator:
                 followed_by_task.extra["timestamp"] = timestamp
                 followed_by_task.extra.update(extra_params)
                 self.tasks.append(followed_by_task)
-                log.debug(
-                    f'{self.device_id} task({id(followed_by_task)}) added: {json.dumps(followed_by_definition)}, tasks: {len(self.tasks)}')
+                log.debug(f'{self.device_id} task({id(followed_by_task)}) added: {json.dumps(followed_by_definition)}, tasks: {len(self.tasks)}')
             else:
-                log.debug(
-                    f'{self.device_id} followedBy task missed. probability = {1 - followed_by_frequency / this_frequency} , def: {json.dumps(followed_by_definition)}')
+                log.debug(f'{self.device_id} followedBy task missed. probability = {1 - followed_by_frequency / this_frequency} , def: {json.dumps(followed_by_definition)}')
 
     def create_one_time_task(self, event_definition, start_in_seconds=2, event_callback=None):
         callback = event_callback or MachineSimulator.event_mapping[event_definition["type"]]
@@ -307,8 +304,7 @@ class MachineSimulator:
         callback(self, event_definition, task)
         if task in self.tasks:
             self.tasks.remove(task)
-            log.debug(
-                f'{self.device_id} task({id(task)}) removed: {json.dumps(event_definition)}, tasks: {len(self.tasks)}')
+            log.debug(f'{self.device_id} task({id(task)}) removed: {json.dumps(event_definition)}, tasks: {len(self.tasks)}')
 
     def tick(self):
         if not self.enabled: return
@@ -406,8 +402,7 @@ class MachineSimulator:
         MachineSimulator.send_measurements(self=self, measurement_definition=measurement_definition)
 
     def generate_measurement(self, measurement_definition):
-        log.info(
-            f"Generating value of measurement {measurement_definition.get('series')} of device {self.model.get('id')}")
+        log.info(f"Generating value of measurement {measurement_definition.get('series')} of device {self.model.get('id')}")
         self.simulated_data = []
         distribution = measurement_definition.get("valueDistribution", "uniform")
         value = 0.0
@@ -434,8 +429,7 @@ class MachineSimulator:
     def send_measurements(self, measurement_definition):
         json_measurements_list = []
         if not self.simulated_data:
-            log.info(
-                f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
+            log.info(f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
             return
         # for data_dict in self.simulated_data:
         base_dict = MachineSimulator.create_extra_info_dict(self=self, data=self.simulated_data[0])
@@ -443,9 +437,9 @@ class MachineSimulator:
         base_dict.update(measurement_dict)
         json_measurements_list.append(base_dict)
         log.info('Send create measurements requests')
-        cumulocityAPI.create_measurements(measurement=json_measurements_list[0])
-        print(
-            f"Created new {measurement_definition.get('type')} measurement, series {measurement_definition.get('series')} with value {self.simulated_data[0].get('value')}{self.simulated_data[0].get('unit')} for device {self.model.get('label')}")
+        response = cumulocityAPI.create_measurements(measurement=json_measurements_list[0])
+        if response:
+            log.info(f"Created new {measurement_definition.get('type')} measurement, series {measurement_definition.get('series')} with value {self.simulated_data[0].get('value')}{self.simulated_data[0].get('unit')} for device {self.model.get('label')}, id {self.model.get('id')}")
 
     def create_extra_info_dict(self, data):
         extraInfoDict = {
@@ -506,8 +500,8 @@ if DELETE_PROFILES.lower() == "true":
 
 os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
 
-if CREATE_ASSET_HIERACHY.lower() == "true":
-    log.info("Creating the OEE asset hierachy")
+if CREATE_ASSET_HIERARCHY.lower() == "true":
+    log.info("Creating the OEE asset hierarchy")
     ids = []
     [ids.append(simulator.device_id) for simulator in simulators]
     oeeAPI.create_or_update_asset_hierachy(deviceIDs=ids)
