@@ -76,7 +76,7 @@ class MachineSimulator:
         self.last_production_time_update = datetime.timestamp(datetime.utcnow())
         self.out_of_production_time_logged = False
         # for measurements
-        self.simulated_data = []
+        self.simulated_data = {}
         try:
             self.measurements_definitions = self.model["measurements"]
         except:
@@ -404,7 +404,6 @@ class MachineSimulator:
 
     def generate_measurement(self, measurement_definition):
         log.info(f"Generating value of measurement {measurement_definition.get('series')} of device {self.model.get('id')}")
-        self.simulated_data = []
         distribution = measurement_definition.get("valueDistribution", "uniform")
         value = 0.0
         if distribution == "uniform":
@@ -419,26 +418,25 @@ class MachineSimulator:
             mu = measurement_definition.get("mu")
             sigma = measurement_definition.get("sigma")
             value = round(gauss(mu, sigma), 2)
-        self.simulated_data.append({
+        self.simulated_data ={
             'type': measurement_definition.get("type"),
             'series': measurement_definition.get("series"),
             'value': value,
             'unit': measurement_definition.get("unit"),
             'time': datetime.utcnow()
-        })
+        }
 
     def send_measurements(self, measurement_definition):
         if not self.simulated_data:
             log.info(f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
             return
-        # for data_dict in self.simulated_data:
-        base_dict = MachineSimulator.create_extra_info_dict(self=self, data=self.simulated_data[0])
-        measurement_dict = MachineSimulator.create_individual_measurement_dict(self=self, data=self.simulated_data[0])
+        base_dict = MachineSimulator.create_extra_info_dict(self=self, data=self.simulated_data)
+        measurement_dict = MachineSimulator.create_individual_measurement_dict(self=self, data=self.simulated_data)
         base_dict.update(measurement_dict)
         log.info('Send create measurements requests')
         response = cumulocityAPI.create_measurements(measurement=base_dict)
         if response:
-            log.info(f"Created new {measurement_definition.get('type')} measurement, series {measurement_definition.get('series')} with value {self.simulated_data[0].get('value')}{self.simulated_data[0].get('unit')} for device {self.model.get('label')}, id {self.model.get('id')}")
+            log.info(f"Created new {measurement_definition.get('type')} measurement, series {measurement_definition.get('series')} with value {self.simulated_data.get('value')}{self.simulated_data.get('unit')} for device {self.model.get('label')}, id {self.model.get('id')}")
 
     def create_extra_info_dict(self, data):
         extraInfoDict = {
