@@ -1,0 +1,88 @@
+{
+    "id": "",
+    "alarms": [],
+    "type": "MACHINE",
+    "deviceId": "${deviceId}",
+    "shortShutdowns": null,
+    "version": "2.0.0",
+    "amountUnit": "",
+    "name": "Simulator Normal #18 - ${counter}",
+    "tenantId": "${tenantId}",
+    "locationId": "",
+    "external": false,
+    "testConfiguration": false,
+    "subscriptions": [
+        {
+            "pollingIntervalSeconds": 10,
+            "name": "Piece_Ok",
+            "type": "event",
+            "deviceID": "${deviceId}"
+        },
+        {
+            "pollingIntervalSeconds": 10,
+            "name": "Piece_Produced",
+            "type": "event",
+            "deviceID": "${deviceId}"
+        },
+        {
+            "pollingIntervalSeconds": 10,
+            "name": "Availability",
+            "type": "event",
+            "deviceID": "${deviceId}"
+        }
+    ],
+    "inputs": {
+        "ActualQualityAmount": [
+            {
+                "type": "TRANSFORMATION_RULE",
+                "value": "countEvents(\"${deviceId}\",\"Piece_Ok\")"
+            }
+        ],
+        "ActualProductionAmount": [
+            {
+                "type": "TRANSFORMATION_RULE",
+                "value": "countEvents(\"${deviceId}\",\"Piece_Produced\")"
+            }
+        ],
+        "ActualProductionTime": [
+            {
+                "type": "MACHINE_EVENT",
+                "value": ""
+            }
+        ]
+    },
+    "intervals": [
+        600.0,
+        1800.0,
+        3600.0
+    ],
+    "oeeTargets": {
+        "overall": 65,
+        "availability": 90,
+        "performance": 95,    
+        "quality": 80
+    },
+    "ui": {
+        "shortStoppages": "Not Tracked",
+        "correlationSectionVisited": true,
+        "computation": "PPQ",
+        "shortStoppagesAmount": null
+    },
+    "idealCycleAmount": "",
+    "machineEvents": {
+        "MACHINE_STATUS": [
+            {
+                "value": "evt(\"${deviceId}\",\"Availability\",\"status\",false) = \"up\""
+            }
+        ],
+        "QUALITY_STATUS": []
+    },
+    "workpiece": {
+        "amount": "25",
+        "unit": "pcs",
+        "name": "Pieces",
+        "isActive": true,
+        "timeunit": 2
+    },
+    "status": "INCOMPLETE"
+}

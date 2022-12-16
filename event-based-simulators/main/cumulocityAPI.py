@@ -15,6 +15,11 @@ C8Y_HEADERS = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + user_and_pass
 }
+MEASUREMENT_HEADERS = {
+    'Content-Type': 'application/vnd.com.nsn.cumulocity.measurement+json',
+    'Accept': 'application/json',
+    'Authorization': 'Basic ' + user_and_pass
+}
 
 log = logging.getLogger("C8yAPI")
 
@@ -22,7 +27,7 @@ class CumulocityAPI:
 
     C8Y_SIMULATORS_GROUP = "c8y_EventBasedSimulator"
     OEE_CALCULATION_PROFILE_TYPE = "OEECalculationProfile"
-    OEE_CALUCLATION_CATEGORY = "OEECategoryConfiguration"
+    OEE_CALCULATION_CATEGORY = "OEECategoryConfiguration"
 
     def __init__(self) -> None:
         self.mocking = MOCK_REQUESTS.lower() == 'true'
@@ -38,8 +43,20 @@ class CumulocityAPI:
                 return response.json()
             self.log_warning_on_bad_response(response)
             return None
-            
 
+    def create_measurements(self, measurement):
+        if self.mocking:
+            log.info(
+                f"mock: create measurements {json.dumps(measurement)} by the request to {C8Y_BASE}/measurement/measurements")
+            return json.dumps({'response': 200})
+        else:
+            response = requests.post(C8Y_BASE + '/measurement/measurements', headers=MEASUREMENT_HEADERS,
+                                     data=json.dumps(measurement))
+            if response.ok:
+                return response.json()
+            self.log_warning_on_bad_response(response)
+            return None
+            
     def log_warning_on_bad_response(self, response):
         if not response.ok:
             log.warning(f'response status code is not ok: {response}, content: {response.text}')
@@ -55,7 +72,7 @@ class CumulocityAPI:
         return self.__count_all(self.OEE_CALCULATION_PROFILE_TYPE)
     
     def count_all_categories(self):
-        return self.__count_all(self.OEE_CALUCLATION_CATEGORY)
+        return self.__count_all(self.OEE_CALCULATION_CATEGORY)
     def __count_all(self, oee_type):
         if self.mocking:
             log.info(f'mock: count_all types({oee_type})')
@@ -110,7 +127,7 @@ class CumulocityAPI:
         if self.mocking:
             log.info(f'mock: get_managed_object()')
             return [{'id': '0'}]
-        response = requests.get(C8Y_BASE + f'/inventory/managedObjects?type={self.OEE_CALUCLATION_CATEGORY}', headers=C8Y_HEADERS)
+        response = requests.get(C8Y_BASE + f'/inventory/managedObjects?type={self.OEE_CALCULATION_CATEGORY}', headers=C8Y_HEADERS)
         if response.ok:
             return response.json()['managedObjects']
         self.log_warning_on_bad_response(response)        
