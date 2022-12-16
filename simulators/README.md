@@ -36,7 +36,7 @@ Detailed feature list:
   the expected quality would be 80% (*followedBy.hits/hits * 100%*)
 - Simulates shutdowns (no events are sent if machine is DOWN)
 - Written in Python and is easy to extend
-- the main entry point is [event_based_simulators.py](main/event_based_simulators.py)
+- the main entry point is [simulators.py](main/simulators.py)
   - the script reads the configuration from [simulators.json](main/simulators.json) and creates a new device for every entry
   - the `id` property is used as `external_id` for the ManagedObjects to avoid creating multiple devices when redeploying/updating the microservice
 - Simulators act according to given Shiftplans
@@ -51,7 +51,7 @@ Detailed feature list:
 To build the docker image for this microservice, execute:
 ```
 git clone git@github.softwareag.com:IOTA/oee-simulators.git
-cd oee-simulators/event_based_simulators
+cd oee-simulators/simulators
 docker build -t oee-simulators .
 docker save -o image.tar oee-simulators
 zip oee-simulators.zip image.tar cumulocity.json 
@@ -59,14 +59,14 @@ zip oee-simulators.zip image.tar cumulocity.json
 
 ### Creating profiles automatically
 
-The creation of profiles can be configured using the Tenant Options on the given Cumulocity tenant. See the [Cumulocity REST API](https://cumulocity.com/api/10.14.0/#tag/Options) documentation for details. The Tenant Options must use the category: "event-based-simulators"
+The creation of profiles can be configured using the Tenant Options on the given Cumulocity tenant. See the [Cumulocity REST API](https://cumulocity.com/api/10.14.0/#tag/Options) documentation for details. The Tenant Options must use the category: "simulators"
 
 Some Options can be configured:
 - CREATE_PROFILES - holds a string with 'CREATE' or 'CREATE_IF_NOT_EXISTS' to indicate if the profiles should be overwritten or only created if they not already exist. Default: 'CREATE_IF_NOT_EXISTS'
 - CREATE_PROFILES_ARGUMENTS - can be used to set a string that is passed down as arguments to the profile creation script [Execution from command line / CLI arguments](#execution-from-command-line). 
-- CREATE_ASSET_HIERACHY - holds a boolen with 'true' or 'false' to indicate wether the Simulator should create the asset hierachy for OEE. If set to true it will create one SITE with one LINE that holds all devices and their profiles. Default: 'false'
+- CREATE_ASSET_HIERARCHY - holds a boolean with 'true' or 'false' to indicate whether the Simulator should create the asset hierarchy for OEE. If set to true it will create one SITE with one LINE that holds all devices and their profiles. Default: 'false'
 - LOG_LEVEL - sets the used logging-level of the simulator. Choose between INFO and DEBUG. DEBUG does give a more detailed output of the Simulator's configuration and decisions. Default: 'INFO'
-- DELETE_PROFILES - Holds a boolean either 'True' or 'False' to indicate wether OEE_Profiles created by the simulator should be deleted beforehand.
+- DELETE_PROFILES - Holds a boolean either 'True' or 'False' to indicate whether OEE_Profiles created by the simulator should be deleted beforehand.
 
 Note: A profile will be created and activated only if no other profiles are already defined for the particular device.
 
@@ -108,7 +108,7 @@ PROFILES_PER_DEVICE=1
 There are two ways to execute the profile generation. You can run it from the development environment [Visual Studio Code](#visual-studio-code) or from the command line.
 
 #### Execution from command line
-To execute the scripts from command line, open a command prompt and the *oee-simulators\event-based-simulators* folder.
+To execute the scripts from command line, open a command prompt and the *oee-simulators\simulators* folder.
 
 To create profiles, execute:
 ```
@@ -127,7 +127,7 @@ python .\main\profile_generator.py -d
 
 #### Execution in Visual Studio Code
 
-- Open *event-based-simulators* folder in the VSC
+- Open *simulators* folder in the VSC
 - Install python plugin: ms-python.python
 - adjust environemnt varibales in [.vscode/.env](.vscode/.env)
 - click at the big run/debug icon in the left toolbar
