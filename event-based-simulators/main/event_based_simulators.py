@@ -429,7 +429,6 @@ class MachineSimulator:
         })
 
     def send_measurements(self, measurement_definition):
-        json_measurements_list = []
         if not self.simulated_data:
             log.info(f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
             return
@@ -437,9 +436,8 @@ class MachineSimulator:
         base_dict = MachineSimulator.create_extra_info_dict(self=self, data=self.simulated_data[0])
         measurement_dict = MachineSimulator.create_individual_measurement_dict(self=self, data=self.simulated_data[0])
         base_dict.update(measurement_dict)
-        json_measurements_list.append(base_dict)
         log.info('Send create measurements requests')
-        response = cumulocityAPI.create_measurements(measurement=json_measurements_list[0])
+        response = cumulocityAPI.create_measurements(measurement=base_dict)
         if response:
             log.info(f"Created new {measurement_definition.get('type')} measurement, series {measurement_definition.get('series')} with value {self.simulated_data[0].get('value')}{self.simulated_data[0].get('unit')} for device {self.model.get('label')}, id {self.model.get('id')}")
 
