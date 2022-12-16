@@ -11,9 +11,12 @@ from task import PeriodicTask, Task
 def current_timestamp(format="%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
-
 cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()
+
+EVENT = "event"
+MEASUREMENT = "measurement"
+ACTIONS_LIST = [EVENT, MEASUREMENT]
 
 # Get Tenant Options and configure Simulator
 MICROSERVICE_OPTIONS = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
@@ -22,7 +25,6 @@ CREATE_PROFILES_ARGUMENTS = MICROSERVICE_OPTIONS.get("CREATE_PROFILES_ARGUMENTS"
 CREATE_ASSET_HIERARCHY = MICROSERVICE_OPTIONS.get("CREATE_ASSET_HIERARCHY", "False")
 LOG_LEVEL = MICROSERVICE_OPTIONS.get("LOG_LEVEL", "INFO")
 DELETE_PROFILES = MICROSERVICE_OPTIONS.get("DELETE_PROFILES", "False")
-ACTIONS_LIST = ["event", "measurement"]
 
 if LOG_LEVEL == "DEBUG":
     logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
@@ -88,7 +90,7 @@ class MachineSimulator:
         if self.enabled:
             self.tasks = []
             for self.current_work in ACTIONS_LIST:
-                if self.current_work == "event":
+                if self.current_work == EVENT:
                     self.tasks.append(list(map(self.__create_task, self.event_definitions)))
                     self.production_speed_s = self.__get_production_speed_s(self.event_definitions)
                     log.debug(f'events: {self.event_definitions}')
@@ -308,7 +310,7 @@ class MachineSimulator:
 
     def tick(self):
         if not self.enabled: return
-        if self.current_work == "event":
+        if self.current_work == EVENT:
             if not self.is_in_productionTime():
                 if not self.out_of_production_time_logged:
                     self.__log_not_in_shift()
@@ -342,13 +344,13 @@ class MachineSimulator:
         min_interval_in_seconds = int(3600 / max_frequency_per_hour)
         max_interval_in_seconds = int(3600 / min_frequency_per_hour)
 
-        if self.current_work == "event" and definition:
+        if self.current_work == EVENT and definition:
             log.debug(f'Machine {self.model.get("label")}, id {self.model.get("id")}: create periodic task for {definition["type"]}, interval in range ({min_interval_in_seconds}, {max_interval_in_seconds}) seconds')
-        elif self.current_work == "event" and not definition:
+        elif self.current_work == EVENT and not definition:
             log.debug(f'No definition of event in machine {self.model.get("label")}, id {self.model.get("id")}')
-        elif self.current_work == "measurement" and definition:
+        elif self.current_work == MEASUREMENT and definition:
             log.debug(f'create periodic task for measurement {definition["series"]}, interval in range ({min_frequency_per_hour}/hour, {max_frequency_per_hour}/hour)')
-        elif self.current_work == "measurement" and not definition:
+        elif self.current_work == MEASUREMENT and not definition:
             log.debug(f'No definition of measurement in machine {self.model.get("label")}, id {self.model.get("id")}')
 
         task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, callback)
@@ -356,11 +358,11 @@ class MachineSimulator:
         return task
 
     def lambda_functions(self, definition):
-        if self.current_work == "event":
+        if self.current_work == EVENT:
             event_callback = lambda task: {MachineSimulator.event_mapping[definition["type"]](self, definition, task)}
             return event_callback
 
-        elif self.current_work == "measurement":
+        elif self.current_work == MEASUREMENT:
             measurement_callback = lambda task: {MachineSimulator.measurement_functions(self, definition, task)}
             return measurement_callback
 
