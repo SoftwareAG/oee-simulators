@@ -424,9 +424,9 @@ class MachineSimulator:
             'series': measurement_definition.get("series"),
             'value': value,
             'unit': measurement_definition.get("unit"),
-            'time': datetime.utcnow(),
+            'time': datetime.utcnow()
         })
-    log.info("abc")
+
     def send_measurements(self, measurement_definition):
         if not self.simulated_data:
             log.info(f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
@@ -472,11 +472,10 @@ def load(filename):
         log.error(e, type(e))
         return {}
 
-
 def datetime_to_string(date_time, time_string_format="%Y-%m-%dT%H:%M:%S.%f"):
     return date_time.strftime(time_string_format)[:-3] + 'Z'
 
-
+###################################################################################
 log.info(f'cwd:{os.getcwd()}')
 SIMULATOR_MODELS = load("simulators.json")
 
