@@ -85,7 +85,6 @@ class MachineSimulator:
             self.event_definitions = self.model["events"]
         except:
             self.event_definitions = []
-        self.current_time = datetime.utcnow()
         ###
         if self.enabled:
             self.tasks = []
@@ -425,9 +424,9 @@ class MachineSimulator:
             'series': measurement_definition.get("series"),
             'value': value,
             'unit': measurement_definition.get("unit"),
-            'time': self.current_time,
+            'time': datetime.utcnow(),
         })
-
+    log.info("abc")
     def send_measurements(self, measurement_definition):
         if not self.simulated_data:
             log.info(f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
