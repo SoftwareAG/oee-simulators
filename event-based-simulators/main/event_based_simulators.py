@@ -335,8 +335,8 @@ class MachineSimulator:
                      'Shutdown': __on_shutdown_event}
 
     def __create_task(self, definition):
-        min_frequency_per_hour = definition.get("minimumFrequency", definition.get("frequency"))
-        max_frequency_per_hour = definition.get("maximumFrequency", definition.get("frequency"))
+        min_frequency_per_hour = definition.get("minimumPerHour", definition.get("frequency"))
+        max_frequency_per_hour = definition.get("maximumPerHour", definition.get("frequency"))
 
         callback = MachineSimulator.lambda_functions(self, definition)
 

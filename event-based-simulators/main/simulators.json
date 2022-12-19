@@ -7,8 +7,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minimumFrequency": 5,
-                "maximumFrequency": 10,
+                "minimumPerHour": 5,
+                "maximumPerHour": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -32,8 +32,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minimumFrequency": 5,
-                "maximumFrequency": 10,                
+                "minimumPerHour": 5,
+                "maximumPerHour": 10,                
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -42,12 +42,12 @@
             {
                 "type": "Pieces_Produced",
                 "frequency": 6,
-                "countMinimumFrequency": 1,
-                "countMaximumFrequency": 10,
+                "countminimumPerHour": 1,
+                "countmaximumPerHour": 10,
                 "followedBy": {
                     "type": "Pieces_Ok",
-                    "countMinimumFrequency": 0,
-                    "countMaximumFrequency": 10,
+                    "countminimumPerHour": 0,
+                    "countmaximumPerHour": 10,
                     "frequency": 6
                 }
             }
@@ -61,8 +61,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minimumFrequency": 5,
-                "maximumFrequency": 10,
+                "minimumPerHour": 5,
+                "maximumPerHour": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -71,13 +71,13 @@
             {
                 "type": "Pieces_Produced",
                 "frequency": 6,
-                "countMinimumFrequency": 0,
-                "countMaximumFrequency": 10
+                "countminimumPerHour": 0,
+                "countmaximumPerHour": 10
             },
             {
                 "type": "Piece_Quality",
-                "minimumFrequency": 2,
-                "maximumFrequency": 3,
+                "minimumPerHour": 2,
+                "maximumPerHour": 3,
                 "statusOkProbability": 0.9
             }
         ]
@@ -90,8 +90,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minimumFrequency": 5,
-                "maximumFrequency": 10,
+                "minimumPerHour": 5,
+                "maximumPerHour": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -121,8 +121,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minimumFrequency": 5,
-                "maximumFrequency": 10,
+                "minimumPerHour": 5,
+                "maximumPerHour": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -256,12 +256,12 @@
             {
                 "type": "Pieces_Produced",
                 "frequency": 60,
-                "countMinimumFrequency": 5,
-                "countMaximumFrequency": 5,
+                "countminimumPerHour": 5,
+                "countmaximumPerHour": 5,
                 "followedBy": {
                     "type": "Pieces_Ok",
-                    "countMinimumFrequency": 5,
-                    "countMaximumFrequency": 5,
+                    "countminimumPerHour": 5,
+                    "countmaximumPerHour": 5,
                     "frequency": 60
                 }
             }              
@@ -285,12 +285,12 @@
             {
                 "type": "Pieces_Produced",
                 "frequency": 60,
-                "countMinimumFrequency": 5,
-                "countMaximumFrequency": 5,
+                "countminimumPerHour": 5,
+                "countmaximumPerHour": 5,
                 "followedBy": {
                     "type": "Pieces_Ok",
-                    "countMinimumFrequency": 5,
-                    "countMaximumFrequency": 5,
+                    "countminimumPerHour": 5,
+                    "countmaximumPerHour": 5,
                     "frequency": 60
                 }
             }              
@@ -304,8 +304,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minimumFrequency": 5,
-                "maximumFrequency": 10,
+                "minimumPerHour": 5,
+                "maximumPerHour": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -329,8 +329,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minimumFrequency": 5,
-                "maximumFrequency": 10,
+                "minimumPerHour": 5,
+                "maximumPerHour": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -354,8 +354,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minimumFrequency": 5,
-                "maximumFrequency": 10,
+                "minimumPerHour": 5,
+                "maximumPerHour": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -379,8 +379,8 @@
         "events": [
             {
                 "type": "Availability",
-                "minimumFrequency": 5,
-                "maximumFrequency": 10,
+                "minimumPerHour": 5,
+                "maximumPerHour": 10,
                 "status": ["up", "down"],
                 "probabilities": [0.9, 0.1],
                 "durations": [0, 0],
@@ -409,8 +409,8 @@
                 "valueDistribution": "normal",
                 "mu": 20.0,
                 "sigma": 0.5,
-                "minimumFrequency": 1800.0,
-                "maximumFrequency": 3600.0
+                "minimumPerHour": 1800.0,
+                "maximumPerHour": 3600.0
             },
             {
                 "type": "c8y_Temperature",
@@ -419,8 +419,8 @@
                 "valueDistribution": "uniform",
                 "minimumValue": -20.0,
                 "maximumValue": 60.0,
-                "minimumFrequency": 1200.0,
-                "maximumFrequency": 3600.0
+                "minimumPerHour": 1200.0,
+                "maximumPerHour": 3600.0
             }
         ]
     },
@@ -437,8 +437,8 @@
                 "valueDistribution": "uniform",
                 "minimumValue": 0.0,
                 "maximumValue": 30.0,
-                "minimumFrequency": 1800.0,
-                "maximumFrequency": 3600.0
+                "minimumPerHour": 1800.0,
+                "maximumPerHour": 3600.0
             },
             {
                 "type": "Wind",
@@ -447,8 +447,8 @@
                 "valueDistribution": "uniformint",
                 "minimumValue": 0,
                 "maximumValue": 359,
-                "minimumFrequency": 1800.0,
-                "maximumFrequency": 3600.0
+                "minimumPerHour": 1800.0,
+                "maximumPerHour": 3600.0
             }
         ]
     },
@@ -465,8 +465,8 @@
                 "valueDistribution": "uniform",
                 "minimumValue": 0.0,
                 "maximumValue": 100.0,
-                "minimumFrequency": 4.0,
-                "maximumFrequency": 4.0
+                "minimumPerHour": 4.0,
+                "maximumPerHour": 4.0
             },
             {
                 "type": "c8y_GeneratedPower",
@@ -475,8 +475,8 @@
                 "valueDistribution": "uniform",
                 "minimumValue": 0.0,
                 "maximumValue": 3000.0,
-                "minimumFrequency": 0.042,
-                "maximumFrequency": 0.042
+                "minimumPerHour": 0.042,
+                "maximumPerHour": 0.042
             },
             {
                 "type": "Status",
@@ -485,8 +485,8 @@
                 "valueDistribution": "uniformint",
                 "minimumValue": 0,
                 "maximumValue": 1,
-                "minimumFrequency": 15.0,
-                "maximumFrequency": 60.0
+                "minimumPerHour": 15.0,
+                "maximumPerHour": 60.0
             }
         ]
     }
