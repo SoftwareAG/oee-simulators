@@ -12,4 +12,4 @@ USER appuser
 ARG ARG_CREATE_PROFILES
 ENV CREATE_PROFILES ${ARG_CREATE_PROFILES:-false}
 
-CMD [ "python", "./event_based_simulators.py" ]
+CMD [ "python", "./simulators.py" ]

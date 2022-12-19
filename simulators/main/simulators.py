@@ -19,7 +19,7 @@ MEASUREMENT = "measurement"
 ACTIONS_LIST = [EVENT, MEASUREMENT]
 
 # Get Tenant Options and configure Simulator
-MICROSERVICE_OPTIONS = cumulocityAPI.get_tenant_option_by_category("event-based-simulators")
+MICROSERVICE_OPTIONS = cumulocityAPI.get_tenant_option_by_category("simulators")
 PROFILE_CREATE_MODE = ProfileCreateMode[MICROSERVICE_OPTIONS.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
 CREATE_PROFILES_ARGUMENTS = MICROSERVICE_OPTIONS.get("CREATE_PROFILES_ARGUMENTS", "")
 CREATE_ASSET_HIERARCHY = MICROSERVICE_OPTIONS.get("CREATE_ASSET_HIERARCHY", "False")
