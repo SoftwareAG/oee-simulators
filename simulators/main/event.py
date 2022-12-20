@@ -269,8 +269,8 @@ class Event:
                 for timeslot in shiftplan.recurringTimeSlots:
                     if timeslot.slotType == "PRODUCTION":
                         now = datetime.utcnow()
-                        start = datetime.strptime(timeslot.slotStart, interface.dateformat)
-                        end = datetime.strptime(timeslot.slotEnd, interface.dateformat)
+                        start = datetime.strptime(timeslot.slotStart, interface.DATE_FORMAT)
+                        end = datetime.strptime(timeslot.slotEnd, interface.DATE_FORMAT)
                         if start < now < end:
                             return True
         return has_no_shiftplan
