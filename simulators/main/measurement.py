@@ -4,6 +4,8 @@ from random import uniform, randint, gauss
 from cumulocityAPI import CumulocityAPI
 import interface
 from task import PeriodicTask
+
+cumulocityAPI = CumulocityAPI()
 log = logging.getLogger("measurements generation")
 
 
@@ -67,7 +69,7 @@ class Measurement:
         measurement_dict = Measurement.create_individual_measurement_dict(self=self, data=self.simulated_data)
         base_dict.update(measurement_dict)
         log.info('Send create measurements requests')
-        response = CumulocityAPI.create_measurements(measurement=base_dict)
+        response = cumulocityAPI.create_measurements(measurement=base_dict)
         if response:
             log.info(f"Created new {measurement_definition.get('type')} measurement, series {measurement_definition.get('series')} with value {self.simulated_data.get('value')}{self.simulated_data.get('unit')} for device {self.model.get('label')}, id {self.model.get('id')}")
 

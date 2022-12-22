@@ -6,6 +6,7 @@ from cumulocityAPI import CumulocityAPI
 from task import Task, PeriodicTask
 import interface
 
+cumulocityAPI = CumulocityAPI()
 log = logging.getLogger("events generation")
 
 
@@ -257,7 +258,7 @@ class Event:
             log.info(f'{self.model["id"]} is down -> ignore event: {json.dumps(base_event)}')
             return None
         else:
-            CumulocityAPI.send_event(base_event)
+            cumulocityAPI.send_event(base_event)
             return newTimestamp
 
     def is_in_productionTime(self):
@@ -302,7 +303,7 @@ class Event:
     def get_or_create_device_id(self):
         sim_id = self.model['id']
         label = self.model['label']
-        self.device_id = CumulocityAPI.get_or_create_device(sim_id, label)
+        self.device_id = cumulocityAPI.get_or_create_device(sim_id, label)
 
 
 def try_event(probability: float):
