@@ -47,8 +47,8 @@ class Event:
                 return frequency / 3600.0
             if event_type == "Pieces_Produced":
                 frequency = event_definition.get("frequency")
-                countMaximumFrequency = event_definition.get("countMaximumFrequency")
-                return frequency * countMaximumFrequency / 3600.0
+                countMaximumPerHour = event_definition.get("countMaximumPerHour")
+                return frequency * countMaximumPerHour / 3600.0
 
         return 0.0
 
@@ -149,12 +149,12 @@ class Event:
 
         self.produce_pieces()
 
-        countMaximumFrequency = event_definition.get("countMaximumFrequency") or 10
+        countMaximumPerHour = event_definition.get("countMaximumPerHour") or 10
 
         frequency = event_definition.get("frequency") or 1
 
         event = self.type_fragment(event_definition)
-        pieces_produced = self.pick_pieces(frequency * countMaximumFrequency / 3600.0)
+        pieces_produced = self.pick_pieces(frequency * countMaximumPerHour / 3600.0)
         event.update({"count": pieces_produced})
         event.update(self.get_production_info())
 
@@ -175,15 +175,15 @@ class Event:
     def on_pieces_ok_event(self, event_definition, task):
         event = self.type_fragment(event_definition)
 
-        countMinimumFrequency = event_definition.get("countMinimumFrequency") or 0
-        countMaximumFrequency = event_definition.get("countMaximumFrequency") or 10
+        countMinimumPerHour = event_definition.get("countMinimumPerHour") or 0
+        countMaximumPerHour = event_definition.get("countMaximumPerHour") or 10
 
         piece_produced_timestamp = None
         if hasattr(task, 'extra'):
             piece_produced_timestamp = task.extra["timestamp"]
-            countMaximumFrequency = task.extra.get("pieces_produced") or countMaximumFrequency
+            countMaximumPerHour = task.extra.get("pieces_produced") or countMaximumPerHour
 
-        event.update({"count": randint(min(countMinimumFrequency, countMaximumFrequency), countMaximumFrequency)})
+        event.update({"count": randint(min(countMinimumPerHour, countMaximumPerHour), countMaximumPerHour)})
 
         self.send_event(event, piece_produced_timestamp)
 

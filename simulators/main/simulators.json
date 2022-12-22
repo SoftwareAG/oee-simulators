@@ -42,12 +42,12 @@
             {
                 "type": "Pieces_Produced",
                 "frequency": 6,
-                "countminimumPerHour": 1,
-                "countmaximumPerHour": 10,
+                "countMinimumPerHour": 1,
+                "countMaximumPerHour": 10,
                 "followedBy": {
                     "type": "Pieces_Ok",
-                    "countminimumPerHour": 0,
-                    "countmaximumPerHour": 10,
+                    "countMinimumPerHour": 0,
+                    "countMaximumPerHour": 10,
                     "frequency": 6
                 }
             }
@@ -71,8 +71,8 @@
             {
                 "type": "Pieces_Produced",
                 "frequency": 6,
-                "countminimumPerHour": 0,
-                "countmaximumPerHour": 10
+                "countMinimumPerHour": 0,
+                "countMaximumPerHour": 10
             },
             {
                 "type": "Piece_Quality",
@@ -256,12 +256,12 @@
             {
                 "type": "Pieces_Produced",
                 "frequency": 60,
-                "countminimumPerHour": 5,
-                "countmaximumPerHour": 5,
+                "countMinimumPerHour": 5,
+                "countMaximumPerHour": 5,
                 "followedBy": {
                     "type": "Pieces_Ok",
-                    "countminimumPerHour": 5,
-                    "countmaximumPerHour": 5,
+                    "countMinimumPerHour": 5,
+                    "countMaximumPerHour": 5,
                     "frequency": 60
                 }
             }              
@@ -285,12 +285,12 @@
             {
                 "type": "Pieces_Produced",
                 "frequency": 60,
-                "countminimumPerHour": 5,
-                "countmaximumPerHour": 5,
+                "countMinimumPerHour": 5,
+                "countMaximumPerHour": 5,
                 "followedBy": {
                     "type": "Pieces_Ok",
-                    "countminimumPerHour": 5,
-                    "countmaximumPerHour": 5,
+                    "countMinimumPerHour": 5,
+                    "countMaximumPerHour": 5,
                     "frequency": 60
                 }
             }              
