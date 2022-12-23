@@ -66,11 +66,11 @@ DEVICE_MODELS = load("simulators.json")
 devices = list(map(lambda device_model: MachineSimulator(device_model), DEVICE_MODELS))
 
 # create managed object for every simulator
-[item.get_or_create_device_id() for item in devices]
+[device.get_or_create_device_id() for device in devices]
 
 # read & update Shiftplans
 SHIFTPLANS_MODELS = load("shiftplans.json")
-shiftplans = list(map(lambda model: Shiftplan(model), SHIFTPLANS_MODELS))
+shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), SHIFTPLANS_MODELS))
 
 if DELETE_PROFILES.lower() == "true":
     log.debug(f'Deleting all Profiles')
@@ -87,14 +87,18 @@ if CREATE_ASSET_HIERARCHY.lower() == "true":
     [ids.append(simulator.device_id) for simulator in devices]
     oeeAPI.create_or_update_asset_hierachy(deviceIDs=ids)
 
+# create list of objects for events and measurements
+events = list(map(lambda device: Event(device, shiftplans), devices))
+measurements = list(map(lambda device: Measurement(device), devices))
+
 while True:
     for shiftplan in shiftplans:
         shiftplan.tick()
 
-    for device in devices:
-        measurement = Measurement(device)
-        measurement.tick()
-        event = Event(device, shiftplans)
+    for event in events:
         event.tick()
+
+    for measurement in measurements:
+        measurement.tick()
 
     time.sleep(1)
