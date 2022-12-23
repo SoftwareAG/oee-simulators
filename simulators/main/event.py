@@ -258,7 +258,9 @@ class Event:
             log.info(f'{self.model["id"]} is down -> ignore event: {json.dumps(base_event)}')
             return None
         else:
-            cumulocityAPI.send_event(base_event)
+            response = cumulocityAPI.send_event(base_event)
+            if response:
+                log.info(f"Created new {event_fragment.get('type')} event for device {self.model.get('label')}, id {self.model.get('id')}")
             return newTimestamp
 
     def is_in_productionTime(self):
