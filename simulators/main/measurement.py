@@ -2,8 +2,8 @@ import logging
 from datetime import datetime
 from random import uniform, randint, gauss
 from cumulocityAPI import CumulocityAPI
-import interface
 from task import PeriodicTask
+import interface
 
 cumulocityAPI = CumulocityAPI()
 log = logging.getLogger("measurements generation")

@@ -1,5 +1,4 @@
-import json
-import logging
+import json, logging
 from datetime import datetime
 from random import randint, uniform, choices
 from cumulocityAPI import CumulocityAPI
@@ -301,11 +300,6 @@ class Event:
         for task in self.tasks:
             if task:
                 task.tick()
-
-    def get_or_create_device_id(self):
-        sim_id = self.model['id']
-        label = self.model['label']
-        self.device_id = cumulocityAPI.get_or_create_device(sim_id, label)
 
 
 def try_event(probability: float):

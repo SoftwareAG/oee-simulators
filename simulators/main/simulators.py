@@ -1,5 +1,4 @@
 ﻿import time, json, os, logging
-from datetime import datetime
 from cumulocityAPI import (C8Y_BASE, C8Y_TENANT, C8Y_USER, CumulocityAPI)
 from oeeAPI import OeeAPI, ProfileCreateMode
 from shiftplan import Shiftplan
@@ -36,6 +35,14 @@ log.info(f'Shiftplan polling interval is set to {Shiftplan.polling_interval:,} s
 log.debug(C8Y_BASE)
 log.debug(C8Y_TENANT)
 log.debug(C8Y_USER)
+
+
+class MachineType():
+    def tick(self):
+        pass
+
+    def create_task(self):
+        pass
 
 
 class MachineSimulator:
