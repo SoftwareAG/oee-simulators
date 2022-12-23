@@ -1,4 +1,4 @@
-﻿import time, json, os, logging
+import time, json, os, logging
 from cumulocityAPI import (C8Y_BASE, C8Y_TENANT, C8Y_USER, CumulocityAPI)
 from oeeAPI import OeeAPI, ProfileCreateMode
 from shiftplan import Shiftplan
