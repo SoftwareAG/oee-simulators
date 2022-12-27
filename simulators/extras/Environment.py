@@ -1,8 +1,8 @@
 ### Required
-C8Y_BASE = 'http://localhost:8080'
-C8Y_TENANT = 't100'
-C8Y_USER = 'test'
-C8Y_PASSWORD = 'test'
+C8Y_BASE = "https://mobile-naph.eu-latest.cumulocity.com"
+C8Y_TENANT = "t1249145768"
+C8Y_USER = "admin"
+C8Y_PASSWORD = "wertITC$2022"
 
 ### Optional
 # Input None if not set
