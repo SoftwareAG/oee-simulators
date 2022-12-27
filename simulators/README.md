@@ -15,22 +15,22 @@ Detailed feature list:
 - devices can be disabled to not send any events
 - the number of events per hour can be configured as a random number in a range
     ```
-    "minHits": 5,
-    "maxHits": 10
+    "minimumPerHour": 5,
+    "maximumPerHour": 10
     ```
   or using a constant number: 
     ```
-    "hits": 20
+    "frequency": 20
     ```
 - the availibility of machine is expressed as probability value with range from 0.0 to 1.0
 - the timestamp of the following `Piece_ok` event is the same as corresponding `Piece_Produced` event
 - the expected quality of production is configurable.  
     ```
     "type": "Piece_Produced",
-    "hits": 25,
+    "frequency": 25,
     "followedBy": {
         "type": "Piece_Ok",
-        "hits": 20
+        "frequency": 20
     } 
     ```
   the expected quality would be 80% (*followedBy.hits/hits * 100%*)
