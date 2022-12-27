@@ -10,10 +10,10 @@ log = logging.getLogger("events generation")
 
 
 class Event:
-    def __init__(self, device, shiftplans) -> None:
-        self.model = device.model
+    def __init__(self, model, shiftplans) -> None:
+        self.model = model
         self.shiftplans = shiftplans
-        self.device_id = device.device_id
+        self.device_id = self.model.get("device_id")
         self.locationId = self.model.get("locationId", "")
         self.machine_up = False
         self.shutdown = False

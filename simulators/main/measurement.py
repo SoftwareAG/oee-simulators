@@ -11,9 +11,9 @@ log = logging.getLogger("measurements generation")
 
 class Measurement:
     # Measurements functions #
-    def __init__(self, device) -> None:
-        self.model = device.model
-        self.device_id = device.device_id
+    def __init__(self, model) -> None:
+        self.model = model
+        self.device_id = self.model.get("device_id")
         self.simulated_data = {}
         self.measurements_definitions = self.model.get('measurements', [])
         self.enabled = self.model.get('enabled', True)
