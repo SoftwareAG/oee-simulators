@@ -37,14 +37,6 @@ log.debug(C8Y_TENANT)
 log.debug(C8Y_USER)
 
 
-class MachineType():
-    def tick(self):
-        pass
-
-    def create_task(self):
-        pass
-
-
 class MachineSimulator:
 
     def __init__(self, model) -> None:
@@ -55,6 +47,13 @@ class MachineSimulator:
         sim_id = self.model['id']
         label = self.model['label']
         self.device_id = cumulocityAPI.get_or_create_device(sim_id, label)
+
+
+def get_or_create_device_id(device_definition):
+    sim_id = device_definition.get("id")
+    label = device_definition.get("model")
+    device_id = cumulocityAPI.get_or_create_device(sim_id, label)
+    return device_id
 
 
 def load(filename):
@@ -70,10 +69,10 @@ def load(filename):
 log.info(f'cwd:{os.getcwd()}')
 DEVICE_MODELS = load("simulators.json")
 
-devices = list(map(lambda device_model: MachineSimulator(device_model), DEVICE_MODELS))
-
-# create managed object for every simulator
-[device.get_or_create_device_id() for device in devices]
+# Add device id to the model of devices
+for device in DEVICE_MODELS:
+    device_id = get_or_create_device_id(device)
+    device["device_id"] = device_id
 
 # read & update Shiftplans
 SHIFTPLANS_MODELS = load("shiftplans.json")
@@ -91,12 +90,12 @@ os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
 if CREATE_ASSET_HIERARCHY.lower() == "true":
     log.info("Creating the OEE asset hierarchy")
     ids = []
-    [ids.append(simulator.device_id) for simulator in devices]
+    [ids.append(simulator.get("device_id")) for simulator in DEVICE_MODELS]
     oeeAPI.create_or_update_asset_hierachy(deviceIDs=ids)
 
 # create list of objects for events and measurements
-events = list(map(lambda device: Event(device, shiftplans), devices))
-measurements = list(map(lambda device: Measurement(device), devices))
+events = list(map(lambda model: Event(model, shiftplans), DEVICE_MODELS))
+measurements = list(map(lambda model: Measurement(model), DEVICE_MODELS))
 
 while True:
     for shiftplan in shiftplans:
