@@ -38,14 +38,8 @@ log.debug(C8Y_USER)
 
 
 class MachineSimulator:
-
     def __init__(self, machine: interface.MachineType) -> None:
         self.machine = machine
-
-    def get_or_create_device_id(self):
-        sim_id = self.model['id']
-        label = self.model['label']
-        self.device_id = cumulocityAPI.get_or_create_device(sim_id, label)
 
 
 def get_or_create_device_id(device_definition):
