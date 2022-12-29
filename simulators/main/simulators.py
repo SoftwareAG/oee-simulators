@@ -39,9 +39,8 @@ log.debug(C8Y_USER)
 
 class MachineSimulator:
 
-    def __init__(self, model) -> None:
-        self.model = model
-        self.device_id = None
+    def __init__(self, machine: interface.MachineType) -> None:
+        self.machine = machine
 
     def get_or_create_device_id(self):
         sim_id = self.model['id']
@@ -68,17 +67,17 @@ def load(filename):
 ###################################################################################
 log.info(f'cwd:{os.getcwd()}')
 DEVICE_MODELS = load("simulators.json")
-DEVICE_EVENT_MODEL = []
-DEVICE_MEASUREMENT_MODEL = []
+DEVICE_EVENT_MODELS = []
+DEVICE_MEASUREMENT_MODELS = []
 
 # Add device id to the model of devices
-for device in DEVICE_MODELS:
-    device_id = get_or_create_device_id(device)
-    device["device_id"] = device_id
-    if device.get("events"):
-        DEVICE_EVENT_MODEL.append(device)
-    if device.get("measurements"):
-        DEVICE_MEASUREMENT_MODEL.append(device)
+for device_model in DEVICE_MODELS:
+    device_id = get_or_create_device_id(device_model)
+    device_model["device_id"] = device_id
+    if device_model.get("events"):
+        DEVICE_EVENT_MODELS.append(device_model)
+    if device_model.get("measurements"):
+        DEVICE_MEASUREMENT_MODELS.append(device_model)
 
 # read & update Shiftplans
 SHIFTPLANS_MODELS = load("shiftplans.json")
@@ -100,17 +99,15 @@ if CREATE_ASSET_HIERARCHY.lower() == "true":
     oeeAPI.create_or_update_asset_hierachy(deviceIDs=ids)
 
 # create list of objects for events and measurements
-events = list(map(lambda model: Event(model, shiftplans), DEVICE_EVENT_MODEL))
-measurements = list(map(lambda model: Measurement(model), DEVICE_MEASUREMENT_MODEL))
+event_device_list = list(map(lambda model: MachineSimulator(Event(model, shiftplans)), DEVICE_EVENT_MODELS))
+measurement_device_list = list(map(lambda model: MachineSimulator(Measurement(model, shiftplans)), DEVICE_MEASUREMENT_MODELS))
+devices_list = event_device_list + measurement_device_list
 
 while True:
     for shiftplan in shiftplans:
         shiftplan.tick()
 
-    for event in events:
-        event.tick()
-
-    for measurement in measurements:
-        measurement.tick()
+    for device in devices_list:
+        device.machine.tick()
 
     time.sleep(1)

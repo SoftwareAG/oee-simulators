@@ -9,13 +9,14 @@ cumulocityAPI = CumulocityAPI()
 log = logging.getLogger("measurements generation")
 
 
-class Measurement:
+class Measurement(interface.MachineType):
     # Measurements functions #
-    def __init__(self, model) -> None:
+    def __init__(self, model, shiftplans) -> None:
         self.model = model
         self.device_id = self.model.get("device_id")
         self.simulated_data = {}
         self.measurements_definitions = self.model.get('measurements', [])
+        self.shiftplans = shiftplans
         self.enabled = self.model.get('enabled', True)
         if self.enabled:
             self.tasks = list(map(self.__create_task, self.measurements_definitions))

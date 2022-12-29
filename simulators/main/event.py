@@ -9,7 +9,7 @@ cumulocityAPI = CumulocityAPI()
 log = logging.getLogger("events generation")
 
 
-class Event:
+class Event(interface.MachineType):
     def __init__(self, model, shiftplans) -> None:
         self.model = model
         self.shiftplans = shiftplans

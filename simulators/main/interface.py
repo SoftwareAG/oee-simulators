@@ -10,9 +10,6 @@ class MachineType:
     def tick(self):
         raise NotImplementedError
 
-    def create_task(self):
-        raise NotImplementedError
-
 
 def calculate_interval_in_seconds(definition):
     min_frequency_per_hour = definition.get("minimumPerHour", definition.get("frequency"))
