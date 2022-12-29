@@ -404,7 +404,7 @@
         "measurements": [
             {
                 "type": "c8y_Temperature",
-                "series": "c8y_Temperature.T1",
+                "series": "T1",
                 "unit": "C",
                 "valueDistribution": "normal",
                 "mu": 20.0,
@@ -414,7 +414,7 @@
             },
             {
                 "type": "c8y_Temperature",
-                "series": "c8y_Temperature.T2",
+                "series": "T2",
                 "unit": "C",
                 "valueDistribution": "uniform",
                 "minimumValue": -20.0,
@@ -432,7 +432,7 @@
         "measurements": [
             {
                 "type": "Wind",
-                "series": "Wind.Speed",
+                "series": "Speed",
                 "unit": "m/s",
                 "valueDistribution": "uniform",
                 "minimumValue": 0.0,
@@ -442,7 +442,7 @@
             },
             {
                 "type": "Wind",
-                "series": "Wind.Direction",
+                "series": "Direction",
                 "unit": "°",
                 "valueDistribution": "uniformint",
                 "minimumValue": 0,
@@ -460,7 +460,7 @@
         "measurements": [
             {
                 "type": "c8y_GeneratedPower",
-                "series": "GeneratedPower.Current",
+                "series": "Current",
                 "unit": "kW",
                 "valueDistribution": "uniform",
                 "minimumValue": 0.0,
@@ -470,7 +470,7 @@
             },
             {
                 "type": "c8y_GeneratedPower",
-                "series": "c8y_GeneratedPower.Daily",
+                "series": "Daily",
                 "unit": "kWh",
                 "valueDistribution": "uniform",
                 "minimumValue": 0.0,
@@ -480,13 +480,145 @@
             },
             {
                 "type": "Status",
-                "series": "Status.S",
+                "series": "S",
                 "unit": "",
                 "valueDistribution": "uniformint",
                 "minimumValue": 0,
                 "maximumValue": 1,
                 "minimumPerHour": 15.0,
                 "maximumPerHour": 60.0
+            }
+        ]
+    },
+    {
+        "type": "Simulator",
+        "id": "sim_0019",
+        "label": "Normal #19",
+        "enabled": true,
+        "measurements": [
+            {
+                "type": "Pressure",
+                "series": "P",
+                "unit": "hPa",
+                "valueDistribution": "uniform",
+                "minimumValue": 1000.0,
+                "maximumValue": 1500.0,
+                "minimumPerHour": 4.0,
+                "maximumPerHour": 4.0
+            },
+            {
+                "type": "PieceProduced",
+                "series": "Width",
+                "unit": "mm",
+                "valueDistribution": "uniform",
+                "minimumValue": 100.0,
+                "maximumValue": 120.0,
+                "minimumPerHour": 2.0,
+                "maximumPerHour": 2.0
+            }
+        ]
+    },
+    {
+        "type": "Simulator",
+        "id": "sim_0020",
+        "label": "Normal #20",
+        "enabled": true,
+        "measurements": [
+            {
+                "type": "Pressure",
+                "series": "P",
+                "unit": "hPa",
+                "valueDistribution": "uniform",
+                "minimumValue": 1000.0,
+                "maximumValue": 1500.0,
+                "minimumPerHour": 4.0,
+                "maximumPerHour": 4.0
+            },
+            {
+                "type": "Pieces",
+                "series": "Produced",
+                "unit": "pcs",
+                "valueDistribution": "uniform",
+                "minimumValue": 1000.0,
+                "maximumValue": 1200.0,
+                "minimumPerHour": 2.0,
+                "maximumPerHour": 2.0
+            },
+            {
+                "type": "Pieces",
+                "series": "OK",
+                "unit": "pcs",
+                "valueDistribution": "uniform",
+                "minimumValue": 800.0,
+                "maximumValue": 1000.0,
+                "minimumPerHour": 2.0,
+                "maximumPerHour": 2.0
+            }
+        ]
+    },
+    {
+        "type": "Simulator",
+        "id": "sim_0021",
+        "label": "Normal #21",
+        "enabled": true,
+        "measurements": [
+            {
+                "type": "ProductionTime",
+                "series": "T",
+                "unit": "s",
+                "valueDistribution": "uniform",
+                "minimumValue": 450.0,
+                "maximumValue": 900.0,
+                "minimumPerHour": 4.0,
+                "maximumPerHour": 4.0
+            },
+            {
+                "type": "Pieces",
+                "series": "Produced",
+                "unit": "pcs",
+                "valueDistribution": "uniform",
+                "minimumValue": 1000.0,
+                "maximumValue": 1200.0,
+                "minimumPerHour": 2.0,
+                "maximumPerHour": 2.0
+            },
+            {
+                "type": "Pieces",
+                "series": "OK",
+                "unit": "pcs",
+                "valueDistribution": "uniform",
+                "minimumValue": 800.0,
+                "maximumValue": 1000.0,
+                "minimumPerHour": 2.0,
+                "maximumPerHour": 2.0
+            }
+        ]
+    },
+    {
+        "type": "Simulator",
+        "id": "sim_0022",
+        "label": "Normal #22",
+        "enabled": true,
+        "measurements": [
+            {
+                "type": "Pressure",
+                "series": "P",
+                "unit": "hPa",
+                "valueDistribution": "uniform",
+                "minimumValue": 1000.0,
+                "maximumValue": 1500.0,
+                "minimumPerHour": 4.0,
+                "maximumPerHour": 4.0
+            },
+            {
+                "type": "Pieces",
+                "series": "Produced",
+                "unit": "pcs",
+                "valueDistribution": "uniform",
+                "minimumValue": 1000.0,
+                "maximumValue": 1200.0,
+                "minimumPerHour": 2.0,
+                "maximumPerHour": 2.0
             }
         ]
     }
