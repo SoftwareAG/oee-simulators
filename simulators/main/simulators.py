@@ -68,11 +68,17 @@ def load(filename):
 ###################################################################################
 log.info(f'cwd:{os.getcwd()}')
 DEVICE_MODELS = load("simulators.json")
+DEVICE_EVENT_MODEL = []
+DEVICE_MEASUREMENT_MODEL = []
 
 # Add device id to the model of devices
 for device in DEVICE_MODELS:
     device_id = get_or_create_device_id(device)
     device["device_id"] = device_id
+    if device.get("events"):
+        DEVICE_EVENT_MODEL.append(device)
+    if device.get("measurements"):
+        DEVICE_MEASUREMENT_MODEL.append(device)
 
 # read & update Shiftplans
 SHIFTPLANS_MODELS = load("shiftplans.json")
@@ -94,8 +100,8 @@ if CREATE_ASSET_HIERARCHY.lower() == "true":
     oeeAPI.create_or_update_asset_hierachy(deviceIDs=ids)
 
 # create list of objects for events and measurements
-events = list(map(lambda model: Event(model, shiftplans), DEVICE_MODELS))
-measurements = list(map(lambda model: Measurement(model), DEVICE_MODELS))
+events = list(map(lambda model: Event(model, shiftplans), DEVICE_EVENT_MODEL))
+measurements = list(map(lambda model: Measurement(model), DEVICE_MEASUREMENT_MODEL))
 
 while True:
     for shiftplan in shiftplans:
