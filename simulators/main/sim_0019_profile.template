@@ -1,0 +1,87 @@
+ {
+    "alarms": [],
+    "amountUnit": "",
+    "deviceId": "${deviceId}",
+    "external": false,
+    "id": "",
+    "idealCycleAmount": "",
+    "inputs": {
+        "ActualProductionAmount": [
+            {
+                "type": "TRANSFORMATION_RULE",
+                "value": "countMeasurements(\"${deviceId}\",\"PieceProduced\")"
+            }
+        ],
+        "ActualProductionTime": [
+            {
+                "type": "MACHINE_EVENT",
+                "value": ""
+            }
+        ],
+        "ActualQualityAmount": [
+            {
+                "type": "MACHINE_EVENT",
+                "value": ""
+            }
+        ]
+    },
+    "intervals": [
+        3600
+    ],
+    "locationId": "",
+    "machineEvents": {
+        "MACHINE_STATUS": [
+            {
+                "value": "measurement(\"${deviceId}\",\"Pressure\",\"Pressure\",\"P\",false) > 1100"
+            }
+        ],
+        "QUALITY_STATUS": [
+            {
+                "value": "measurement(\"${deviceId}\",\"PieceProduced\",\"PieceProduced\",\"Width\",false) > 110"
+            }
+        ]
+    },
+    "name": "Simulator Normal #19 - ${counter}",
+    "oeeTargets": {
+        "overall": 65,
+        "availability": 90,
+        "performance": 95,    
+        "quality": 80
+    },
+    "shortShutdowns": null,
+    "status": "INCOMPLETE",
+    "subscriptions": [
+        {
+            "deviceId": "${deviceId}",
+            "key": "measurement.PieceProduced",
+            "name": "PieceProduced",
+            "pollingIntervalSeconds": 10,
+            "type": "measurement"
+        },
+        {
+            "deviceId": "${deviceId}",
+            "key": "measurement.Pressure",
+            "name": "Pressure",
+            "pollingIntervalSeconds": 10,
+            "type": "measurement"
+        }
+    ],
+    "tenantId": "${tenantId}",
+    "testConfiguration": false,
+    "timeframes": null,
+    "type": "MACHINE",
+    "ui": {
+        "computation": "PPQ",
+        "correlationSectionVisited": false,
+        "shortStoppages": "Not Tracked",
+        "shortStoppagesAmount": null
+    },
+    "version": "2.0.0",
+    "workpiece": {
+        "amount": "2",
+        "isActive": true,
+        "name": "Pieces",
+        "timeunit": 2,
+        "unit": "pcs"
+    }
+}
