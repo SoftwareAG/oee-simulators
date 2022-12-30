@@ -1,0 +1,79 @@
+{
+    "alarms": [],
+    "amountUnit": "",
+    "deviceId": "${deviceId}",
+    "external": false,
+    "id": "",
+    "idealCycleAmount": "",
+    "inputs": {
+        "ActualProductionAmount": [
+            {
+                "type": "TRANSFORMATION_RULE",
+                "value": "measurement(\"${deviceId}\",\"Pieces\",\"Pieces\",\"Produced\",false)"
+            }
+        ],
+        "ActualProductionTime": [
+            {
+                "type": "TRANSFORMATION_RULE",
+                "value": "measurement(\"${deviceId}\",\"ProductionTime\",\"ProductionTime\",\"T\",false)"
+            }
+        ],
+        "ActualQualityAmount": [
+            {
+                "type": "TRANSFORMATION_RULE",
+                "value": "measurement(\"${deviceId}\",\"Pieces\",\"Pieces\",\"OK\",false)"
+            }
+        ]
+    },
+    "intervals": [
+        3600
+    ],
+    "locationId": "",
+    "machineEvents": {
+        "MACHINE_STATUS": [],
+        "QUALITY_STATUS": []
+    },
+    "name": "Simulator Normal #21 - ${counter}",
+    "oeeTargets": {
+        "overall": 65,
+        "availability": 90,
+        "performance": 95,    
+        "quality": 80
+    },
+    "shortShutdowns": null,
+    "status": "INCOMPLETE",
+    "subscriptions": [
+        {
+            "deviceId": "${deviceId}",
+            "key": "measurement.Pieces",
+            "name": "Pieces",
+            "pollingIntervalSeconds": 10,
+            "type": "measurement"
+        },
+        {
+            "deviceId": "${deviceId}",
+            "key": "measurement.ProductionTime",
+            "name": "ProductionTime",
+            "pollingIntervalSeconds": 10,
+            "type": "measurement"
+        }
+    ],
+    "tenantId": "${tenantId}",
+    "testConfiguration": false,
+    "timeframes": null,
+    "type": "MACHINE",
+    "ui": {
+        "computation": "PPQ",
+        "correlationSectionVisited": false,
+        "shortStoppages": "Not Tracked",
+        "shortStoppagesAmount": null
+    },
+    "version": "2.0.0",
+    "workpiece": {
+        "amount": "2400",
+        "isActive": true,
+        "name": "Pieces",
+        "timeunit": 2,
+        "unit": "pcs"
+    }
+}
