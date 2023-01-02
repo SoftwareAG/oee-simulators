@@ -87,7 +87,4 @@ class Measurement(interface.MachineType):
         return measurementDict
 
     def should_tick(self):
-        if not self.enabled:
-            return False
-        else:
-            return True
+        return True

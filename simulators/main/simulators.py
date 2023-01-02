@@ -55,6 +55,8 @@ class MachineSimulator:
         return task
 
     def tick(self):
+        if not self.machine.enabled:
+            return
         if self.machine.should_tick():
             for task in self.machine.tasks:
                 if task:

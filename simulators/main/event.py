@@ -279,9 +279,6 @@ class Event(interface.MachineType):
                      'Shutdown': on_shutdown_event}
 
     def should_tick(self):
-        if not self.enabled:
-            return False
-
         if not Event.is_in_productionTime(self):
             if not self.out_of_production_time_logged:
                 Event.log_not_in_shift(self)
