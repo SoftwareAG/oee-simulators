@@ -9,7 +9,6 @@ log = logging.getLogger("measurements generation")
 
 
 class Measurement(interface.MachineType):
-    # Measurements functions #
     def __init__(self, model) -> None:
         self.model = model
         self.definitions = self.model.get('measurements', [])
