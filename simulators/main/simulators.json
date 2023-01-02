@@ -409,8 +409,8 @@
                 "valueDistribution": "normal",
                 "mu": 20.0,
                 "sigma": 0.5,
-                "minimumPerHour": 1800.0,
-                "maximumPerHour": 3600.0
+                "minimumPerHour": 30.0,
+                "maximumPerHour": 60.0
             },
             {
                 "type": "c8y_Temperature",
@@ -419,8 +419,8 @@
                 "valueDistribution": "uniform",
                 "minimumValue": -20.0,
                 "maximumValue": 60.0,
-                "minimumPerHour": 1200.0,
-                "maximumPerHour": 3600.0
+                "minimumPerHour": 30.0,
+                "maximumPerHour": 60.0
             }
         ]
     },
@@ -437,8 +437,8 @@
                 "valueDistribution": "uniform",
                 "minimumValue": 0.0,
                 "maximumValue": 30.0,
-                "minimumPerHour": 1800.0,
-                "maximumPerHour": 3600.0
+                "minimumPerHour": 30.0,
+                "maximumPerHour": 60.0
             },
             {
                 "type": "Wind",
@@ -447,8 +447,8 @@
                 "valueDistribution": "uniformint",
                 "minimumValue": 0,
                 "maximumValue": 359,
-                "minimumPerHour": 1800.0,
-                "maximumPerHour": 3600.0
+                "minimumPerHour": 30.0,
+                "maximumPerHour": 60.0
             }
         ]
     },
