@@ -41,6 +41,9 @@ log.debug(C8Y_USER)
 class MachineSimulator:
     def __init__(self, machine: interface.MachineType) -> None:
         self.machine = machine
+        self.machine.device_id = self.machine.model.get("device_id")
+        self.machine.locationId = self.machine.model.get("locationId", "")
+        self.machine.enabled = self.machine.model.get('enabled', True)
         if self.machine.enabled:
             self.machine.tasks = list(map(self.__create_task, self.machine.definitions))
             log.debug(f'{self.machine.definitions}')

@@ -12,11 +12,8 @@ class Measurement(interface.MachineType):
     # Measurements functions #
     def __init__(self, model) -> None:
         self.model = model
-        self.device_id = self.model.get("device_id")
         self.simulated_data = {}
         self.definitions = self.model.get('measurements', [])
-        self.enabled = self.model.get('enabled', True)
-        self.tasks = []
 
     def callback(self, definition, min_interval_in_seconds, max_interval_in_seconds):
         measurement_callback = lambda task: {Measurement.measurement_functions(self, definition, task)}

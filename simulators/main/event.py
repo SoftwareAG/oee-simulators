@@ -13,16 +13,15 @@ class Event(interface.MachineType):
     def __init__(self, model, shiftplans) -> None:
         self.model = model
         self.shiftplans = shiftplans
-        self.device_id = self.model.get("device_id")
-        self.locationId = self.model.get("locationId", "")
         self.machine_up = False
         self.shutdown = False
         self.production_time_s = 0.0
         self.last_production_time_update = datetime.timestamp(datetime.utcnow())
         self.out_of_production_time_logged = False
         self.definitions = self.model.get('events', [])
-        self.enabled = self.model.get('enabled', True)
         self.task = []
+        if self.model.get('enabled'):
+            self.production_speed_s = self.get_production_speed_s()
 
     def callback(self, definition, min_interval_in_seconds, max_interval_in_seconds):
         event_callback = lambda task: {Event.event_mapping[definition["type"]](self, definition, task)}
