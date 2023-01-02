@@ -10,6 +10,12 @@ class MachineType:
     def tick(self):
         raise NotImplementedError
 
+    def should_tick(self):
+        raise NotImplementedError
+
+    def callback(self, definition, min_interval_in_seconds, max_interval_in_seconds):
+        raise NotImplementedError
+
 
 def calculate_interval_in_seconds(definition):
     min_frequency_per_hour = definition.get("minimumPerHour", definition.get("frequency"))

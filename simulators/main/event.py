@@ -2,7 +2,7 @@ import json, logging
 from datetime import datetime
 from random import randint, uniform, choices
 from cumulocityAPI import CumulocityAPI
-from task import Task, PeriodicTask
+from task import Task
 import interface
 
 cumulocityAPI = CumulocityAPI()
@@ -20,27 +20,21 @@ class Event(interface.MachineType):
         self.production_time_s = 0.0
         self.last_production_time_update = datetime.timestamp(datetime.utcnow())
         self.out_of_production_time_logged = False
-        self.event_definitions = self.model.get('events', [])
+        self.definitions = self.model.get('events', [])
         self.enabled = self.model.get('enabled', True)
-        if self.enabled:
-            self.tasks = list(map(self.__create_task, self.event_definitions))
-            self.production_speed_s = Event.get_production_speed_s(self)
-            log.debug(f'events: {self.event_definitions}')
+        self.task = []
 
-    def __create_task(self, definition):
+    def callback(self, definition, min_interval_in_seconds, max_interval_in_seconds):
         event_callback = lambda task: {Event.event_mapping[definition["type"]](self, definition, task)}
-        min_interval_in_seconds, max_interval_in_seconds = interface.calculate_interval_in_seconds(definition)
         if definition:
             log.debug(f'Machine {self.model.get("label")}, id {self.model.get("id")}: create periodic task for {definition["type"]}, interval in range ({min_interval_in_seconds}, {max_interval_in_seconds}) seconds')
         else:
             log.debug(f'No definition of event in machine {self.model.get("label")}, id {self.model.get("id")}')
-
-        task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, event_callback)
-        return task
+        return event_callback
 
     def get_production_speed_s(self) -> float:
         """Returns pieces/s"""
-        for event_definition in self.event_definitions:
+        for event_definition in self.definitions:
             event_type = event_definition.get("type") or ""
             if event_type == "Piece_Produced":
                 frequency = event_definition.get("frequency")
@@ -285,21 +279,18 @@ class Event(interface.MachineType):
                      'Piece_Quality': on_piece_quality_event,
                      'Shutdown': on_shutdown_event}
 
-    def tick(self):
+    def should_tick(self):
         if not self.enabled:
-            return
+            return False
 
         if not Event.is_in_productionTime(self):
             if not self.out_of_production_time_logged:
                 Event.log_not_in_shift(self)
             self.out_of_production_time_logged = True
-            return
+            return False
         else:
             self.out_of_production_time_logged = False
-
-        for task in self.tasks:
-            if task:
-                task.tick()
+            return True
 
 
 def try_event(probability: float):

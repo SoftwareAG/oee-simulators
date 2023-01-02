@@ -2,7 +2,6 @@ import logging
 from datetime import datetime
 from random import uniform, randint, gauss
 from cumulocityAPI import CumulocityAPI
-from task import PeriodicTask
 import interface
 
 cumulocityAPI = CumulocityAPI()
@@ -11,28 +10,21 @@ log = logging.getLogger("measurements generation")
 
 class Measurement(interface.MachineType):
     # Measurements functions #
-    def __init__(self, model, shiftplans) -> None:
+    def __init__(self, model) -> None:
         self.model = model
         self.device_id = self.model.get("device_id")
         self.simulated_data = {}
-        self.measurements_definitions = self.model.get('measurements', [])
-        self.shiftplans = shiftplans
+        self.definitions = self.model.get('measurements', [])
         self.enabled = self.model.get('enabled', True)
-        if self.enabled:
-            self.tasks = list(map(self.__create_task, self.measurements_definitions))
-            log.debug(f'measurements: {self.measurements_definitions}')
+        self.tasks = []
 
-    def __create_task(self, definition):
+    def callback(self, definition, min_interval_in_seconds, max_interval_in_seconds):
         measurement_callback = lambda task: {Measurement.measurement_functions(self, definition, task)}
-        min_interval_in_seconds, max_interval_in_seconds = interface.calculate_interval_in_seconds(definition)
         if definition:
             log.debug(f'Machine {self.model.get("label")}, id {self.model.get("id")}: create periodic task for measurement {definition["series"]}, interval ({min_interval_in_seconds}, {max_interval_in_seconds}) seconds')
         else:
             log.debug(f'No definition of measurement in machine {self.model.get("label")}, id {self.model.get("id")}')
-
-        task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, measurement_callback)
-
-        return task
+        return measurement_callback
 
     def measurement_functions(self, measurement_definition, task):
         Measurement.generate_measurement(self=self, measurement_definition=measurement_definition)
@@ -97,9 +89,8 @@ class Measurement(interface.MachineType):
         }
         return measurementDict
 
-    def tick(self):
+    def should_tick(self):
         if not self.enabled:
-            return
-        for task in self.tasks:
-            if task:
-                task.tick()
+            return False
+        else:
+            return True

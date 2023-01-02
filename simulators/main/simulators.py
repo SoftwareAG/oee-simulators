@@ -4,6 +4,7 @@ from oeeAPI import OeeAPI, ProfileCreateMode
 from shiftplan import Shiftplan
 from event import Event
 from measurement import Measurement
+from task import PeriodicTask
 import interface
 
 cumulocityAPI = CumulocityAPI()
@@ -40,6 +41,21 @@ log.debug(C8Y_USER)
 class MachineSimulator:
     def __init__(self, machine: interface.MachineType) -> None:
         self.machine = machine
+        if self.machine.enabled:
+            self.machine.tasks = list(map(self.__create_task, self.machine.definitions))
+            log.debug(f'{self.machine.definitions}')
+
+    def __create_task(self, definition):
+        min_interval_in_seconds, max_interval_in_seconds = interface.calculate_interval_in_seconds(definition)
+        measurement_callback = self.machine.callback(definition, min_interval_in_seconds, max_interval_in_seconds)
+        task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, measurement_callback)
+        return task
+
+    def tick(self):
+        if self.machine.should_tick():
+            for task in self.machine.tasks:
+                if task:
+                    task.tick()
 
 
 def get_or_create_device_id(device_definition):
@@ -94,7 +110,7 @@ if CREATE_ASSET_HIERARCHY.lower() == "true":
 
 # create list of objects for events and measurements
 event_device_list = list(map(lambda model: MachineSimulator(Event(model, shiftplans)), DEVICE_EVENT_MODELS))
-measurement_device_list = list(map(lambda model: MachineSimulator(Measurement(model, shiftplans)), DEVICE_MEASUREMENT_MODELS))
+measurement_device_list = list(map(lambda model: MachineSimulator(Measurement(model)), DEVICE_MEASUREMENT_MODELS))
 devices_list = event_device_list + measurement_device_list
 
 while True:
@@ -102,6 +118,6 @@ while True:
         shiftplan.tick()
 
     for device in devices_list:
-        device.machine.tick()
+        device.tick()
 
     time.sleep(1)
