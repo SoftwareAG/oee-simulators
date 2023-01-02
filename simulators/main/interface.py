@@ -7,9 +7,6 @@ DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 
 class MachineType:
-    def tick(self):
-        raise NotImplementedError
-
     def should_tick(self):
         raise NotImplementedError
 
