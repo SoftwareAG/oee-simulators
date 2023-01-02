@@ -49,8 +49,8 @@ class MachineSimulator:
 
     def __create_task(self, definition):
         min_interval_in_seconds, max_interval_in_seconds = interface.calculate_interval_in_seconds(definition)
-        measurement_callback = self.machine.callback(definition, min_interval_in_seconds, max_interval_in_seconds)
-        task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, measurement_callback)
+        callback = self.machine.callback(definition, min_interval_in_seconds, max_interval_in_seconds)
+        task = PeriodicTask(min_interval_in_seconds, max_interval_in_seconds, callback)
         return task
 
     def tick(self):

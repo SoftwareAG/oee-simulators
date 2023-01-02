@@ -12,14 +12,13 @@ log = logging.getLogger("events generation")
 class Event(interface.MachineType):
     def __init__(self, model, shiftplans) -> None:
         self.model = model
+        self.definitions = self.model.get('events', [])
         self.shiftplans = shiftplans
         self.machine_up = False
         self.shutdown = False
         self.production_time_s = 0.0
         self.last_production_time_update = datetime.timestamp(datetime.utcnow())
         self.out_of_production_time_logged = False
-        self.definitions = self.model.get('events', [])
-        self.task = []
         if self.model.get('enabled'):
             self.production_speed_s = self.get_production_speed_s()
 
