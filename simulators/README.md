@@ -1,8 +1,12 @@
-# Generic event based Simulators
+# Description OEE-Simulators
 
-This project offers two main features: 
-- the **oee-simulators microservice** which creates devices and sends data into Cumulocity
-- the **profile generator** to create OEE calculation profiles from the command line
+OEE-simulators offers these main features in [main](simulators/main): 
+- the **oee-simulators microservice** which creates devices and sends data into Cumulocity.
+- the **profile generator** to create/delete OEE calculation profiles from the command line.
+
+There are extra features in [extras](simulators/extras):
+- the **export profile data** to export Measurements or/and Alarms from OEE profiles into json data files.
+- the **import data** to upload Measurements or/and Alarms from data json file to OEE profiles.
 
 ## Simulator Microservice
 
