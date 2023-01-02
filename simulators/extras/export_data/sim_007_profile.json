@@ -1,4 +1,132 @@
 {
   "alarms": [],
-  "measurements": []
+  "measurements": [
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-02T12:20:11.925Z",
+      "Availability": {
+        "14400s": {
+          "unit": "",
+          "value": 89.5386
+        }
+      },
+      "AvailabilityLossTime": {
+        "14400s": {
+          "unit": "",
+          "value": 1506.44
+        }
+      },
+      "PerformanceLossTime": {
+        "14400s": {
+          "unit": "",
+          "value": 3727.96
+        }
+      },
+      "ActualProductionTime": {
+        "14400s": {
+          "unit": "",
+          "value": 12893.56
+        }
+      },
+      "QualityLossAmount": {
+        "14400s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "14400s": {
+          "unit": "",
+          "value": 9165.6
+        }
+      },
+      "IdealCycleAmount": {
+        "14400s": {
+          "unit": "",
+          "value": 0.25
+        }
+      },
+      "AvailabilityLossAmount": {
+        "14400s": {
+          "unit": "",
+          "value": 0.1046
+        }
+      },
+      "IdealMachineRuntime": {
+        "14400s": {
+          "unit": "",
+          "value": 9165.6
+        }
+      },
+      "IdealProductionAmount": {
+        "14400s": {
+          "unit": "",
+          "value": 0.8954
+        }
+      },
+      "OEE": {
+        "14400s": {
+          "unit": "",
+          "value": 63.65
+        }
+      },
+      "ActualQualityAmount": {
+        "14400s": {
+          "unit": "",
+          "value": 0.6365
+        }
+      },
+      "ActualProductionAmount": {
+        "14400s": {
+          "unit": "",
+          "value": 0.6365
+        }
+      },
+      "IdealAmount": {
+        "14400s": {
+          "unit": "",
+          "value": 1.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "14400s": {
+          "unit": "",
+          "value": 0.2589
+        }
+      },
+      "Quality": {
+        "14400s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "14400s": {
+          "unit": "",
+          "value": 14400.0
+        }
+      },
+      "QualityLossTime": {
+        "14400s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "14400s": {
+          "unit": "",
+          "value": 71.0867
+        }
+      },
+      "PotentialProductionTime": {
+        "14400s": {
+          "unit": "",
+          "value": 14400.0
+        }
+      },
+      "source": {
+        "id": "6470549"
+      }
+    }
+  ]
 }
