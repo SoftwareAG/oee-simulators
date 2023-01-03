@@ -15,7 +15,7 @@ class Measurement(interface.MachineType):
         self.simulated_data = {}
 
     def callback(self, definition, min_interval_in_seconds, max_interval_in_seconds):
-        measurement_callback = lambda task: {Measurement.measurement_functions(self, definition, task)}
+        measurement_callback = lambda task: {self.measurement_functions(definition, task)}
         if definition:
             log.debug(f'Machine {self.model.get("label")}, id {self.model.get("id")}: create periodic task for measurement {definition["series"]}, interval ({min_interval_in_seconds}, {max_interval_in_seconds}) seconds')
         else:
@@ -23,8 +23,8 @@ class Measurement(interface.MachineType):
         return measurement_callback
 
     def measurement_functions(self, measurement_definition, task):
-        Measurement.generate_measurement(self=self, measurement_definition=measurement_definition)
-        Measurement.send_measurements(self=self, measurement_definition=measurement_definition)
+        self.generate_measurement(measurement_definition=measurement_definition)
+        self.send_measurements(measurement_definition=measurement_definition)
 
     def generate_measurement(self, measurement_definition):
         log.info(f"Generating value of measurement {measurement_definition.get('series')} of device {self.model.get('id')}")
@@ -54,8 +54,8 @@ class Measurement(interface.MachineType):
         if not self.simulated_data:
             log.info(f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
             return
-        base_dict = Measurement.create_extra_info_dict(self=self, data=self.simulated_data)
-        measurement_dict = Measurement.create_individual_measurement_dict(self=self, data=self.simulated_data)
+        base_dict = self.create_extra_info_dict(self.simulated_data)
+        measurement_dict = self.create_individual_measurement_dict(self.simulated_data)
         base_dict.update(measurement_dict)
         log.info('Send create measurements requests')
         response = cumulocityAPI.create_measurements(measurement=base_dict)
