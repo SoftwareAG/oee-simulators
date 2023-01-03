@@ -404,6 +404,7 @@
         "measurements": [
             {
                 "type": "c8y_Temperature",
+                "fragment": "c8y_Temperature",
                 "series": "T1",
                 "unit": "C",
                 "valueDistribution": "normal",
@@ -414,6 +415,7 @@
             },
             {
                 "type": "c8y_Temperature",
+                "fragment": "c8y_Temperature",
                 "series": "T2",
                 "unit": "C",
                 "valueDistribution": "uniform",
@@ -432,6 +434,7 @@
         "measurements": [
             {
                 "type": "Wind",
+                "fragment": "Wind",
                 "series": "Speed",
                 "unit": "m/s",
                 "valueDistribution": "uniform",
@@ -442,6 +445,7 @@
             },
             {
                 "type": "Wind",
+                "fragment": "Wind",
                 "series": "Direction",
                 "unit": "°",
                 "valueDistribution": "uniformint",
@@ -460,6 +464,7 @@
         "measurements": [
             {
                 "type": "c8y_GeneratedPower",
+                "fragment": "c8y_GeneratedPower",
                 "series": "Current",
                 "unit": "kW",
                 "valueDistribution": "uniform",
@@ -470,6 +475,7 @@
             },
             {
                 "type": "c8y_GeneratedPower",
+                "fragment": "c8y_GeneratedPower",
                 "series": "Daily",
                 "unit": "kWh",
                 "valueDistribution": "uniform",
@@ -480,6 +486,7 @@
             },
             {
                 "type": "Status",
+                "fragment": "Status",
                 "series": "S",
                 "unit": "",
                 "valueDistribution": "uniformint",
@@ -498,6 +505,7 @@
         "measurements": [
             {
                 "type": "Pressure",
+                "fragment": "Pressure",
                 "series": "P",
                 "unit": "hPa",
                 "valueDistribution": "uniform",
@@ -508,6 +516,7 @@
             },
             {
                 "type": "PieceProduced",
+                "fragment": "PieceProduced",
                 "series": "Width",
                 "unit": "mm",
                 "valueDistribution": "uniform",
@@ -526,6 +535,7 @@
         "measurements": [
             {
                 "type": "Pressure",
+                "fragment": "Pressure",
                 "series": "P",
                 "unit": "hPa",
                 "valueDistribution": "uniform",
@@ -536,6 +546,7 @@
             },
             {
                 "type": "Pieces",
+                "fragment": "Pieces",
                 "series": "Produced",
                 "unit": "pcs",
                 "valueDistribution": "uniform",
@@ -546,6 +557,7 @@
             },
             {
                 "type": "Pieces",
+                "fragment": "Pieces",
                 "series": "OK",
                 "unit": "pcs",
                 "valueDistribution": "uniform",
@@ -564,6 +576,7 @@
         "measurements": [
             {
                 "type": "ProductionTime",
+                "fragment": "ProductionTime",
                 "series": "T",
                 "unit": "s",
                 "valueDistribution": "uniform",
@@ -574,6 +587,7 @@
             },
             {
                 "type": "Pieces",
+                "fragment": "Pieces",
                 "series": "Produced",
                 "unit": "pcs",
                 "valueDistribution": "uniform",
@@ -584,6 +598,7 @@
             },
             {
                 "type": "Pieces",
+                "fragment": "Pieces",
                 "series": "OK",
                 "unit": "pcs",
                 "valueDistribution": "uniform",
@@ -602,6 +617,7 @@
         "measurements": [
             {
                 "type": "Pressure",
+                "fragment": "Pressure",
                 "series": "P",
                 "unit": "hPa",
                 "valueDistribution": "uniform",
@@ -612,6 +628,7 @@
             },
             {
                 "type": "Pieces",
+                "fragment": "Pieces",
                 "series": "Produced",
                 "unit": "pcs",
                 "valueDistribution": "uniform",
