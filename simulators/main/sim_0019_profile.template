@@ -1,4 +1,5 @@
- {
+{
+    "name": "Measurement Simulator #4 - ${counter}",
     "alarms": [],
     "amountUnit": "",
     "deviceId": "${deviceId}",
@@ -9,7 +10,7 @@
         "ActualProductionAmount": [
             {
                 "type": "TRANSFORMATION_RULE",
-                "value": "countMeasurements(\"${deviceId}\",\"PieceProduced\")"
+                "value": "measurement(\"${deviceId}\",\"Pieces\",\"Pieces\",\"Produced\",false)"
             }
         ],
         "ActualProductionTime": [
@@ -32,16 +33,15 @@
     "machineEvents": {
         "MACHINE_STATUS": [
             {
-                "value": "measurement(\"${deviceId}\",\"Pressure\",\"Pressure\",\"P\",false) > 1100"
+                "value": "measurement(\"${deviceId}\",\"Pressure\",\"Pressure\",\"P\",false) > 1000"
             }
         ],
         "QUALITY_STATUS": [
             {
-                "value": "measurement(\"${deviceId}\",\"PieceProduced\",\"PieceProduced\",\"Width\",false) > 110"
+                "value": "measurement(\"${deviceId}\",\"Pressure\",\"Pressure\",\"P\",false) > 1100"
             }
         ]
     },
-    "name": "Simulator Normal #19 - ${counter}",
     "oeeTargets": {
         "overall": 65,
         "availability": 90,
@@ -53,15 +53,15 @@
     "subscriptions": [
         {
             "deviceId": "${deviceId}",
-            "key": "measurement.PieceProduced",
-            "name": "PieceProduced",
+            "key": "measurement.Pressure",
+            "name": "Pressure",
             "pollingIntervalSeconds": 10,
             "type": "measurement"
         },
         {
             "deviceId": "${deviceId}",
-            "key": "measurement.Pressure",
-            "name": "Pressure",
+            "key": "measurement.Pieces",
+            "name": "Pieces",
             "pollingIntervalSeconds": 10,
             "type": "measurement"
         }
@@ -78,7 +78,7 @@
     },
     "version": "2.0.0",
     "workpiece": {
-        "amount": "2",
+        "amount": "2400",
         "isActive": true,
         "name": "Pieces",
         "timeunit": 2,
