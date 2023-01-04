@@ -16,8 +16,8 @@ Detailed feature list:
 - configuration in JSON, no need to write code
 - automatically creates devices and sends data
 - identifies devices using a configurable `externalId`
-- devices can be disabled to not send any events
-- the number of events per hour can be configured as a random number in a range
+- devices can be disabled to not send any events and measurements
+- the number of events and measurements per hour can be configured as a random number in a range
     ```
     "minimumPerHour": 5,
     "maximumPerHour": 10
