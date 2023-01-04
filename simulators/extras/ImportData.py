@@ -33,13 +33,13 @@ def LogError(content):
 # Check if connection to tenant can be created
 tenantConnectionResponse = ArgumentsAndCredentialsHandler.CheckTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS)
 if tenantConnectionResponse:
-    LogInfo(f"Connect to tenant {c8y.tenant_id} successfully")
+    LogInfo(f"Connected successfully to tenant \"{c8y.tenant_id}\" with user {c8y.username} on {c8y.base_url}")
 else:
     if tenantConnectionResponse is None:
         LogError(f"Wrong base url setup. Check again the URL: {c8y.base_url}")
     else:
         LogError(tenantConnectionResponse.json())
-    LogError(f"Connect to tenant {c8y.tenant_id} failed")
+    LogError(f"Connection to tenant \"{c8y.tenant_id}\" failed with user {c8y.username} on {c8y.base_url}")
     sys.exit()
 ######################################################
 
