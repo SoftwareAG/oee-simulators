@@ -37,8 +37,15 @@ Detailed feature list:
         "frequency": 20
     } 
     ```
-  the expected quality would be 80% (*followedBy.hits/hits * 100%*)
-- Simulates shutdowns (no events are sent if machine is DOWN)
+  the expected quality would be 80% (*followedBy.frequency/frequency * 100%*)
+- the kind of measurement that should be sent, can be defined by
+    ```
+    "type": "PumpPressure",
+    "fragment": "Pressure",
+    "series": "P",
+    ```
+  where "type" is optional and its default value is the value from the "fragment" property
+- Simulates shutdowns (no events or measurements are sent if machine is DOWN)
 - Written in Python and is easy to extend
 - the main entry point is [simulators.py](main/simulators.py)
   - the script reads the configuration from [simulators.json](main/simulators.json) and creates a new device for every entry
@@ -59,11 +66,12 @@ cd oee-simulators/simulators
 docker build -t oee-simulators .
 docker save -o image.tar oee-simulators
 ```
-In [cumulocity.json](oee-simulators/simulators/cumulocity.json), change "version" from "@project.version@" to version number you want in format xx.xx.xx (example: "version": "12.20.11")
+In [cumulocity.json](oee-simulators/simulators/cumulocity.json), change "version" from "@project.version@" to version number you want in format xx.xx.xx (example: "version": "1.0.110" or "1.0.latest")
 Then compress both the [cumulocity.json] and the newly created [image.tar] files into a ZIP file or execute the command below to create [oee-simulators.zip] file:
 ```
 zip oee-simulators.zip image.tar cumulocity.json 
 ```
+This zip file can then be uploaded as a Microservice to Cumulocity IoT.
 
 ### Creating profiles automatically
 
