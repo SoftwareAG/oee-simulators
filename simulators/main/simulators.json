@@ -403,107 +403,6 @@
         "enabled": true,
         "measurements": [
             {
-                "type": "c8y_Temperature",
-                "fragment": "c8y_Temperature",
-                "series": "T1",
-                "unit": "C",
-                "valueDistribution": "normal",
-                "mu": 20.0,
-                "sigma": 0.5,
-                "minimumPerHour": 1800.0,
-                "maximumPerHour": 3600.0
-            },
-            {
-                "type": "c8y_Temperature",
-                "fragment": "c8y_Temperature",
-                "series": "T2",
-                "unit": "C",
-                "valueDistribution": "uniform",
-                "minimumValue": -20.0,
-                "maximumValue": 60.0,
-                "minimumPerHour": 1200.0,
-                "maximumPerHour": 3600.0
-            }
-        ]
-    },
-    {
-        "type": "Simulator",
-        "id": "sim_0017",
-        "label": "Measurement Simulator #2",
-        "enabled": true,
-        "measurements": [
-            {
-                "type": "Wind",
-                "fragment": "Wind",
-                "series": "Speed",
-                "unit": "m/s",
-                "valueDistribution": "uniform",
-                "minimumValue": 0.0,
-                "maximumValue": 30.0,
-                "minimumPerHour": 1800.0,
-                "maximumPerHour": 3600.0
-            },
-            {
-                "type": "Wind",
-                "fragment": "Wind",
-                "series": "Direction",
-                "unit": "°",
-                "valueDistribution": "uniformint",
-                "minimumValue": 0,
-                "maximumValue": 359,
-                "minimumPerHour": 1800.0,
-                "maximumPerHour": 3600.0
-            }
-        ]
-    },
-    {
-        "type": "Simulator",
-        "id": "sim_0018",
-        "label": "Measurement Simulator #3",
-        "enabled": true,
-        "measurements": [
-            {
-                "type": "c8y_GeneratedPower",
-                "fragment": "c8y_GeneratedPower",
-                "series": "Current",
-                "unit": "kW",
-                "valueDistribution": "uniform",
-                "minimumValue": 0.0,
-                "maximumValue": 100.0,
-                "minimumPerHour": 4.0,
-                "maximumPerHour": 4.0
-            },
-            {
-                "type": "c8y_GeneratedPower",
-                "fragment": "c8y_GeneratedPower",
-                "series": "Daily",
-                "unit": "kWh",
-                "valueDistribution": "uniform",
-                "minimumValue": 0.0,
-                "maximumValue": 3000.0,
-                "minimumPerHour": 0.042,
-                "maximumPerHour": 0.042
-            },
-            {
-                "type": "Status",
-                "fragment": "Status",
-                "series": "S",
-                "unit": "",
-                "valueDistribution": "uniformint",
-                "minimumValue": 0,
-                "maximumValue": 1,
-                "minimumPerHour": 15.0,
-                "maximumPerHour": 60.0
-            }
-        ]
-    },
-    {
-        "type": "Simulator",
-        "id": "sim_0019",
-        "label": "Normal #19",
-        "enabled": true,
-        "measurements": [
-            {
                 "type": "Pressure",
                 "fragment": "Pressure",
                 "series": "P",
@@ -529,8 +428,8 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0020",
-        "label": "Normal #20",
+        "id": "sim_0017",
+        "label": "Measurement Simulator #2",
         "enabled": true,
         "measurements": [
             {
@@ -570,8 +469,8 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0021",
-        "label": "Normal #21",
+        "id": "sim_0018",
+        "label": "Measurement Simulator #3",
         "enabled": true,
         "measurements": [
             {
@@ -611,8 +510,8 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0022",
-        "label": "Normal #22",
+        "id": "sim_0019",
+        "label": "Measurement Simulator #4",
         "enabled": true,
         "measurements": [
             {
