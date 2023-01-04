@@ -403,7 +403,7 @@
         "enabled": true,
         "measurements": [
             {
-                "type": "Pressure",
+                "type": "PumpPressure",
                 "fragment": "Pressure",
                 "series": "P",
                 "unit": "hPa",
@@ -414,7 +414,6 @@
                 "maximumPerHour": 4.0
             },
             {
-                "type": "PieceProduced",
                 "fragment": "PieceProduced",
                 "series": "Width",
                 "unit": "mm",
@@ -433,7 +432,6 @@
         "enabled": true,
         "measurements": [
             {
-                "type": "Pressure",
                 "fragment": "Pressure",
                 "series": "P",
                 "unit": "hPa",
@@ -444,7 +442,6 @@
                 "maximumPerHour": 4.0
             },
             {
-                "type": "Pieces",
                 "fragment": "Pieces",
                 "series": "Produced",
                 "unit": "pcs",
@@ -455,7 +452,6 @@
                 "maximumPerHour": 2.0
             },
             {
-                "type": "Pieces",
                 "fragment": "Pieces",
                 "series": "OK",
                 "unit": "pcs",
@@ -474,7 +470,6 @@
         "enabled": true,
         "measurements": [
             {
-                "type": "ProductionTime",
                 "fragment": "ProductionTime",
                 "series": "T",
                 "unit": "s",
@@ -485,7 +480,6 @@
                 "maximumPerHour": 4.0
             },
             {
-                "type": "Pieces",
                 "fragment": "Pieces",
                 "series": "Produced",
                 "unit": "pcs",
@@ -496,7 +490,6 @@
                 "maximumPerHour": 2.0
             },
             {
-                "type": "Pieces",
                 "fragment": "Pieces",
                 "series": "OK",
                 "unit": "pcs",
@@ -515,7 +508,6 @@
         "enabled": true,
         "measurements": [
             {
-                "type": "Pressure",
                 "fragment": "Pressure",
                 "series": "P",
                 "unit": "hPa",
@@ -526,7 +518,6 @@
                 "maximumPerHour": 4.0
             },
             {
-                "type": "Pieces",
                 "fragment": "Pieces",
                 "series": "Produced",
                 "unit": "pcs",
