@@ -9,8 +9,13 @@ log_file_formatter = logging.Formatter(log_format)
 ####################################################
 def SetupHeadersForAPIRequest(tenant_id, username, password):
     # Setup for additional API request message
+    if not tenant_id or (tenant_id == '') :
+        tenant_id_and_username = username
+    else :
+        tenant_id_and_username = tenant_id + "/" + username
+    
     user_and_pass_bytes = base64.b64encode(
-        (tenant_id + "/" + username + ':' + password).encode('ascii'))  # bytes
+        (tenant_id_and_username + ':' + password).encode('ascii'))  # bytes
     user_and_pass = user_and_pass_bytes.decode('ascii')  # decode to str
 
     c8y_headers = {
@@ -59,7 +64,7 @@ def HandleExportArguments():
     parser.add_argument('--username', '-u', type=str, help='C8Y Username')
     parser.add_argument('--password', '-p', type=str, help='C8Y Password')
     parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
-    parser.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID')
+    parser.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
     args = parser.parse_args()
 
     data_type = args.data_type
@@ -129,7 +134,7 @@ def HandleImportArguments():
     parser.add_argument('--username', '-u', type=str, help='C8Y Username')
     parser.add_argument('--password', '-p', type=str, help='C8Y Password')
     parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
-    parser.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID')
+    parser.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
 
     args = parser.parse_args()
 
