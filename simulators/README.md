@@ -1,8 +1,12 @@
-# Generic event based Simulators
+# Description OEE-Simulators
 
-This project offers two main features: 
-- the **oee-simulators microservice** which creates devices and sends data into Cumulocity
-- the **profile generator** to create OEE calculation profiles from the command line
+OEE-simulators offers these main features in [main](simulators/main): 
+- the **oee-simulators microservice** which creates devices and sends data into Cumulocity.
+- the **profile generator** to create/delete OEE calculation profiles from the command line.
+
+There are extra features in [extras](simulators/extras):
+- the **export profile data** to export Measurements or/and Alarms from OEE profiles into json data files.
+- the **import data** to upload Measurements or/and Alarms from data json file to OEE profiles.
 
 ## Simulator Microservice
 
@@ -12,29 +16,36 @@ Detailed feature list:
 - configuration in JSON, no need to write code
 - automatically creates devices and sends data
 - identifies devices using a configurable `externalId`
-- devices can be disabled to not send any events
-- the number of events per hour can be configured as a random number in a range
+- devices can be disabled to not send any events and measurements
+- the number of events and measurements per hour can be configured as a random number in a range
     ```
-    "minHits": 5,
-    "maxHits": 10
+    "minimumPerHour": 5,
+    "maximumPerHour": 10
     ```
   or using a constant number: 
     ```
-    "hits": 20
+    "frequency": 20
     ```
 - the availibility of machine is expressed as probability value with range from 0.0 to 1.0
 - the timestamp of the following `Piece_ok` event is the same as corresponding `Piece_Produced` event
 - the expected quality of production is configurable.  
     ```
     "type": "Piece_Produced",
-    "hits": 25,
+    "frequency": 25,
     "followedBy": {
         "type": "Piece_Ok",
-        "hits": 20
+        "frequency": 20
     } 
     ```
-  the expected quality would be 80% (*followedBy.hits/hits * 100%*)
-- Simulates shutdowns (no events are sent if machine is DOWN)
+  the expected quality would be 80% (*followedBy.frequency/frequency * 100%*)
+- the kind of measurement that should be sent, can be defined by
+    ```
+    "type": "PumpPressure",
+    "fragment": "Pressure",
+    "series": "P",
+    ```
+  where "type" is optional and its default value is the value from the "fragment" property
+- Simulates shutdowns (no events or measurements are sent if machine is DOWN)
 - Written in Python and is easy to extend
 - the main entry point is [simulators.py](main/simulators.py)
   - the script reads the configuration from [simulators.json](main/simulators.json) and creates a new device for every entry
@@ -54,8 +65,13 @@ git clone git@github.softwareag.com:IOTA/oee-simulators.git
 cd oee-simulators/simulators
 docker build -t oee-simulators .
 docker save -o image.tar oee-simulators
+```
+In [cumulocity.json](oee-simulators/simulators/cumulocity.json), change "version" from "@project.version@" to version number you want in format xx.xx.xx (example: "version": "1.0.110" or "1.0.latest")
+Then compress both the [cumulocity.json] and the newly created [image.tar] files into a ZIP file or execute the command below to create [oee-simulators.zip] file:
+```
 zip oee-simulators.zip image.tar cumulocity.json 
 ```
+This zip file can then be uploaded as a Microservice to Cumulocity IoT.
 
 ### Creating profiles automatically
 
