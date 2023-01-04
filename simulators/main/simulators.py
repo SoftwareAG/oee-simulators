@@ -11,6 +11,7 @@ from task import PeriodicTask, Task
 def current_timestamp(format="%Y-%m-%dT%H:%M:%S.%f"):
     return datetime.utcnow().strftime(format)[:-3] + 'Z'
 
+
 cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()
 
@@ -418,8 +419,20 @@ class MachineSimulator:
             mu = measurement_definition.get("mu")
             sigma = measurement_definition.get("sigma")
             value = round(gauss(mu, sigma), 2)
-        self.simulated_data ={
-            'type': measurement_definition.get("type"),
+
+        try:
+            type = measurement_definition.get("type")
+        except:
+            try:
+                type = measurement_definition.get("fragment")
+            except:
+                log.error(f"No definition about type and fragment of a measurement for device with id {self.device_id} ")
+                return
+
+        fragment = measurement_definition.get("fragment")
+        self.simulated_data = {
+            'type': type,
+            'fragment': fragment,
             'series': measurement_definition.get("series"),
             'value': value,
             'unit': measurement_definition.get("unit"),
@@ -470,8 +483,10 @@ def load(filename):
         log.error(e, type(e))
         return {}
 
+
 def datetime_to_string(date_time, time_string_format="%Y-%m-%dT%H:%M:%S.%f"):
     return date_time.strftime(time_string_format)[:-3] + 'Z'
+
 
 ###################################################################################
 log.info(f'cwd:{os.getcwd()}')
