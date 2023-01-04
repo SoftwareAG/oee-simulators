@@ -33,7 +33,7 @@
     "machineEvents": {
         "MACHINE_STATUS": [
             {
-                "value": "measurement(\"${deviceId}\",\"Pressure\",\"Pressure\",\"P\",false) > 1100"
+                "value": "measurement(\"${deviceId}\",\"PumpPressure\",\"Pressure\",\"P\",false) > 1100"
             }
         ],
         "QUALITY_STATUS": [
@@ -60,7 +60,7 @@
         },
         {
             "deviceId": "${deviceId}",
-            "key": "measurement.Pressure",
+            "key": "measurement.PumpPressure",
             "name": "Pressure",
             "pollingIntervalSeconds": 10,
             "type": "measurement"
