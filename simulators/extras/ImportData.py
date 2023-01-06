@@ -152,7 +152,7 @@ def CheckFileList(filepath):
 def ReplaceFileNameWithFilePathInList(list_of_files):
     list_of_file_paths = []
     for data_file_name in list_of_files:
-        data_file_path = 'export_data' + "\ ".strip() + data_file_name
+        data_file_path = 'export_data' + "/" + data_file_name
         list_of_file_paths.append(data_file_path)
     return list_of_file_paths
 
