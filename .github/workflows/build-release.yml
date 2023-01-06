@@ -56,6 +56,10 @@ jobs:
     needs: build_upload
     if: github.ref == 'refs/heads/main'
     steps:
+      - name: get versionnumber
+        run: |
+          SIMULATOR_VERSION=$(expr ${{ env.BUILD_OFFSET }} + ${GITHUB_RUN_NUMBER})
+          echo "RELEASE_VERSION=${SIMULATOR_VERSION}" >> $GITHUB_ENV
       - name: Create Release
         uses: actions/create-release@v1.1.4
         id: create_release
