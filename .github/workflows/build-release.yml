@@ -51,6 +51,10 @@ jobs:
           name: 'oee-simulators'
           path: 'repo/simulators/oee-simulators.zip'
 
+  create-release:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
       - name: Create Release
         uses: actions/create-release@v1.1.4
         id: create_release
