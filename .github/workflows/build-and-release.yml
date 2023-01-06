@@ -1,14 +1,14 @@
 # Build docker image, build cumulocity archive and release it to the repository
 
-name: Build & release oee-simulators
+name: Build and Release oee-simulators
 
 on:
   workflow_dispatch:
     inputs:
         release_body:
           type: string
-          description: GitHub Release Message
-          default: "GitHub Release Message"
+          description: GitHub Build And Release Message
+          default: "GitHub Build And Release Message"
 
 env:
   BUILD_OFFSET: 20
