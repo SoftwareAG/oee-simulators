@@ -5,6 +5,8 @@ import ArgumentsAndCredentialsHandler
 
 from datetime import datetime
 
+# Data File Folder
+EXPORT_DATA_FOLDER = 'export_data'
 # Global variables and constants
 timeFormat = "%Y-%m-%dT%H:%M:%S.%fZ"
 logTimeFormat = "%Y%m%d%H%M%S_%f"
@@ -152,7 +154,7 @@ def CheckFileList(filepath):
 def ReplaceFileNameWithFilePathInList(list_of_files):
     list_of_file_paths = []
     for data_file_name in list_of_files:
-        data_file_path = 'export_data' + "/" + data_file_name
+        data_file_path = EXPORT_DATA_FOLDER + "/" + data_file_name
         list_of_file_paths.append(data_file_path)
     return list_of_file_paths
 
@@ -170,7 +172,7 @@ if __name__ == '__main__':
         listOfFileNamesWithExtension = AddJsonExtensionToFileNameList(list_of_filenames=json_filename_list_to_import)
         listOfFilePaths = ReplaceFileNameWithFilePathInList(list_of_files=listOfFileNamesWithExtension)
     else:
-        listOfFiles = CheckFileList(filepath='export_data')
+        listOfFiles = CheckFileList(filepath=EXPORT_DATA_FOLDER)
         listOfFilePaths = ReplaceFileNameWithFilePathInList(list_of_files=listOfFiles)
 
     for filePath in listOfFilePaths:
