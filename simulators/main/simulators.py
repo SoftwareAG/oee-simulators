@@ -515,7 +515,7 @@ if CREATE_ASSET_HIERARCHY.lower() == "true":
     log.info("Creating the OEE asset hierarchy")
     ids = []
     [ids.append(simulator.device_id) for simulator in simulators]
-    oeeAPI.create_or_update_asset_hierachy(deviceIDs=ids)
+    oeeAPI.create_or_update_asset_hierarchy(deviceIDs=ids)
 
 while True:
     for shiftplan in shiftplans:
