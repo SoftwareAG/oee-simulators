@@ -18,44 +18,32 @@ C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.SetupHeadersF
 # Setup Log
 relativeFilePath = f"logs\import_{datetime.strftime(datetime.now(), logTimeFormat)}.log"
 logFilePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
-fileLogger, consoleLogger = ArgumentsAndCredentialsHandler.SetupLogger(file_logger_name='ImportProfileData', console_logger_name='ConsoleImportProfileData', filepath=logFilePath, file_log_level=file_log_level, console_log_level=console_log_level)
-def LogDebug(content):
-  fileLogger.debug(content)
-  consoleLogger.debug(content)
-def LogInfo(content):
-  fileLogger.info(content)
-  consoleLogger.info(content)
-def LogWarning(content):
-  fileLogger.warning(content)
-  consoleLogger.warning(content)
-def LogError(content):
-  fileLogger.error(content)
-  consoleLogger.error(content)
+consoleLogger = ArgumentsAndCredentialsHandler.SetupLogger(console_logger_name='ConsoleImportProfileData', console_log_level=console_log_level)
 #####################################################
 # Check if connection to tenant can be created
 tenantConnectionResponse = ArgumentsAndCredentialsHandler.CheckTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS)
 if tenantConnectionResponse:
-    LogInfo(f"Connected successfully to tenant \"{c8y.tenant_id}\" with user {c8y.username} on {c8y.base_url}")
+    consoleLogger.info(f"Connected successfully to tenant \"{c8y.tenant_id}\" with user {c8y.username} on {c8y.base_url}")
 else:
     if tenantConnectionResponse is None:
-        LogError(f"Wrong base url setup. Check again the URL: {c8y.base_url}")
+        consoleLogger.error(f"Wrong base url setup. Check again the URL: {c8y.base_url}")
     else:
-        LogError(tenantConnectionResponse.json())
-    LogError(f"Connection to tenant \"{c8y.tenant_id}\" failed with user {c8y.username} on {c8y.base_url}")
+        consoleLogger.error(tenantConnectionResponse.json())
+    consoleLogger.error(f"Connection to tenant \"{c8y.tenant_id}\" failed with user {c8y.username} on {c8y.base_url}")
     sys.exit()
 ######################################################
 
 
 def GetDeviceIdByExternalId(external_id):
-    LogInfo(f'Searching for device with ext ID {external_id}')
+    consoleLogger.info(f'Searching for device with ext ID {external_id}')
     encoded_external_id = EncodeUrl(external_id)
     response = requests.get(
         f'{c8y.base_url}/identity/externalIds/{C8Y_PROFILE_GROUP}/{encoded_external_id}', headers=C8Y_HEADERS)
     if response.ok:
         device_id = response.json()['managedObject']['id']
-        LogInfo(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
+        consoleLogger.info(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
         return device_id
-    LogWarning(response.json())
+    consoleLogger.warning(response.json())
     return None
 
 
@@ -64,7 +52,7 @@ def CreateAlarm(alarm):
         f'{c8y.base_url}/alarm/alarms', headers=C8Y_HEADERS, data=json.dumps(alarm))
     if response.ok:
         return response.json()
-    LogWarning(response.json())
+    consoleLogger.warning(response.json())
     return None
 
 
@@ -73,7 +61,7 @@ def CreateMeasurements(measurements):
                              headers=MEASUREMENTS_HEADERS, data=json.dumps(measurements))
     if response.ok:
         return response.json()
-    LogWarning(response.json())
+    consoleLogger.warning(response.json())
     return None
 
 
@@ -92,22 +80,22 @@ def DeleteUnwantedAlarmFields(alarm):
 
 
 def ImportAlarms(alarms, id):
-    fileLogger.debug('Importing all alarms')
-    fileLogger.debug(f'Alarms:{alarms}')
+    consoleLogger.debug('Importing all alarms')
+    consoleLogger.debug(f'Alarms:{alarms}')
     timeShift = GetTimeDifference(alarms[0], 'creationTime')
     for alarm in alarms:
         alarm['source']['id'] = id
         alarm = DeleteUnwantedAlarmFields(alarm)
         alarm['time'] = (datetime.strptime(
             alarm['time'], timeFormat) + timeShift).strftime(timeFormat)
-        fileLogger.debug(f'Posting Alarm for device {id}: {alarm}')
+        consoleLogger.debug(f'Posting Alarm for device {id}: {alarm}')
         CreateAlarm(alarm)
-    LogInfo("Alarms import finished")
+    consoleLogger.info("Alarms import finished")
 
 
 def ImportMeasurements(measurements, id):
-    fileLogger.debug('Importing all measurements')
-    fileLogger.debug(f'Measurements: {measurements}')
+    consoleLogger.debug('Importing all measurements')
+    consoleLogger.debug(f'Measurements: {measurements}')
     timeShift = GetTimeDifference(measurements[len(measurements) - 1], 'time')
     for i in range(len(measurements)):
         measurements[i]['time'] = (datetime.strptime(
@@ -117,7 +105,7 @@ def ImportMeasurements(measurements, id):
         "measurements": measurements
     }
     CreateMeasurements(measurements=measurements_object)
-    LogInfo("Measurements import finished")
+    consoleLogger.info("Measurements import finished")
 
 
 def LoadFile(filePath):
@@ -125,7 +113,7 @@ def LoadFile(filePath):
         with open(filePath) as f_obj:
             return json.load(f_obj)
     except Exception as e:
-        fileLogger.error(e, type(e))
+        consoleLogger.error(e, type(e))
         return {}
 
 
@@ -178,7 +166,7 @@ if __name__ == '__main__':
     for filePath in listOfFilePaths:
         file_data = LoadFile(filePath)
         external_id = ExtractExternalIdFromFilePath(filePath)
-        fileLogger.debug(f'external id: {external_id}')
+        consoleLogger.debug(f'external id: {external_id}')
         alarms = file_data.get("alarms", [])
         measurements = file_data.get("measurements", [])
         id = GetDeviceIdByExternalId(external_id=external_id)
@@ -186,8 +174,8 @@ if __name__ == '__main__':
         if len(alarms) > 0:
             ImportAlarms(alarms=alarms, id=id)
         else:
-            fileLogger.info("No Alarms to import")
+            consoleLogger.info("No Alarms to import")
         if len(measurements) > 0:
             ImportMeasurements(measurements=measurements, id=id)
         else:
-            LogInfo("No Measurements to import")
+            consoleLogger.info("No Measurements to import")
