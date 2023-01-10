@@ -59,7 +59,7 @@ cd oee-simulators/simulators
 docker build -t oee-simulators .
 docker save -o image.tar oee-simulators
 ```
-In [cumulocity.json](oee-simulators/simulators/cumulocity.json), change "version" from "@project.version@" to version number you want in format xx.xx.xx (example: "version": "12.20.11")
+In [cumulocity.json](oee-simulators/simulators/cumulocity.json), change "version" from "@project.version@" to version number you want in format xx.xx.xx (example: "version": "12.20.11"). If you want to use the same version for multiple uploads, "latest" can be used in the last position (example: "version": "12.20.latest").
 Then compress both the [cumulocity.json] and the newly created [image.tar] files into a ZIP file or execute the command below to create [oee-simulators.zip] file:
 ```
 zip oee-simulators.zip image.tar cumulocity.json 
