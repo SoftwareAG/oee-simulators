@@ -403,7 +403,8 @@
         "enabled": true,
         "measurements": [
             {
-                "type": "Pressure",
+                "type": "PumpPressure",
+                "fragment": "Pressure",
                 "series": "P",
                 "unit": "hPa",
                 "valueDistribution": "uniform",
@@ -413,7 +414,7 @@
                 "maximumPerHour": 4.0
             },
             {
-                "type": "PieceProduced",
+                "fragment": "PieceProduced",
                 "series": "Width",
                 "unit": "mm",
                 "valueDistribution": "uniform",
@@ -431,7 +432,7 @@
         "enabled": true,
         "measurements": [
             {
-                "type": "Pressure",
+                "fragment": "Pressure",
                 "series": "P",
                 "unit": "hPa",
                 "valueDistribution": "uniform",
@@ -441,7 +442,7 @@
                 "maximumPerHour": 4.0
             },
             {
-                "type": "Pieces",
+                "fragment": "Pieces",
                 "series": "Produced",
                 "unit": "pcs",
                 "valueDistribution": "uniform",
@@ -451,7 +452,7 @@
                 "maximumPerHour": 2.0
             },
             {
-                "type": "Pieces",
+                "fragment": "Pieces",
                 "series": "OK",
                 "unit": "pcs",
                 "valueDistribution": "uniform",
@@ -469,7 +470,7 @@
         "enabled": true,
         "measurements": [
             {
-                "type": "ProductionTime",
+                "fragment": "ProductionTime",
                 "series": "T",
                 "unit": "s",
                 "valueDistribution": "uniform",
@@ -479,7 +480,7 @@
                 "maximumPerHour": 4.0
             },
             {
-                "type": "Pieces",
+                "fragment": "Pieces",
                 "series": "Produced",
                 "unit": "pcs",
                 "valueDistribution": "uniform",
@@ -489,7 +490,7 @@
                 "maximumPerHour": 2.0
             },
             {
-                "type": "Pieces",
+                "fragment": "Pieces",
                 "series": "OK",
                 "unit": "pcs",
                 "valueDistribution": "uniform",
@@ -507,7 +508,7 @@
         "enabled": true,
         "measurements": [
             {
-                "type": "Pressure",
+                "fragment": "Pressure",
                 "series": "P",
                 "unit": "hPa",
                 "valueDistribution": "uniform",
@@ -517,7 +518,7 @@
                 "maximumPerHour": 4.0
             },
             {
-                "type": "Pieces",
+                "fragment": "Pieces",
                 "series": "Produced",
                 "unit": "pcs",
                 "valueDistribution": "uniform",

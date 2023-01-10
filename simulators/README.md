@@ -16,8 +16,8 @@ Detailed feature list:
 - configuration in JSON, no need to write code
 - automatically creates devices and sends data
 - identifies devices using a configurable `externalId`
-- devices can be disabled to not send any events
-- the number of events per hour can be configured as a random number in a range
+- devices can be disabled to not send any events and measurements
+- the number of events and measurements per hour can be configured as a random number in a range
     ```
     "minimumPerHour": 5,
     "maximumPerHour": 10
@@ -37,8 +37,15 @@ Detailed feature list:
         "frequency": 20
     } 
     ```
-  the expected quality would be 80% (*followedBy.hits/hits * 100%*)
-- Simulates shutdowns (no events are sent if machine is DOWN)
+  the expected quality would be 80% (*followedBy.frequency/frequency * 100%*)
+- the kind of measurement that should be sent, can be defined by
+    ```
+    "type": "PumpPressure",
+    "fragment": "Pressure",
+    "series": "P",
+    ```
+  where "type" is optional and its default value is the value from the "fragment" property
+- Simulates shutdowns (no events or measurements are sent if machine is DOWN)
 - Written in Python and is easy to extend
 - the main entry point is [simulators.py](main/simulators.py)
   - the script reads the configuration from [simulators.json](main/simulators.json) and creates a new device for every entry
@@ -64,6 +71,7 @@ Then compress both the [cumulocity.json] and the newly created [image.tar] files
 ```
 zip oee-simulators.zip image.tar cumulocity.json 
 ```
+This zip file can then be uploaded as a Microservice to Cumulocity IoT.
 
 ### Creating profiles automatically
 

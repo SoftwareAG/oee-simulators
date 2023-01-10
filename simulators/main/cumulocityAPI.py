@@ -239,9 +239,9 @@ class CumulocityAPI:
             self.log_warning_on_bad_response(response)
             return ""
 
-    def createISAType(self, type, hierachy, description, oeetarget):
+    def createISAType(self, type, hierarchy, description, oeetarget):
         isaObjectRequestBody = {
-            "hierarchy": hierachy,
+            "hierarchy": hierarchy,
             "isISAObject":{},
             "description": description,
             "detailedDescription": description,
@@ -251,9 +251,9 @@ class CumulocityAPI:
         }
         return self.create_managed_object(json.dumps(isaObjectRequestBody))
 
-    def updateISAType(self, id, type, hierachy, description, oeetarget):
+    def updateISAType(self, id, type, hierarchy, description, oeetarget):
         isaObjectRequestBody = {
-            "hierarchy": hierachy,
+            "hierarchy": hierarchy,
             "isISAObject":{},
             "description": description,
             "detailedDescription": description,

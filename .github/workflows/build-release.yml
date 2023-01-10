@@ -11,7 +11,7 @@ on:
           default: "GitHub Release Message"
 
 env:
-  BUILD_OFFSET: 20
+  BUILD_OFFSET: 10
 
 jobs:
   build_upload:
@@ -52,6 +52,7 @@ jobs:
           path: 'repo/simulators/oee-simulators.zip'
 
       - name: Create Release
+        if: github.ref == 'refs/heads/main'
         uses: actions/create-release@v1.1.4
         id: create_release
         with:
@@ -64,6 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: upload oee-sim zip
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -74,6 +76,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: upload source-code zip
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ github.token }}

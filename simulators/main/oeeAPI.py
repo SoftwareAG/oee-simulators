@@ -174,7 +174,7 @@ class OeeAPI:
         log.warning(f'Cannot get shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
         return {'locationId':locationId,'timeslots':{}}
 
-    def create_or_update_asset_hierachy(self, deviceIDs):
+    def create_or_update_asset_hierarchy(self, deviceIDs):
         line_description = "Simulator LINE"
         lineHierarchy = []
         for deviceID in deviceIDs:
@@ -182,15 +182,17 @@ class OeeAPI:
             if profileID != "":
                 lineHierarchy.append({"profileID":profileID, "ID":deviceID})
 
-        line_id = self.get_id_of_asset_hierachy_line(line_description)
+        line_id = self.get_id_of_asset_hierarchy_line(line_description)
         if line_id == '':
-            line_id = self.c8y_api.createISAType(type="LINE", hierachy=None, description=line_description, oeetarget=80)
-            self.c8y_api.createISAType(type="SITE", hierachy=[{"profileID": None, "ID": line_id}], description="Simulator SITE", oeetarget=80)
+            line_id_ISA_Type = self.c8y_api.createISAType(type="LINE", hierarchy=None, description=line_description, oeetarget=80)
+            self.c8y_api.createISAType(type="SITE", hierarchy=[{"profileID": None, "ID": line_id_ISA_Type}], description="Simulator SITE", oeetarget=80)
+            # Get line_Id from line_id_ISA_Type
+            line_id = line_id_ISA_Type.get("id")
         
-        lineMO = self.c8y_api.updateISAType(id=line_id, type="LINE", hierachy=lineHierarchy, description=line_description, oeetarget=80)
-        log.info(f'Created asset hierachy. Line-ID {lineMO}')
+        lineMO = self.c8y_api.updateISAType(id=line_id, type="LINE", hierarchy=lineHierarchy, description=line_description, oeetarget=80)
+        log.info(f'Created asset hierarchy. Line-ID {lineMO}')
 
-    def get_id_of_asset_hierachy_line(self, text):
+    def get_id_of_asset_hierarchy_line(self, text):
         objects = self.c8y_api.getISAObjects()
         for object in objects:
             if object['description'] == text:

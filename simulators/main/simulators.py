@@ -8,6 +8,7 @@ from measurement import Measurement
 from task import PeriodicTask
 import interface
 
+
 cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()
 
