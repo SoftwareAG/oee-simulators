@@ -68,11 +68,15 @@ class MachineSimulator:
 def get_or_create_device_id(device_definition):
     sim_id = device_definition.get("id")
     label = device_definition.get("label")
-    if sim_id and label:
-        device_id = cumulocityAPI.get_or_create_device(sim_id, label)
-        return device_id
-    log.debug(f"Check again device definition info of device name {label} or device id {sim_id}")
-    sys.exit()
+    if not sim_id or not label:
+        if not sim_id:
+            log.debug(f"No definition info of device id")
+        if not label:
+            log.debug(f"No definition info of device name")
+        sys.exit()
+
+    device_id = cumulocityAPI.get_or_create_device(sim_id, label)
+    return device_id
 
 
 def load(filename):
