@@ -115,7 +115,7 @@ if CREATE_ASSET_HIERARCHY.lower() == "true":
     log.info("Creating the OEE asset hierarchy")
     ids = []
     [ids.append(simulator.get("device_id")) for simulator in DEVICE_MODELS]
-    oeeAPI.create_or_update_asset_hierachy(deviceIDs=ids)
+    oeeAPI.create_or_update_asset_hierarchy(deviceIDs=ids)
 
 # create list of objects for events and measurements
 event_device_list = list(map(lambda model: MachineSimulator(Event(model, shiftplans)), DEVICE_EVENT_MODELS))
