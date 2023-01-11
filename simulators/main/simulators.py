@@ -45,6 +45,7 @@ class MachineSimulator:
         self.machine.device_id = self.machine.model.get("device_id")
         self.machine.locationId = self.machine.model.get("locationId", "")
         self.machine.enabled = self.machine.model.get('enabled', True)
+        self.machine.id = self.machine.model.get('id')
         if self.machine.enabled:
             self.machine.tasks = list(map(self.__create_task, self.machine.definitions))
             log.debug(f'{self.machine.definitions}')

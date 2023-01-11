@@ -27,7 +27,7 @@ class Measurement(interface.MachineType):
         self.send_measurements(measurement_definition=measurement_definition)
 
     def generate_measurement(self, measurement_definition):
-        log.info(f"Generating value of measurement {measurement_definition.get('series')} of device {self.model.get('id')}")
+        log.info(f"Generating value of measurement {measurement_definition.get('series')} of device {self.id}")
         distribution = measurement_definition.get("valueDistribution", "uniform")
         value = 0.0
         if distribution == "uniform":
@@ -52,7 +52,7 @@ class Measurement(interface.MachineType):
 
     def send_measurements(self, measurement_definition):
         if not self.simulated_data:
-            log.info(f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
+            log.info(f"No measurement definition to create measurements for device #{self.device_id}, external id {self.id}")
             return
         base_dict = self.create_extra_info_dict(self.simulated_data)
         measurement_dict = self.create_individual_measurement_dict(self.simulated_data)
@@ -60,7 +60,7 @@ class Measurement(interface.MachineType):
         log.info('Send create measurements requests')
         response = cumulocityAPI.create_measurements(measurement=base_dict)
         if response:
-            log.info(f"Created new {measurement_definition.get('type')} measurement, series {measurement_definition.get('series')} with value {self.simulated_data.get('value')}{self.simulated_data.get('unit')} for device {self.model.get('label')}, id {self.model.get('id')}")
+            log.info(f"Created new {measurement_definition.get('type')} measurement, series {measurement_definition.get('series')} with value {self.simulated_data.get('value')}{self.simulated_data.get('unit')} for device {self.model.get('label')}, id {self.id}")
 
     def create_extra_info_dict(self, data):
         extraInfoDict = {

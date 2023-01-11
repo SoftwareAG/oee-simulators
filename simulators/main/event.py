@@ -251,7 +251,7 @@ class Event(interface.MachineType):
         else:
             response = cumulocityAPI.send_event(base_event)
             if response:
-                log.info(f"Created new {event_fragment.get('type')} event for device {self.model.get('label')}, id {self.model.get('id')}")
+                log.info(f"Created new {event_fragment.get('type')} event for device {self.model.get('label')}, id {self.id}")
             return newTimestamp
 
     def is_in_productionTime(self):
