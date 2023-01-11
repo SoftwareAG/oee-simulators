@@ -65,9 +65,9 @@ class MachineSimulator:
                     task.tick()
 
 
-def get_or_create_device_id(device_definition):
-    sim_id = device_definition.get("id")
-    label = device_definition.get("label")
+def get_or_create_device_id(device_model):
+    sim_id = device_model.get("id")
+    label = device_model.get("label")
     if not sim_id or not label:
         if not sim_id:
             log.debug(f"No definition info of device id")
