@@ -92,8 +92,7 @@ DEVICE_MEASUREMENT_MODELS = []
 
 # Add device id to the model of devices
 for device_model in DEVICE_MODELS:
-    device_id = get_or_create_device_id(device_model)
-    device_model["device_id"] = device_id
+    device_model["device_id"] = get_or_create_device_id(device_model)
     if device_model.get("events"):
         DEVICE_EVENT_MODELS.append(device_model)
     if device_model.get("measurements"):
