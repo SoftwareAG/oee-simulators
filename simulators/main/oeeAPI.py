@@ -99,7 +99,7 @@ class OeeAPI:
         if template_name in self.templates.keys():
             return self.templates[template_name]
         try:
-            template = open(template_name, 'r').read()
+            template = open(f'profile_templates/{template_name}', 'r').read()
             self.templates[template_name] = template
             return template
         except Exception as e:

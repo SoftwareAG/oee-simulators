@@ -92,7 +92,7 @@ To deploy this project, upload the zip file to the Cumulocity as Microservice. T
 
 ## Profile generator
 
-The Profile Generator is a [Python script](main/profile_generator.py) that creates OEE calculation profiles for each simulator available in the tenant. Every simulator needs a template with appropriate name (<external_id>_profile.template) in your local [main](main/) folder. The simulators must have been created beforehand by deploying the [oee-simulators](#simulator-microservice) microservice.
+The Profile Generator is a [Python script](main/profile_generator.py) that creates OEE calculation profiles for each simulator available in the tenant. Every simulator needs a template with appropriate name (<external_id>_profile.template) in your local [main](main/profile_templates) folder. The simulators must have been created beforehand by deploying the [oee-simulators](#simulator-microservice) microservice.
 
 ### Environment
 
