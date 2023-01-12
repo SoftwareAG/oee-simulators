@@ -15,6 +15,11 @@ C8Y_HEADERS = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + user_and_pass
 }
+EXTERNAL_ID_HEADERS = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/vnd.com.nsn.cumulocity.externalid+json',
+    'Authorization': 'Basic ' + user_and_pass
+}
 MEASUREMENT_HEADERS = {
     'Content-Type': 'application/vnd.com.nsn.cumulocity.measurement+json',
     'Accept': 'application/json',
@@ -215,7 +220,7 @@ class CumulocityAPI:
             'type': type,
             'externalId': ext_id
         }
-        response = requests.post(C8Y_BASE + '/identity/globalIds/' + device_id + '/externalIds', headers=C8Y_HEADERS, data=json.dumps(external_id))
+        response = requests.post(C8Y_BASE + '/identity/globalIds/' + device_id + '/externalIds', headers=EXTERNAL_ID_HEADERS, data=json.dumps(external_id))
         self.log_warning_on_bad_response(response)
         return device_id
 
