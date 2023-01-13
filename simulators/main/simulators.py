@@ -24,7 +24,7 @@ MICROSERVICE_OPTIONS = cumulocityAPI.get_tenant_option_by_category("simulators")
 PROFILE_CREATE_MODE = ProfileCreateMode[MICROSERVICE_OPTIONS.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
 CREATE_PROFILES_ARGUMENTS = MICROSERVICE_OPTIONS.get("CREATE_PROFILES_ARGUMENTS", "")
 CREATE_ASSET_HIERARCHY = MICROSERVICE_OPTIONS.get("CREATE_ASSET_HIERARCHY", "False")
-LOG_LEVEL = MICROSERVICE_OPTIONS.get("LOG_LEVEL", "DEBUG")
+LOG_LEVEL = MICROSERVICE_OPTIONS.get("LOG_LEVEL", "INFO")
 DELETE_PROFILES = MICROSERVICE_OPTIONS.get("DELETE_PROFILES", "False")
 
 if LOG_LEVEL == "DEBUG":
@@ -380,7 +380,9 @@ class MachineSimulator:
             log.info(f'{self.model["id"]} is down -> ignore event: {json.dumps(base_event)}')
             return None
         else:
-            cumulocityAPI.send_event(base_event)
+            response = cumulocityAPI.send_event(base_event)
+            if response:
+                log.info(f"Created new {event_fragment.get('type')} event for device {self.model.get('label')}, id {self.model.get('id')}")
             return newTimestamp
 
     def is_in_productionTime(self):
