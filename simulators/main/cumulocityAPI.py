@@ -5,6 +5,7 @@ C8Y_TENANT = os.environ.get('C8Y_TENANT') or 't100'
 C8Y_USER = os.environ.get('C8Y_USER') or 'test'
 C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD') or 'test'
 
+
 MOCK_REQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
 
 user_and_pass_bytes = base64.b64encode((C8Y_TENANT + "/" + C8Y_USER + ':' + C8Y_PASSWORD).encode('ascii')) # bytes
@@ -18,6 +19,11 @@ C8Y_HEADERS = {
 EXTERNAL_ID_HEADERS = {
     'Content-Type': 'application/json',
     'Accept': 'application/vnd.com.nsn.cumulocity.externalid+json',
+    'Authorization': 'Basic ' + user_and_pass
+}
+EVENT_HEADERS = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/vnd.com.nsn.cumulocity.event+json',
     'Authorization': 'Basic ' + user_and_pass
 }
 MEASUREMENT_HEADERS = {
@@ -43,7 +49,7 @@ class CumulocityAPI:
             log.info(f"mock: send event {json.dumps(event)} to {C8Y_BASE}/event/events")
             return json.dumps({'response': 200})
         else:
-            response = requests.post(C8Y_BASE + '/event/events', headers=C8Y_HEADERS, data=json.dumps(event))
+            response = requests.post(C8Y_BASE + '/event/events', headers=EVENT_HEADERS, data=json.dumps(event))
             if response.ok:
                 return response.json()
             self.log_warning_on_bad_response(response)

@@ -24,7 +24,7 @@ MICROSERVICE_OPTIONS = cumulocityAPI.get_tenant_option_by_category("simulators")
 PROFILE_CREATE_MODE = ProfileCreateMode[MICROSERVICE_OPTIONS.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
 CREATE_PROFILES_ARGUMENTS = MICROSERVICE_OPTIONS.get("CREATE_PROFILES_ARGUMENTS", "")
 CREATE_ASSET_HIERARCHY = MICROSERVICE_OPTIONS.get("CREATE_ASSET_HIERARCHY", "False")
-LOG_LEVEL = MICROSERVICE_OPTIONS.get("LOG_LEVEL", "INFO")
+LOG_LEVEL = MICROSERVICE_OPTIONS.get("LOG_LEVEL", "DEBUG")
 DELETE_PROFILES = MICROSERVICE_OPTIONS.get("DELETE_PROFILES", "False")
 
 if LOG_LEVEL == "DEBUG":
@@ -401,7 +401,7 @@ class MachineSimulator:
     # Measurements functions #
     def measurement_functions(self, measurement_definition, task):
         MachineSimulator.generate_measurement(self=self, measurement_definition=measurement_definition)
-        MachineSimulator.send_measurements(self=self, measurement_definition=measurement_definition)
+        MachineSimulator.send_measurements(self=self)
 
     def generate_measurement(self, measurement_definition):
         log.info(f"Generating value of measurement {measurement_definition.get('series')} of device {self.model.get('id')}")
@@ -439,7 +439,7 @@ class MachineSimulator:
             'time': datetime.utcnow()
         }
 
-    def send_measurements(self, measurement_definition):
+    def send_measurements(self):
         if not self.simulated_data:
             log.info(f"No measurement definition to create measurements for device #{self.device_id}, external id {self.model.get('id')}")
             return
@@ -449,7 +449,7 @@ class MachineSimulator:
         log.info('Send create measurements requests')
         response = cumulocityAPI.create_measurements(measurement=base_dict)
         if response:
-            log.info(f"Created new {measurement_definition.get('type')} measurement, series {measurement_definition.get('series')} with value {self.simulated_data.get('value')}{self.simulated_data.get('unit')} for device {self.model.get('label')}, id {self.model.get('id')}")
+            log.info(f"Created new {self.simulated_data.get('type')} measurement, series {self.simulated_data.get('series')} with value {self.simulated_data.get('value')}{self.simulated_data.get('unit')} for device {self.model.get('label')}, id {self.model.get('id')}")
 
     def create_extra_info_dict(self, data):
         extraInfoDict = {
