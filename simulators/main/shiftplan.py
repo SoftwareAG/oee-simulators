@@ -4,6 +4,7 @@ from task import PeriodicTask
 from cumulocityAPI import CumulocityAPI
 from oeeAPI import OeeAPI 
 import logging
+import interface
 
 log = logging.getLogger("task")
 
@@ -13,7 +14,6 @@ oeeAPI = OeeAPI()
 one_day = 86400 
 
 class Shiftplan:
-    dateformat='%Y-%m-%dT%H:%M:%SZ'
     polling_interval = one_day
 
     def __init__(self, shiftplan_model) -> None:
@@ -39,7 +39,7 @@ class Shiftplan:
 
     def fetchNewShiftplan(self):
         log.debug(f'Getting Shiftplan for location: {self.locationId}')
-        self.setShiftplan(oeeAPI.get_shiftplan(self.locationId, f'{datetime.utcnow():{Shiftplan.dateformat}}', f'{datetime.utcnow() + timedelta(seconds=Shiftplan.polling_interval):{Shiftplan.dateformat}}'))
+        self.setShiftplan(oeeAPI.get_shiftplan(self.locationId, f'{datetime.utcnow():{interface.DATE_FORMAT}}', f'{datetime.utcnow() + timedelta(seconds=Shiftplan.polling_interval):{interface.DATE_FORMAT}}'))
 
     def setShiftplan(self, shiftplan):
         log.info(f'Setting Shiftplan for location: {self.locationId}')

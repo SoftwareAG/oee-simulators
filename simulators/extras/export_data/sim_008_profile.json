@@ -2,170 +2,230 @@
   "alarms": [
     {
       "type": "OEECalculationAlarm",
-      "text": "Error calculation interval 600s of configuration 7872789:\n\nActualProductionAmount: 1.1472\nActualProductionTime: 163.722\nActualQualityAmount: 1.1472\nAvailability: 27.287\nAvailabilityLossAmount: 3.0297\nAvailabilityLossTime: 436.278\nIdealAmount: 4.1667\nIdealCycleAmount: 25\nIdealCycleTime: 144\nIdealMachineRuntime: 165.1968\nIdealProductionAmount: 1.137\nIdealQualityTime: 165.1968\nOEE: 27.5328\nPerformance: 100.9008\nPerformanceLossAmount: -0.0102\nPerformanceLossTime: -1.4748\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
-      "creationTime": "2023-01-11T13:22:32.959Z",
-      "lastUpdated": "2023-01-11T13:22:32.959Z",
+      "text": "Error calculation interval 600s of configuration 7872793:\n\nActualProductionAmount: 10.0595\nActualProductionTime: 600\nActualQualityAmount: 10.0595\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 10\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 603.57\nIdealProductionAmount: 10\nIdealQualityTime: 603.57\nOEE: 100.595\nPerformance: 100.595\nPerformanceLossAmount: -0.0595\nPerformanceLossTime: -3.57\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T14:36:42.460Z",
+      "lastUpdated": "2023-01-11T14:36:42.460Z",
       "status": "CLEARED",
       "severity": "MAJOR",
       "count": 1,
-      "time": "2023-01-11T13:22:32.922Z",
+      "time": "2023-01-11T14:36:42.449Z",
       "history": {
         "auditRecords": [],
         "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEECalculationAlarm",
-      "text": "Error calculation interval 600s of configuration 7872789:\n\nActualProductionAmount: 2.0616\nActualProductionTime: 255.026\nActualQualityAmount: 2.0616\nAvailability: 42.5043\nAvailabilityLossAmount: 2.3957\nAvailabilityLossTime: 344.974\nIdealAmount: 4.1667\nIdealCycleAmount: 25\nIdealCycleTime: 144\nIdealMachineRuntime: 296.8704\nIdealProductionAmount: 1.771\nIdealQualityTime: 296.8704\nOEE: 49.4784\nPerformance: 116.4079\nPerformanceLossAmount: -0.2906\nPerformanceLossTime: -41.8444\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
-      "creationTime": "2023-01-11T12:57:00.274Z",
-      "lastUpdated": "2023-01-11T12:57:00.274Z",
+      "text": "Error calculation interval 600s of configuration 7872793:\n\nActualProductionAmount: 10.0573\nActualProductionTime: 600\nActualQualityAmount: 10.0573\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 10\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 603.438\nIdealProductionAmount: 10\nIdealQualityTime: 603.438\nOEE: 100.573\nPerformance: 100.573\nPerformanceLossAmount: -0.0573\nPerformanceLossTime: -3.438\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T14:16:16.077Z",
+      "lastUpdated": "2023-01-11T14:16:16.077Z",
       "status": "CLEARED",
       "severity": "MAJOR",
       "count": 1,
-      "time": "2023-01-11T12:57:00.187Z",
+      "time": "2023-01-11T14:16:16.071Z",
       "history": {
         "auditRecords": [],
         "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEECalculationAlarm",
+      "text": "Error calculation interval 600s of configuration 7872793:\n\nActualProductionAmount: 10.0549\nActualProductionTime: 600\nActualQualityAmount: 10.0549\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 10\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 603.294\nIdealProductionAmount: 10\nIdealQualityTime: 603.294\nOEE: 100.549\nPerformance: 100.549\nPerformanceLossAmount: -0.0549\nPerformanceLossTime: -3.294\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T14:06:02.888Z",
+      "lastUpdated": "2023-01-11T14:06:02.888Z",
+      "status": "CLEARED",
+      "severity": "MAJOR",
+      "count": 1,
+      "time": "2023-01-11T14:06:02.860Z",
+      "history": {
+        "auditRecords": [],
+        "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEECalculationAlarm",
+      "text": "Error calculation interval 600s of configuration 7872793:\n\nActualProductionAmount: 10.0229\nActualProductionTime: 600\nActualQualityAmount: 10.0229\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 10\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 601.374\nIdealProductionAmount: 10\nIdealQualityTime: 601.374\nOEE: 100.229\nPerformance: 100.229\nPerformanceLossAmount: -0.0229\nPerformanceLossTime: -1.374\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T13:46:53.075Z",
+      "lastUpdated": "2023-01-11T13:46:53.075Z",
+      "status": "CLEARED",
+      "severity": "MAJOR",
+      "count": 1,
+      "time": "2023-01-11T13:46:53.065Z",
+      "history": {
+        "auditRecords": [],
+        "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEECalculationAlarm",
+      "text": "Error calculation interval 1800s of configuration 7872793:\n\nActualProductionAmount: 30.0166\nActualProductionTime: 1800\nActualQualityAmount: 30.0166\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 30\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 1800.996\nIdealProductionAmount: 30\nIdealQualityTime: 1800.996\nOEE: 100.0553\nPerformance: 100.0553\nPerformanceLossAmount: -0.0166\nPerformanceLossTime: -0.996\nPotentialProductionTime: 1800\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T13:36:40.083Z",
+      "lastUpdated": "2023-01-11T13:36:40.083Z",
+      "status": "CLEARED",
+      "severity": "MAJOR",
+      "count": 1,
+      "time": "2023-01-11T13:36:39.992Z",
+      "history": {
+        "auditRecords": [],
+        "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEECalculationAlarm",
+      "text": "Error calculation interval 600s of configuration 7872793:\n\nActualProductionAmount: 10.0885\nActualProductionTime: 600\nActualQualityAmount: 10.0885\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 10\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 605.31\nIdealProductionAmount: 10\nIdealQualityTime: 605.31\nOEE: 100.885\nPerformance: 100.885\nPerformanceLossAmount: -0.0885\nPerformanceLossTime: -5.31\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T13:36:40.007Z",
+      "lastUpdated": "2023-01-11T13:36:40.007Z",
+      "status": "CLEARED",
+      "severity": "MAJOR",
+      "count": 1,
+      "time": "2023-01-11T13:36:39.991Z",
+      "history": {
+        "auditRecords": [],
+        "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEECalculationAlarm",
+      "text": "Error calculation interval 600s of configuration 7872793:\n\nActualProductionAmount: 10.0387\nActualProductionTime: 600\nActualQualityAmount: 10.0387\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 10\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 602.322\nIdealProductionAmount: 10\nIdealQualityTime: 602.322\nOEE: 100.387\nPerformance: 100.387\nPerformanceLossAmount: -0.0387\nPerformanceLossTime: -2.322\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T13:16:13.678Z",
+      "lastUpdated": "2023-01-11T13:16:13.678Z",
+      "status": "CLEARED",
+      "severity": "MAJOR",
+      "count": 1,
+      "time": "2023-01-11T13:16:13.667Z",
+      "history": {
+        "auditRecords": [],
+        "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEECalculationAlarm",
+      "text": "Error calculation interval 600s of configuration 7872793:\n\nActualProductionAmount: 10.0543\nActualProductionTime: 600\nActualQualityAmount: 10.0543\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 10\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 603.258\nIdealProductionAmount: 10\nIdealQualityTime: 603.258\nOEE: 100.543\nPerformance: 100.543\nPerformanceLossAmount: -0.0543\nPerformanceLossTime: -3.258\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T13:06:00.508Z",
+      "lastUpdated": "2023-01-11T13:06:00.508Z",
+      "status": "CLEARED",
+      "severity": "MAJOR",
+      "count": 1,
+      "time": "2023-01-11T13:06:00.483Z",
+      "history": {
+        "auditRecords": [],
+        "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEECalculationAlarm",
+      "text": "Error calculation interval 600s of configuration 7872793:\n\nActualProductionAmount: 10.0441\nActualProductionTime: 600\nActualQualityAmount: 10.0441\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 10\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 602.646\nIdealProductionAmount: 10\nIdealQualityTime: 602.646\nOEE: 100.441\nPerformance: 100.441\nPerformanceLossAmount: -0.0441\nPerformanceLossTime: -2.646\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T12:55:47.313Z",
+      "lastUpdated": "2023-01-11T12:55:47.313Z",
+      "status": "CLEARED",
+      "severity": "MAJOR",
+      "count": 1,
+      "time": "2023-01-11T12:55:47.284Z",
+      "history": {
+        "auditRecords": [],
+        "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEECalculationAlarm",
+      "text": "Error calculation interval 1800s of configuration 7872793:\n\nActualProductionAmount: 30.061\nActualProductionTime: 1800\nActualQualityAmount: 30.061\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 30\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 1803.66\nIdealProductionAmount: 30\nIdealQualityTime: 1803.66\nOEE: 100.2033\nPerformance: 100.2033\nPerformanceLossAmount: -0.061\nPerformanceLossTime: -3.66\nPotentialProductionTime: 1800\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T12:36:37.698Z",
+      "lastUpdated": "2023-01-11T12:36:37.698Z",
+      "status": "CLEARED",
+      "severity": "MAJOR",
+      "count": 1,
+      "time": "2023-01-11T12:36:37.628Z",
+      "history": {
+        "auditRecords": [],
+        "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEECalculationAlarm",
+      "text": "Error calculation interval 600s of configuration 7872793:\n\nActualProductionAmount: 10.0427\nActualProductionTime: 600\nActualQualityAmount: 10.0427\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 10\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 602.562\nIdealProductionAmount: 10\nIdealQualityTime: 602.562\nOEE: 100.427\nPerformance: 100.427\nPerformanceLossAmount: -0.0427\nPerformanceLossTime: -2.562\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T12:36:37.639Z",
+      "lastUpdated": "2023-01-11T12:36:37.639Z",
+      "status": "CLEARED",
+      "severity": "MAJOR",
+      "count": 1,
+      "time": "2023-01-11T12:36:37.628Z",
+      "history": {
+        "auditRecords": [],
+        "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEECalculationAlarm",
+      "text": "Error calculation interval 600s of configuration 7872793:\n\nActualProductionAmount: 10.0399\nActualProductionTime: 600\nActualQualityAmount: 10.0399\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 10\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 602.394\nIdealProductionAmount: 10\nIdealQualityTime: 602.394\nOEE: 100.399\nPerformance: 100.399\nPerformanceLossAmount: -0.0399\nPerformanceLossTime: -2.394\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T12:26:24.448Z",
+      "lastUpdated": "2023-01-11T12:26:24.448Z",
+      "status": "CLEARED",
+      "severity": "MAJOR",
+      "count": 1,
+      "time": "2023-01-11T12:26:24.438Z",
+      "history": {
+        "auditRecords": [],
+        "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEECalculationAlarm",
+      "text": "Error calculation interval 600s of configuration 7872793:\n\nActualProductionAmount: 10.1041\nActualProductionTime: 600\nActualQualityAmount: 10.1041\nAvailability: 100\nAvailabilityLossAmount: 0\nAvailabilityLossTime: 0\nIdealAmount: 10\nIdealCycleAmount: 60\nIdealCycleTime: 60\nIdealMachineRuntime: 606.246\nIdealProductionAmount: 10\nIdealQualityTime: 606.246\nOEE: 101.041\nPerformance: 101.041\nPerformanceLossAmount: -0.1041\nPerformanceLossTime: -6.246\nPotentialProductionTime: 600\nQuality: 100\nQualityLossAmount: 0\nQualityLossTime: 0",
+      "creationTime": "2023-01-11T11:55:44.929Z",
+      "lastUpdated": "2023-01-11T11:55:44.929Z",
+      "status": "CLEARED",
+      "severity": "MAJOR",
+      "count": 1,
+      "time": "2023-01-11T11:55:44.918Z",
+      "history": {
+        "auditRecords": [],
+        "self": "https://t1249145768.eu-latest.cumulocity.com/audit/auditRecords"
+      },
+      "source": {
+        "id": "7872793"
       }
     }
   ],
   "measurements": [
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T11:55:05.925Z",
-      "Availability": {
-        "600s": {
-          "unit": "",
-          "value": 10.5677
-        }
-      },
-      "AvailabilityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 536.594
-        }
-      },
-      "PerformanceLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 13.0348
-        }
-      },
-      "ActualProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 63.406
-        }
-      },
-      "QualityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "IdealQualityTime": {
-        "600s": {
-          "unit": "",
-          "value": 50.3712
-        }
-      },
-      "IdealCycleAmount": {
-        "600s": {
-          "unit": "",
-          "value": 25.0
-        }
-      },
-      "AvailabilityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 3.7263
-        }
-      },
-      "IdealMachineRuntime": {
-        "600s": {
-          "unit": "",
-          "value": 50.3712
-        }
-      },
-      "IdealProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.4403
-        }
-      },
-      "OEE": {
-        "600s": {
-          "unit": "",
-          "value": 8.3952
-        }
-      },
-      "ActualQualityAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.3498
-        }
-      },
-      "ActualProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.3498
-        }
-      },
-      "IdealAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1667
-        }
-      },
-      "PerformanceLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.0905
-        }
-      },
-      "Quality": {
-        "600s": {
-          "unit": "",
-          "value": 100.0
-        }
-      },
-      "IdealCycleTime": {
-        "600s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "QualityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "Performance": {
-        "600s": {
-          "unit": "",
-          "value": 79.4423
-        }
-      },
-      "PotentialProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 600.0
-        }
-      },
-      "source": {
-        "id": "7872789"
-      }
-    },
-    {
-      "type": "OEEMeasurements",
-      "time": "2023-01-11T12:05:05.925Z",
+      "time": "2023-01-11T11:55:33.798Z",
       "Availability": {
         "600s": {
           "unit": "",
@@ -181,7 +241,7 @@
       "PerformanceLossTime": {
         "600s": {
           "unit": "",
-          "value": 26.2896
+          "value": -6.246
         }
       },
       "ActualProductionTime": {
@@ -193,19 +253,19 @@
       "QualityLossAmount": {
         "600s": {
           "unit": "",
-          "value": 1.0
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "600s": {
           "unit": "",
-          "value": 429.7104
+          "value": 606.246
         }
       },
       "IdealCycleAmount": {
         "600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
@@ -217,67 +277,67 @@
       "IdealMachineRuntime": {
         "600s": {
           "unit": "",
-          "value": 573.7104
+          "value": 606.246
         }
       },
       "IdealProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "OEE": {
         "600s": {
           "unit": "",
-          "value": 71.6184
+          "value": 101.041
         }
       },
       "ActualQualityAmount": {
         "600s": {
           "unit": "",
-          "value": 2.9841
+          "value": 10.1041
         }
       },
       "ActualProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 3.9841
+          "value": 10.1041
         }
       },
       "IdealAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "PerformanceLossAmount": {
         "600s": {
           "unit": "",
-          "value": 0.1826
+          "value": -0.1041
         }
       },
       "Quality": {
         "600s": {
           "unit": "",
-          "value": 74.9002
+          "value": 100.0
         }
       },
       "IdealCycleTime": {
         "600s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "600s": {
           "unit": "",
-          "value": 144.0
+          "value": 0.0
         }
       },
       "Performance": {
         "600s": {
           "unit": "",
-          "value": 95.6184
+          "value": 101.041
         }
       },
       "PotentialProductionTime": {
@@ -287,12 +347,12 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T12:15:05.925Z",
+      "time": "2023-01-11T12:05:33.798Z",
       "Availability": {
         "600s": {
           "unit": "",
@@ -308,7 +368,7 @@
       "PerformanceLossTime": {
         "600s": {
           "unit": "",
-          "value": 2.3568
+          "value": 6.588
         }
       },
       "ActualProductionTime": {
@@ -320,19 +380,19 @@
       "QualityLossAmount": {
         "600s": {
           "unit": "",
-          "value": 2.613
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "600s": {
           "unit": "",
-          "value": 221.3712
+          "value": 593.412
         }
       },
       "IdealCycleAmount": {
         "600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
@@ -344,321 +404,67 @@
       "IdealMachineRuntime": {
         "600s": {
           "unit": "",
-          "value": 597.6432
+          "value": 593.412
         }
       },
       "IdealProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "OEE": {
         "600s": {
           "unit": "",
-          "value": 36.8952
+          "value": 98.902
         }
       },
       "ActualQualityAmount": {
         "600s": {
           "unit": "",
-          "value": 1.5373
+          "value": 9.8902
         }
       },
       "ActualProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1503
+          "value": 9.8902
         }
       },
       "IdealAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "PerformanceLossAmount": {
         "600s": {
           "unit": "",
-          "value": 0.0164
+          "value": 0.1098
         }
       },
       "Quality": {
-        "600s": {
-          "unit": "",
-          "value": 37.0407
-        }
-      },
-      "IdealCycleTime": {
-        "600s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "QualityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 376.272
-        }
-      },
-      "Performance": {
-        "600s": {
-          "unit": "",
-          "value": 99.6072
-        }
-      },
-      "PotentialProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 600.0
-        }
-      },
-      "source": {
-        "id": "7872789"
-      }
-    },
-    {
-      "type": "OEEMeasurements",
-      "time": "2023-01-11T12:15:05.925Z",
-      "Availability": {
-        "1800s": {
-          "unit": "",
-          "value": 70.1892
-        }
-      },
-      "AvailabilityLossTime": {
-        "1800s": {
-          "unit": "",
-          "value": 536.594
-        }
-      },
-      "PerformanceLossTime": {
-        "1800s": {
-          "unit": "",
-          "value": 41.6812
-        }
-      },
-      "ActualProductionTime": {
-        "1800s": {
-          "unit": "",
-          "value": 1263.406
-        }
-      },
-      "QualityLossAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 3.613
-        }
-      },
-      "IdealQualityTime": {
-        "1800s": {
-          "unit": "",
-          "value": 701.4528
-        }
-      },
-      "IdealCycleAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 25.0
-        }
-      },
-      "AvailabilityLossAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 3.7263
-        }
-      },
-      "IdealMachineRuntime": {
-        "1800s": {
-          "unit": "",
-          "value": 1221.7249
-        }
-      },
-      "IdealProductionAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 8.7737
-        }
-      },
-      "OEE": {
-        "1800s": {
-          "unit": "",
-          "value": 38.9696
-        }
-      },
-      "ActualQualityAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 4.8712
-        }
-      },
-      "ActualProductionAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 8.4842
-        }
-      },
-      "IdealAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 12.5
-        }
-      },
-      "PerformanceLossAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 0.2895
-        }
-      },
-      "Quality": {
-        "1800s": {
-          "unit": "",
-          "value": 57.415
-        }
-      },
-      "IdealCycleTime": {
-        "1800s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "QualityLossTime": {
-        "1800s": {
-          "unit": "",
-          "value": 520.272
-        }
-      },
-      "Performance": {
-        "1800s": {
-          "unit": "",
-          "value": 96.7009
-        }
-      },
-      "PotentialProductionTime": {
-        "1800s": {
-          "unit": "",
-          "value": 1800.0
-        }
-      },
-      "source": {
-        "id": "7872789"
-      }
-    },
-    {
-      "type": "OEEMeasurements",
-      "time": "2023-01-11T12:25:05.925Z",
-      "Availability": {
         "600s": {
           "unit": "",
           "value": 100.0
         }
       },
-      "AvailabilityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "PerformanceLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 2.3136
-        }
-      },
-      "ActualProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 600.0
-        }
-      },
-      "QualityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 1.81
-        }
-      },
-      "IdealQualityTime": {
-        "600s": {
-          "unit": "",
-          "value": 337.0464
-        }
-      },
-      "IdealCycleAmount": {
-        "600s": {
-          "unit": "",
-          "value": 25.0
-        }
-      },
-      "AvailabilityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "IdealMachineRuntime": {
-        "600s": {
-          "unit": "",
-          "value": 597.6864
-        }
-      },
-      "IdealProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1667
-        }
-      },
-      "OEE": {
-        "600s": {
-          "unit": "",
-          "value": 56.1744
-        }
-      },
-      "ActualQualityAmount": {
-        "600s": {
-          "unit": "",
-          "value": 2.3406
-        }
-      },
-      "ActualProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1506
-        }
-      },
-      "IdealAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1667
-        }
-      },
-      "PerformanceLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.0161
-        }
-      },
-      "Quality": {
-        "600s": {
-          "unit": "",
-          "value": 56.3918
-        }
-      },
       "IdealCycleTime": {
         "600s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "600s": {
           "unit": "",
-          "value": 260.64
+          "value": 0.0
         }
       },
       "Performance": {
         "600s": {
           "unit": "",
-          "value": 99.6144
+          "value": 98.902
         }
       },
       "PotentialProductionTime": {
@@ -668,266 +474,12 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T12:35:05.925Z",
-      "Availability": {
-        "600s": {
-          "unit": "",
-          "value": 100.0
-        }
-      },
-      "AvailabilityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "PerformanceLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 2.2272
-        }
-      },
-      "ActualProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 600.0
-        }
-      },
-      "QualityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 2.47
-        }
-      },
-      "IdealQualityTime": {
-        "600s": {
-          "unit": "",
-          "value": 242.0928
-        }
-      },
-      "IdealCycleAmount": {
-        "600s": {
-          "unit": "",
-          "value": 25.0
-        }
-      },
-      "AvailabilityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "IdealMachineRuntime": {
-        "600s": {
-          "unit": "",
-          "value": 597.7728
-        }
-      },
-      "IdealProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1667
-        }
-      },
-      "OEE": {
-        "600s": {
-          "unit": "",
-          "value": 40.3488
-        }
-      },
-      "ActualQualityAmount": {
-        "600s": {
-          "unit": "",
-          "value": 1.6812
-        }
-      },
-      "ActualProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1512
-        }
-      },
-      "IdealAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1667
-        }
-      },
-      "PerformanceLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.0155
-        }
-      },
-      "Quality": {
-        "600s": {
-          "unit": "",
-          "value": 40.4991
-        }
-      },
-      "IdealCycleTime": {
-        "600s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "QualityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 355.68
-        }
-      },
-      "Performance": {
-        "600s": {
-          "unit": "",
-          "value": 99.6288
-        }
-      },
-      "PotentialProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 600.0
-        }
-      },
-      "source": {
-        "id": "7872789"
-      }
-    },
-    {
-      "type": "OEEMeasurements",
-      "time": "2023-01-11T12:45:05.925Z",
-      "Availability": {
-        "600s": {
-          "unit": "",
-          "value": 100.0
-        }
-      },
-      "AvailabilityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "PerformanceLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 2.0688
-        }
-      },
-      "ActualProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 600.0
-        }
-      },
-      "QualityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 1.107
-        }
-      },
-      "IdealQualityTime": {
-        "600s": {
-          "unit": "",
-          "value": 438.5232
-        }
-      },
-      "IdealCycleAmount": {
-        "600s": {
-          "unit": "",
-          "value": 25.0
-        }
-      },
-      "AvailabilityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "IdealMachineRuntime": {
-        "600s": {
-          "unit": "",
-          "value": 597.9312
-        }
-      },
-      "IdealProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1667
-        }
-      },
-      "OEE": {
-        "600s": {
-          "unit": "",
-          "value": 73.0872
-        }
-      },
-      "ActualQualityAmount": {
-        "600s": {
-          "unit": "",
-          "value": 3.0453
-        }
-      },
-      "ActualProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1523
-        }
-      },
-      "IdealAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1667
-        }
-      },
-      "PerformanceLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.0144
-        }
-      },
-      "Quality": {
-        "600s": {
-          "unit": "",
-          "value": 73.3401
-        }
-      },
-      "IdealCycleTime": {
-        "600s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "QualityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 159.408
-        }
-      },
-      "Performance": {
-        "600s": {
-          "unit": "",
-          "value": 99.6552
-        }
-      },
-      "PotentialProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 600.0
-        }
-      },
-      "source": {
-        "id": "7872789"
-      }
-    },
-    {
-      "type": "OEEMeasurements",
-      "time": "2023-01-11T12:45:05.925Z",
+      "time": "2023-01-11T12:05:33.798Z",
       "Availability": {
         "1800s": {
           "unit": "",
@@ -943,7 +495,7 @@
       "PerformanceLossTime": {
         "1800s": {
           "unit": "",
-          "value": 6.5952
+          "value": 7.758
         }
       },
       "ActualProductionTime": {
@@ -955,19 +507,19 @@
       "QualityLossAmount": {
         "1800s": {
           "unit": "",
-          "value": 5.387
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "1800s": {
           "unit": "",
-          "value": 1017.6768
+          "value": 1792.242
         }
       },
       "IdealCycleAmount": {
         "1800s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
@@ -979,67 +531,67 @@
       "IdealMachineRuntime": {
         "1800s": {
           "unit": "",
-          "value": 1793.4048
+          "value": 1792.242
         }
       },
       "IdealProductionAmount": {
         "1800s": {
           "unit": "",
-          "value": 12.5
+          "value": 30.0
         }
       },
       "OEE": {
         "1800s": {
           "unit": "",
-          "value": 56.5376
+          "value": 99.569
         }
       },
       "ActualQualityAmount": {
         "1800s": {
           "unit": "",
-          "value": 7.0672
+          "value": 29.8707
         }
       },
       "ActualProductionAmount": {
         "1800s": {
           "unit": "",
-          "value": 12.4542
+          "value": 29.8707
         }
       },
       "IdealAmount": {
         "1800s": {
           "unit": "",
-          "value": 12.5
+          "value": 30.0
         }
       },
       "PerformanceLossAmount": {
         "1800s": {
           "unit": "",
-          "value": 0.0458
+          "value": 0.1293
         }
       },
       "Quality": {
         "1800s": {
           "unit": "",
-          "value": 56.7455
+          "value": 100.0
         }
       },
       "IdealCycleTime": {
         "1800s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "1800s": {
           "unit": "",
-          "value": 775.728
+          "value": 0.0
         }
       },
       "Performance": {
         "1800s": {
           "unit": "",
-          "value": 99.6336
+          "value": 99.569
         }
       },
       "PotentialProductionTime": {
@@ -1049,124 +601,632 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T12:45:05.925Z",
+      "time": "2023-01-11T12:15:33.798Z",
+      "Availability": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "AvailabilityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "PerformanceLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 1.29
+        }
+      },
+      "ActualProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "QualityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "600s": {
+          "unit": "",
+          "value": 598.71
+        }
+      },
+      "IdealCycleAmount": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "AvailabilityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealMachineRuntime": {
+        "600s": {
+          "unit": "",
+          "value": 598.71
+        }
+      },
+      "IdealProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "OEE": {
+        "600s": {
+          "unit": "",
+          "value": 99.785
+        }
+      },
+      "ActualQualityAmount": {
+        "600s": {
+          "unit": "",
+          "value": 9.9785
+        }
+      },
+      "ActualProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 9.9785
+        }
+      },
+      "IdealAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0215
+        }
+      },
+      "Quality": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "QualityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "600s": {
+          "unit": "",
+          "value": 99.785
+        }
+      },
+      "PotentialProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-11T12:25:33.798Z",
+      "Availability": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "AvailabilityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "PerformanceLossTime": {
+        "600s": {
+          "unit": "",
+          "value": -2.394
+        }
+      },
+      "ActualProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "QualityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "600s": {
+          "unit": "",
+          "value": 602.394
+        }
+      },
+      "IdealCycleAmount": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "AvailabilityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealMachineRuntime": {
+        "600s": {
+          "unit": "",
+          "value": 602.394
+        }
+      },
+      "IdealProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "OEE": {
+        "600s": {
+          "unit": "",
+          "value": 100.399
+        }
+      },
+      "ActualQualityAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0399
+        }
+      },
+      "ActualProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0399
+        }
+      },
+      "IdealAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": -0.0399
+        }
+      },
+      "Quality": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "QualityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "600s": {
+          "unit": "",
+          "value": 100.399
+        }
+      },
+      "PotentialProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-11T12:35:33.798Z",
+      "Availability": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "AvailabilityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "PerformanceLossTime": {
+        "600s": {
+          "unit": "",
+          "value": -2.562
+        }
+      },
+      "ActualProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "QualityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "600s": {
+          "unit": "",
+          "value": 602.562
+        }
+      },
+      "IdealCycleAmount": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "AvailabilityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealMachineRuntime": {
+        "600s": {
+          "unit": "",
+          "value": 602.562
+        }
+      },
+      "IdealProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "OEE": {
+        "600s": {
+          "unit": "",
+          "value": 100.427
+        }
+      },
+      "ActualQualityAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0427
+        }
+      },
+      "ActualProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0427
+        }
+      },
+      "IdealAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": -0.0427
+        }
+      },
+      "Quality": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "QualityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "600s": {
+          "unit": "",
+          "value": 100.427
+        }
+      },
+      "PotentialProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-11T12:35:33.798Z",
+      "Availability": {
+        "1800s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "AvailabilityLossTime": {
+        "1800s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "PerformanceLossTime": {
+        "1800s": {
+          "unit": "",
+          "value": -3.66
+        }
+      },
+      "ActualProductionTime": {
+        "1800s": {
+          "unit": "",
+          "value": 1800.0
+        }
+      },
+      "QualityLossAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "1800s": {
+          "unit": "",
+          "value": 1803.66
+        }
+      },
+      "IdealCycleAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "AvailabilityLossAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealMachineRuntime": {
+        "1800s": {
+          "unit": "",
+          "value": 1803.66
+        }
+      },
+      "IdealProductionAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 30.0
+        }
+      },
+      "OEE": {
+        "1800s": {
+          "unit": "",
+          "value": 100.2033
+        }
+      },
+      "ActualQualityAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 30.061
+        }
+      },
+      "ActualProductionAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 30.061
+        }
+      },
+      "IdealAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 30.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "1800s": {
+          "unit": "",
+          "value": -0.061
+        }
+      },
+      "Quality": {
+        "1800s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "1800s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "QualityLossTime": {
+        "1800s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "1800s": {
+          "unit": "",
+          "value": 100.2033
+        }
+      },
+      "PotentialProductionTime": {
+        "1800s": {
+          "unit": "",
+          "value": 1800.0
+        }
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-11T12:35:33.798Z",
       "Availability": {
         "3600s": {
           "unit": "",
-          "value": 85.0946
+          "value": 100.0
         }
       },
       "AvailabilityLossTime": {
         "3600s": {
           "unit": "",
-          "value": 536.594
+          "value": 0.0
         }
       },
       "PerformanceLossTime": {
         "3600s": {
           "unit": "",
-          "value": 48.2764
+          "value": 4.098
         }
       },
       "ActualProductionTime": {
         "3600s": {
           "unit": "",
-          "value": 3063.406
+          "value": 3600.0
         }
       },
       "QualityLossAmount": {
         "3600s": {
           "unit": "",
-          "value": 9.0
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "3600s": {
           "unit": "",
-          "value": 1719.1296
+          "value": 3595.902
         }
       },
       "IdealCycleAmount": {
         "3600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
         "3600s": {
           "unit": "",
-          "value": 3.7263
+          "value": 0.0
         }
       },
       "IdealMachineRuntime": {
         "3600s": {
           "unit": "",
-          "value": 3015.1296
+          "value": 3595.902
         }
       },
       "IdealProductionAmount": {
         "3600s": {
           "unit": "",
-          "value": 21.2737
+          "value": 60.0
         }
       },
       "OEE": {
         "3600s": {
           "unit": "",
-          "value": 47.7536
+          "value": 99.8862
         }
       },
       "ActualQualityAmount": {
         "3600s": {
           "unit": "",
-          "value": 11.9384
+          "value": 59.9317
         }
       },
       "ActualProductionAmount": {
         "3600s": {
           "unit": "",
-          "value": 20.9384
+          "value": 59.9317
         }
       },
       "IdealAmount": {
         "3600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "PerformanceLossAmount": {
         "3600s": {
           "unit": "",
-          "value": 0.3353
+          "value": 0.0683
         }
       },
       "Quality": {
         "3600s": {
           "unit": "",
-          "value": 57.0168
+          "value": 100.0
         }
       },
       "IdealCycleTime": {
         "3600s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "3600s": {
           "unit": "",
-          "value": 1296.0
+          "value": 0.0
         }
       },
       "Performance": {
         "3600s": {
           "unit": "",
-          "value": 98.4241
+          "value": 99.8862
         }
       },
       "PotentialProductionTime": {
@@ -1176,520 +1236,12 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T12:55:05.925Z",
-      "Availability": {
-        "600s": {
-          "unit": "",
-          "value": 42.5043
-        }
-      },
-      "AvailabilityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 344.974
-        }
-      },
-      "PerformanceLossTime": {
-        "600s": {
-          "unit": "",
-          "value": -41.8444
-        }
-      },
-      "ActualProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 255.026
-        }
-      },
-      "QualityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "IdealQualityTime": {
-        "600s": {
-          "unit": "",
-          "value": 296.8704
-        }
-      },
-      "IdealCycleAmount": {
-        "600s": {
-          "unit": "",
-          "value": 25.0
-        }
-      },
-      "AvailabilityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 2.3957
-        }
-      },
-      "IdealMachineRuntime": {
-        "600s": {
-          "unit": "",
-          "value": 296.8704
-        }
-      },
-      "IdealProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 1.771
-        }
-      },
-      "OEE": {
-        "600s": {
-          "unit": "",
-          "value": 49.4784
-        }
-      },
-      "ActualQualityAmount": {
-        "600s": {
-          "unit": "",
-          "value": 2.0616
-        }
-      },
-      "ActualProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 2.0616
-        }
-      },
-      "IdealAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1667
-        }
-      },
-      "PerformanceLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": -0.2906
-        }
-      },
-      "Quality": {
-        "600s": {
-          "unit": "",
-          "value": 100.0
-        }
-      },
-      "IdealCycleTime": {
-        "600s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "QualityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "Performance": {
-        "600s": {
-          "unit": "",
-          "value": 116.4079
-        }
-      },
-      "PotentialProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 600.0
-        }
-      },
-      "source": {
-        "id": "7872789"
-      }
-    },
-    {
-      "type": "OEEMeasurements",
-      "time": "2023-01-11T13:05:05.925Z",
-      "Availability": {
-        "600s": {
-          "unit": "",
-          "value": 89.6703
-        }
-      },
-      "AvailabilityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 61.978
-        }
-      },
-      "PerformanceLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 70.454
-        }
-      },
-      "ActualProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 538.022
-        }
-      },
-      "QualityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 1.0
-        }
-      },
-      "IdealQualityTime": {
-        "600s": {
-          "unit": "",
-          "value": 323.568
-        }
-      },
-      "IdealCycleAmount": {
-        "600s": {
-          "unit": "",
-          "value": 25.0
-        }
-      },
-      "AvailabilityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.4304
-        }
-      },
-      "IdealMachineRuntime": {
-        "600s": {
-          "unit": "",
-          "value": 467.568
-        }
-      },
-      "IdealProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 3.7363
-        }
-      },
-      "OEE": {
-        "600s": {
-          "unit": "",
-          "value": 53.928
-        }
-      },
-      "ActualQualityAmount": {
-        "600s": {
-          "unit": "",
-          "value": 2.247
-        }
-      },
-      "ActualProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 3.247
-        }
-      },
-      "IdealAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1667
-        }
-      },
-      "PerformanceLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.4893
-        }
-      },
-      "Quality": {
-        "600s": {
-          "unit": "",
-          "value": 69.2023
-        }
-      },
-      "IdealCycleTime": {
-        "600s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "QualityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "Performance": {
-        "600s": {
-          "unit": "",
-          "value": 86.905
-        }
-      },
-      "PotentialProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 600.0
-        }
-      },
-      "source": {
-        "id": "7872789"
-      }
-    },
-    {
-      "type": "OEEMeasurements",
-      "time": "2023-01-11T13:15:05.925Z",
-      "Availability": {
-        "600s": {
-          "unit": "",
-          "value": 27.287
-        }
-      },
-      "AvailabilityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 436.278
-        }
-      },
-      "PerformanceLossTime": {
-        "600s": {
-          "unit": "",
-          "value": -1.4748
-        }
-      },
-      "ActualProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 163.722
-        }
-      },
-      "QualityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "IdealQualityTime": {
-        "600s": {
-          "unit": "",
-          "value": 165.1968
-        }
-      },
-      "IdealCycleAmount": {
-        "600s": {
-          "unit": "",
-          "value": 25.0
-        }
-      },
-      "AvailabilityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 3.0297
-        }
-      },
-      "IdealMachineRuntime": {
-        "600s": {
-          "unit": "",
-          "value": 165.1968
-        }
-      },
-      "IdealProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 1.137
-        }
-      },
-      "OEE": {
-        "600s": {
-          "unit": "",
-          "value": 27.5328
-        }
-      },
-      "ActualQualityAmount": {
-        "600s": {
-          "unit": "",
-          "value": 1.1472
-        }
-      },
-      "ActualProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 1.1472
-        }
-      },
-      "IdealAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1667
-        }
-      },
-      "PerformanceLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": -0.0102
-        }
-      },
-      "Quality": {
-        "600s": {
-          "unit": "",
-          "value": 100.0
-        }
-      },
-      "IdealCycleTime": {
-        "600s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "QualityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "Performance": {
-        "600s": {
-          "unit": "",
-          "value": 100.9008
-        }
-      },
-      "PotentialProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 600.0
-        }
-      },
-      "source": {
-        "id": "7872789"
-      }
-    },
-    {
-      "type": "OEEMeasurements",
-      "time": "2023-01-11T13:15:05.925Z",
-      "Availability": {
-        "1800s": {
-          "unit": "",
-          "value": 53.1539
-        }
-      },
-      "AvailabilityLossTime": {
-        "1800s": {
-          "unit": "",
-          "value": 843.23
-        }
-      },
-      "PerformanceLossTime": {
-        "1800s": {
-          "unit": "",
-          "value": 27.1348
-        }
-      },
-      "ActualProductionTime": {
-        "1800s": {
-          "unit": "",
-          "value": 956.77
-        }
-      },
-      "QualityLossAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 1.0
-        }
-      },
-      "IdealQualityTime": {
-        "1800s": {
-          "unit": "",
-          "value": 785.6352
-        }
-      },
-      "IdealCycleAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 25.0
-        }
-      },
-      "AvailabilityLossAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 5.8558
-        }
-      },
-      "IdealMachineRuntime": {
-        "1800s": {
-          "unit": "",
-          "value": 929.6352
-        }
-      },
-      "IdealProductionAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 6.6442
-        }
-      },
-      "OEE": {
-        "1800s": {
-          "unit": "",
-          "value": 43.6464
-        }
-      },
-      "ActualQualityAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 5.4558
-        }
-      },
-      "ActualProductionAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 6.4558
-        }
-      },
-      "IdealAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 12.5
-        }
-      },
-      "PerformanceLossAmount": {
-        "1800s": {
-          "unit": "",
-          "value": 0.1884
-        }
-      },
-      "Quality": {
-        "1800s": {
-          "unit": "",
-          "value": 84.5101
-        }
-      },
-      "IdealCycleTime": {
-        "1800s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "QualityLossTime": {
-        "1800s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "Performance": {
-        "1800s": {
-          "unit": "",
-          "value": 97.1639
-        }
-      },
-      "PotentialProductionTime": {
-        "1800s": {
-          "unit": "",
-          "value": 1800.0
-        }
-      },
-      "source": {
-        "id": "7872789"
-      }
-    },
-    {
-      "type": "OEEMeasurements",
-      "time": "2023-01-11T13:25:05.925Z",
+      "time": "2023-01-11T12:45:33.798Z",
       "Availability": {
         "600s": {
           "unit": "",
@@ -1705,134 +1257,7 @@
       "PerformanceLossTime": {
         "600s": {
           "unit": "",
-          "value": 2.4432
-        }
-      },
-      "ActualProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 600.0
-        }
-      },
-      "QualityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 1.0
-        }
-      },
-      "IdealQualityTime": {
-        "600s": {
-          "unit": "",
-          "value": 453.5568
-        }
-      },
-      "IdealCycleAmount": {
-        "600s": {
-          "unit": "",
-          "value": 25.0
-        }
-      },
-      "AvailabilityLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "IdealMachineRuntime": {
-        "600s": {
-          "unit": "",
-          "value": 597.5568
-        }
-      },
-      "IdealProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1667
-        }
-      },
-      "OEE": {
-        "600s": {
-          "unit": "",
-          "value": 75.5928
-        }
-      },
-      "ActualQualityAmount": {
-        "600s": {
-          "unit": "",
-          "value": 3.1497
-        }
-      },
-      "ActualProductionAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1497
-        }
-      },
-      "IdealAmount": {
-        "600s": {
-          "unit": "",
-          "value": 4.1667
-        }
-      },
-      "PerformanceLossAmount": {
-        "600s": {
-          "unit": "",
-          "value": 0.017
-        }
-      },
-      "Quality": {
-        "600s": {
-          "unit": "",
-          "value": 75.9019
-        }
-      },
-      "IdealCycleTime": {
-        "600s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "QualityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 144.0
-        }
-      },
-      "Performance": {
-        "600s": {
-          "unit": "",
-          "value": 99.5928
-        }
-      },
-      "PotentialProductionTime": {
-        "600s": {
-          "unit": "",
-          "value": 600.0
-        }
-      },
-      "source": {
-        "id": "7872789"
-      }
-    },
-    {
-      "type": "OEEMeasurements",
-      "time": "2023-01-11T13:35:05.925Z",
-      "Availability": {
-        "600s": {
-          "unit": "",
-          "value": 100.0
-        }
-      },
-      "AvailabilityLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 0.0
-        }
-      },
-      "PerformanceLossTime": {
-        "600s": {
-          "unit": "",
-          "value": 2.6592
+          "value": 7.332
         }
       },
       "ActualProductionTime": {
@@ -1850,13 +1275,13 @@
       "IdealQualityTime": {
         "600s": {
           "unit": "",
-          "value": 597.3408
+          "value": 592.668
         }
       },
       "IdealCycleAmount": {
         "600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
@@ -1868,43 +1293,43 @@
       "IdealMachineRuntime": {
         "600s": {
           "unit": "",
-          "value": 597.3408
+          "value": 592.668
         }
       },
       "IdealProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "OEE": {
         "600s": {
           "unit": "",
-          "value": 99.5568
+          "value": 98.778
         }
       },
       "ActualQualityAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1482
+          "value": 9.8778
         }
       },
       "ActualProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1482
+          "value": 9.8778
         }
       },
       "IdealAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "PerformanceLossAmount": {
         "600s": {
           "unit": "",
-          "value": 0.0185
+          "value": 0.1222
         }
       },
       "Quality": {
@@ -1916,7 +1341,7 @@
       "IdealCycleTime": {
         "600s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
@@ -1928,7 +1353,7 @@
       "Performance": {
         "600s": {
           "unit": "",
-          "value": 99.5568
+          "value": 98.778
         }
       },
       "PotentialProductionTime": {
@@ -1938,12 +1363,12 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T13:45:05.925Z",
+      "time": "2023-01-11T12:55:33.798Z",
       "Availability": {
         "600s": {
           "unit": "",
@@ -1959,7 +1384,7 @@
       "PerformanceLossTime": {
         "600s": {
           "unit": "",
-          "value": 2.4144
+          "value": -2.646
         }
       },
       "ActualProductionTime": {
@@ -1971,19 +1396,19 @@
       "QualityLossAmount": {
         "600s": {
           "unit": "",
-          "value": 1.3646
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "600s": {
           "unit": "",
-          "value": 401.0832
+          "value": 602.646
         }
       },
       "IdealCycleAmount": {
         "600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
@@ -1995,67 +1420,67 @@
       "IdealMachineRuntime": {
         "600s": {
           "unit": "",
-          "value": 597.5856
+          "value": 602.646
         }
       },
       "IdealProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "OEE": {
         "600s": {
           "unit": "",
-          "value": 66.8472
+          "value": 100.441
         }
       },
       "ActualQualityAmount": {
         "600s": {
           "unit": "",
-          "value": 2.7853
+          "value": 10.0441
         }
       },
       "ActualProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1499
+          "value": 10.0441
         }
       },
       "IdealAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "PerformanceLossAmount": {
         "600s": {
           "unit": "",
-          "value": 0.0168
+          "value": -0.0441
         }
       },
       "Quality": {
         "600s": {
           "unit": "",
-          "value": 67.1173
+          "value": 100.0
         }
       },
       "IdealCycleTime": {
         "600s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "600s": {
           "unit": "",
-          "value": 196.5024
+          "value": 0.0
         }
       },
       "Performance": {
         "600s": {
           "unit": "",
-          "value": 99.5976
+          "value": 100.441
         }
       },
       "PotentialProductionTime": {
@@ -2065,12 +1490,139 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T13:45:05.925Z",
+      "time": "2023-01-11T13:05:33.798Z",
+      "Availability": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "AvailabilityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "PerformanceLossTime": {
+        "600s": {
+          "unit": "",
+          "value": -3.258
+        }
+      },
+      "ActualProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "QualityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "600s": {
+          "unit": "",
+          "value": 603.258
+        }
+      },
+      "IdealCycleAmount": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "AvailabilityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealMachineRuntime": {
+        "600s": {
+          "unit": "",
+          "value": 603.258
+        }
+      },
+      "IdealProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "OEE": {
+        "600s": {
+          "unit": "",
+          "value": 100.543
+        }
+      },
+      "ActualQualityAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0543
+        }
+      },
+      "ActualProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0543
+        }
+      },
+      "IdealAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": -0.0543
+        }
+      },
+      "Quality": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "QualityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "600s": {
+          "unit": "",
+          "value": 100.543
+        }
+      },
+      "PotentialProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-11T13:05:33.798Z",
       "Availability": {
         "1800s": {
           "unit": "",
@@ -2086,7 +1638,7 @@
       "PerformanceLossTime": {
         "1800s": {
           "unit": "",
-          "value": 7.5312
+          "value": 1.428
         }
       },
       "ActualProductionTime": {
@@ -2098,19 +1650,19 @@
       "QualityLossAmount": {
         "1800s": {
           "unit": "",
-          "value": 2.3646
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "1800s": {
           "unit": "",
-          "value": 1451.9664
+          "value": 1798.572
         }
       },
       "IdealCycleAmount": {
         "1800s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
@@ -2122,67 +1674,67 @@
       "IdealMachineRuntime": {
         "1800s": {
           "unit": "",
-          "value": 1792.4688
+          "value": 1798.572
         }
       },
       "IdealProductionAmount": {
         "1800s": {
           "unit": "",
-          "value": 12.5
+          "value": 30.0
         }
       },
       "OEE": {
         "1800s": {
           "unit": "",
-          "value": 80.6648
+          "value": 99.9207
         }
       },
       "ActualQualityAmount": {
         "1800s": {
           "unit": "",
-          "value": 10.0831
+          "value": 29.9762
         }
       },
       "ActualProductionAmount": {
         "1800s": {
           "unit": "",
-          "value": 12.4477
+          "value": 29.9762
         }
       },
       "IdealAmount": {
         "1800s": {
           "unit": "",
-          "value": 12.5
+          "value": 30.0
         }
       },
       "PerformanceLossAmount": {
         "1800s": {
           "unit": "",
-          "value": 0.0523
+          "value": 0.0238
         }
       },
       "Quality": {
         "1800s": {
           "unit": "",
-          "value": 81.0037
+          "value": 100.0
         }
       },
       "IdealCycleTime": {
         "1800s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "1800s": {
           "unit": "",
-          "value": 340.5024
+          "value": 0.0
         }
       },
       "Performance": {
         "1800s": {
           "unit": "",
-          "value": 99.5816
+          "value": 99.9207
         }
       },
       "PotentialProductionTime": {
@@ -2192,124 +1744,632 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T13:45:05.925Z",
+      "time": "2023-01-11T13:15:33.798Z",
+      "Availability": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "AvailabilityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "PerformanceLossTime": {
+        "600s": {
+          "unit": "",
+          "value": -2.322
+        }
+      },
+      "ActualProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "QualityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "600s": {
+          "unit": "",
+          "value": 602.322
+        }
+      },
+      "IdealCycleAmount": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "AvailabilityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealMachineRuntime": {
+        "600s": {
+          "unit": "",
+          "value": 602.322
+        }
+      },
+      "IdealProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "OEE": {
+        "600s": {
+          "unit": "",
+          "value": 100.387
+        }
+      },
+      "ActualQualityAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0387
+        }
+      },
+      "ActualProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0387
+        }
+      },
+      "IdealAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": -0.0387
+        }
+      },
+      "Quality": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "QualityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "600s": {
+          "unit": "",
+          "value": 100.387
+        }
+      },
+      "PotentialProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-11T13:25:33.798Z",
+      "Availability": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "AvailabilityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "PerformanceLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 6.636
+        }
+      },
+      "ActualProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "QualityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "600s": {
+          "unit": "",
+          "value": 593.364
+        }
+      },
+      "IdealCycleAmount": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "AvailabilityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealMachineRuntime": {
+        "600s": {
+          "unit": "",
+          "value": 593.364
+        }
+      },
+      "IdealProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "OEE": {
+        "600s": {
+          "unit": "",
+          "value": 98.894
+        }
+      },
+      "ActualQualityAmount": {
+        "600s": {
+          "unit": "",
+          "value": 9.8894
+        }
+      },
+      "ActualProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 9.8894
+        }
+      },
+      "IdealAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.1106
+        }
+      },
+      "Quality": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "QualityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "600s": {
+          "unit": "",
+          "value": 98.894
+        }
+      },
+      "PotentialProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-11T13:35:33.798Z",
+      "Availability": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "AvailabilityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "PerformanceLossTime": {
+        "600s": {
+          "unit": "",
+          "value": -5.31
+        }
+      },
+      "ActualProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "QualityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "600s": {
+          "unit": "",
+          "value": 605.31
+        }
+      },
+      "IdealCycleAmount": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "AvailabilityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealMachineRuntime": {
+        "600s": {
+          "unit": "",
+          "value": 605.31
+        }
+      },
+      "IdealProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "OEE": {
+        "600s": {
+          "unit": "",
+          "value": 100.885
+        }
+      },
+      "ActualQualityAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0885
+        }
+      },
+      "ActualProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0885
+        }
+      },
+      "IdealAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": -0.0885
+        }
+      },
+      "Quality": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "QualityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "600s": {
+          "unit": "",
+          "value": 100.885
+        }
+      },
+      "PotentialProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-11T13:35:33.798Z",
+      "Availability": {
+        "1800s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "AvailabilityLossTime": {
+        "1800s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "PerformanceLossTime": {
+        "1800s": {
+          "unit": "",
+          "value": -0.996
+        }
+      },
+      "ActualProductionTime": {
+        "1800s": {
+          "unit": "",
+          "value": 1800.0
+        }
+      },
+      "QualityLossAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "1800s": {
+          "unit": "",
+          "value": 1800.996
+        }
+      },
+      "IdealCycleAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "AvailabilityLossAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealMachineRuntime": {
+        "1800s": {
+          "unit": "",
+          "value": 1800.996
+        }
+      },
+      "IdealProductionAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 30.0
+        }
+      },
+      "OEE": {
+        "1800s": {
+          "unit": "",
+          "value": 100.0553
+        }
+      },
+      "ActualQualityAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 30.0166
+        }
+      },
+      "ActualProductionAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 30.0166
+        }
+      },
+      "IdealAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 30.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "1800s": {
+          "unit": "",
+          "value": -0.0166
+        }
+      },
+      "Quality": {
+        "1800s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "1800s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "QualityLossTime": {
+        "1800s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "1800s": {
+          "unit": "",
+          "value": 100.0553
+        }
+      },
+      "PotentialProductionTime": {
+        "1800s": {
+          "unit": "",
+          "value": 1800.0
+        }
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-11T13:35:33.798Z",
       "Availability": {
         "3600s": {
           "unit": "",
-          "value": 76.5769
+          "value": 100.0
         }
       },
       "AvailabilityLossTime": {
         "3600s": {
           "unit": "",
-          "value": 843.23
+          "value": 0.0
         }
       },
       "PerformanceLossTime": {
         "3600s": {
           "unit": "",
-          "value": 34.666
+          "value": 0.426
         }
       },
       "ActualProductionTime": {
         "3600s": {
           "unit": "",
-          "value": 2756.77
+          "value": 3600.0
         }
       },
       "QualityLossAmount": {
         "3600s": {
           "unit": "",
-          "value": 3.3646
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "3600s": {
           "unit": "",
-          "value": 2237.6016
+          "value": 3599.574
         }
       },
       "IdealCycleAmount": {
         "3600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
         "3600s": {
           "unit": "",
-          "value": 5.8558
+          "value": 0.0
         }
       },
       "IdealMachineRuntime": {
         "3600s": {
           "unit": "",
-          "value": 2722.104
+          "value": 3599.574
         }
       },
       "IdealProductionAmount": {
         "3600s": {
           "unit": "",
-          "value": 19.1442
+          "value": 60.0
         }
       },
       "OEE": {
         "3600s": {
           "unit": "",
-          "value": 62.1556
+          "value": 99.9882
         }
       },
       "ActualQualityAmount": {
         "3600s": {
           "unit": "",
-          "value": 15.5389
+          "value": 59.9929
         }
       },
       "ActualProductionAmount": {
         "3600s": {
           "unit": "",
-          "value": 18.9035
+          "value": 59.9929
         }
       },
       "IdealAmount": {
         "3600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "PerformanceLossAmount": {
         "3600s": {
           "unit": "",
-          "value": 0.2407
+          "value": 0.0071
         }
       },
       "Quality": {
         "3600s": {
           "unit": "",
-          "value": 82.2012
+          "value": 100.0
         }
       },
       "IdealCycleTime": {
         "3600s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "3600s": {
           "unit": "",
-          "value": 484.5024
+          "value": 0.0
         }
       },
       "Performance": {
         "3600s": {
           "unit": "",
-          "value": 98.7425
+          "value": 99.9882
         }
       },
       "PotentialProductionTime": {
@@ -2319,12 +2379,12 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T13:55:05.925Z",
+      "time": "2023-01-11T13:45:33.798Z",
       "Availability": {
         "600s": {
           "unit": "",
@@ -2340,7 +2400,7 @@
       "PerformanceLossTime": {
         "600s": {
           "unit": "",
-          "value": 2.1984
+          "value": -1.374
         }
       },
       "ActualProductionTime": {
@@ -2352,19 +2412,19 @@
       "QualityLossAmount": {
         "600s": {
           "unit": "",
-          "value": 1.6354
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "600s": {
           "unit": "",
-          "value": 362.304
+          "value": 601.374
         }
       },
       "IdealCycleAmount": {
         "600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
@@ -2376,67 +2436,67 @@
       "IdealMachineRuntime": {
         "600s": {
           "unit": "",
-          "value": 597.8016
+          "value": 601.374
         }
       },
       "IdealProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "OEE": {
         "600s": {
           "unit": "",
-          "value": 60.384
+          "value": 100.229
         }
       },
       "ActualQualityAmount": {
         "600s": {
           "unit": "",
-          "value": 2.516
+          "value": 10.0229
         }
       },
       "ActualProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1514
+          "value": 10.0229
         }
       },
       "IdealAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "PerformanceLossAmount": {
         "600s": {
           "unit": "",
-          "value": 0.0153
+          "value": -0.0229
         }
       },
       "Quality": {
         "600s": {
           "unit": "",
-          "value": 60.6061
+          "value": 100.0
         }
       },
       "IdealCycleTime": {
         "600s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "600s": {
           "unit": "",
-          "value": 235.4976
+          "value": 0.0
         }
       },
       "Performance": {
         "600s": {
           "unit": "",
-          "value": 99.6336
+          "value": 100.229
         }
       },
       "PotentialProductionTime": {
@@ -2446,12 +2506,12 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T14:05:05.925Z",
+      "time": "2023-01-11T13:55:33.798Z",
       "Availability": {
         "600s": {
           "unit": "",
@@ -2467,7 +2527,7 @@
       "PerformanceLossTime": {
         "600s": {
           "unit": "",
-          "value": 1.8528
+          "value": 7.764
         }
       },
       "ActualProductionTime": {
@@ -2479,19 +2539,19 @@
       "QualityLossAmount": {
         "600s": {
           "unit": "",
-          "value": 1.0
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "600s": {
           "unit": "",
-          "value": 454.1472
+          "value": 592.236
         }
       },
       "IdealCycleAmount": {
         "600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
@@ -2503,67 +2563,67 @@
       "IdealMachineRuntime": {
         "600s": {
           "unit": "",
-          "value": 598.1472
+          "value": 592.236
         }
       },
       "IdealProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "OEE": {
         "600s": {
           "unit": "",
-          "value": 75.6912
+          "value": 98.706
         }
       },
       "ActualQualityAmount": {
         "600s": {
           "unit": "",
-          "value": 3.1538
+          "value": 9.8706
         }
       },
       "ActualProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1538
+          "value": 9.8706
         }
       },
       "IdealAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "PerformanceLossAmount": {
         "600s": {
           "unit": "",
-          "value": 0.0129
+          "value": 0.1294
         }
       },
       "Quality": {
         "600s": {
           "unit": "",
-          "value": 75.9257
+          "value": 100.0
         }
       },
       "IdealCycleTime": {
         "600s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "600s": {
           "unit": "",
-          "value": 144.0
+          "value": 0.0
         }
       },
       "Performance": {
         "600s": {
           "unit": "",
-          "value": 99.6912
+          "value": 98.706
         }
       },
       "PotentialProductionTime": {
@@ -2573,12 +2633,12 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T14:15:05.925Z",
+      "time": "2023-01-11T14:05:33.798Z",
       "Availability": {
         "600s": {
           "unit": "",
@@ -2594,7 +2654,7 @@
       "PerformanceLossTime": {
         "600s": {
           "unit": "",
-          "value": 2.5872
+          "value": -3.294
         }
       },
       "ActualProductionTime": {
@@ -2606,19 +2666,19 @@
       "QualityLossAmount": {
         "600s": {
           "unit": "",
-          "value": 1.2217
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "600s": {
           "unit": "",
-          "value": 421.488
+          "value": 603.294
         }
       },
       "IdealCycleAmount": {
         "600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
@@ -2630,67 +2690,67 @@
       "IdealMachineRuntime": {
         "600s": {
           "unit": "",
-          "value": 597.4128
+          "value": 603.294
         }
       },
       "IdealProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "OEE": {
         "600s": {
           "unit": "",
-          "value": 70.248
+          "value": 100.549
         }
       },
       "ActualQualityAmount": {
         "600s": {
           "unit": "",
-          "value": 2.927
+          "value": 10.0549
         }
       },
       "ActualProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1487
+          "value": 10.0549
         }
       },
       "IdealAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "PerformanceLossAmount": {
         "600s": {
           "unit": "",
-          "value": 0.018
+          "value": -0.0549
         }
       },
       "Quality": {
         "600s": {
           "unit": "",
-          "value": 70.5522
+          "value": 100.0
         }
       },
       "IdealCycleTime": {
         "600s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "600s": {
           "unit": "",
-          "value": 175.9248
+          "value": 0.0
         }
       },
       "Performance": {
         "600s": {
           "unit": "",
-          "value": 99.5688
+          "value": 100.549
         }
       },
       "PotentialProductionTime": {
@@ -2700,12 +2760,12 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T14:15:05.925Z",
+      "time": "2023-01-11T14:05:33.798Z",
       "Availability": {
         "1800s": {
           "unit": "",
@@ -2721,7 +2781,7 @@
       "PerformanceLossTime": {
         "1800s": {
           "unit": "",
-          "value": 6.6384
+          "value": 3.096
         }
       },
       "ActualProductionTime": {
@@ -2733,19 +2793,19 @@
       "QualityLossAmount": {
         "1800s": {
           "unit": "",
-          "value": 3.8572
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "1800s": {
           "unit": "",
-          "value": 1237.9248
+          "value": 1796.904
         }
       },
       "IdealCycleAmount": {
         "1800s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
@@ -2757,67 +2817,67 @@
       "IdealMachineRuntime": {
         "1800s": {
           "unit": "",
-          "value": 1793.3616
+          "value": 1796.904
         }
       },
       "IdealProductionAmount": {
         "1800s": {
           "unit": "",
-          "value": 12.5
+          "value": 30.0
         }
       },
       "OEE": {
         "1800s": {
           "unit": "",
-          "value": 68.7736
+          "value": 99.828
         }
       },
       "ActualQualityAmount": {
         "1800s": {
           "unit": "",
-          "value": 8.5967
+          "value": 29.9484
         }
       },
       "ActualProductionAmount": {
         "1800s": {
           "unit": "",
-          "value": 12.4539
+          "value": 29.9484
         }
       },
       "IdealAmount": {
         "1800s": {
           "unit": "",
-          "value": 12.5
+          "value": 30.0
         }
       },
       "PerformanceLossAmount": {
         "1800s": {
           "unit": "",
-          "value": 0.0461
+          "value": 0.0516
         }
       },
       "Quality": {
         "1800s": {
           "unit": "",
-          "value": 69.0282
+          "value": 100.0
         }
       },
       "IdealCycleTime": {
         "1800s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "1800s": {
           "unit": "",
-          "value": 555.4368
+          "value": 0.0
         }
       },
       "Performance": {
         "1800s": {
           "unit": "",
-          "value": 99.6312
+          "value": 99.828
         }
       },
       "PotentialProductionTime": {
@@ -2827,12 +2887,12 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T14:25:05.925Z",
+      "time": "2023-01-11T14:15:33.798Z",
       "Availability": {
         "600s": {
           "unit": "",
@@ -2848,7 +2908,7 @@
       "PerformanceLossTime": {
         "600s": {
           "unit": "",
-          "value": 1.968
+          "value": -3.438
         }
       },
       "ActualProductionTime": {
@@ -2860,19 +2920,19 @@
       "QualityLossAmount": {
         "600s": {
           "unit": "",
-          "value": 3.0022
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "600s": {
           "unit": "",
-          "value": 165.7152
+          "value": 603.438
         }
       },
       "IdealCycleAmount": {
         "600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
@@ -2884,67 +2944,67 @@
       "IdealMachineRuntime": {
         "600s": {
           "unit": "",
-          "value": 598.032
+          "value": 603.438
         }
       },
       "IdealProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "OEE": {
         "600s": {
           "unit": "",
-          "value": 27.6192
+          "value": 100.573
         }
       },
       "ActualQualityAmount": {
         "600s": {
           "unit": "",
-          "value": 1.1508
+          "value": 10.0573
         }
       },
       "ActualProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.153
+          "value": 10.0573
         }
       },
       "IdealAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "PerformanceLossAmount": {
         "600s": {
           "unit": "",
-          "value": 0.0137
+          "value": -0.0573
         }
       },
       "Quality": {
         "600s": {
           "unit": "",
-          "value": 27.7101
+          "value": 100.0
         }
       },
       "IdealCycleTime": {
         "600s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "600s": {
           "unit": "",
-          "value": 432.3168
+          "value": 0.0
         }
       },
       "Performance": {
         "600s": {
           "unit": "",
-          "value": 99.672
+          "value": 100.573
         }
       },
       "PotentialProductionTime": {
@@ -2954,12 +3014,12 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
       }
     },
     {
       "type": "OEEMeasurements",
-      "time": "2023-01-11T14:35:05.925Z",
+      "time": "2023-01-11T14:25:33.798Z",
       "Availability": {
         "600s": {
           "unit": "",
@@ -2975,7 +3035,7 @@
       "PerformanceLossTime": {
         "600s": {
           "unit": "",
-          "value": 2.256
+          "value": 7.188
         }
       },
       "ActualProductionTime": {
@@ -2987,19 +3047,19 @@
       "QualityLossAmount": {
         "600s": {
           "unit": "",
-          "value": 0.7761
+          "value": 0.0
         }
       },
       "IdealQualityTime": {
         "600s": {
           "unit": "",
-          "value": 485.9856
+          "value": 592.812
         }
       },
       "IdealCycleAmount": {
         "600s": {
           "unit": "",
-          "value": 25.0
+          "value": 60.0
         }
       },
       "AvailabilityLossAmount": {
@@ -3011,67 +3071,67 @@
       "IdealMachineRuntime": {
         "600s": {
           "unit": "",
-          "value": 597.744
+          "value": 592.812
         }
       },
       "IdealProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "OEE": {
         "600s": {
           "unit": "",
-          "value": 80.9976
+          "value": 98.802
         }
       },
       "ActualQualityAmount": {
         "600s": {
           "unit": "",
-          "value": 3.3749
+          "value": 9.8802
         }
       },
       "ActualProductionAmount": {
         "600s": {
           "unit": "",
-          "value": 4.151
+          "value": 9.8802
         }
       },
       "IdealAmount": {
         "600s": {
           "unit": "",
-          "value": 4.1667
+          "value": 10.0
         }
       },
       "PerformanceLossAmount": {
         "600s": {
           "unit": "",
-          "value": 0.0157
+          "value": 0.1198
         }
       },
       "Quality": {
         "600s": {
           "unit": "",
-          "value": 81.3033
+          "value": 100.0
         }
       },
       "IdealCycleTime": {
         "600s": {
           "unit": "",
-          "value": 144.0
+          "value": 60.0
         }
       },
       "QualityLossTime": {
         "600s": {
           "unit": "",
-          "value": 111.7584
+          "value": 0.0
         }
       },
       "Performance": {
         "600s": {
           "unit": "",
-          "value": 99.624
+          "value": 98.802
         }
       },
       "PotentialProductionTime": {
@@ -3081,7 +3141,388 @@
         }
       },
       "source": {
-        "id": "7872789"
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-11T14:35:33.798Z",
+      "Availability": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "AvailabilityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "PerformanceLossTime": {
+        "600s": {
+          "unit": "",
+          "value": -3.57
+        }
+      },
+      "ActualProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "QualityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "600s": {
+          "unit": "",
+          "value": 603.57
+        }
+      },
+      "IdealCycleAmount": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "AvailabilityLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealMachineRuntime": {
+        "600s": {
+          "unit": "",
+          "value": 603.57
+        }
+      },
+      "IdealProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "OEE": {
+        "600s": {
+          "unit": "",
+          "value": 100.595
+        }
+      },
+      "ActualQualityAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0595
+        }
+      },
+      "ActualProductionAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0595
+        }
+      },
+      "IdealAmount": {
+        "600s": {
+          "unit": "",
+          "value": 10.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "600s": {
+          "unit": "",
+          "value": -0.0595
+        }
+      },
+      "Quality": {
+        "600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "QualityLossTime": {
+        "600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "600s": {
+          "unit": "",
+          "value": 100.595
+        }
+      },
+      "PotentialProductionTime": {
+        "600s": {
+          "unit": "",
+          "value": 600.0
+        }
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-11T14:35:33.798Z",
+      "Availability": {
+        "1800s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "AvailabilityLossTime": {
+        "1800s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "PerformanceLossTime": {
+        "1800s": {
+          "unit": "",
+          "value": 0.18
+        }
+      },
+      "ActualProductionTime": {
+        "1800s": {
+          "unit": "",
+          "value": 1800.0
+        }
+      },
+      "QualityLossAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "1800s": {
+          "unit": "",
+          "value": 1799.82
+        }
+      },
+      "IdealCycleAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "AvailabilityLossAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealMachineRuntime": {
+        "1800s": {
+          "unit": "",
+          "value": 1799.82
+        }
+      },
+      "IdealProductionAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 30.0
+        }
+      },
+      "OEE": {
+        "1800s": {
+          "unit": "",
+          "value": 99.99
+        }
+      },
+      "ActualQualityAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 29.997
+        }
+      },
+      "ActualProductionAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 29.997
+        }
+      },
+      "IdealAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 30.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "1800s": {
+          "unit": "",
+          "value": 0.003
+        }
+      },
+      "Quality": {
+        "1800s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "1800s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "QualityLossTime": {
+        "1800s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "1800s": {
+          "unit": "",
+          "value": 99.99
+        }
+      },
+      "PotentialProductionTime": {
+        "1800s": {
+          "unit": "",
+          "value": 1800.0
+        }
+      },
+      "source": {
+        "id": "7872793"
+      }
+    },
+    {
+      "type": "OEEMeasurements",
+      "time": "2023-01-11T14:35:33.798Z",
+      "Availability": {
+        "3600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "AvailabilityLossTime": {
+        "3600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "PerformanceLossTime": {
+        "3600s": {
+          "unit": "",
+          "value": 3.276
+        }
+      },
+      "ActualProductionTime": {
+        "3600s": {
+          "unit": "",
+          "value": 3600.0
+        }
+      },
+      "QualityLossAmount": {
+        "3600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealQualityTime": {
+        "3600s": {
+          "unit": "",
+          "value": 3596.724
+        }
+      },
+      "IdealCycleAmount": {
+        "3600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "AvailabilityLossAmount": {
+        "3600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "IdealMachineRuntime": {
+        "3600s": {
+          "unit": "",
+          "value": 3596.724
+        }
+      },
+      "IdealProductionAmount": {
+        "3600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "OEE": {
+        "3600s": {
+          "unit": "",
+          "value": 99.909
+        }
+      },
+      "ActualQualityAmount": {
+        "3600s": {
+          "unit": "",
+          "value": 59.9454
+        }
+      },
+      "ActualProductionAmount": {
+        "3600s": {
+          "unit": "",
+          "value": 59.9454
+        }
+      },
+      "IdealAmount": {
+        "3600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "PerformanceLossAmount": {
+        "3600s": {
+          "unit": "",
+          "value": 0.0546
+        }
+      },
+      "Quality": {
+        "3600s": {
+          "unit": "",
+          "value": 100.0
+        }
+      },
+      "IdealCycleTime": {
+        "3600s": {
+          "unit": "",
+          "value": 60.0
+        }
+      },
+      "QualityLossTime": {
+        "3600s": {
+          "unit": "",
+          "value": 0.0
+        }
+      },
+      "Performance": {
+        "3600s": {
+          "unit": "",
+          "value": 99.909
+        }
+      },
+      "PotentialProductionTime": {
+        "3600s": {
+          "unit": "",
+          "value": 3600.0
+        }
+      },
+      "source": {
+        "id": "7872793"
       }
     }
   ]

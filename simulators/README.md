@@ -66,7 +66,7 @@ cd oee-simulators/simulators
 docker build -t oee-simulators .
 docker save -o image.tar oee-simulators
 ```
-In [cumulocity.json](oee-simulators/simulators/cumulocity.json), change "version" from "@project.version@" to version number you want in format xx.xx.xx (example: "version": "1.0.110" or "1.0.latest")
+In [cumulocity.json](oee-simulators/simulators/cumulocity.json), change "version" from "@project.version@" to version number you want in format xx.xx.xx (example: "version": "12.20.11"). If you want to use the same version for multiple uploads, "latest" can be used in the last position (example: "version": "12.20.latest").
 Then compress both the [cumulocity.json] and the newly created [image.tar] files into a ZIP file or execute the command below to create [oee-simulators.zip] file:
 ```
 zip oee-simulators.zip image.tar cumulocity.json 
@@ -92,7 +92,7 @@ To deploy this project, upload the zip file to the Cumulocity as Microservice. T
 
 ## Profile generator
 
-The Profile Generator is a [Python script](main/profile_generator.py) that creates OEE calculation profiles for each simulator available in the tenant. Every simulator needs a template with appropriate name (<external_id>_profile.template) in your local [main](main/) folder. The simulators must have been created beforehand by deploying the [oee-simulators](#simulator-microservice) microservice.
+The Profile Generator is a [Python script](main/profile_generator.py) that creates OEE calculation profiles for each simulator available in the tenant. Every simulator needs a template with appropriate name (<external_id>_profile.template) in your local [main](main/profile_templates) folder. The simulators must have been created beforehand by deploying the [oee-simulators](#simulator-microservice) microservice.
 
 ### Environment
 

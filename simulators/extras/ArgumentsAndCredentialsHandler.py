@@ -6,14 +6,16 @@ from c8y_api import CumulocityApi
 
 log_format = '[%(asctime)s] [%(levelname)s] - %(message)s'
 log_file_formatter = logging.Formatter(log_format)
+
+
 ####################################################
 def SetupHeadersForAPIRequest(tenant_id, username, password):
     # Setup for additional API request message
-    if not tenant_id or (tenant_id == '') :
+    if not tenant_id or (tenant_id == ''):
         tenant_id_and_username = username
-    else :
+    else:
         tenant_id_and_username = tenant_id + "/" + username
-    
+
     user_and_pass_bytes = base64.b64encode(
         (tenant_id_and_username + ':' + password).encode('ascii'))  # bytes
     user_and_pass = user_and_pass_bytes.decode('ascii')  # decode to str
@@ -32,26 +34,13 @@ def SetupHeadersForAPIRequest(tenant_id, username, password):
     return c8y_headers, measurements_headers
 
 
-def SetupLogger(file_logger_name, console_logger_name, filepath, file_log_level, console_log_level):
-    # Check logs folder availability
-    if not os.path.exists('logs'):
-        os.makedirs('logs')
-
-    # set up logging to file
-    log_filehandler = logging.FileHandler(filepath)
-    log_filehandler.setFormatter(log_file_formatter)
-    file_logger = logging.getLogger(file_logger_name)
-    file_logger.setLevel(file_log_level)
-    file_logger.addHandler(log_filehandler)
-
-    # set up logging to console
+def SetupLogger(console_logger_name, console_log_level):
     log_console_handler = logging.StreamHandler(sys.stdout)
     log_console_handler.setFormatter(log_file_formatter)
     console_logger = logging.getLogger(console_logger_name)
     console_logger.setLevel(console_log_level)
     console_logger.addHandler(log_console_handler)
-
-    return file_logger, console_logger
+    return console_logger
 
 
 def HandleExportArguments():
