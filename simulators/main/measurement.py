@@ -43,16 +43,16 @@ class Measurement(interface.MachineType):
             sigma = measurement_definition.get("sigma")
             value = round(gauss(mu, sigma), 2)
 
-        try:
+        if (measurement_definition.get("type") is not None and measurement_definition.get("type") != ""): 
             type = measurement_definition.get("type")
             log.info(f"using type value {type}")
-        except:
-            try:
-                type = measurement_definition.get("fragment")
-                log.info(f"using fragment value for type property {type}")
-            except:
-                log.error(f"No definition about type and fragment of a measurement for device with id {self.device_id} ")
-                return
+        elif (measurement_definition.get("fragment") is not None and measurement_definition.get("fragment") != ""):
+            type = measurement_definition.get("fragment")
+            log.info(f"using fragment value for type property {type}")
+        else:
+            log.error(f"No definition about type and fragment of a measurement for device with id {self.device_id} ")
+            return
+
         self.simulated_data = {
             'type': type,
             'fragment': measurement_definition.get("fragment"),
