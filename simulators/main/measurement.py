@@ -17,7 +17,7 @@ class Measurement(interface.MachineType):
     def callback(self, definition, min_interval_in_seconds, max_interval_in_seconds):
         measurement_callback = lambda task: {self.measurement_functions(definition, task)}
         if definition:
-            log.debug(f'Machine {self.model.get("label")}, id {self.model.get("id")}: create periodic task for measurement {definition["series"]}, interval ({min_interval_in_seconds}, {max_interval_in_seconds}) seconds')
+            log.debug(f'Machine {self.model.get("label")}, id {self.model.get("id")}: create periodic task for measurement {definition}, interval ({min_interval_in_seconds}, {max_interval_in_seconds}) seconds')
         else:
             log.debug(f'No definition of measurement in machine {self.model.get("label")}, id {self.model.get("id")}')
         return measurement_callback
