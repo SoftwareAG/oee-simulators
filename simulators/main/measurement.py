@@ -45,9 +45,11 @@ class Measurement(interface.MachineType):
 
         try:
             type = measurement_definition.get("type")
+            log.info(f"using type value {type}")
         except:
             try:
                 type = measurement_definition.get("fragment")
+                log.info(f"using fragment value for type property {type}")
             except:
                 log.error(f"No definition about type and fragment of a measurement for device with id {self.device_id} ")
                 return
