@@ -163,7 +163,7 @@ class OeeAPI:
         if response.ok:
             log.info(f'Timeslot for {locationId} was created')
             return True
-        log.warning(f'Cannot create Timeslot for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
+        log.warning(f'Cannot create Timeslot for location:{locationId}, content: {response.status_code} - {response}, url: {url}, data: {json.dumps(timeslot)}')
         return False
 
     def get_shiftplan(self, locationId, dateFrom, dateTo):
