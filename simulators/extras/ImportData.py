@@ -171,11 +171,12 @@ if __name__ == '__main__':
         measurements = file_data.get("measurements", [])
         id = GetDeviceIdByExternalId(external_id=external_id)
 
-        if len(alarms) > 0:
-            ImportAlarms(alarms=alarms, id=id)
-        else:
-            consoleLogger.info("No Alarms to import")
-        if len(measurements) > 0:
-            ImportMeasurements(measurements=measurements, id=id)
-        else:
-            consoleLogger.info("No Measurements to import")
+        if (id is not None):
+            if len(alarms) > 0:
+                ImportAlarms(alarms=alarms, id=id)
+            else:
+                consoleLogger.info("No Alarms to import")
+            if len(measurements) > 0:
+                ImportMeasurements(measurements=measurements, id=id)
+            else:
+                consoleLogger.info("No Measurements to import")
