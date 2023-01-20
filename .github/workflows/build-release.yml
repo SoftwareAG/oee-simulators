@@ -10,9 +10,6 @@ on:
           description: GitHub Release Message
           default: "GitHub Release Message"
 
-env:
-  BUILD_OFFSET: 10
-
 jobs:
   build_upload:
     runs-on: ubuntu-latest
@@ -25,7 +22,7 @@ jobs:
       - name: update versionnumber
         run: |
           cd repo/simulators
-          SIMULATOR_VERSION=$(expr ${{ env.BUILD_OFFSET }} + ${GITHUB_RUN_NUMBER})
+          SIMULATOR_VERSION=${GITHUB_RUN_NUMBER}
           sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
           echo "RELEASE_VERSION=${SIMULATOR_VERSION}" >> $GITHUB_ENV
 
