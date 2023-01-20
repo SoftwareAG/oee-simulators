@@ -17,7 +17,7 @@ class Measurement(interface.MachineType):
     def callback(self, definition, min_interval_in_seconds, max_interval_in_seconds):
         measurement_callback = lambda task: {self.measurement_functions(definition, task)}
         if definition:
-            log.debug(f'Machine {self.model.get("label")}, id {self.model.get("id")}: create periodic task for measurement {definition["series"]}, interval ({min_interval_in_seconds}, {max_interval_in_seconds}) seconds')
+            log.debug(f'Machine {self.model.get("label")}, id {self.model.get("id")}: create periodic task for measurement {definition}, interval ({min_interval_in_seconds}, {max_interval_in_seconds}) seconds')
         else:
             log.debug(f'No definition of measurement in machine {self.model.get("label")}, id {self.model.get("id")}')
         return measurement_callback
@@ -42,8 +42,20 @@ class Measurement(interface.MachineType):
             mu = measurement_definition.get("mu")
             sigma = measurement_definition.get("sigma")
             value = round(gauss(mu, sigma), 2)
+
+        if (measurement_definition.get("type") is not None and measurement_definition.get("type") != ""): 
+            type = measurement_definition.get("type")
+            log.info(f"using type value {type}")
+        elif (measurement_definition.get("fragment") is not None and measurement_definition.get("fragment") != ""):
+            type = measurement_definition.get("fragment")
+            log.info(f"using fragment value for type property {type}")
+        else:
+            log.error(f"No definition about type and fragment of a measurement for device with id {self.device_id} ")
+            return
+
         self.simulated_data = {
-            'type': measurement_definition.get("type"),
+            'type': type,
+            'fragment': measurement_definition.get("fragment"),
             'series': measurement_definition.get("series"),
             'value': value,
             'unit': measurement_definition.get("unit"),
