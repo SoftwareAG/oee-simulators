@@ -80,26 +80,21 @@ def DeleteUnwantedAlarmFields(alarm):
 
 
 def ImportAlarms(alarms, id):
-    consoleLogger.debug('Importing all alarms')
-    consoleLogger.debug(f'Alarms:{alarms}')
+    consoleLogger.debug(f'Importing [{len(alarms)}] alarms for {id}')
     timeShift = GetTimeDifference(alarms[0], 'creationTime')
     for alarm in alarms:
         alarm['source']['id'] = id
         alarm = DeleteUnwantedAlarmFields(alarm)
-        alarm['time'] = (datetime.strptime(
-            alarm['time'], timeFormat) + timeShift).strftime(timeFormat)
-        consoleLogger.debug(f'Posting Alarm for device {id}: {alarm}')
+        alarm['time'] = (datetime.strptime(alarm['time'], timeFormat) + timeShift).strftime(timeFormat)
         CreateAlarm(alarm)
     consoleLogger.info("Alarms import finished")
 
 
 def ImportMeasurements(measurements, id):
-    consoleLogger.debug('Importing all measurements')
-    consoleLogger.debug(f'Measurements: {measurements}')
+    consoleLogger.debug(f'Importing [{len(measurements)}] alarms for {id}')
     timeShift = GetTimeDifference(measurements[len(measurements) - 1], 'time')
     for i in range(len(measurements)):
-        measurements[i]['time'] = (datetime.strptime(
-            measurements[i]['time'], timeFormat) + timeShift).strftime(timeFormat)
+        measurements[i]['time'] = (datetime.strptime(measurements[i]['time'], timeFormat) + timeShift).strftime(timeFormat)
         measurements[i]['source']['id'] = id
     measurements_object = {
         "measurements": measurements
