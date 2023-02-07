@@ -30,7 +30,7 @@ else:
     else:
         consoleLogger.error(tenantConnectionResponse.json())
     consoleLogger.error(f"Connection to tenant \"{c8y.tenant_id}\" failed with user {c8y.username} on {c8y.base_url}")
-    sys.exit()
+    sys.exit(1)
 ######################################################
 
 

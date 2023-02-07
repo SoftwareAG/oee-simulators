@@ -129,7 +129,7 @@ def HandleImportArguments():
 
     if not os.path.exists("export_data"):
         logging.info("No export_data folder found")
-        sys.exit()
+        sys.exit(1)
     INPUT_FILE_LIST = args.ifiles
     if not INPUT_FILE_LIST:
         INPUT_FILE_LIST = []

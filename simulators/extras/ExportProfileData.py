@@ -28,7 +28,7 @@ else:
     else:
         consoleLogger.error(tenantConnectionResponse.json())
     consoleLogger.error(f"Connect to tenant {c8y.tenant_id} failed")
-    sys.exit()
+    sys.exit(1)
 ######################################################
 
 
@@ -86,13 +86,13 @@ def FindDeviceNameById(deviceId, baseUrl):
                             headers=C8Y_HEADERS)
     if not response.ok:
         consoleLogger.error(response.json())
-        sys.exit()
+        sys.exit(1)
     else:
         try:
             deviceName = response.json()['name']
         except:
             consoleLogger.error(f"Device #{deviceId} does not have name")
-            sys.exit()
+            sys.exit(1)
 
     return deviceName
 
@@ -135,7 +135,7 @@ def GetExternalIdReponse(deviceId, baseUrl):
                                       headers=C8Y_HEADERS)
     if not externalIdResponse.ok:
         consoleLogger.error(externalIdResponse.json())
-        sys.exit()
+        sys.exit(1)
     else:
         return externalIdResponse
 
