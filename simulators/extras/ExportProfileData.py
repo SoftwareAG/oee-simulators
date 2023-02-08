@@ -18,8 +18,11 @@ relativeFilePath = f"logs\export_{datetime.strftime(datetime.now(), logTimeForma
 filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
 consoleLogger = ArgumentsAndCredentialsHandler.SetupLogger(console_logger_name='ConsoleExportProfileData', console_log_level=console_log_level)
 #####################################################
+
+session = requests.Session()
+
 # Check if connection to tenant can be created
-tenantConnectionResponse = ArgumentsAndCredentialsHandler.CheckTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS)
+tenantConnectionResponse = ArgumentsAndCredentialsHandler.CheckTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS, session=session)
 if tenantConnectionResponse:
     consoleLogger.info(f"Connect to tenant {c8y.tenant_id} successfully")
 else:
@@ -82,7 +85,7 @@ def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
 
 
 def FindDeviceNameById(deviceId, baseUrl):
-    response = requests.get(f'{baseUrl}/inventory/managedObjects/{deviceId}',
+    response = session.get(f'{baseUrl}/inventory/managedObjects/{deviceId}',
                             headers=C8Y_HEADERS)
     if not response.ok:
         consoleLogger.error(response.json())
@@ -131,7 +134,7 @@ def AppendDataToJsonFile(jsonDataList, filePath, data_type, json_data={}):
 
 
 def GetExternalIdReponse(deviceId, baseUrl):
-    externalIdResponse = requests.get(f'{baseUrl}/identity/globalIds/{deviceId}/externalIds',
+    externalIdResponse = session.get(f'{baseUrl}/identity/globalIds/{deviceId}/externalIds',
                                       headers=C8Y_HEADERS)
     if not externalIdResponse.ok:
         consoleLogger.error(externalIdResponse.json())
