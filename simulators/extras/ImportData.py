@@ -1,4 +1,5 @@
 import logging, urllib, json, requests, os, sys
+from urllib3.exceptions import InsecureRequestWarning
 from os.path import isfile, join
 
 import ArgumentsAndCredentialsHandler
@@ -12,7 +13,7 @@ timeFormat = "%Y-%m-%dT%H:%M:%S.%fZ"
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 file_log_level = logging.DEBUG
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
-json_filename_list_to_import, console_log_level, c8y, password = ArgumentsAndCredentialsHandler.HandleImportArguments()
+json_filename_list_to_import, console_log_level, c8y, password, verifySslCertificate = ArgumentsAndCredentialsHandler.HandleImportArguments()
 C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.SetupHeadersForAPIRequest(tenant_id=c8y.tenant_id, username= c8y.username, password=password)
 ####################################################
 # Setup Log
@@ -20,8 +21,12 @@ relativeFilePath = f"logs\import_{datetime.strftime(datetime.now(), logTimeForma
 logFilePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
 consoleLogger = ArgumentsAndCredentialsHandler.SetupLogger(console_logger_name='ConsoleImportProfileData', console_log_level=console_log_level)
 #####################################################
+
+session = requests.Session()
+session.verify = verifySslCertificate
+
 # Check if connection to tenant can be created
-tenantConnectionResponse = ArgumentsAndCredentialsHandler.CheckTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS)
+tenantConnectionResponse = ArgumentsAndCredentialsHandler.CheckTenantConnection(baseUrl=c8y.base_url, C8Y_HEADERS=C8Y_HEADERS, session=session)
 if tenantConnectionResponse:
     consoleLogger.info(f"Connected successfully to tenant \"{c8y.tenant_id}\" with user {c8y.username} on {c8y.base_url}")
 else:
@@ -37,8 +42,7 @@ else:
 def GetDeviceIdByExternalId(external_id):
     consoleLogger.info(f'Searching for device with ext ID {external_id}')
     encoded_external_id = EncodeUrl(external_id)
-    response = requests.get(
-        f'{c8y.base_url}/identity/externalIds/{C8Y_PROFILE_GROUP}/{encoded_external_id}', headers=C8Y_HEADERS)
+    response = session.get(f'{c8y.base_url}/identity/externalIds/{C8Y_PROFILE_GROUP}/{encoded_external_id}', headers=C8Y_HEADERS)
     if response.ok:
         device_id = response.json()['managedObject']['id']
         consoleLogger.info(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
@@ -48,8 +52,7 @@ def GetDeviceIdByExternalId(external_id):
 
 
 def CreateAlarm(alarm):
-    response = requests.post(
-        f'{c8y.base_url}/alarm/alarms', headers=C8Y_HEADERS, data=json.dumps(alarm))
+    response = session.post(f'{c8y.base_url}/alarm/alarms', headers=C8Y_HEADERS, data=json.dumps(alarm))
     if response.ok:
         return response.json()
     consoleLogger.warning(response.json())
@@ -57,8 +60,7 @@ def CreateAlarm(alarm):
 
 
 def CreateMeasurements(measurements):
-    response = requests.post(f'{c8y.base_url}/measurement/measurements',
-                             headers=MEASUREMENTS_HEADERS, data=json.dumps(measurements))
+    response = session.post(f'{c8y.base_url}/measurement/measurements', headers=MEASUREMENTS_HEADERS, data=json.dumps(measurements))
     if response.ok:
         return response.json()
     consoleLogger.warning(response.json())
@@ -80,7 +82,7 @@ def DeleteUnwantedAlarmFields(alarm):
 
 
 def ImportAlarms(alarms, id):
-    consoleLogger.debug(f'Importing [{len(alarms)}] alarms for {id}')
+    consoleLogger.info(f'Importing [{len(alarms)}] alarms for {id}')
     timeShift = GetTimeDifference(alarms[0], 'creationTime')
     for alarm in alarms:
         alarm['source']['id'] = id
@@ -91,7 +93,7 @@ def ImportAlarms(alarms, id):
 
 
 def ImportMeasurements(measurements, id):
-    consoleLogger.debug(f'Importing [{len(measurements)}] alarms for {id}')
+    consoleLogger.info(f'Importing [{len(measurements)}] alarms for {id}')
     timeShift = GetTimeDifference(measurements[len(measurements) - 1], 'time')
     for i in range(len(measurements)):
         measurements[i]['time'] = (datetime.strptime(measurements[i]['time'], timeFormat) + timeShift).strftime(timeFormat)
@@ -167,6 +169,7 @@ if __name__ == '__main__':
         id = GetDeviceIdByExternalId(external_id=external_id)
 
         if (id is not None):
+            requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
             if len(alarms) > 0:
                 ImportAlarms(alarms=alarms, id=id)
             else:
