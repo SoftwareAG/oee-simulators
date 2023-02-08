@@ -124,6 +124,7 @@ def HandleImportArguments():
     parser.add_argument('--password', '-p', type=str, help='C8Y Password')
     parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
     parser.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
+    parser.add_argument('--disable-ssl-verification', action='store_false')
 
     args = parser.parse_args()
 
@@ -162,12 +163,14 @@ def HandleImportArguments():
     if not TENANT:
         TENANT = Environment.C8Y_TENANT
 
+    VERIFY_SSL_CERTIFICATE = args.disable_ssl_verification
+
     c8y = CumulocityApi(base_url=BASEURL,  # the url of your Cumulocity tenant here
                         tenant_id=TENANT,  # the tenant ID of your Cumulocity tenant here
                         username=USERNAME,  # your Cumulocity IoT username
                         password=PASSWORD)  # your Cumulocity IoT password
 
-    return INPUT_FILE_LIST, LOG_LEVEL, c8y, PASSWORD
+    return INPUT_FILE_LIST, LOG_LEVEL, c8y, PASSWORD, VERIFY_SSL_CERTIFICATE
 
 
 def RemoveTrailingSlashFromBaseUrl(baseUrl):
@@ -176,10 +179,11 @@ def RemoveTrailingSlashFromBaseUrl(baseUrl):
     return baseUrl
 
 
-def CheckTenantConnection(baseUrl, C8Y_HEADERS):
+def CheckTenantConnection(baseUrl, C8Y_HEADERS, session):
     # Check if connection to tenant can be created
     try:
-        response = requests.get(f'{baseUrl}/tenant/currentTenant', headers=C8Y_HEADERS)
+        response = session.get(f'{baseUrl}/tenant/currentTenant', headers=C8Y_HEADERS)
         return response
-    except:
+    except Exception as e: 
+        print(e)
         return None
