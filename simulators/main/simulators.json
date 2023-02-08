@@ -240,7 +240,7 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0010",
+        "id": "sim_010",
         "label": "Ideal Producer A80",
         "comment": "",
         "enabled": true,
@@ -269,7 +269,7 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0011",
+        "id": "sim_011",
         "label": "Ideal Producer with Categories",
         "comment": "",
         "enabled": true,
@@ -298,7 +298,7 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0012",
+        "id": "sim_012",
         "label": "Normal #12 with short shifts",
         "enabled": true,
         "events": [
@@ -323,7 +323,7 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0013",
+        "id": "sim_013",
         "label": "Normal #13 with with one day shift",
         "enabled": true,
         "events": [
@@ -348,7 +348,7 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0014",
+        "id": "sim_014",
         "label": "Normal #14 with with two shifts",
         "enabled": true,
         "events": [
@@ -373,7 +373,7 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0015",
+        "id": "sim_015",
         "label": "Normal #15 with with three shifts",
         "enabled": true,
         "events": [
@@ -398,7 +398,7 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0016",
+        "id": "sim_016",
         "label": "Measurement Simulator #1",
         "enabled": true,
         "measurements": [
@@ -427,7 +427,7 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0017",
+        "id": "sim_017",
         "label": "Measurement Simulator #2",
         "enabled": true,
         "measurements": [
@@ -465,7 +465,7 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0018",
+        "id": "sim_018",
         "label": "Measurement Simulator #3",
         "enabled": true,
         "measurements": [
@@ -503,7 +503,7 @@
     },
     {
         "type": "Simulator",
-        "id": "sim_0019",
+        "id": "sim_019",
         "label": "Measurement Simulator #4",
         "enabled": true,
         "measurements": [
