@@ -13,6 +13,7 @@ class Measurement(interface.MachineType):
         self.model = model
         self.definitions = self.model.get('measurements', [])
         self.simulated_data = {}
+        self.first_time = True
 
     def callback(self, definition, min_interval_in_seconds, max_interval_in_seconds):
         measurement_callback = lambda task: {self.measurement_functions(definition, task)}
