@@ -176,31 +176,40 @@ class OeeAPI:
 
     def create_or_update_asset_hierarchy(self, deviceIDs):
         line_description = "Simulator LINE"
+        line_type = "LINE"
         site_description = "Simulator SITE"
+        site_type = "SITE"
         oee_target = 80
-        lineHierarchy = []
+
+        profileIDs_deviceIDs_in_line_array = []
         for deviceID in deviceIDs:
             profileID = self.c8y_api.get_profile_id(deviceID=deviceID)
             if profileID != "":
-                lineHierarchy.append({"profileID": profileID, "ID": deviceID})
+                profileIDs_deviceIDs_in_line_array.append({"profileID": profileID, "ID": deviceID})
 
         line_id = self.get_id_of_asset_hierarchy_line(line_description)
+        site_id = self.get_id_of_asset_hierarchy_line(site_description)
+
         if line_id == '':
-            line_id_ISA_Type = self.c8y_api.createISAType(type="LINE", hierarchy=None, description=line_description, oeetarget=oee_target)
-            line_id = line_id_ISA_Type.get("id")
-            lineMO = self.c8y_api.updateISAType(id=line_id, type="LINE", hierarchy=lineHierarchy, description=line_description, oeetarget=oee_target)
+            line_managed_object = self.create_new_asset_hierarchy(type=line_type, hierarchy_array=profileIDs_deviceIDs_in_line_array, description=line_description, oee_target=oee_target)
+            log.info(f'Created asset hierarchy Line: {line_managed_object}')
+            line_id = line_managed_object.get('id')
 
-            site_id_ISA_Type = self.c8y_api.createISAType(type="SITE", hierarchy=None, description=site_description, oeetarget=oee_target)
-            site_id = site_id_ISA_Type.get("id")
-            siteMO = self.c8y_api.updateISAType(id=site_id, type="SITE", hierarchy=[{"profileID": self.c8y_api.get_profile_id(deviceID=line_id), "ID": line_id}], description=site_description, oeetarget=oee_target)
-
-            log.info(f'Created asset hierarchy')
-            log.info(f'Site-ID: {siteMO}')
-            log.info(f'Line-ID: {lineMO}')
+        LineID_in_site_array = [{"profileID": '', "ID": line_id}]
+        if site_id == '':
+            site_managed_object = self.create_new_asset_hierarchy(type=site_type, hierarchy_array=LineID_in_site_array, description=site_description, oee_target=oee_target)
+            log.info(f'Created asset hierarchy Site: {site_managed_object}')
             return
-        
-        lineMO = self.c8y_api.updateISAType(id=line_id, type="LINE", hierarchy=lineHierarchy, description=line_description, oeetarget=oee_target)
-        log.info(f'Updated Simulator Line asset hierarchy: {lineMO}')
+        else:
+            site_managed_object = self.c8y_api.updateISAType(id=site_id, type=site_type, hierarchy=LineID_in_site_array, description=site_description, oeetarget=oee_target)
+            log.info(f'Updated asset hierarchy Site: {site_managed_object}')
+            return
+
+    def create_new_asset_hierarchy(self, type, hierarchy_array, description, oee_target):
+        id_ISA_Type = self.c8y_api.createISAType(type=type, hierarchy=None, description=description, oeetarget=oee_target)
+        asset_id = id_ISA_Type.get("id")
+        managed_object = self.c8y_api.updateISAType(id=asset_id, type=type, hierarchy=hierarchy_array, description=description, oeetarget=oee_target)
+        return managed_object
 
     def get_id_of_asset_hierarchy_line(self, text):
         objects = self.c8y_api.getISAObjects()
