@@ -42,6 +42,12 @@
         { "id": "ShortShiftsLocation-11", "seriesPostfix": "Shift11", "slotType": "PRODUCTION", "slotStart": "2022-07-13T17:00:00Z", "slotEnd": "2022-07-13T18:00:00Z", "description": "Shift11", "active": true, "slotRecurrence": { "weekdays": [1, 2, 3, 4, 5] } },
         { "id": "ShortShiftsLocation-11", "seriesPostfix": "Shift12", "slotType": "PRODUCTION", "slotStart": "2022-07-13T18:00:00Z", "slotEnd": "2022-07-13T19:00:00Z", "description": "Shift12", "active": true, "slotRecurrence": { "weekdays": [1, 2, 3, 4, 5] } }
       ]
+    },
+    {
+      "locationId": "24HoursShiftLocation",
+      "recurringTimeslots": [
+        { "id": "24HoursShift", "seriesPostfix": "24HoursShift", "slotType": "PRODUCTION", "slotStart": "2023-02-13T00:00:00Z", "slotEnd": "2023-02-13T23:59:00Z", "description": "24 hours Shift", "active": true, "slotRecurrence": { "weekdays": [1, 2, 3, 4, 5, 6, 7] } }
+      ]
     }
   ]
   
