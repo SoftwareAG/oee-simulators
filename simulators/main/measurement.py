@@ -86,7 +86,7 @@ class Measurement(interface.MachineType):
 
     def create_individual_measurement_dict(self, data):
         measurementDict = {
-            f"{data.get('type')}":
+            f"{data.get('fragment')}":
                 {
                     f"{data.get('series')}":
                         {

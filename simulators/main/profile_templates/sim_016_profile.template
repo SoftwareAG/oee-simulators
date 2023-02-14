@@ -61,7 +61,7 @@
         {
             "deviceId": "${deviceId}",
             "key": "measurement.PumpPressure",
-            "name": "Pressure",
+            "name": "PumpPressure",
             "pollingIntervalSeconds": 10,
             "type": "measurement"
         }
