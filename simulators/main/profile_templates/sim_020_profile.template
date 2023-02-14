@@ -1,5 +1,5 @@
 {
-    "name": "Measurement Simulator #4 with 24 hours shift - ${counter}",
+    "name": "Measurement Simulator #5 with 24 hours shift - ${counter}",
     "alarms": [],
     "amountUnit": "",
     "deviceId": "${deviceId}",
