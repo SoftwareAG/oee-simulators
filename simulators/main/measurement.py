@@ -45,12 +45,12 @@ class Measurement(interface.MachineType):
 
         if (measurement_definition.get("type") is not None and measurement_definition.get("type") != ""): 
             type = measurement_definition.get("type")
-            log.info(f"using type value {type}")
+            log.info(f"using defined type value: {type}")
         elif (measurement_definition.get("fragment") is not None and measurement_definition.get("fragment") != ""):
             type = measurement_definition.get("fragment")
-            log.info(f"using fragment value for type property {type}")
+            log.info(f"using fragment value fallback for type property: {type}")
         else:
-            log.error(f"No definition about type and fragment of a measurement for device with id {self.device_id} ")
+            log.error(f"No definition about type and fragment found for measurement: {measurement_definition} for device {self.device_id} !")
             return
 
         self.simulated_data = {
@@ -72,7 +72,7 @@ class Measurement(interface.MachineType):
         log.info('Send create measurements requests')
         response = cumulocityAPI.create_measurements(measurement=base_dict)
         if response:
-            log.info(f"Created new {measurement_definition.get('type')} measurement, series {measurement_definition.get('series')} with value {self.simulated_data.get('value')}{self.simulated_data.get('unit')} for device {self.model.get('label')}, id {self.id}")
+            log.info(f"Created new measurement for device {self.id} ({self.model.get('label')}): {base_dict}")
 
     def create_extra_info_dict(self, data):
         extraInfoDict = {
