@@ -201,6 +201,8 @@ class OeeAPI:
             log.info(f'Created asset hierarchy Site: {site_managed_object}')
             return
         else:
+            line_managed_object = self.c8y_api.updateISAType(id=line_id, type=line_type, hierarchy=profileIDs_deviceIDs_in_line_array, description=line_description, oeetarget=oee_target)
+            log.info(f'Updated asset hierarchy Line: {line_managed_object}')
             site_managed_object = self.c8y_api.updateISAType(id=site_id, type=site_type, hierarchy=LineID_in_site_array, description=site_description, oeetarget=oee_target)
             log.info(f'Updated asset hierarchy Site: {site_managed_object}')
             return
