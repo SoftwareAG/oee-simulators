@@ -528,5 +528,33 @@
                 "maximumPerHour": 2.0
             }
         ]
+    },
+    {
+        "type": "Simulator",
+        "id": "sim_020",
+        "label": "Measurement Simulator #5 with 24 hours shift",
+        "enabled": true,
+        "measurements": [
+            {
+                "fragment": "Pressure",
+                "series": "P",
+                "unit": "hPa",
+                "valueDistribution": "uniform",
+                "minimumValue": 1000.0,
+                "maximumValue": 1500.0,
+                "minimumPerHour": 4.0,
+                "maximumPerHour": 4.0
+            },
+            {
+                "fragment": "Pieces",
+                "series": "Produced",
+                "unit": "pcs",
+                "valueDistribution": "uniform",
+                "minimumValue": 1000.0,
+                "maximumValue": 1200.0,
+                "minimumPerHour": 2.0,
+                "maximumPerHour": 2.0
+            }
+        ]
     }
 ]
