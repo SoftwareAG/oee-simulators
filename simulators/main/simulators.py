@@ -1,5 +1,7 @@
 import sys
 import time, json, os, logging
+from datetime import datetime
+
 from cumulocityAPI import (C8Y_BASE, C8Y_TENANT, C8Y_USER, CumulocityAPI)
 from oeeAPI import OeeAPI, ProfileCreateMode
 from shiftplan import Shiftplan
@@ -61,6 +63,13 @@ class MachineSimulator:
             return
         if self.machine.should_tick():
             for task in self.machine.tasks:
+                try:
+                    if self.machine.first_time:
+                        # set the next_run time to always let the measurement generation to run in the first time
+                        task.next_run = datetime.timestamp(datetime.utcnow()) + 1
+                        self.machine.first_time = False
+                except:
+                    pass
                 if task:
                     task.tick()
 
