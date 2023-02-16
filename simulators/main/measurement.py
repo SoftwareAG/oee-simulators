@@ -98,5 +98,3 @@ class Measurement(interface.MachineType):
         }
         return measurementDict
 
-    def should_tick(self):
-        return True
