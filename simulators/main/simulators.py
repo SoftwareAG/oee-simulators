@@ -1,3 +1,4 @@
+import contextlib
 import sys
 import time, json, os, logging
 from datetime import datetime
@@ -79,13 +80,11 @@ class MachineSimulator:
             return True
 
     def is_first_time(self, task):
-        try:
+        with contextlib.suppress(Exception):
             if self.machine.first_time:
                 # set the next_run time to always let the measurement generation to run in the first time
                 task.next_run = datetime.timestamp(datetime.utcnow()) + 1
                 self.machine.first_time = False
-        except:
-            pass
 
     def is_in_productionTime(self):
         # if there are no shiftplans for a device, it should not be affected by production-time
@@ -103,7 +102,7 @@ class MachineSimulator:
         return has_no_shiftplan
 
     def log_not_in_shift(self):
-        log.info(f'Device: {self.device_id} [{self.model["label"]}] is not in PRODUCTION shift -> ignore event')
+        log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is not in PRODUCTION shift -> ignore event')
 
 
 def get_or_create_device_id(device_model):
@@ -111,9 +110,9 @@ def get_or_create_device_id(device_model):
     label = device_model.get("label")
     if not sim_id or not label:
         if not sim_id:
-            log.debug(f"No definition info of device id")
+            log.debug("No definition info of device id")
         if not label:
-            log.debug(f"No definition info of device name")
+            log.debug("No definition info of device name")
         sys.exit()
 
     device_id = cumulocityAPI.get_or_create_device(sim_id, label)
@@ -148,7 +147,7 @@ SHIFTPLANS_MODELS = load("shiftplans.json")
 shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), SHIFTPLANS_MODELS))
 
 if DELETE_PROFILES.lower() == "true":
-    log.debug(f'Deleting all Profiles')
+    log.debug('Deleting all Profiles')
     oeeAPI.delete_all_simulators_profiles()
 
 # Create Simulator Profiles

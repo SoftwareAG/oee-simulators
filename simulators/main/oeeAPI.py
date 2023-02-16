@@ -199,13 +199,11 @@ class OeeAPI:
         if site_id == '':
             site_managed_object = self.create_new_asset_hierarchy(type=site_type, hierarchy_array=LineID_in_site_array, description=site_description, oee_target=oee_target)
             log.info(f'Created asset hierarchy Site: {site_managed_object}')
-            return
         else:
             line_managed_object = self.c8y_api.updateISAType(id=line_id, type=line_type, hierarchy=profileIDs_deviceIDs_in_line_array, description=line_description, oeetarget=oee_target)
             log.info(f'Updated asset hierarchy Line: {line_managed_object}')
             site_managed_object = self.c8y_api.updateISAType(id=site_id, type=site_type, hierarchy=LineID_in_site_array, description=site_description, oeetarget=oee_target)
             log.info(f'Updated asset hierarchy Site: {site_managed_object}')
-            return
 
     def create_new_asset_hierarchy(self, type, hierarchy_array, description, oee_target):
         id_ISA_Type = self.c8y_api.createISAType(type=type, hierarchy=None, description=description, oeetarget=oee_target)
