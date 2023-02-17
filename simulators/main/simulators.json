@@ -532,7 +532,7 @@
     {
         "type": "Simulator",
         "id": "sim_020",
-        "label": "Measurement Simulator #5 with 24 hours shift",
+        "label": "Measurement Simulator #5 with Location",
         "enabled": true,
         "measurements": [
             {
