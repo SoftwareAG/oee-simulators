@@ -504,7 +504,7 @@
     {
         "type": "Simulator",
         "id": "sim_019",
-        "label": "Measurement Simulator #4",
+        "label": "Measurement Simulator #4 with with three shifts",
         "enabled": true,
         "measurements": [
             {
