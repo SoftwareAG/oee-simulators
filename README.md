@@ -8,6 +8,19 @@ Simulators are needed to calculate OEE based on configuration profiles that can 
 
 Prebuilt docker images can be downloaded from the [Releases](https://github.softwareag.com/IOTA/oee-simulators/releases) in this repository.
 
+# unit test 
+Collection of test for the [Generic Simulators](simulators)
+
+In order to run all the test scripts:
+```
+python -m unittest discover -s test -p "*_test.py"
+```
+Run specific script:
+```
+cd test
+python -m unittest [test-script-name].py
+```
+
 ------------------------------
 
 These tools are provided as-is and without warranty or support. They do not constitute part of the Software AG product suite. Users are free to use, fork and modify them, subject to the license agreement. While Software AG welcomes contributions, we cannot guarantee to include every contribution in the master project.
