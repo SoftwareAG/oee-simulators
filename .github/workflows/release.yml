@@ -1,0 +1,44 @@
+# Build docker image, build cumulocity archive
+
+name: Build oee-simulators
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_upload:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          path: 'repo'
+
+      - name: Update version number
+        run: |
+          cd repo/sims
+          SIMULATOR_VERSION=${GITHUB_RUN_NUMBER}
+          sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
+          echo "RELEASE_VERSION=${SIMULATOR_VERSION}" >> $GITHUB_ENV
+      - name: Zip the source-code
+        run: |
+          cd repo/simulators
+          zip -r source-code.zip .
+      - name: Build Docker image
+        run: |
+          cd repo/sims
+          docker build -t oee-simulators .
+          docker save -o image.tar oee-simulators
+          docker rmi oee-simulators
+      - name: Zip it!
+        run: |
+          cd repo/sims
+          zip oee-simulators.zip image.tar cumulocity.json
+      - name: upload Zip
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: 'oee-simulators'
+          path: 'repo/simulators/oee-simulators.zip'

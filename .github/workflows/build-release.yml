@@ -19,7 +19,7 @@ jobs:
         with:
           path: 'repo'
 
-      - name: update versionnumber
+      - name: update version number
         run: |
           cd repo/simulators
           SIMULATOR_VERSION=${GITHUB_RUN_NUMBER}
