@@ -71,9 +71,10 @@ class MachineSimulator:
 
     def should_tick(self):
         if not self.is_in_productionTime():
+            # If machine is out of production time continuously, the log won't be generated
             if not self.machine.out_of_production_time_logged:
                 self.log_not_in_shift()
-            self.machine.out_of_production_time_logged = True
+                self.machine.out_of_production_time_logged = True
             return False
         else:
             self.machine.out_of_production_time_logged = False
