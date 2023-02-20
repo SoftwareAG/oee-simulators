@@ -1,9 +1,16 @@
+import unittest, logging, os, sys
+from config.root import ROOT_DIR
+# Make a path to simulators/main (source directory)
+SOURCE_DIR = os.path.join(ROOT_DIR, 'simulators', 'main')
+# Add the source directory to the module search path
+sys.path.insert(0, SOURCE_DIR)
+
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
 from simulators.main.simulator import get_or_create_device_id, load
 from simulators.main.cumulocityAPI import CumulocityAPI
-import unittest
 from unittest.mock import patch
-import logging
+
+
 
 cumulocity_api = CumulocityAPI()
 log = logging.getLogger("Test")
