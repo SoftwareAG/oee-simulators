@@ -63,7 +63,6 @@ def HandleExportArguments():
     device_ids_list = args.device_ids
     if not device_ids_list:
         device_ids_list = []
-        abc = Environment.DEVICE_ID
         if Environment.DEVICE_ID:
             logging.info(type(Environment.DEVICE_ID))
             if type(Environment.DEVICE_ID) == tuple:
