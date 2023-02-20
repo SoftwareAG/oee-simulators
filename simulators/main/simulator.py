@@ -82,7 +82,8 @@ def get_or_create_device_id(device_model):
             log.debug(f"No definition info of device id")
         if not label:
             log.debug(f"No definition info of device name")
-        sys.exit()
+        log.info(f"Simulator device won't be created")
+        return None
 
     device_id = cumulocityAPI.get_or_create_device(sim_id, label)
     return device_id
@@ -94,52 +95,60 @@ def load(filename):
             return json.load(f_obj)
     except Exception as e:
         log.error(e, type(e))
-        return {}
+        return None
 
 
 ###################################################################################
-log.info(f'cwd:{os.getcwd()}')
-DEVICE_MODELS = load("simulators.json")
-DEVICE_EVENT_MODELS = []
-DEVICE_MEASUREMENT_MODELS = []
+if __name__ == '__main__':
+    log.info(f'cwd:{os.getcwd()}')
+    DEVICE_MODELS = load("simulator.json")
+    if not DEVICE_MODELS:
+        sys.exit()
+    DEVICE_EVENT_MODELS = []
+    DEVICE_MEASUREMENT_MODELS = []
 
-# Add device id to the model of devices
-for device_model in DEVICE_MODELS:
-    device_model["device_id"] = get_or_create_device_id(device_model)
-    if device_model.get("events"):
-        DEVICE_EVENT_MODELS.append(device_model)
-    if device_model.get("measurements"):
-        DEVICE_MEASUREMENT_MODELS.append(device_model)
+    # Add device id to the model of devices
+    for device_model in DEVICE_MODELS:
+        if get_or_create_device_id(device_model):
+            device_model["device_id"] = get_or_create_device_id(device_model)
+        else:
+            continue
+        if device_model.get("events"):
+            DEVICE_EVENT_MODELS.append(device_model)
+        if device_model.get("measurements"):
+            DEVICE_MEASUREMENT_MODELS.append(device_model)
 
-# read & update Shiftplans
-SHIFTPLANS_MODELS = load("shiftplans.json")
-shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), SHIFTPLANS_MODELS))
+    # read & update Shiftplans
+    SHIFTPLANS_MODELS = load("shiftplans.json")
+    if not SHIFTPLANS_MODELS:
+        sys.exit()
+    shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), SHIFTPLANS_MODELS))
 
-if DELETE_PROFILES.lower() == "true":
-    log.debug(f'Deleting all Profiles')
-    oeeAPI.delete_all_simulators_profiles()
+    if DELETE_PROFILES.lower() == "true":
+        log.debug(f'Deleting all Profiles')
+        oeeAPI.delete_all_simulators_profiles()
 
-# Create Simulator Profiles
-[oeeAPI.create_and_activate_profile(id, PROFILE_CREATE_MODE) for id in oeeAPI.get_simulator_external_ids()]
+    # Create Simulator Profiles
+    [oeeAPI.create_and_activate_profile(id, PROFILE_CREATE_MODE) for id in oeeAPI.get_simulator_external_ids()]
 
-os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
+    os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
 
-if CREATE_ASSET_HIERARCHY.lower() == "true":
-    log.info("Creating the OEE asset hierarchy")
-    ids = []
-    [ids.append(simulator.get("device_id")) for simulator in DEVICE_MODELS]
-    oeeAPI.create_or_update_asset_hierarchy(deviceIDs=ids)
+    if CREATE_ASSET_HIERARCHY.lower() == "true":
+        log.info("Creating the OEE asset hierarchy")
+        ids = []
+        [ids.append(simulator.get("device_id")) for simulator in DEVICE_MODELS]
+        oeeAPI.create_or_update_asset_hierarchy(deviceIDs=ids)
 
-# create list of objects for events and measurements
-event_device_list = list(map(lambda model: MachineSimulator(Event(model, shiftplans)), DEVICE_EVENT_MODELS))
-measurement_device_list = list(map(lambda model: MachineSimulator(Measurement(model)), DEVICE_MEASUREMENT_MODELS))
-devices_list = event_device_list + measurement_device_list
+    # create list of objects for events and measurements
+    event_device_list = list(map(lambda model: MachineSimulator(Event(model, shiftplans)), DEVICE_EVENT_MODELS))
+    measurement_device_list = list(map(lambda model: MachineSimulator(Measurement(model)), DEVICE_MEASUREMENT_MODELS))
+    devices_list = event_device_list + measurement_device_list
 
-while True:
-    for shiftplan in shiftplans:
-        shiftplan.tick()
+    while True:
+        for shiftplan in shiftplans:
+            shiftplan.tick()
 
-    for device in devices_list:
-        device.tick()
+        for device in devices_list:
+            device.tick()
 
-    time.sleep(1)
+        time.sleep(1)
