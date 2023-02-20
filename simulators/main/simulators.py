@@ -1,7 +1,7 @@
 import contextlib
 import sys
 import time, json, os, logging
-from datetime import datetime
+from datetime import datetime, date
 
 from cumulocityAPI import (C8Y_BASE, C8Y_TENANT, C8Y_USER, CumulocityAPI)
 from oeeAPI import OeeAPI, ProfileCreateMode
@@ -94,13 +94,20 @@ class MachineSimulator:
             if shiftplan.locationId == self.machine.locationId:
                 has_no_shiftplan = False
                 for timeslot in shiftplan.recurringTimeSlots:
-                    if timeslot.slotType == "PRODUCTION":
+                    if timeslot.get('slotType') == "PRODUCTION":
                         now = datetime.utcnow()
-                        start = datetime.strptime(timeslot.slotStart, interface.DATE_FORMAT)
-                        end = datetime.strptime(timeslot.slotEnd, interface.DATE_FORMAT)
+                        start, end = self.update_shiftplan_start_end_time_definition(timeslot)
                         if start < now < end:
                             return True
         return has_no_shiftplan
+
+    def update_shiftplan_start_end_time_definition(self, timeslot):
+        current_year = date.today().year
+        current_month = date.today().month
+        current_day = date.today().day
+        start = datetime.strptime(timeslot.get('slotStart'), interface.DATE_FORMAT).replace(year=current_year, month=current_month, day=current_day)
+        end = datetime.strptime(timeslot.get('slotEnd'), interface.DATE_FORMAT).replace(year=current_year, month=current_month, day=current_day)
+        return start, end
 
     def log_not_in_shift(self):
         log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is not in PRODUCTION shift -> ignore event')
