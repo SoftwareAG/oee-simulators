@@ -1,10 +1,11 @@
-from datetime import datetime, timedelta
-from task import PeriodicTask
-
-from cumulocityAPI import CumulocityAPI
-from oeeAPI import OeeAPI 
 import logging
 import interface
+
+from datetime import datetime, timedelta
+from task import PeriodicTask
+from cumulocityAPI import CumulocityAPI
+from oeeAPI import OeeAPI 
+
 
 log = logging.getLogger("task")
 

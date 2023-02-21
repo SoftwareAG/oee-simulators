@@ -1,15 +1,14 @@
-import contextlib
-import sys
-import time, json, os, logging
-from datetime import datetime, date
+import contextlib, sys, time, json, os, logging
+import interface
 
+from datetime import datetime, date
 from cumulocityAPI import (C8Y_BASE, C8Y_TENANT, C8Y_USER, CumulocityAPI)
 from oeeAPI import OeeAPI, ProfileCreateMode
 from shiftplan import Shiftplan
 from event import Event
 from measurement import Measurement
 from task import PeriodicTask
-import interface
+
 
 cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()

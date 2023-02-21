@@ -1,5 +1,4 @@
 import json, logging, os, sys, requests
-
 import ArgumentsAndCredentialsHandler, Environment
 
 from datetime import datetime, timedelta, timezone

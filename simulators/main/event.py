@@ -1,9 +1,11 @@
 import json, logging
+import interface
+
 from datetime import datetime
 from random import randint, uniform, choices
 from cumulocityAPI import CumulocityAPI
 from task import Task
-import interface
+
 
 cumulocityAPI = CumulocityAPI()
 log = logging.getLogger("events generation")

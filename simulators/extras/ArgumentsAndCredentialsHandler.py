@@ -1,5 +1,4 @@
-import argparse, logging, base64, os, sys, requests
-
+import argparse, logging, base64, os, sys
 import Environment
 
 from c8y_api import CumulocityApi
