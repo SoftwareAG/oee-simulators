@@ -1,9 +1,5 @@
 import unittest, logging, os, sys
-from config.root import ROOT_DIR
-# Make a path to simulators/main (source directory)
-SOURCE_DIR = os.path.join(ROOT_DIR, 'simulators', 'main')
-# Add the source directory to the module search path
-sys.path.insert(0, SOURCE_DIR)
+import config.root # Set source directory
 
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
 from simulators.main.simulator import get_or_create_device_id, load
@@ -11,8 +7,6 @@ from simulators.main.cumulocityAPI import CumulocityAPI
 from unittest.mock import patch
 
 
-
-cumulocity_api = CumulocityAPI()
 log = logging.getLogger("Test")
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
 
@@ -24,7 +18,6 @@ MICROSERVICE_OPTIONS = cumulocityAPI.get_tenant_option_by_category("simulators")
 PROFILE_CREATE_MODE = ProfileCreateMode[MICROSERVICE_OPTIONS.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
 CREATE_PROFILES_ARGUMENTS = MICROSERVICE_OPTIONS.get("CREATE_PROFILES_ARGUMENTS", "")
 CREATE_ASSET_HIERARCHY = MICROSERVICE_OPTIONS.get("CREATE_ASSET_HIERARCHY", "False")
-LOG_LEVEL = MICROSERVICE_OPTIONS.get("LOG_LEVEL", "INFO")
 DELETE_PROFILES = MICROSERVICE_OPTIONS.get("DELETE_PROFILES", "False")
 
 
@@ -42,7 +35,7 @@ class Test(unittest.TestCase):
         self.device_id = get_or_create_device_id(device_model=self.device_model)
         # null device_id will fail the test
         self.assertIsNotNone(self.device_id)
-        cumulocity_api.delete_managed_object(self.device_id)
+        cumulocityAPI.delete_managed_object(self.device_id)
         log.info(f"Removed the test device with id {self.device_id}")
         log.info('-' * 100)
 
@@ -72,7 +65,7 @@ class Test(unittest.TestCase):
         self.assertIsNone(self.device_id)
         log.info('-' * 100)
 
-    @patch('logging.Logger.error')  # patch the log.error method
+    @patch('logging.Logger.error')  # patch to hide the log.error method
     def test_load_json_file(self, mock_error):
         log.info("Start testing load json file")
         self.model = load("simulators/main/simulator.json") # Load model for unittest CLI
