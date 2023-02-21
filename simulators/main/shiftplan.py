@@ -11,10 +11,10 @@ log = logging.getLogger("task")
 cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()
 
-one_day = 86400 
+once_per_day = 86400
 
 class Shiftplan:
-    polling_interval = one_day
+    polling_interval = once_per_day
 
     def __init__(self, shiftplan_model) -> None:
         self.locationId = ""
@@ -32,12 +32,12 @@ class Shiftplan:
         log.info(f'Added shiftplan to OEE for location: {self.locationId}')
 
     def __create_task(self):
-        task_callback = lambda:  {self.fetchNewShiftplan()}
+        task_callback = lambda task:  {self.fetchNewShiftplan(task)}
         task = PeriodicTask(Shiftplan.polling_interval, Shiftplan.polling_interval, task_callback)
         log.debug(f'Create periodic task for pulling shiftplans - location {self.locationId} - running every {Shiftplan.polling_interval}')
         return task
 
-    def fetchNewShiftplan(self):
+    def fetchNewShiftplan(self, task):
         log.debug(f'Getting Shiftplan for location: {self.locationId}')
         self.setShiftplan(oeeAPI.get_shiftplan(self.locationId, f'{datetime.utcnow():{interface.DATE_FORMAT}}', f'{datetime.utcnow() + timedelta(seconds=Shiftplan.polling_interval):{interface.DATE_FORMAT}}'))
 
