@@ -47,8 +47,8 @@ Detailed feature list:
   where "type" is optional and its default value is the value from the "fragment" property
 - Simulates shutdowns (no events or measurements are sent if machine is DOWN)
 - Written in Python and is easy to extend
-- the main entry point is [simulators.py](main/simulator.py)
-  - the script reads the configuration from [simulators.json](main/simulator.json) and creates a new device for every entry
+- the main entry point is [simulator.py](main/simulator.py)
+  - the script reads the configuration from [simulator.json](main/simulator.json) and creates a new device for every entry
   - the `id` property is used as `external_id` for the ManagedObjects to avoid creating multiple devices when redeploying/updating the microservice
 - Simulators act according to given Shiftplans
   - Simulators are linked to shiftplans via locationId
