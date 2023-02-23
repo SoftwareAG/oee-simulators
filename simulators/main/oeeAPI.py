@@ -186,13 +186,11 @@ class OeeAPI:
 
         if line_id == '':
             line_managed_object = self.create_update_asset_hierarchy(type=line_type, hierarchy_array=profileIDs_deviceIDs_in_line_array, description=line_description, oee_target=oee_target)
-            log.info(f'Created asset hierarchy Line: {line_managed_object}')
             line_id = line_managed_object.get('id')
 
         LineID_in_site_array = [{"profileID": '', "ID": line_id}]
         if site_id == '':
             site_managed_object = self.create_update_asset_hierarchy(type=site_type, hierarchy_array=LineID_in_site_array, description=site_description, oee_target=oee_target)
-            log.info(f'Created asset hierarchy Site: {site_managed_object}')
         else:
             line_managed_object = self.c8y_api.updateISAType(id=line_id, type=line_type, hierarchy=profileIDs_deviceIDs_in_line_array, description=line_description, oeetarget=oee_target)
             log.info(f'Updated asset hierarchy Line: {line_managed_object}')
@@ -205,6 +203,7 @@ class OeeAPI:
         object_ISA_Type = self.c8y_api.createISAType(type=type, hierarchy=None, description=description, oeetarget=oee_target)
         asset_id = object_ISA_Type.get("id")
         managed_object = self.c8y_api.updateISAType(id=asset_id, type=type, hierarchy=hierarchy_array, description=description, oeetarget=oee_target)
+        log.info(f'Created asset hierarchy {type}: {managed_object}')
         return managed_object
 
     def get_id_of_asset_hierarchy_line(self, text):
