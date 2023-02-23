@@ -77,6 +77,14 @@ class Test(unittest.TestCase):
         log.info(f"Removed the test device with id {device_id}")
         log.info('-' * 100)
 
+    def test_create_update_organization_structure(self):
+        managed_object = self.oee_api.create_update_asset_hierarchy(type="LINE", hierarchy_array=[{"profileID": '', "ID": ''}], description="test LINE", oee_target=80)
+        self.assertIsNotNone(managed_object)
+        id = managed_object.get('id')
+        self.cumulocity_api.delete_managed_object(id)
+        log.info(f"Removed the test organization structure with id {id}")
+        log.info('-' * 100)
+
 class Utils:
     @staticmethod
     def create_device(device_model):
