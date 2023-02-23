@@ -78,11 +78,18 @@ class Test(unittest.TestCase):
         log.info('-' * 100)
 
     def test_create_update_organization_structure(self):
-        managed_object = self.oee_api.create_update_asset_hierarchy(type="LINE", hierarchy_array=[{"profileID": '', "ID": ''}], description="test LINE", oee_target=80)
-        self.assertIsNotNone(managed_object)
-        id = managed_object.get('id')
-        self.cumulocity_api.delete_managed_object(id)
-        log.info(f"Removed the test organization structure with id {id}")
+        device_id = Utils.create_device(self.device_model)
+        line_managed_object, site_managed_object = self.oee_api.create_or_update_asset_hierarchy(deviceIDs=device_id, line_description = "Simulator LINE", line_type = "LINE", site_description = "Simulator SITE", site_type = "SITE", oee_target = 80)
+        self.assertIsNotNone(line_managed_object.get('hierarchy'))
+        self.assertIsNotNone(site_managed_object.get('hierarchy'))
+        line_id = line_managed_object.get('id')
+        site_id = site_managed_object.get('id')
+        self.cumulocity_api.delete_managed_object(site_id)
+        log.info(f"Removed the test SITE with id {site_id}")
+        self.cumulocity_api.delete_managed_object(line_id)
+        log.info(f"Removed the test LINE structure with id {line_id}")
+        self.cumulocity_api.delete_managed_object(device_id)
+        log.info(f"Removed the test device with id {device_id}")
         log.info('-' * 100)
 
 class Utils:
