@@ -1,9 +1,12 @@
 import unittest, logging, os, sys
+from datetime import datetime
+
 import config.root # Set source directory
 
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI, substitute
 from simulators.main.simulator import get_or_create_device_id, load
 from simulators.main.cumulocityAPI import CumulocityAPI, C8Y_TENANT
+from simulators.main.interface import datetime_to_string
 from unittest.mock import patch
 
 log = logging.getLogger("Test")
@@ -91,6 +94,26 @@ class Test(unittest.TestCase):
         self.cumulocity_api.delete_managed_object(device_id)
         log.info(f"Removed the test device with id {device_id}")
         log.info('-' * 100)
+
+    def test_send_event(self):
+        device_id = Utils.create_device(self.device_model)
+        log.info(f"Created the {self.device_model.get('label')} with id {device_id}")
+        event={
+             'source': {
+                 'id': f'{device_id}'
+             },
+             'time': f'{datetime_to_string(datetime.utcnow())}',
+             'type': 'Availability',
+             'text': 'Availability',
+             'status': 'up',
+             'production_time_s': 0.0,
+             'production_speed_h': 25.0,
+             'pieces_produced': 0.0
+        }
+        response = self.cumulocity_api.send_event(event)
+        self.assertIsNotNone(response)
+        self.cumulocity_api.delete_managed_object(device_id)
+        log.info(f"Removed the {self.device_model.get('label')} with id {device_id}")
 
 class Utils:
     @staticmethod
