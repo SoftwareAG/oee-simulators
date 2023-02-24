@@ -41,6 +41,7 @@ class Test(unittest.TestCase):
         }
 
     def test_get_or_create_device_id_with_full_model_and_delete(self):
+        log.info("Start testing create device and adding external id")
         device_id = Utils.create_device(self.device_model)
         # null device_id will fail the test
         self.assertIsNotNone(device_id)
@@ -49,12 +50,14 @@ class Test(unittest.TestCase):
         log.info('-' * 100)
 
     def test_get_or_create_device_id_with_missing_id(self):
+        log.info("Start testing create device with no id")
         device_id = Utils.create_device(self.device_model_no_id)
         # null device_id will fail the test
         self.assertIsNone(device_id)
         log.info('-' * 100)
 
     def test_get_or_create_device_id_with_missing_label(self):
+        log.info("Start testing create device with no label")
         device_id = Utils.create_device(self.device_model_no_label)
         # null device_id will fail the test
         self.assertIsNone(device_id)
@@ -70,6 +73,7 @@ class Test(unittest.TestCase):
         log.info('-' * 100)
 
     def test_create_and_activate_oee_profile(self):
+        log.info("Start testing create and activate oee profile")
         device_id = Utils.create_device(device_model=self.device_model)
         device_profile_info = self.oee_api.create_and_activate_profile(external_id=self.device_model.get('id'))
         # null device_profile_info will fail the test
@@ -81,6 +85,7 @@ class Test(unittest.TestCase):
         log.info('-' * 100)
 
     def test_create_update_organization_structure(self):
+        log.info("Start testing create hierarchy asset (organization structure)")
         device_id = Utils.create_device(self.device_model)
         line_managed_object, site_managed_object = self.oee_api.create_or_update_asset_hierarchy(deviceIDs=device_id, line_description = "Simulator LINE", line_type = "LINE", site_description = "Simulator SITE", site_type = "SITE", oee_target = 80)
         self.assertIsNotNone(line_managed_object.get('hierarchy'))
@@ -96,9 +101,10 @@ class Test(unittest.TestCase):
         log.info('-' * 100)
 
     def test_send_event(self):
+        log.info("Start testing sending event")
         device_id = Utils.create_device(self.device_model)
         log.info(f"Created the {self.device_model.get('label')} with id {device_id}")
-        event={
+        event = {
              'source': {
                  'id': f'{device_id}'
              },
@@ -115,11 +121,36 @@ class Test(unittest.TestCase):
         self.cumulocity_api.delete_managed_object(device_id)
         log.info(f"Removed the {self.device_model.get('label')} with id {device_id}")
 
+
+    def test_send_measurement(self):
+        log.info("Start testing create measurement")
+        device_id = Utils.create_device(self.device_model)
+        log.info(f"Created the {self.device_model.get('label')} with id {device_id}")
+
+        measurement = {
+              'type': 'PumpPressure',
+              'time': f'{datetime_to_string(datetime.utcnow())}',
+              'source': {
+                  'id': f'{device_id}'
+              },
+              'Pressure': {
+                  'P':
+                      {
+                          'unit': 'hPa',
+                          'value': 1179.26
+                      }
+              }
+
+        }
+        response = self.cumulocity_api.create_measurements(measurement)
+        self.assertIsNotNone(response)
+        self.cumulocity_api.delete_managed_object(device_id)
+        log.info(f"Removed the {self.device_model.get('label')} with id {device_id}")
+
 class Utils:
     @staticmethod
     def create_device(device_model):
         log.info(f"Created device model: {device_model}")
-        log.info("Start testing create device and adding external id")
         device_id = get_or_create_device_id(device_model=device_model)
         return device_id
 
