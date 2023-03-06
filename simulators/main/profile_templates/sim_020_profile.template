@@ -1,5 +1,5 @@
 {
-    "name": "Measurement Simulator #5 with 24 hours shift - ${counter}",
+    "name": "Measurement Simulator #5 with Location - ${counter}",
     "alarms": [],
     "amountUnit": "",
     "deviceId": "${deviceId}",
@@ -29,7 +29,7 @@
     "intervals": [
         3600
     ],
-    "locationId": "24HoursShiftLocation",
+    "locationId": "NoShiftLocation",
     "machineEvents": {
         "MACHINE_STATUS": [
             {

@@ -508,7 +508,7 @@
     {
         "type": "Simulator",
         "id": "sim_019",
-        "label": "Measurement Simulator #4",
+        "label": "Measurement Simulator #4 with with three shifts",
         "enabled": true,
         "measurements": [
             {
@@ -536,8 +536,7 @@
     {
         "type": "Simulator",
         "id": "sim_020",
-        "label": "Measurement Simulator #5 with 24 hours shift",
-        "locationId": "24HoursShiftLocation",
+        "label": "Measurement Simulator #5 with Location",
         "enabled": true,
         "measurements": [
             {
