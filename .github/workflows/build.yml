@@ -1,13 +1,7 @@
 name: Build oee-simulators
 
 on:
-  workflow_dispatch:
-    inputs:
-      trigger:
-        description: 'Trigger build job'
-        required: true
-        default: 'false'
-        type: boolean
+  workflow_call:
 
 jobs:
   build_upload:
@@ -40,3 +34,6 @@ jobs:
           path: |
             repo/simulators/image.tar
             repo/simulators/cumulocity.json
+
+  call-workflow:
+    uses: .github/workflows/release.yml
