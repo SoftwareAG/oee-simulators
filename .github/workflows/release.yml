@@ -17,28 +17,47 @@ jobs:
         with:
           path: 'repo'
 
-      - name: Update version number
-        run: |
-          cd repo/sims
-          SIMULATOR_VERSION=${GITHUB_RUN_NUMBER}
-          sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
-          echo "RELEASE_VERSION=${SIMULATOR_VERSION}" >> $GITHUB_ENV
       - name: Zip the source-code
         run: |
           cd repo/simulators
           zip -r source-code.zip .
-      - name: Build Docker image
+
+      - name: Zip files for release
         run: |
-          cd repo/sims
-          docker build -t oee-simulators .
-          docker save -o image.tar oee-simulators
-          docker rmi oee-simulators
-      - name: Zip it!
-        run: |
-          cd repo/sims
+          cd repo/simulators
           zip oee-simulators.zip image.tar cumulocity.json
-      - name: upload Zip
-        uses: actions/upload-artifact@v3.1.1
+
+      - name: Create Release
+        if: github.ref == 'refs/heads/main'
+        uses: actions/create-release@v1.1.4
+        id: create_release
         with:
-          name: 'oee-simulators'
-          path: 'repo/simulators/oee-simulators.zip'
+          draft: false
+          prerelease: false
+          release_name: v1.0.${{ env.RELEASE_VERSION }}
+          tag_name: v1.0.${{ env.RELEASE_VERSION }}
+          body: ${{ github.event.inputs.release_body }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: upload oee-sim zip
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: 'repo/simulators/oee-simulators.zip'
+          asset_name: 'oee-simulators.zip'
+          asset_content_type: application/zip
+
+      - name: upload source-code zip
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: 'source-code.zip'
+          asset_name: 'oee-simulators-src.zip'
+          asset_content_type: application/zip
