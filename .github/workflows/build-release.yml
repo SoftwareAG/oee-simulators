@@ -42,11 +42,13 @@ jobs:
           cd repo/simulators
           zip oee-simulators.zip image.tar cumulocity.json
         
-      - name: upload Zip
-        uses: actions/upload-artifact@v3.1.1
+      - name: upload file and zip an artifact
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: 'oee-simulators'
-          path: 'repo/simulators/oee-simulators.zip'
+          path: |
+            repo/simulators/image.tar
+            repo/simulators/cumulocity.json
 
       - name: Create Release
         if: github.ref == 'refs/heads/main'
