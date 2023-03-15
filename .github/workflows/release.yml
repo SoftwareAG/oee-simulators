@@ -1,16 +1,22 @@
-# Build docker image, build cumulocity archive
+# Release public oee-simulators
 
-name: Build oee-simulators
+name: Release oee-simulators
 
 on:
   push:
     branches:
       - main
+    # Only run the workflow when build.yml has completed successfully
+    paths-ignore:
+      - '**'
+    # Wait for the build job to complete before running the release job
+    jobs:
+      - build
 
 jobs:
   build_upload:
     runs-on: ubuntu-latest
-    needs: test
+    needs: build
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3

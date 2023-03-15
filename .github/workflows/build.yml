@@ -1,16 +1,18 @@
 name: Build oee-simulators
 
 on:
-  workflow_run:
-    workflows:
-      - "test.yml"
-    types:
-      - completed
+  workflow_dispatch:
+    inputs:
+      trigger:
+        description: 'Trigger build job'
+        required: true
+        default: 'false'
+        type: boolean
 
 jobs:
   build_upload:
     runs-on: ubuntu-latest
-    needs: test.results
+    if: github.event.inputs.trigger == 'true'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
