@@ -92,21 +92,11 @@ class MachineSimulator:
         for shiftplan in self.machine.shiftplans:
             if shiftplan.locationId == self.machine.locationId:
                 has_no_shiftplan = False
-                for timeslot in shiftplan.recurringTimeSlots:
-                    if timeslot.get('slotType') == "PRODUCTION":
-                        now = datetime.utcnow()
-                        start, end = self.update_shiftplan_start_end_time_definition(timeslot)
-                        if start < now < end:
-                            return True
+                shiftplan_info = oeeAPI.get_shiftplan_status(self.machine.locationId)
+                if shiftplan_info:
+                    if shiftplan_info.get('status') == "PRODUCTION":
+                        return True
         return has_no_shiftplan
-
-    def update_shiftplan_start_end_time_definition(self, timeslot):
-        current_year = date.today().year
-        current_month = date.today().month
-        current_day = date.today().day
-        start = datetime.strptime(timeslot.get('slotStart'), interface.DATE_FORMAT).replace(year=current_year, month=current_month, day=current_day)
-        end = datetime.strptime(timeslot.get('slotEnd'), interface.DATE_FORMAT).replace(year=current_year, month=current_month, day=current_day)
-        return start, end
 
     def log_not_in_shift(self):
         log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is not in PRODUCTION shift -> ignore event')
