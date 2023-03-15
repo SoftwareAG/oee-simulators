@@ -36,4 +36,4 @@ jobs:
             repo/simulators/cumulocity.json
 
   call-workflow:
-    uses: .github/workflows/release.yml
+    uses: .github/workflows/release.yml@${{ env.BRANCH_NAME }}
