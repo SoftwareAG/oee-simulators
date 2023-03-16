@@ -48,6 +48,7 @@ class MachineSimulator:
         self.machine.locationId = self.machine.model.get("locationId", "")
         self.machine.enabled = self.machine.model.get('enabled', True)
         self.machine.out_of_production_time_logged = False
+        self.machine.back_in_production_time_logged = False
         self.machine.id = self.machine.model.get('id')
         if self.machine.enabled:
             self.machine.tasks = list(map(self.__create_task, self.machine.definitions))
@@ -69,14 +70,19 @@ class MachineSimulator:
                     task.tick()
 
     def should_tick(self):
-        if not self.is_in_productionTime():
+        if not self.is_in_production_time():
             # If machine is out of production time continuously, the log won't be generated
             if not self.machine.out_of_production_time_logged:
                 self.log_not_in_shift()
-                self.machine.out_of_production_time_logged = True
+                self.machine.out_of_production_time_logged = True # Checkpoint that machine is out of production time
+                self.machine.back_in_production_time_logged = False
             return False
         else:
-            self.machine.out_of_production_time_logged = False
+            # If machine is in of production time continuously, the log won't be generated
+            if not self.machine.back_in_production_time_logged:
+                self.log_back_in_shift()
+                self.machine.back_in_production_time_logged = True # Checkpoint that machine is in of production time
+                self.machine.out_of_production_time_logged = False
             return True
 
     def is_first_time(self, task):
@@ -86,20 +92,21 @@ class MachineSimulator:
                 task.next_run = datetime.timestamp(datetime.utcnow()) + 1
                 self.machine.first_time = False
 
-    def is_in_productionTime(self):
-        # if there are no shiftplans for a device, it should not be affected by production-time
-        has_no_shiftplan = True
-        for shiftplan in self.machine.shiftplans:
-            if shiftplan.locationId == self.machine.locationId:
-                has_no_shiftplan = False
-                shiftplan_info = oeeAPI.get_shiftplan_status(self.machine.locationId)
-                if shiftplan_info:
-                    if shiftplan_info.get('status') == "PRODUCTION":
-                        return True
-        return has_no_shiftplan
+    def is_in_production_time(self):
+        if self.machine.locationId:
+            shiftplan_status = oeeAPI.get_shiftplan_status(self.machine.locationId)
+            if shiftplan_status:
+                if shiftplan_status.get('status') == "PRODUCTION":
+                    return True
+            log.debug(f'Can not get the status of machine {self.machine.model.get("label")}, it is out of production time by default')
+            return False
+        return True # if there are no shiftplans for a device, the production time should not be affected by them
 
     def log_not_in_shift(self):
         log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is not in PRODUCTION shift -> ignore event')
+
+    def log_back_in_shift(self):
+        log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is now in PRODUCTION shift -> generating events')
 
 
 def get_or_create_device_id(device_model):
@@ -164,9 +171,6 @@ measurement_device_list = list(map(lambda model: MachineSimulator(Measurement(mo
 devices_list = event_device_list + measurement_device_list
 
 while True:
-    for shiftplan in shiftplans:
-        shiftplan.tick()
-
     for device in devices_list:
         device.tick()
 
