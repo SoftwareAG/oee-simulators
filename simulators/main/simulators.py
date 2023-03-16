@@ -95,10 +95,13 @@ class MachineSimulator:
     def is_in_production_time(self):
         if self.machine.locationId:
             shiftplan_status = oeeAPI.get_shiftplan_status(self.machine.locationId)
+
             if shiftplan_status:
                 if shiftplan_status.get('status') == "PRODUCTION":
                     return True
-            log.debug(f'Can not get the status of machine {self.machine.model.get("label")}, it is out of production time by default')
+            else:
+                log.debug(f'Can not get the status of machine {self.machine.model.get("label")}, it is out of production time by default')
+
             return False
         return True # if there are no shiftplans for a device, the production time should not be affected by them
 
