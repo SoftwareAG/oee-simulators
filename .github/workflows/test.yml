@@ -31,4 +31,4 @@ jobs:
           python -m unittest discover -s test -p "*_test.py"
 
   call-workflow:
-    uses: .github/workflows/build.yml@${{ env.BRANCH_NAME }}
+    uses: ./.github/workflows/build.yml@${{ github.sha }}
