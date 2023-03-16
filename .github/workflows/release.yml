@@ -3,6 +3,7 @@
 name: Release oee-simulators
 
 on:
+  workflow_call:
   push:
     branches:
       - main
