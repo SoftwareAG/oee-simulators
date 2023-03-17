@@ -15,15 +15,18 @@ on:
       - build
 
 jobs:
-  build_upload:
+  checkout:
     runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
           path: 'repo'
 
+  build_upload:
+    runs-on: ubuntu-latest
+    needs: checkout
+    steps:
       - name: Zip the source-code
         run: |
           cd repo/simulators
