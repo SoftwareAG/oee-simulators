@@ -3,6 +3,11 @@ name: Build oee-simulators
 on:
   workflow_call:
 
+inputs:
+  trigger:
+    description: 'Trigger parameter for build'
+    required: true
+
 jobs:
   build_upload:
     runs-on: ubuntu-latest

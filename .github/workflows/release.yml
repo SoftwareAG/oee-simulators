@@ -13,6 +13,11 @@ on:
     # Wait for the build job to complete before running the release job
     jobs:
       - build
+      -
+inputs:
+  trigger:
+    description: 'Trigger parameter for release'
+    required: true
 
 jobs:
   checkout:
