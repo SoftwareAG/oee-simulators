@@ -1,9 +1,8 @@
 import time, json, os, logging, requests
-from datetime import datetime
-from argparse import ArgumentParser
 
+from argparse import ArgumentParser
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_HEADERS, CumulocityAPI
-from oeeAPI import OeeAPI, ProfileCreateMode
+from oeeAPI import OeeAPI
 
 def try_int(value):
     try:

@@ -1,6 +1,6 @@
 import json, logging, requests
-from enum import Enum
 
+from enum import Enum
 from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_HEADERS, CumulocityAPI
 
 log = logging.getLogger("OeeAPI")
@@ -174,6 +174,14 @@ class OeeAPI:
         log.warning(f'Cannot get shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
         return {'locationId':locationId,'timeslots':{}}
 
+    def get_shiftplan_status(self, locationId,):
+        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}/status'
+        response = requests.get(url, headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json()
+        log.warning(f'Cannot get shiftplan status for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
+        return None
+
     def create_or_update_asset_hierarchy(self, deviceIDs):
         line_description = "Simulator LINE"
         line_type = "LINE"
@@ -199,13 +207,11 @@ class OeeAPI:
         if site_id == '':
             site_managed_object = self.create_new_asset_hierarchy(type=site_type, hierarchy_array=LineID_in_site_array, description=site_description, oee_target=oee_target)
             log.info(f'Created asset hierarchy Site: {site_managed_object}')
-            return
         else:
             line_managed_object = self.c8y_api.updateISAType(id=line_id, type=line_type, hierarchy=profileIDs_deviceIDs_in_line_array, description=line_description, oeetarget=oee_target)
             log.info(f'Updated asset hierarchy Line: {line_managed_object}')
             site_managed_object = self.c8y_api.updateISAType(id=site_id, type=site_type, hierarchy=LineID_in_site_array, description=site_description, oeetarget=oee_target)
             log.info(f'Updated asset hierarchy Site: {site_managed_object}')
-            return
 
     def create_new_asset_hierarchy(self, type, hierarchy_array, description, oee_target):
         id_ISA_Type = self.c8y_api.createISAType(type=type, hierarchy=None, description=description, oeetarget=oee_target)

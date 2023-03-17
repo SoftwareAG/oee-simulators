@@ -1,5 +1,4 @@
-import argparse, logging, base64, os, sys, requests
-
+import argparse, logging, base64, os, sys
 import Environment
 
 from c8y_api import CumulocityApi
@@ -63,7 +62,6 @@ def HandleExportArguments():
     device_ids_list = args.device_ids
     if not device_ids_list:
         device_ids_list = []
-        abc = Environment.DEVICE_ID
         if Environment.DEVICE_ID:
             logging.info(type(Environment.DEVICE_ID))
             if type(Environment.DEVICE_ID) == tuple:

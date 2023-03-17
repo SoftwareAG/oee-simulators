@@ -1,24 +1,24 @@
 import json, logging
+import interface
+
 from datetime import datetime
 from random import randint, uniform, choices
 from cumulocityAPI import CumulocityAPI
 from task import Task
-import interface
+
 
 cumulocityAPI = CumulocityAPI()
 log = logging.getLogger("events generation")
 
 
 class Event(interface.MachineType):
-    def __init__(self, model, shiftplans) -> None:
+    def __init__(self, model) -> None:
         self.model = model
         self.definitions = self.model.get('events', [])
-        self.shiftplans = shiftplans
         self.machine_up = False
         self.shutdown = False
         self.production_time_s = 0.0
         self.last_production_time_update = datetime.timestamp(datetime.utcnow())
-        self.out_of_production_time_logged = False
         if self.model.get('enabled'):
             self.production_speed_s = self.get_production_speed_s()
 
@@ -74,9 +74,6 @@ class Event(interface.MachineType):
 
     def log_ignore(self, event_definition):
         log.info(f'Device: {self.device_id} [{self.model["label"]}] is down -> ignore event {event_definition["type"]}')
-
-    def log_not_in_shift(self):
-        log.info(f'Device: {self.device_id} [{self.model["label"]}] is not in PRODUCTION shift -> ignore event')
 
     def on_availability_event(self, event_definition, task):
 
@@ -254,21 +251,6 @@ class Event(interface.MachineType):
                 log.info(f"Created new event for device id {self.id} ({self.model.get('label')}): {json.dumps(base_event)}")
             return newTimestamp
 
-    def is_in_productionTime(self):
-        # if there are no shiftplans for a device, it should not be affected by production-time
-        has_no_shiftplan = True
-        for shiftplan in self.shiftplans:
-            if shiftplan.locationId == self.locationId:
-                has_no_shiftplan = False
-                for timeslot in shiftplan.recurringTimeSlots:
-                    if timeslot.slotType == "PRODUCTION":
-                        now = datetime.utcnow()
-                        start = datetime.strptime(timeslot.slotStart, interface.DATE_FORMAT)
-                        end = datetime.strptime(timeslot.slotEnd, interface.DATE_FORMAT)
-                        if start < now < end:
-                            return True
-        return has_no_shiftplan
-
     event_mapping = {'Availability': on_availability_event,
                      'Piece_Produced': on_piece_produced_event,
                      'Pieces_Produced': on_pieces_produced_event,
@@ -276,16 +258,6 @@ class Event(interface.MachineType):
                      'Pieces_Ok': on_pieces_ok_event,
                      'Piece_Quality': on_piece_quality_event,
                      'Shutdown': on_shutdown_event}
-
-    def should_tick(self):
-        if not self.is_in_productionTime():
-            if not self.out_of_production_time_logged:
-                self.log_not_in_shift()
-            self.out_of_production_time_logged = True
-            return False
-        else:
-            self.out_of_production_time_logged = False
-            return True
 
 
 def try_event(probability: float):

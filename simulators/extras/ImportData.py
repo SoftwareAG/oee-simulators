@@ -1,9 +1,8 @@
 import logging, urllib, json, requests, os, sys
-from urllib3.exceptions import InsecureRequestWarning
-from os.path import isfile, join
-
 import ArgumentsAndCredentialsHandler
 
+from urllib3.exceptions import InsecureRequestWarning
+from os.path import isfile, join
 from datetime import datetime
 
 # Data File Folder

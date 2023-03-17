@@ -1,4 +1,5 @@
-import time, logging
+import logging
+
 from random import randint
 from datetime import datetime
 

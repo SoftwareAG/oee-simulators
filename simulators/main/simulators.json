@@ -300,6 +300,7 @@
         "type": "Simulator",
         "id": "sim_012",
         "label": "Normal #12 with short shifts",
+        "locationId": "ShortShiftsLocation",
         "enabled": true,
         "events": [
             {
@@ -325,6 +326,7 @@
         "type": "Simulator",
         "id": "sim_013",
         "label": "Normal #13 with with one day shift",
+        "locationId": "OneShiftLocation",
         "enabled": true,
         "events": [
             {
@@ -350,6 +352,7 @@
         "type": "Simulator",
         "id": "sim_014",
         "label": "Normal #14 with with two shifts",
+        "locationId": "TwoShiftLocation",
         "enabled": true,
         "events": [
             {
@@ -375,6 +378,7 @@
         "type": "Simulator",
         "id": "sim_015",
         "label": "Normal #15 with with three shifts",
+        "locationId": "ThreeShiftLocation",
         "enabled": true,
         "events": [
             {

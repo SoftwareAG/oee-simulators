@@ -1,14 +1,13 @@
-import sys
-import time, json, os, logging
-from datetime import datetime
+import contextlib, sys, time, json, os, logging
+import interface
 
+from datetime import datetime, date
 from cumulocityAPI import (C8Y_BASE, C8Y_TENANT, C8Y_USER, CumulocityAPI)
 from oeeAPI import OeeAPI, ProfileCreateMode
 from shiftplan import Shiftplan
 from event import Event
 from measurement import Measurement
 from task import PeriodicTask
-import interface
 
 
 cumulocityAPI = CumulocityAPI()
@@ -44,9 +43,12 @@ log.debug(C8Y_USER)
 class MachineSimulator:
     def __init__(self, machine: interface.MachineType) -> None:
         self.machine = machine
+        self.machine.shiftplans = shiftplans
         self.machine.device_id = self.machine.model.get("device_id")
         self.machine.locationId = self.machine.model.get("locationId", "")
         self.machine.enabled = self.machine.model.get('enabled', True)
+        self.machine.out_of_production_time_logged = False
+        self.machine.back_in_production_time_logged = False
         self.machine.id = self.machine.model.get('id')
         if self.machine.enabled:
             self.machine.tasks = list(map(self.__create_task, self.machine.definitions))
@@ -61,17 +63,53 @@ class MachineSimulator:
     def tick(self):
         if not self.machine.enabled:
             return
-        if self.machine.should_tick():
+        if self.should_tick():
             for task in self.machine.tasks:
-                try:
-                    if self.machine.first_time:
-                        # set the next_run time to always let the measurement generation to run in the first time
-                        task.next_run = datetime.timestamp(datetime.utcnow()) + 1
-                        self.machine.first_time = False
-                except:
-                    pass
+                self.is_first_time(task)
                 if task:
                     task.tick()
+
+    def should_tick(self):
+        if not self.is_in_production_time():
+            # If machine is out of production time continuously, the log won't be generated
+            if not self.machine.out_of_production_time_logged:
+                self.log_not_in_shift()
+                self.machine.out_of_production_time_logged = True # Checkpoint that machine is out of production time
+                self.machine.back_in_production_time_logged = False
+            return False
+        else:
+            # If machine is in of production time continuously, the log won't be generated
+            if not self.machine.back_in_production_time_logged:
+                self.log_back_in_shift()
+                self.machine.back_in_production_time_logged = True # Checkpoint that machine is in of production time
+                self.machine.out_of_production_time_logged = False
+            return True
+
+    def is_first_time(self, task):
+        with contextlib.suppress(Exception):
+            if self.machine.first_time:
+                # set the next_run time to always let the measurement generation to run in the first time
+                task.next_run = datetime.timestamp(datetime.utcnow()) + 1
+                self.machine.first_time = False
+
+    def is_in_production_time(self):
+        if self.machine.locationId:
+            shiftplan_status = oeeAPI.get_shiftplan_status(self.machine.locationId)
+
+            if shiftplan_status:
+                if shiftplan_status.get('status') == "PRODUCTION":
+                    return True
+            else:
+                log.debug(f'Can not get the status of machine {self.machine.model.get("label")}, it is out of production time by default')
+
+            return False
+        return True # if there are no shiftplans for a device, the production time should not be affected by them
+
+    def log_not_in_shift(self):
+        log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is not in PRODUCTION shift -> ignore event')
+
+    def log_back_in_shift(self):
+        log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is now in PRODUCTION shift -> generating events')
 
 
 def get_or_create_device_id(device_model):
@@ -79,9 +117,9 @@ def get_or_create_device_id(device_model):
     label = device_model.get("label")
     if not sim_id or not label:
         if not sim_id:
-            log.debug(f"No definition info of device id")
+            log.debug("No definition info of device id")
         if not label:
-            log.debug(f"No definition info of device name")
+            log.debug("No definition info of device name")
         sys.exit()
 
     device_id = cumulocityAPI.get_or_create_device(sim_id, label)
@@ -116,7 +154,7 @@ SHIFTPLANS_MODELS = load("shiftplans.json")
 shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), SHIFTPLANS_MODELS))
 
 if DELETE_PROFILES.lower() == "true":
-    log.debug(f'Deleting all Profiles')
+    log.debug('Deleting all Profiles')
     oeeAPI.delete_all_simulators_profiles()
 
 # Create Simulator Profiles
@@ -131,14 +169,11 @@ if CREATE_ASSET_HIERARCHY.lower() == "true":
     oeeAPI.create_or_update_asset_hierarchy(deviceIDs=ids)
 
 # create list of objects for events and measurements
-event_device_list = list(map(lambda model: MachineSimulator(Event(model, shiftplans)), DEVICE_EVENT_MODELS))
+event_device_list = list(map(lambda model: MachineSimulator(Event(model)), DEVICE_EVENT_MODELS))
 measurement_device_list = list(map(lambda model: MachineSimulator(Measurement(model)), DEVICE_MEASUREMENT_MODELS))
 devices_list = event_device_list + measurement_device_list
 
 while True:
-    for shiftplan in shiftplans:
-        shiftplan.tick()
-
     for device in devices_list:
         device.tick()
 
