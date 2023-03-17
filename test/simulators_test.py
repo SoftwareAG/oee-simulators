@@ -75,9 +75,20 @@ class Test(unittest.TestCase):
     def test_create_and_activate_oee_profile(self):
         log.info("Start testing create and activate oee profile")
         device_id = Utils.create_device(device_model=self.device_model)
+
+        # Change working directory to test to allow profile template read
+        current_dir = os.getcwd()
+        # Change to the 'test' directory
+        os.chdir("test")
+        new_dir = os.getcwd()
+
         device_profile_info = self.oee_api.create_and_activate_profile(external_id=self.device_model.get('id'))
         # null device_profile_info will fail the test
         self.assertIsNotNone(device_profile_info)
+
+        # Change back to the original working directory
+        os.chdir(current_dir)
+
         self.cumulocity_api.delete_managed_object(device_profile_info.get('id'))
         log.info(f"Removed the test oee profile with id {device_profile_info.get('id')}")
         self.cumulocity_api.delete_managed_object(device_id)
