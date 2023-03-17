@@ -6,7 +6,7 @@ on:
 jobs:
   build_upload:
     runs-on: ubuntu-latest
-    if: github.event.inputs.trigger == 'true'
+    if: github.event.inputs.trigger == 'build'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -25,7 +25,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          cd repo/sims
+          cd repo/simulators
           docker build -t oee-simulators .
           docker save -o image.tar oee-simulators
           docker rmi oee-simulators
@@ -40,3 +40,5 @@ jobs:
 
   call-release-workflow:
     uses: ./.github/workflows/release.yml
+    with:
+      trigger: release
