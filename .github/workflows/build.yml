@@ -13,6 +13,9 @@ jobs:
         with:
           path: 'repo'
 
+      - name: Set branch name
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
       - name: Update version number
         run: |
           cd repo/simulators
@@ -35,5 +38,5 @@ jobs:
             repo/simulators/image.tar
             repo/simulators/cumulocity.json
 
-  call-workflow:
+  call-release-workflow:
     uses: ./.github/workflows/release.yml
