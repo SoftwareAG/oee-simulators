@@ -2,9 +2,7 @@ name: Run tests
 
 on:
   push:
-    branches:
-      - '*'
-    type: 'push'
+    branches: ['*']
 
 jobs:
   run_tests:
