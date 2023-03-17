@@ -4,6 +4,13 @@ on:
   push:
     branches: ['*']
 
+  workflow_dispatch:
+    inputs:
+      release_body:
+        type: string
+        description: Manual workflow run
+        default: "Manual workflow run"
+
 jobs:
   run_tests:
     runs-on: ubuntu-latest
