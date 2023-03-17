@@ -2,11 +2,10 @@ name: Build oee-simulators
 
 on:
   workflow_call:
-
-inputs:
-  trigger:
-    description: 'Trigger parameter for build'
-    required: true
+    inputs:
+      trigger:
+        description: 'Trigger parameter for build'
+        required: true
 
 jobs:
   build_upload:
@@ -46,4 +45,4 @@ jobs:
   call-release-workflow:
     uses: ./.github/workflows/release.yml
     with:
-      trigger: release
+      trigger: 'release'
