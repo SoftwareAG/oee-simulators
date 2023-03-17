@@ -22,6 +22,7 @@ jobs:
 
       - name: Run tests
         run: |
+          cd repo
           python -m unittest discover -s test -p "*_test.py" -v
 
   call-build-workflow:
