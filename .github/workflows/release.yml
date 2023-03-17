@@ -4,11 +4,6 @@ name: Release oee-simulators
 
 on:
   workflow_call:
-    inputs:
-      trigger:
-        description: 'Trigger parameter for release'
-        required: true
-
   push:
     branches:
       - main
@@ -18,8 +13,6 @@ on:
     # Wait for the build job to complete before running the release job
     jobs:
       - build
-      -
-
 
 jobs:
   checkout:

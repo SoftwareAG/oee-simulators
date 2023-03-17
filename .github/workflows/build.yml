@@ -2,16 +2,10 @@ name: Build oee-simulators
 
 on:
   workflow_call:
-    inputs:
-      trigger:
-        description: 'Trigger parameter for build'
-        required: true
-    types: [build]
 
 jobs:
   build_upload:
     runs-on: ubuntu-latest
-    if: github.event.inputs.trigger == 'build'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -45,5 +39,3 @@ jobs:
 
   call-release-workflow:
     uses: ./.github/workflows/release.yml
-    with:
-      trigger: 'release'

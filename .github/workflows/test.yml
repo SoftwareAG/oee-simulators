@@ -19,5 +19,3 @@ jobs:
 
   call-build-workflow:
     uses: ./.github/workflows/build.yml
-    with:
-      trigger: 'build'
