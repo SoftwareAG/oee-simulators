@@ -21,6 +21,11 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Generate requirements file
+        run: |
+          pip install pipreqs
+          pipreqs --force ./
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
