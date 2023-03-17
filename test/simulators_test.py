@@ -1,11 +1,11 @@
-import unittest, logging, os, sys
+import unittest, logging, os
 from datetime import datetime
 
 import config.root # Set source directory
 
-from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI, substitute
+from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
 from simulators.main.simulator import get_or_create_device_id, load
-from simulators.main.cumulocityAPI import CumulocityAPI, C8Y_TENANT
+from simulators.main.cumulocityAPI import CumulocityAPI
 from simulators.main.interface import datetime_to_string
 from unittest.mock import patch
 

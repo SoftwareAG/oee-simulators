@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  build_upload:
+  build-upload:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -38,4 +38,5 @@ jobs:
             repo/simulators/cumulocity.json
 
   call-release-workflow:
+    needs: build-upload
     uses: ./.github/workflows/release.yml
