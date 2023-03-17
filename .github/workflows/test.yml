@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - '*'
-    type: push
+    type: 'push'
 
 jobs:
   run_tests:

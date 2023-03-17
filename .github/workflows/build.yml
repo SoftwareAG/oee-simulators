@@ -6,6 +6,7 @@ on:
       trigger:
         description: 'Trigger parameter for build'
         required: true
+    type: 'build'
 
 jobs:
   build_upload:
