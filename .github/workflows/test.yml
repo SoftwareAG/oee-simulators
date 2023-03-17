@@ -3,6 +3,7 @@ name: Run tests
 on:
   push:
     branches: ['*']
+    type: push
 
 jobs:
   run_tests:
