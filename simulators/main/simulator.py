@@ -2,7 +2,7 @@ import sys
 import time, json, os, logging
 from datetime import datetime
 
-from cumulocityAPI import (C8Y_BASE, C8Y_TENANT, C8Y_USER, CumulocityAPI)
+from cumulocityAPI import (C8Y_BASEURL, C8Y_TENANT, C8Y_USER, CumulocityAPI)
 from oeeAPI import OeeAPI, ProfileCreateMode
 from shiftplan import Shiftplan
 from event import Event
@@ -36,7 +36,7 @@ log.info(f'CREATE_PROFILES:{PROFILE_CREATE_MODE}')
 log.info(f'Shiftplan polling interval is set to {Shiftplan.polling_interval:,} secs')
 ##########################################
 
-log.debug(C8Y_BASE)
+log.debug(C8Y_BASEURL)
 log.debug(C8Y_TENANT)
 log.debug(C8Y_USER)
 

@@ -1,7 +1,7 @@
 import json, logging, requests
 from enum import Enum
 
-from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_HEADERS, CumulocityAPI
+from cumulocityAPI import C8Y_BASEURL, C8Y_TENANT, C8Y_HEADERS, CumulocityAPI
 
 log = logging.getLogger("OeeAPI")
 
@@ -19,7 +19,7 @@ class ProfileCreateMode(Enum):
     CREATE_IF_NOT_EXISTS = 2
 
 class OeeAPI:
-    OEE_BASE = f'{C8Y_BASE}/service/oee-bundle'
+    OEE_BASE = f'{C8Y_BASEURL}/service/oee-bundle'
     CONF_REST_ENDPOINT = f'{OEE_BASE}/configurationmanager/2/configuration'
     SHIFTPLAN_REST_ENDPOINT = f'{OEE_BASE}/mes/shiftplan'
     c8y_api = CumulocityAPI()

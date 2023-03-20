@@ -2,7 +2,7 @@ import time, json, os, logging, requests
 from datetime import datetime
 from argparse import ArgumentParser
 
-from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_HEADERS, CumulocityAPI
+from cumulocityAPI import C8Y_BASEURL, C8Y_TENANT, C8Y_HEADERS, CumulocityAPI
 from oeeAPI import OeeAPI, ProfileCreateMode
 
 def try_int(value):
@@ -34,7 +34,7 @@ true = True
 
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.INFO)
 log = logging.getLogger("profile-generator")
-log.info("using C8Y backend:" + C8Y_BASE)
+log.info("using C8Y backend:" + C8Y_BASEURL)
 log.info("using C8Y tenant:" + C8Y_TENANT)
 
 c8y_api = CumulocityAPI()    
@@ -45,7 +45,7 @@ def delete_profiles():
     deleted_profiles = 0
     for simulator_id in simulator_ids:
         log.info(f'deleting profiles for {simulator_id}')
-        response = requests.get(f'{C8Y_BASE}/inventory/managedObjects/{simulator_id}', headers=C8Y_HEADERS)
+        response = requests.get(f'{C8Y_BASEURL}/inventory/managedObjects/{simulator_id}', headers=C8Y_HEADERS)
         if response.ok:            
             child_devices = response.json()['childDevices']['references']
             for child_device in child_devices:
