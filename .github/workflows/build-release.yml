@@ -36,17 +36,20 @@ jobs:
           docker build -t oee-simulators .
           docker save -o image.tar oee-simulators
           docker rmi oee-simulators
+        
+      - name: upload file and zip an artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: 'oee-simulators'
+          path: |
+            repo/simulators/image.tar
+            repo/simulators/cumulocity.json
 
-      - name: Zip it!
+      - name: Zip files for release
+        if: github.ref == 'refs/heads/main'
         run: |
           cd repo/simulators
           zip oee-simulators.zip image.tar cumulocity.json
-        
-      - name: upload Zip
-        uses: actions/upload-artifact@v3.1.1
-        with:
-          name: 'oee-simulators'
-          path: 'repo/simulators/oee-simulators.zip'
 
       - name: Create Release
         if: github.ref == 'refs/heads/main'

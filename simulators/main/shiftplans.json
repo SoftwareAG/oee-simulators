@@ -40,7 +40,7 @@
         { "id": "ShortShiftsLocation-9", "seriesPostfix": "Shift9", "slotType": "PRODUCTION", "slotStart": "2022-07-13T15:00:00Z", "slotEnd": "2022-07-13T16:00:00Z", "description": "Shift9", "active": true, "slotRecurrence": { "weekdays": [1, 2, 3, 4, 5] } },
         { "id": "ShortShiftsLocation-10", "seriesPostfix": "Shift10", "slotType": "PRODUCTION", "slotStart": "2022-07-13T16:00:00Z", "slotEnd": "2022-07-13T17:00:00Z", "description": "Shift10", "active": true, "slotRecurrence": { "weekdays": [1, 2, 3, 4, 5] } },
         { "id": "ShortShiftsLocation-11", "seriesPostfix": "Shift11", "slotType": "PRODUCTION", "slotStart": "2022-07-13T17:00:00Z", "slotEnd": "2022-07-13T18:00:00Z", "description": "Shift11", "active": true, "slotRecurrence": { "weekdays": [1, 2, 3, 4, 5] } },
-        { "id": "ShortShiftsLocation-11", "seriesPostfix": "Shift12", "slotType": "PRODUCTION", "slotStart": "2022-07-13T18:00:00Z", "slotEnd": "2022-07-13T19:00:00Z", "description": "Shift12", "active": true, "slotRecurrence": { "weekdays": [1, 2, 3, 4, 5] } }
+        { "id": "ShortShiftsLocation-12", "seriesPostfix": "Shift12", "slotType": "PRODUCTION", "slotStart": "2022-07-13T18:00:00Z", "slotEnd": "2022-07-13T19:00:00Z", "description": "Shift12", "active": true, "slotRecurrence": { "weekdays": [1, 2, 3, 4, 5] } }
       ]
     }
   ]

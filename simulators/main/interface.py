@@ -1,4 +1,5 @@
 import logging
+
 from datetime import datetime
 
 log = logging.getLogger("interface")
@@ -7,8 +8,6 @@ DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 
 class MachineType:
-    def should_tick(self):
-        raise NotImplementedError
 
     def callback(self, definition, min_interval_in_seconds, max_interval_in_seconds):
         raise NotImplementedError

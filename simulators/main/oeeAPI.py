@@ -1,7 +1,8 @@
 import json, logging, requests
-from enum import Enum
 
 from cumulocityAPI import C8Y_BASEURL, C8Y_TENANT, C8Y_HEADERS, CumulocityAPI
+from enum import Enum
+
 
 log = logging.getLogger("OeeAPI")
 
@@ -174,6 +175,14 @@ class OeeAPI:
         log.warning(f'Cannot get shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
         return {'locationId':locationId,'timeslots':{}}
 
+    def get_shiftplan_status(self, locationId,):
+        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}/status'
+        response = requests.get(url, headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json()
+        log.warning(f'Cannot get shiftplan status for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
+        return None
+
     def create_or_update_asset_hierarchy(self, deviceIDs, line_description = "Simulator LINE", line_type = "LINE", site_description = "Simulator SITE", site_type = "SITE", oee_target = 80):
         profileIDs_deviceIDs_in_line_array = []
         for deviceID in deviceIDs:
@@ -191,6 +200,7 @@ class OeeAPI:
         LineID_in_site_array = [{"profileID": '', "ID": line_id}]
         if site_id == '':
             site_managed_object = self.create_update_asset_hierarchy(type=site_type, hierarchy_array=LineID_in_site_array, description=site_description, oee_target=oee_target)
+            log.info(f'Created asset hierarchy Site: {site_managed_object}')
         else:
             line_managed_object = self.c8y_api.updateISAType(id=line_id, type=line_type, hierarchy=profileIDs_deviceIDs_in_line_array, description=line_description, oeetarget=oee_target)
             log.info(f'Updated asset hierarchy Line: {line_managed_object}')
