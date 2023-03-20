@@ -10,9 +10,16 @@ on:
   push:
     branches: [ '*' ]
 
+env:
+  C8Y_BASE: ${{ secrets.C8Y_BASE }}
+  C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
+  C8Y_TENANT: ${{ secrets.C8Y_TENANT }}
+  C8Y_USER: ${{ secrets.C8Y_USER }}
+
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    environment: Nam
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -23,6 +30,11 @@ jobs:
         run: |
           cd repo
           python -m unittest discover -s test -p "*_test.py" -v
+        env:
+          C8Y_BASE: ${{ env.C8Y_BASE }}
+          C8Y_PASSWORD: ${{ env.C8Y_PASSWORD }}
+          C8Y_TENANT: ${{ env.C8Y_TENANT }}
+          C8Y_USER: ${{ env.C8Y_USER }}
 
   call-build-workflow:
     needs: run-tests
