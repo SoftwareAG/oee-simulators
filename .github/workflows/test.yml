@@ -1,15 +1,14 @@
 name: Run tests
 
 on:
-  push:
-    branches: ['*']
-
   workflow_dispatch:
     inputs:
       release_body:
         type: string
         description: Manual workflow run
         default: "Manual workflow run"
+  push:
+    branches: [ '*' ]
 
 jobs:
   run-tests:
