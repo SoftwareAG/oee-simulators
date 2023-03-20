@@ -14,17 +14,18 @@ on:
     jobs:
       - build
 
+
 jobs:
   checkout:
     runs-on: ubuntu-latest
-    if: github.event.inputs.trigger == 'release'
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
           path: 'repo'
 
-  build_upload:
+  build-release:
     runs-on: ubuntu-latest
     needs: checkout
     steps:

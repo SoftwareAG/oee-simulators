@@ -3,12 +3,19 @@ name: Run tests
 on:
   workflow_dispatch:
     inputs:
+      environment:
+        type: string
+        description: Name of the environment to use
+        required: true
       release_body:
         type: string
-        description: Manual workflow run
-        default: "Manual workflow run"
+        description: GitHub Release Message
+        default: "GitHub Release"
+
   push:
     branches: [ '*' ]
+    environment:
+      name: Nam
 
 env:
   C8Y_BASEURL: ${{ secrets.C8Y_BASEURL }}
