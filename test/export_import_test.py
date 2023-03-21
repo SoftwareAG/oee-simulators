@@ -9,7 +9,7 @@ logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEB
 
 class Test(unittest.TestCase):
     @patch('logging.Logger.error')
-    def test_export_import_profile_data(self):
+    def test_export_import_profile_data(self, mock_error):
         # Get current working directory
         current_dir = os.getcwd()
         # Change working directory to extras to run script and export data
