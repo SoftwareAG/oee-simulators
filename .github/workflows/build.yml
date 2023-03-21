@@ -29,7 +29,7 @@ jobs:
           docker save -o image.tar oee-simulators
           docker rmi oee-simulators
 
-      - name: upload file and zip an artifact
+      - name: Upload file and zip an artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: 'oee-simulators'

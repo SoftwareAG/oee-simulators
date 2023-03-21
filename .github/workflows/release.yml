@@ -47,7 +47,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-      - name: upload oee-sim zip
+      - name: Upload oee-sim zip
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -58,7 +58,7 @@ jobs:
           asset_name: 'oee-simulators.zip'
           asset_content_type: application/zip
 
-      - name: upload source-code zip
+      - name: Upload source-code zip
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-release-asset@v1.0.2
         env:
