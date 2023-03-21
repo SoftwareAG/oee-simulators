@@ -16,19 +16,14 @@ on:
 
 
 jobs:
-  checkout:
+  build-release:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
           path: 'repo'
 
-  build-release:
-    runs-on: ubuntu-latest
-    needs: checkout
-    steps:
       - name: Zip the source-code
         run: |
           cd repo/simulators
