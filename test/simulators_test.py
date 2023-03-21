@@ -194,10 +194,18 @@ class Test(unittest.TestCase):
 
     def test_shifplan(self):
         log.info("Start testing create shiftplan")
+        # Create shiftplan
         shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), self.shiftplans))
-        self.assertIsNotNone(shiftplans)
         for shiftplan in shiftplans:
+            # Get created shiftplan info
+            shiftplan_info = self.oee_api.get_shiftplan(shiftplan.locationId)
+            # Check recurring time slots field. If it is not empty then the shiftplan was created
+            self.assertNotEqual(len(shiftplan_info.get('recurringTimeslots')),0, msg="Test shiftplan was not created")
+            # Delete test shiftplan
             self.oee_api.delete_shiftplan(shiftplan.locationId)
+            # Check recurring time slots field. If it is empty then the shiftplan was deleted
+            shiftplan_info = self.oee_api.get_shiftplan(shiftplan.locationId)
+            self.assertEqual(len(shiftplan_info.get('recurringTimeslots')),0, msg="Test shiftplan was not deleted")
             log.info(f"Deleted shiftplan {shiftplan.locationId}")
         log.info('-' * 100)
 
