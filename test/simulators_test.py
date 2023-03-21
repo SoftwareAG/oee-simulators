@@ -1,9 +1,10 @@
 import unittest, logging, os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import config.root # Set source directory
 
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
+from simulators.main.shiftplan import Shiftplan
 from simulators.main.simulator import get_or_create_device_id, load
 from simulators.main.cumulocityAPI import CumulocityAPI
 from simulators.main.interface import datetime_to_string
@@ -39,6 +40,34 @@ class Test(unittest.TestCase):
             "id": "sim_001_test",
             "enabled": "true"
         }
+        self.shiftplans = [
+            {
+              "locationId": "TestShiftLocation",
+              "recurringTimeslots": [
+                { "id": "TestShiftLocation-FirstShift",
+                  "seriesPostfix": "DayShift",
+                  "slotType": "PRODUCTION",
+                  "slotStart": f'{datetime_to_string(datetime.utcnow())}',
+                  "slotEnd": f'{datetime_to_string(datetime.utcnow()+timedelta(minutes=1))}',
+                  "description": "One Minute Shift",
+                  "active": True,
+                  "slotRecurrence": {
+                      "weekdays": [1, 2, 3, 4, 5]
+                  }
+                },
+                { "id": "TestShiftLocation-Break",
+                  "slotType": "BREAK",
+                  "slotStart": f'{datetime_to_string(datetime.utcnow()+timedelta(minutes=2))}',
+                  "slotEnd": f'{datetime_to_string(datetime.utcnow()+timedelta(minutes=3))}',
+                  "description": "One Minute Break",
+                  "active": True,
+                  "slotRecurrence": {
+                      "weekdays": [1, 2, 3, 4, 5]
+                  }
+                }
+              ]
+            }
+        ]
 
     def test_get_or_create_device_id_with_full_model_and_delete(self):
         log.info("Start testing create device and adding external id")
@@ -76,10 +105,16 @@ class Test(unittest.TestCase):
         log.info("Start testing create and activate oee profile")
         device_id = Utils.create_device(device_model=self.device_model)
 
-        # Change working directory to test to allow profile template read
+        # Get current directory path
         current_dir = os.getcwd()
+        # Extracts the base name of the current directory
+        base_dir = os.path.basename(current_dir)
+        # If the working directory is not test then change to test
+        if base_dir != "test":
+            os.chdir("test")
+
         # Change to the 'test' directory
-        os.chdir("test")
+
 
         device_profile_info = self.oee_api.create_and_activate_profile(external_id=self.device_model.get('id'))
         # null device_profile_info will fail the test
@@ -156,6 +191,15 @@ class Test(unittest.TestCase):
         self.assertIsNotNone(response)
         self.cumulocity_api.delete_managed_object(device_id)
         log.info(f"Removed the {self.device_model.get('label')} with id {device_id}")
+
+    def test_shifplan(self):
+        log.info("Start testing create shiftplan")
+        shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), self.shiftplans))
+        self.assertIsNotNone(shiftplans)
+        for shiftplan in shiftplans:
+            self.oee_api.delete_shiftplan(shiftplan.locationId)
+            log.info(f"Deleted shiftplan {shiftplan.locationId}")
+        log.info('-' * 100)
 
 class Utils:
     @staticmethod
