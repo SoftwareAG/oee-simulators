@@ -6,7 +6,6 @@ from c8y_api import CumulocityApi
 log_format = '[%(asctime)s] [%(levelname)s] - %(message)s'
 log_file_formatter = logging.Formatter(log_format)
 
-
 ####################################################
 def SetupHeadersForAPIRequest(tenant_id, username, password):
     # Setup for additional API request message
@@ -99,7 +98,7 @@ def HandleExportArguments():
 
     baseurl = args.baseurl
     if not baseurl:
-        baseurl = Environment.C8Y_BASE
+        baseurl = Environment.C8Y_BASEURL
     baseurl = RemoveTrailingSlashFromBaseUrl(baseurl)
 
     tenant = args.tenant_id
@@ -154,7 +153,7 @@ def HandleImportArguments():
 
     BASEURL = args.baseurl
     if not BASEURL:
-        BASEURL = Environment.C8Y_BASE
+        BASEURL = Environment.C8Y_BASEURL
     BASEURL = RemoveTrailingSlashFromBaseUrl(BASEURL)
 
     TENANT = args.tenant_id
