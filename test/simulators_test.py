@@ -80,7 +80,6 @@ class Test(unittest.TestCase):
         current_dir = os.getcwd()
         # Change to the 'test' directory
         os.chdir("test")
-        new_dir = os.getcwd()
 
         device_profile_info = self.oee_api.create_and_activate_profile(external_id=self.device_model.get('id'))
         # null device_profile_info will fail the test
