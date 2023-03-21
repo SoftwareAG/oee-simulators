@@ -8,6 +8,7 @@ log = logging.getLogger("Test Import Export")
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
 
 class Test(unittest.TestCase):
+    @patch('logging.Logger.error')
     def test_export_import_profile_data(self):
         # Get current working directory
         current_dir = os.getcwd()
