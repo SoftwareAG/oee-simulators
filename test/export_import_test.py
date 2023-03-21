@@ -12,7 +12,10 @@ class Test(unittest.TestCase):
         # Get current working directory
         current_dir = os.getcwd()
         # Change working directory to extras to run script and export data
-        os.chdir("../simulators/extras")
+        try:
+            os.chdir("../simulators/extras") # IDE
+        except:
+            os.chdir("simulators/extras") # Command line
 
         # Run the ExportProfileData.py script
         call(["python", "ExportProfileData.py"])
