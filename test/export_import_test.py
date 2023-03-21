@@ -8,7 +8,7 @@ log = logging.getLogger("Test Import Export")
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
 
 class Test(unittest.TestCase):
-    def test_export_profile_data(self):
+    def test_export_import_profile_data(self):
         # Get current working directory
         current_dir = os.getcwd()
         # Change working directory to extras to run script and export data
@@ -22,6 +22,12 @@ class Test(unittest.TestCase):
 
         # Check if the export_data folder is created
         self.assertTrue(os.path.exists("export_data"), msg="export_data folder not found")
+
+        # Run the ImportData.py script and get the exit code
+        exit_code = call(["python", "ImportData.py"])
+
+        # Check if the exit code is 0
+        self.assertEqual(exit_code, 0, msg="ImportData.py script failed to run")
 
         # Remove the export_data directory and its contents
         shutil.rmtree("export_data")
