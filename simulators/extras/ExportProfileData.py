@@ -100,7 +100,7 @@ def ExportAlarms(deviceId, createFrom, createTo, filePath):
 def ListAlarms(deviceId, createFrom, createTo):
     jsonAlarmsList = []
     for alarm in c8y.alarms.select(source=deviceId, created_after=createFrom, created_before=createTo):
-        consoleLogger.info(f"Found alarm id #{alarm.id}, severity: {alarm.severity}, time: {alarm.time}, creation time: {alarm.creation_time}, update time : {alarm.updated_time}\n")
+        consoleLogger.debug(f"Found alarm id #{alarm.id}, severity: {alarm.severity}, time: {alarm.time}, creation time: {alarm.creation_time}, update time : {alarm.updated_time}\n")
         jsonAlarmsList.append(alarm.to_json())
     return jsonAlarmsList
 
@@ -113,7 +113,7 @@ def ExportMeasurements(deviceId, createFrom, createTo, filePath):
 def ListMeasurements(deviceId, createFrom, createTo):
     jsonMeasurementsList = []
     for measurement in c8y.measurements.select(source=deviceId, after=createFrom, before=createTo):
-        consoleLogger.info(f"Found measurement id #{measurement.id}\n")
+        consoleLogger.debug(f"Found measurement id #{measurement.id}\n")
         jsonMeasurementsList.append(measurement.to_json())
     return jsonMeasurementsList
 
