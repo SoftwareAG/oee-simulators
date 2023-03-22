@@ -166,7 +166,7 @@ def CreateFilePath(Id):
     # Check if folder containing data files exists and make one if not
     if not os.path.exists('export_data'):
         os.makedirs('export_data')
-        consoleLogger.info("")
+        consoleLogger.info("Created export_data directory")
     relativeFilePath = f'export_data\{Id}.json'
     filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
     consoleLogger.debug(f"Created successfully file path: {filePath}")
