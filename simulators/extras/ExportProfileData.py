@@ -94,7 +94,6 @@ def FindDeviceNameById(deviceId, baseUrl):
 
 def ExportAlarms(deviceId, createFrom, createTo, filePath):
     jsonAlarmsList = ListAlarms(deviceId, createFrom, createTo)
-    consoleLogger.info(jsonAlarmsList)
     AppendDataToJsonFile(jsonAlarmsList, filePath, 'alarms')
 
 
@@ -108,7 +107,6 @@ def ListAlarms(deviceId, createFrom, createTo):
 
 def ExportMeasurements(deviceId, createFrom, createTo, filePath):
     jsonMeasurementsList = ListMeasurements(deviceId, createFrom, createTo)
-    consoleLogger.info(jsonMeasurementsList)
     AppendDataToJsonFile(jsonMeasurementsList, filePath, 'measurements')
 
 
@@ -163,7 +161,7 @@ def CreateFilePath(Id):
     # Check if folder containing data files exists and make one if not
     if not os.path.exists('export_data'):
         os.makedirs('export_data')
-    relativeFilePath = f'export_data\{Id}.json'
+    relativeFilePath = f'export_data/{Id}.json'
     filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
     consoleLogger.debug(f"Created successfully file path: {filePath}")
     return filePath
