@@ -81,17 +81,18 @@ class Test(unittest.TestCase):
         # Change to the 'test' directory
         os.chdir("test")
 
-        device_profile_info = self.oee_api.create_and_activate_profile(external_id=self.device_model.get('id'))
-        # null device_profile_info will fail the test
-        self.assertIsNotNone(device_profile_info)
+        try:
+            device_profile_info = self.oee_api.create_and_activate_profile(external_id=self.device_model.get('id'))
+            # null device_profile_info will fail the test
+            self.assertIsNotNone(device_profile_info)
 
-        # Change back to the original working directory
-        os.chdir(current_dir)
-
-        self.cumulocity_api.delete_managed_object(device_profile_info.get('id'))
-        log.info(f"Removed the test oee profile with id {device_profile_info.get('id')}")
-        self.cumulocity_api.delete_managed_object(device_id)
-        log.info(f"Removed the test device with id {device_id}")
+            # Change back to the original working directory
+            os.chdir(current_dir)
+        finally:
+            self.cumulocity_api.delete_managed_object(device_profile_info.get('id'))
+            log.info(f"Removed the test oee profile with id {device_profile_info.get('id')}")
+            self.cumulocity_api.delete_managed_object(device_id)
+            log.info(f"Removed the test device with id {device_id}")
         log.info('-' * 100)
 
     def test_create_update_organization_structure(self):
