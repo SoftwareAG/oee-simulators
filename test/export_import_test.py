@@ -30,8 +30,16 @@ class Test(unittest.TestCase):
         # Check if the exit code is 0
         self.assertEqual(exit_code, 0, msg="ImportData.py script failed to run")
 
-        # Remove the export_data directory and its contents
-        shutil.rmtree("export_data")
+        # Iterate over all files and subdirectories in dir_path
+        for filename in os.listdir("export_data"):
+            # Create the full file path by joining the directory and filename
+            file_path = os.path.join("export_data", filename)
+
+            # Check if the file_path is a file or directory and remove it accordingly
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
 
         # Change back to the original working directory
         os.chdir(current_dir)
