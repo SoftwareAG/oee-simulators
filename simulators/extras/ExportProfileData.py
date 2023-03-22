@@ -38,9 +38,10 @@ def ExportAllProfileDataFromChildDevices(createFrom, createTo):
     for device in deviceManagedObject:
         deviceInTenantCount += 1
         consoleLogger.debug(f"Found device '{device.name}', id: #{device.id}, owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
-        consoleLogger.debug(f"List of {device.name}'s child devices: ")
-        for childDevice in device.child_devices:
-            ExportSpecificProfileDataWithDeviceId(createFrom=createFrom,createTo=createTo, deviceId=childDevice.id)
+        if len(device.child_devices) > 0:
+            consoleLogger.debug(f"List of {device.name}'s child devices: ")
+            for childDevice in device.child_devices:
+                ExportSpecificProfileDataWithDeviceId(createFrom=createFrom,createTo=createTo, deviceId=childDevice.id)
 
     if deviceInTenantCount == 0:
         consoleLogger.info(f"No device in tenant {c8y.tenant_id} found")
@@ -48,7 +49,6 @@ def ExportAllProfileDataFromChildDevices(createFrom, createTo):
 
 def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
     deviceName = FindDeviceNameById(deviceId, c8y.base_url)
-    deviceWithIdCount = 0
     deviceExternalId, deviceExternalIdType = CheckDeviceExternalIdById(deviceId, c8y.base_url)
     if not deviceExternalId:
         return
@@ -57,29 +57,22 @@ def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
     else:
         return
     consoleLogger.debug(f"Search for {DATA_TYPE} data from device {deviceName}, id #{deviceId}")
-    oeeCalculationProfileMO = c8y.device_inventory.select(name=deviceName)
-    logging.debug(oeeCalculationProfileMO)
-    for device in oeeCalculationProfileMO:
-        deviceWithIdCount += 1
-        consoleLogger.debug(f"Child device {device.name}, id #{device.id}")
-        if DATA_TYPE == "alarms":
-            ExportAlarms(device, createFrom, createTo, filePath)
-            AppendDataToJsonFile([], filePath, 'measurements')
-            consoleLogger.debug(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
-        elif DATA_TYPE == "measurements":
-            # listing measurements of child device
-            ExportMeasurements(device, createFrom, createTo, filePath)
-            AppendDataToJsonFile([], filePath, 'alarms')
-            consoleLogger.debug(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
-        else:
-            ExportAlarms(device, createFrom, createTo, filePath)
-            ExportMeasurements(device, createFrom, createTo, filePath)
-            consoleLogger.debug(f"Alarms and Measurements data is added to data file at {filePath}")
 
-    if deviceWithIdCount == 0:
-        consoleLogger.info(f"No data for device with id #{deviceId} is exported")
+    consoleLogger.debug(f"Child device {deviceName}, id #{deviceId}")
+    if DATA_TYPE == "alarms":
+        ExportAlarms(deviceId, createFrom, createTo, filePath)
+        AppendDataToJsonFile([], filePath, 'measurements')
+        consoleLogger.debug(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
+    elif DATA_TYPE == "measurements":
+        # listing measurements of child device
+        ExportMeasurements(deviceId, createFrom, createTo, filePath)
+        AppendDataToJsonFile([], filePath, 'alarms')
+        consoleLogger.debug(f"{DATA_TYPE.capitalize()} data is added to data file at {filePath}")
     else:
-        consoleLogger.info(f"Exported successfully data for device with id #{deviceId}, external id: {deviceExternalId}")
+        ExportAlarms(deviceId, createFrom, createTo, filePath)
+        ExportMeasurements(deviceId, createFrom, createTo, filePath)
+        consoleLogger.debug(f"Alarms and Measurements data is added to data file at {filePath}")
+
     return
 
 
@@ -99,27 +92,27 @@ def FindDeviceNameById(deviceId, baseUrl):
     return deviceName
 
 
-def ExportAlarms(device, createFrom, createTo, filePath):
-    jsonAlarmsList = ListAlarms(device, createFrom, createTo)
+def ExportAlarms(deviceId, createFrom, createTo, filePath):
+    jsonAlarmsList = ListAlarms(deviceId, createFrom, createTo)
     AppendDataToJsonFile(jsonAlarmsList, filePath, 'alarms')
 
 
-def ListAlarms(device, createFrom, createTo):
+def ListAlarms(deviceId, createFrom, createTo):
     jsonAlarmsList = []
-    for alarm in c8y.alarms.select(source=device.id, created_after=createFrom, created_before=createTo):
+    for alarm in c8y.alarms.select(source=deviceId, created_after=createFrom, created_before=createTo):
         consoleLogger.debug(f"Found alarm id #{alarm.id}, severity: {alarm.severity}, time: {alarm.time}, creation time: {alarm.creation_time}, update time : {alarm.updated_time}\n")
         jsonAlarmsList.append(alarm.to_json())
     return jsonAlarmsList
 
 
-def ExportMeasurements(device, createFrom, createTo, filePath):
-    jsonMeasurementsList = ListMeasurements(device, createFrom, createTo)
+def ExportMeasurements(deviceId, createFrom, createTo, filePath):
+    jsonMeasurementsList = ListMeasurements(deviceId, createFrom, createTo)
     AppendDataToJsonFile(jsonMeasurementsList, filePath, 'measurements')
 
 
-def ListMeasurements(device, createFrom, createTo):
+def ListMeasurements(deviceId, createFrom, createTo):
     jsonMeasurementsList = []
-    for measurement in c8y.measurements.select(source=device.id, after=createFrom, before=createTo):
+    for measurement in c8y.measurements.select(source=deviceId, after=createFrom, before=createTo):
         consoleLogger.debug(f"Found measurement id #{measurement.id}\n")
         jsonMeasurementsList.append(measurement.to_json())
     return jsonMeasurementsList
