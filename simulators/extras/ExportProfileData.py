@@ -13,8 +13,6 @@ C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.SetupHeadersF
 # Setup Log
 file_log_level = logging.DEBUG
 console_log_level = LOG_LEVEL
-relativeFilePath = f"logs\export_{datetime.strftime(datetime.now(), logTimeFormat)}.log"
-filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
 consoleLogger = ArgumentsAndCredentialsHandler.SetupLogger(console_logger_name='ConsoleExportProfileData', console_log_level=console_log_level)
 #####################################################
 
@@ -168,6 +166,7 @@ def CreateFilePath(Id):
     # Check if folder containing data files exists and make one if not
     if not os.path.exists('export_data'):
         os.makedirs('export_data')
+        consoleLogger.info("")
     relativeFilePath = f'export_data\{Id}.json'
     filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
     consoleLogger.debug(f"Created successfully file path: {filePath}")

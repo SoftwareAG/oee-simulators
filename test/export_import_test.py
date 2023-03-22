@@ -50,6 +50,7 @@ class Test(unittest.TestCase):
                     os.remove(file_path)
                 elif os.path.isdir(file_path):
                     shutil.rmtree(file_path)
+                log.info(f"Removed {file_path}")
 
             # Change back to the original working directory
             os.chdir(current_dir)
