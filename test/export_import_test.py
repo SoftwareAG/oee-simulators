@@ -24,7 +24,7 @@ class Test(unittest.TestCase):
             call(["python", "ExportProfileData.py"])
 
             # Check if the sim_001_profile.json is created
-            profile_path = os.path.join("export_data", "sim_001_profile.json")
+            profile_path = "export_data/sim_001_profile.json"
             self.assertTrue(os.path.exists(profile_path), msg="sim_001_profile.json not found")
 
             # Open the JSON file and load its contents
