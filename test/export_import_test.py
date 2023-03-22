@@ -2,7 +2,7 @@ import shutil, unittest, logging, os
 import config.root # Set source directory
 
 from simulators.main.interface import datetime_to_string
-from datetime import datetime
+from datetime import datetime, timedelta
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
 from simulators.main.cumulocityAPI import CumulocityAPI
 from unittest.mock import patch
@@ -32,42 +32,6 @@ class Test(unittest.TestCase):
 
     @patch('logging.Logger.error')
     def test_export_import_profile_data(self, mock_error):
-        # Create new test device and upload event and measurement
-        device_id = Utils.create_device(self.device_model)
-        log.info(f"Created the {self.device_model.get('label')} with id {device_id}")
-        event = {
-            'source': {
-                'id': f'{device_id}'
-            },
-            'time': f'{datetime_to_string(datetime.utcnow())}',
-            'type': 'Availability',
-            'text': 'Availability',
-            'status': 'up',
-            'production_time_s': 0.0,
-            'production_speed_h': 25.0,
-            'pieces_produced': 0.0
-        }
-        response = self.cumulocity_api.send_event(event)
-        self.assertIsNotNone(response, msg="Failed to send event")
-        measurement = {
-            'type': 'PumpPressure',
-            'time': f'{datetime_to_string(datetime.utcnow())}',
-            'source': {
-                'id': f'{device_id}'
-            },
-            'Pressure': {
-                'P':
-                    {
-                        'unit': 'hPa',
-                        'value': 1179.26
-                    }
-            }
-
-        }
-        response = self.cumulocity_api.create_measurements(measurement)
-        self.assertIsNotNone(response, msg= "Failed to send measurement")
-
-        # After having test device with event and measurement, test export and import scripts
         # Get current working directory
         current_dir = os.getcwd()
         # Change working directory to extras to run script and export data
@@ -77,10 +41,14 @@ class Test(unittest.TestCase):
             os.chdir("simulators/extras") # Command line
 
         try:
+            external_device_id = "sim_001"
+            device_id = self.cumulocity_api.get_device_by_external_id(external_id=f"{external_device_id}")
+            profile_id = self.cumulocity_api.get_profile_id(deviceID=device_id)
+
             log.info("Begin export data")
             # Run the ExportProfileData.py script
-            call(["python", "ExportProfileData.py", "--device-ids", f"{device_id}"])
-            filename = f"{self.device_model.get('id')}_profile"
+            call(["python", "ExportProfileData.py", "--device-ids", f"{profile_id}"])
+            filename = f"{external_device_id}_profile"
             # Check if the sim_001_profile.json is created
             profile_path = f"export_data/{filename}.json"
             self.assertTrue(os.path.exists(profile_path), msg=f"{filename}.json not found")
@@ -92,7 +60,7 @@ class Test(unittest.TestCase):
 
             log.info("Begin import data")
             # Run the ImportData.py script and get the exit code
-            exit_code = call(["python", "ImportData.py", "--ifiles", f"{filename}.json"])
+            exit_code = call(["python", "ImportData.py", "--ifiles", f"{filename}"])
 
             # Check if the exit code is 0
             self.assertEqual(exit_code, 0, msg="ImportData.py script failed to run")
