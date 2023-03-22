@@ -1,14 +1,16 @@
 import shutil, unittest, logging, os
-import config.root # Set source directory
+from datetime import timezone, datetime, timedelta
 
-from simulators.main.interface import datetime_to_string
-from datetime import datetime, timedelta
+import config.root # Set source directory
+import simulators.extras.Environment as Ex_Im_Env
+
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
 from simulators.main.cumulocityAPI import CumulocityAPI
 from unittest.mock import patch
 from subprocess import call
 from simulators.main.simulator import load
-from test.simulators_test import Utils
+from simulators.main.interface import datetime_to_string
+
 
 log = logging.getLogger("Test Import Export")
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
@@ -46,6 +48,8 @@ class Test(unittest.TestCase):
             profile_id = self.cumulocity_api.get_profile_id(deviceID=device_id)
 
             log.info("Begin export data")
+            # Take export time period
+            date_from, date_to = Utils.set_time_period()
             # Run the ExportProfileData.py script
             call(["python", "ExportProfileData.py", "--device-ids", f"{profile_id}"])
             filename = f"{external_device_id}_profile"
@@ -58,12 +62,22 @@ class Test(unittest.TestCase):
             # Check if the data file is empty
             self.assertNotEqual(len(data),0, msg=f"No content in {filename}.json file")
 
+            log.info("Delete all extract data")
+            self.cumulocity_api.delete_alarms(date_from=date_from,date_to=date_to,device_id=profile_id)
+            self.cumulocity_api.delete_measurements(date_from=date_from,date_to=date_to,device_id=profile_id)
+
             log.info("Begin import data")
             # Run the ImportData.py script and get the exit code
             exit_code = call(["python", "ImportData.py", "--ifiles", f"{filename}"])
-
             # Check if the exit code is 0
             self.assertEqual(exit_code, 0, msg="ImportData.py script failed to run")
+
+            log.info("Run the ExportProfileData.py script again to test the Import")
+            call(["python", "ExportProfileData.py", "--device-ids", f"{profile_id}"])
+            filename = f"{external_device_id}_profile"
+            # Check if the sim_001_profile.json is created
+            profile_path = f"export_data/{filename}.json"
+            self.assertTrue(os.path.exists(profile_path), msg=f"{filename}.json not found")
 
         finally:
             # Iterate over all files and subdirectories in dir_path
@@ -80,6 +94,29 @@ class Test(unittest.TestCase):
 
             # Change back to the original working directory
             os.chdir(current_dir)
+class Utils():
+    @staticmethod
+    def set_time_period():
+        date_to = datetime.now().replace(tzinfo=timezone.utc)
+        time_unit = Ex_Im_Env.TIME_UNIT
+
+        if time_unit == 'seconds' or not time_unit:
+            date_from = date_to - timedelta(seconds=Ex_Im_Env.PERIOD_TO_EXPORT)
+            return date_from, date_to
+
+        if time_unit == 'days':
+            date_from = date_to - timedelta(days=Ex_Im_Env.PERIOD_TO_EXPORT)
+        elif time_unit == 'weeks':
+            date_from = date_to - timedelta(weeks=Ex_Im_Env.PERIOD_TO_EXPORT)
+        elif time_unit == 'hours':
+            date_from = date_to - timedelta(hours=Ex_Im_Env.PERIOD_TO_EXPORT)
+        elif time_unit == 'minutes':
+            date_from = date_to - timedelta(minutes=Ex_Im_Env.PERIOD_TO_EXPORT)
+
+        date_from = datetime_to_string(date_from)
+        date_to = datetime_to_string(date_to)
+
+        return date_from, date_to
 
 if __name__ == '__main__':
     unittest.main()
