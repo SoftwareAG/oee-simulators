@@ -34,17 +34,21 @@ else:
 
 def ExportAllProfileDataFromChildDevices(createFrom, createTo):
     deviceInTenantCount = 0
+    childDeviceCount = 0
     deviceManagedObject = c8y.device_inventory.select(type=C8Y_OEE_SIMULATOR_DEVICES_GROUP)
     for device in deviceManagedObject:
         deviceInTenantCount += 1
         consoleLogger.info(f"Found device '{device.name}', id: #{device.id}, owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
         if len(device.child_devices) > 0:
-            consoleLogger.info(f"List of {device.name}'s child devices: ")
+            childDeviceCount += len(device.child_devices)
+            consoleLogger.info(f"List {len(device.child_devices)} of {device.name}'s child devices: ")
             for childDevice in device.child_devices:
                 ExportSpecificProfileDataWithDeviceId(createFrom=createFrom,createTo=createTo, deviceId=childDevice.id)
 
     if deviceInTenantCount == 0:
         consoleLogger.info(f"No device in tenant {c8y.tenant_id} found")
+    else:
+        consoleLogger.info(f"There are {deviceInTenantCount} devices with {childDeviceCount} child devices in total")
 
 
 def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):

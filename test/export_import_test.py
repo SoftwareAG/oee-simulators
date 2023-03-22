@@ -20,6 +20,7 @@ class Test(unittest.TestCase):
             os.chdir("simulators/extras") # Command line
 
         try:
+            log.info("Begin export data")
             # Run the ExportProfileData.py script
             call(["python", "ExportProfileData.py"])
 
@@ -32,7 +33,7 @@ class Test(unittest.TestCase):
             # Check if the data file is empty
             self.assertNotEqual(len(data),0, msg="No content in sim_001_profile.json file")
 
-
+            log.info("Begin import data")
             # Run the ImportData.py script and get the exit code
             exit_code = call(["python", "ImportData.py"])
 
