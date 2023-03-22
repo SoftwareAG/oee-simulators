@@ -57,7 +57,9 @@ def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
     else:
         return
     consoleLogger.debug(f"Search for {DATA_TYPE} data from device {deviceName}, id #{deviceId}")
-    for device in c8y.device_inventory.select(name=deviceName):
+    oeeCalculationProfileMO = c8y.device_inventory.select(name=deviceName)
+    logging.debug(oeeCalculationProfileMO)
+    for device in oeeCalculationProfileMO:
         deviceWithIdCount += 1
         consoleLogger.debug(f"Child device {device.name}, id #{device.id}")
         if DATA_TYPE == "alarms":
@@ -174,7 +176,7 @@ def CreateFilePath(Id):
 
 def SetTimePeriodToExportData():
     if not CREATE_FROM or CREATE_TO:
-        consoleLogger.debug(f'CREATE_FROM and/or CREATE_TO were not set. Using default setup to export {Environment.PERIOD_TO_EXPORT}{Environment.TIME_UNIT} ago from now')
+        consoleLogger.debug(f'CREATE_FROM and/or CREATE_TO were not set. Using default setup to export {Environment.PERIOD_TO_EXPORT} {Environment.TIME_UNIT} ago from now')
 
         createTo = datetime.now().replace(tzinfo=timezone.utc)
         TimeUnit = Environment.TIME_UNIT
