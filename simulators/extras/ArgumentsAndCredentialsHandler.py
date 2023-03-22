@@ -70,7 +70,7 @@ def HandleExportArguments():
                 device_ids_list.append(Environment.DEVICE_ID)
 
     log_argument = args.log
-    log_level = logging.INFO
+    log_level = logging.DEBUG
     if log_argument == 'DEBUG':
         log_level = logging.DEBUG
     elif log_argument == 'WARNING':
