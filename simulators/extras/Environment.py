@@ -16,7 +16,7 @@ DEVICE_ID = None   # Input device ID(s) (i.e. DEVICE_ID = 123456, 234567) or set
 # Extract data with periods#
 ############################
 TIME_UNIT = 'hours'  # weeks, days, hours, minutes, seconds
-PERIOD_TO_EXPORT = 4
+PERIOD_TO_EXPORT = 1
 ####################################
 # Extract data with exact milestone#
 ####################################

@@ -90,7 +90,7 @@ def ImportAlarms(alarms, id):
 
 
 def ImportMeasurements(measurements, id):
-    consoleLogger.info(f'Importing [{len(measurements)}] alarms for {id}')
+    consoleLogger.info(f'Importing [{len(measurements)}] measurements for {id}')
     timeShift = GetTimeDifference(measurements[len(measurements) - 1], 'time')
     for i in range(len(measurements)):
         measurements[i]['time'] = (datetime.strptime(measurements[i]['time'], timeFormat) + timeShift).strftime(timeFormat)
