@@ -37,9 +37,9 @@ def ExportAllProfileDataFromChildDevices(createFrom, createTo):
     deviceManagedObject = c8y.device_inventory.select(type=C8Y_OEE_SIMULATOR_DEVICES_GROUP)
     for device in deviceManagedObject:
         deviceInTenantCount += 1
-        consoleLogger.debug(f"Found device '{device.name}', id: #{device.id}, owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
+        consoleLogger.info(f"Found device '{device.name}', id: #{device.id}, owned by {device.owner}, number of children: {len(device.child_devices)}, type: {device.type}")
         if len(device.child_devices) > 0:
-            consoleLogger.debug(f"List of {device.name}'s child devices: ")
+            consoleLogger.info(f"List of {device.name}'s child devices: ")
             for childDevice in device.child_devices:
                 ExportSpecificProfileDataWithDeviceId(createFrom=createFrom,createTo=createTo, deviceId=childDevice.id)
 
@@ -49,6 +49,7 @@ def ExportAllProfileDataFromChildDevices(createFrom, createTo):
 
 def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
     deviceName = FindDeviceNameById(deviceId, c8y.base_url)
+    consoleLogger.info(f"Child device {deviceName}, id #{deviceId}")
     deviceExternalId, deviceExternalIdType = CheckDeviceExternalIdById(deviceId, c8y.base_url)
     if not deviceExternalId:
         return
@@ -56,9 +57,8 @@ def ExportSpecificProfileDataWithDeviceId(createFrom, createTo, deviceId):
         filePath = CreateFilePath(Id=deviceExternalId)
     else:
         return
-    consoleLogger.info(f"Search for {DATA_TYPE} data from device {deviceName}, id #{deviceId}")
 
-    consoleLogger.info(f"Child device {deviceName}, id #{deviceId}")
+    consoleLogger.info(f"Search for {DATA_TYPE} data from device {deviceName}, id #{deviceId}")
     if DATA_TYPE == "alarms":
         ExportAlarms(deviceId, createFrom, createTo, filePath)
         AppendDataToJsonFile([], filePath, 'measurements')
@@ -94,6 +94,7 @@ def FindDeviceNameById(deviceId, baseUrl):
 
 def ExportAlarms(deviceId, createFrom, createTo, filePath):
     jsonAlarmsList = ListAlarms(deviceId, createFrom, createTo)
+    consoleLogger.info(jsonAlarmsList)
     AppendDataToJsonFile(jsonAlarmsList, filePath, 'alarms')
 
 
@@ -107,6 +108,7 @@ def ListAlarms(deviceId, createFrom, createTo):
 
 def ExportMeasurements(deviceId, createFrom, createTo, filePath):
     jsonMeasurementsList = ListMeasurements(deviceId, createFrom, createTo)
+    consoleLogger.info(jsonMeasurementsList)
     AppendDataToJsonFile(jsonMeasurementsList, filePath, 'measurements')
 
 
