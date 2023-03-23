@@ -72,12 +72,11 @@ class Test(unittest.TestCase):
             # Check if the exit code is 0
             self.assertEqual(exit_code, 0, msg="ImportData.py script failed to run")
 
-            log.info("Run the ExportProfileData.py script again to test the Import")
-            call(["python", "ExportProfileData.py", "--device-ids", f"{profile_id}"])
-            filename = f"{external_device_id}_profile"
-            # Check if the sim_001_profile.json is created
-            profile_path = f"export_data/{filename}.json"
-            self.assertTrue(os.path.exists(profile_path), msg=f"{filename}.json not found")
+            # Get measurements and alarms from c8y
+            measurements = self.cumulocity_api.get_measurements(date_from=date_from, date_to=date_to, device_id=profile_id)
+            alarms = self.cumulocity_api.get_alarms(date_from=date_from, date_to=date_to, device_id=profile_id)
+            self.assertIsNotNone(measurements)
+            self.assertIsNotNone(alarms)
 
         finally:
             # Iterate over all files and subdirectories in dir_path

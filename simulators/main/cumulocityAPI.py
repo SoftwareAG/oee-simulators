@@ -51,8 +51,7 @@ class CumulocityAPI:
 
     def create_measurements(self, measurement):
         if self.mocking:
-            log.info(
-                f"mock: create measurements {json.dumps(measurement)} by the request to {C8Y_BASEURL}/measurement/measurements")
+            log.info(f"mock: create measurements {json.dumps(measurement)} by the request to {C8Y_BASEURL}/measurement/measurements")
             return json.dumps({'response': 200})
         else:
             response = requests.post(C8Y_BASEURL + '/measurement/measurements', headers=MEASUREMENT_HEADERS,
@@ -62,10 +61,25 @@ class CumulocityAPI:
             self.log_warning_on_bad_response(response)
             return None
 
+    def get_measurements(self, date_from, date_to, device_id):
+        if self.mocking:
+            log.info(f"mock: get measurements by the request to {C8Y_BASEURL}/measurement/measurements")
+            return json.dumps({'response': 200})
+        else:
+            params = {
+                'dateFrom': f'{date_from}',
+                'dateTo': f'{date_to}',
+                'source': device_id
+            }
+            response = requests.get(C8Y_BASEURL + '/measurement/measurements', headers=MEASUREMENT_HEADERS, params=params)
+            if response.ok:
+                return response.json()
+            self.log_warning_on_bad_response(response)
+            return None
+
     def delete_measurements(self, date_from, date_to, device_id):
         if self.mocking:
-            log.info(
-                f"mock: deleted measurements by the request to {C8Y_BASEURL}/measurement/measurements")
+            log.info(f"mock: deleted measurements by the request to {C8Y_BASEURL}/measurement/measurements")
             return json.dumps({'response': 200})
         else:
             params = {
@@ -78,10 +92,10 @@ class CumulocityAPI:
                 return True
             self.log_warning_on_bad_response(response)
             return False
-    def delete_alarms(self, date_from, date_to, device_id):
+
+    def get_alarms(self, date_from, date_to, device_id):
         if self.mocking:
-            log.info(
-                f"mock: deleted alarms by the request to {C8Y_BASEURL}/alarm/alarms")
+            log.info(f"mock: get alarms by the request to {C8Y_BASEURL}/alarm/alarms")
             return json.dumps({'response': 200})
         else:
             params = {
@@ -89,7 +103,23 @@ class CumulocityAPI:
                 'dateTo': f'{date_to}',
                 'source': device_id
             }
-            response = requests.delete(C8Y_BASEURL + '/alarm/alarms', headers=MEASUREMENT_HEADERS, params=params)
+            response = requests.get(C8Y_BASEURL + '/alarm/alarms', headers=C8Y_HEADERS, params=params)
+            if response.ok:
+                return True
+            self.log_warning_on_bad_response(response)
+            return False
+
+    def delete_alarms(self, date_from, date_to, device_id):
+        if self.mocking:
+            log.info(f"mock: deleted alarms by the request to {C8Y_BASEURL}/alarm/alarms")
+            return json.dumps({'response': 200})
+        else:
+            params = {
+                'dateFrom': f'{date_from}',
+                'dateTo': f'{date_to}',
+                'source': device_id
+            }
+            response = requests.delete(C8Y_BASEURL + '/alarm/alarms', headers=C8Y_HEADERS, params=params)
             if response.ok:
                 return True
             self.log_warning_on_bad_response(response)
