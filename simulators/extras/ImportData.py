@@ -16,8 +16,6 @@ json_filename_list_to_import, console_log_level, c8y, password, verifySslCertifi
 C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.SetupHeadersForAPIRequest(tenant_id=c8y.tenant_id, username= c8y.username, password=password)
 ####################################################
 # Setup Log
-relativeFilePath = f"logs\import_{datetime.strftime(datetime.now(), logTimeFormat)}.log"
-logFilePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
 consoleLogger = ArgumentsAndCredentialsHandler.SetupLogger(console_logger_name='ConsoleImportProfileData', console_log_level=console_log_level)
 #####################################################
 
@@ -92,7 +90,7 @@ def ImportAlarms(alarms, id):
 
 
 def ImportMeasurements(measurements, id):
-    consoleLogger.info(f'Importing [{len(measurements)}] alarms for {id}')
+    consoleLogger.info(f'Importing [{len(measurements)}] measurements for {id}')
     timeShift = GetTimeDifference(measurements[len(measurements) - 1], 'time')
     for i in range(len(measurements)):
         measurements[i]['time'] = (datetime.strptime(measurements[i]['time'], timeFormat) + timeShift).strftime(timeFormat)

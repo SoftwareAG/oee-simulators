@@ -107,6 +107,7 @@ class Test(unittest.TestCase):
 
         # Get current directory path
         current_dir = os.getcwd()
+
         # Extracts the base name of the current directory
         base_dir = os.path.basename(current_dir)
         # If the working directory is not test then change to test
