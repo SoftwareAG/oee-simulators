@@ -56,10 +56,10 @@ class Test(unittest.TestCase):
             # Check if the sim_001_profile.json is created
             profile_path = f"export_data/{filename}.json"
             self.assertTrue(os.path.exists(profile_path), msg=f"{filename}.json not found")
-
             # Open the JSON file and load its contents
             data = load(profile_path)
             # Check if the data file is empty
+            self.assertTrue(len(data.get('measurements')) > 0 or len(data.get('alarms')) > 0)
 
             log.info("Delete all extract data")
             self.cumulocity_api.delete_alarms(date_from=date_from,date_to=date_to,device_id=profile_id)
