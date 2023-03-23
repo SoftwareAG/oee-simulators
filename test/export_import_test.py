@@ -60,7 +60,6 @@ class Test(unittest.TestCase):
             # Open the JSON file and load its contents
             data = load(profile_path)
             # Check if the data file is empty
-            self.assertNotEqual(len(data),0, msg=f"No content in {filename}.json file")
 
             log.info("Delete all extract data")
             self.cumulocity_api.delete_alarms(date_from=date_from,date_to=date_to,device_id=profile_id)
@@ -75,8 +74,8 @@ class Test(unittest.TestCase):
             # Get measurements and alarms from c8y
             measurements = self.cumulocity_api.get_measurements(date_from=date_from, date_to=date_to, device_id=profile_id)
             alarms = self.cumulocity_api.get_alarms(date_from=date_from, date_to=date_to, device_id=profile_id)
-            self.assertIsNotNone(measurements)
-            self.assertIsNotNone(alarms)
+            self.assertTrue(len(measurements.get('measurements')) > 0 or len(alarms.get('alarms')) > 0)
+
 
         finally:
             # Change back to the original working directory

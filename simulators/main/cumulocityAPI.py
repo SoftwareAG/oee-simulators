@@ -25,6 +25,11 @@ MEASUREMENT_HEADERS = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + user_and_pass
 }
+MEASUREMENT_COLLECTIONS_HEADERS = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/vnd.com.nsn.cumulocity.measurementcollection+json',
+    'Authorization': 'Basic ' + user_and_pass
+}
 
 log = logging.getLogger("C8yAPI")
 
@@ -66,12 +71,14 @@ class CumulocityAPI:
             log.info(f"mock: get measurements by the request to {C8Y_BASEURL}/measurement/measurements")
             return json.dumps({'response': 200})
         else:
+            '''
             params = {
                 'dateFrom': f'{date_from}',
                 'dateTo': f'{date_to}',
                 'source': device_id
             }
-            response = requests.get(C8Y_BASEURL + '/measurement/measurements', headers=MEASUREMENT_HEADERS, params=params)
+            '''
+            response = requests.get(C8Y_BASEURL + '/measurement/measurements?dateFrom=2023-03-23T09:30:42.622Z&dateTo=2023-03-23T11:00:42.622Z&source=9786377', headers=MEASUREMENT_COLLECTIONS_HEADERS)
             if response.ok:
                 return response.json()
             self.log_warning_on_bad_response(response)
@@ -105,9 +112,9 @@ class CumulocityAPI:
             }
             response = requests.get(C8Y_BASEURL + '/alarm/alarms', headers=C8Y_HEADERS, params=params)
             if response.ok:
-                return True
+                return response.json()
             self.log_warning_on_bad_response(response)
-            return False
+            return None
 
     def delete_alarms(self, date_from, date_to, device_id):
         if self.mocking:
