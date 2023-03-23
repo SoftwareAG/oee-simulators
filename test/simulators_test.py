@@ -197,16 +197,18 @@ class Test(unittest.TestCase):
         # Create shiftplan
         shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), self.shiftplans))
         for shiftplan in shiftplans:
-            # Get created shiftplan info
-            shiftplan_info = self.oee_api.get_shiftplan_with_specific_date(locationId=shiftplan.locationId,dateFrom=None,dateTo=None)
-            # Check recurring time slots field. If it is not empty then the shiftplan was created
-            self.assertNotEqual(len(shiftplan_info.get('recurringTimeslots')),0, msg="Test shiftplan was not created")
-            # Delete test shiftplan
-            self.oee_api.delete_shiftplan(shiftplan.locationId)
-            # Check recurring time slots field. If it is empty then the shiftplan was deleted
-            shiftplan_info = self.oee_api.get_shiftplan_with_specific_date(locationId=shiftplan.locationId,dateFrom=None,dateTo=None)
-            self.assertEqual(len(shiftplan_info.get('recurringTimeslots')),0, msg="Test shiftplan was not deleted")
-            log.info(f"Deleted shiftplan {shiftplan.locationId}")
+            try:
+                # Get created shiftplan info
+                shiftplan_info = self.oee_api.get_shiftplan_with_specific_date(locationId=shiftplan.locationId,dateFrom=None,dateTo=None)
+                # Check recurring time slots field. If it is not empty then the shiftplan was created
+                self.assertNotEqual(len(shiftplan_info.get('recurringTimeslots')),0, msg="Test shiftplan was not created")
+            finally:
+                # Delete test shiftplan
+                self.oee_api.delete_shiftplan(shiftplan.locationId)
+                # Check recurring time slots field. If it is empty then the shiftplan was deleted
+                shiftplan_info = self.oee_api.get_shiftplan_with_specific_date(locationId=shiftplan.locationId,dateFrom=None,dateTo=None)
+                self.assertEqual(len(shiftplan_info.get('recurringTimeslots')),0, msg="Test shiftplan was not deleted")
+                log.info(f"Deleted shiftplan {shiftplan.locationId}")
         log.info('-' * 100)
 
 class Utils:
