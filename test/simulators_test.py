@@ -78,13 +78,17 @@ class Test(unittest.TestCase):
 
         # Change working directory to test to allow profile template read
         current_dir = os.getcwd()
-        # Change to the 'test' directory
-        os.chdir("test")
+        try:
+            # Change to the 'test' directory
+            os.chdir("test")
+        except:
+            pass
 
         try:
             device_profile_info = self.oee_api.create_and_activate_profile(external_id=self.device_model.get('id'))
             # null device_profile_info will fail the test
             self.assertIsNotNone(device_profile_info)
+            self.assertEqual(device_profile_info.get('status'), 'ACTIVE', msg="Profile is not active")
 
             # Change back to the original working directory
             os.chdir(current_dir)
