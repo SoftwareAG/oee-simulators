@@ -179,6 +179,14 @@ class OeeAPI:
         log.warning(f'Cannot get shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
         return {'locationId':locationId,'timeslots':{}}
 
+    def get_shiftplan_status(self, locationId, ):
+        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}/status'
+        response = requests.get(url, headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json()
+        log.warning(f'Cannot get shiftplan status for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
+        return None
+
     def delete_shiftplan(self, locationId):
         url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}'
         response = requests.delete(url, headers=C8Y_HEADERS)
