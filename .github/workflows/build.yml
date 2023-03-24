@@ -5,8 +5,6 @@ on:
     inputs:
       release_body:
         type: string
-        description: GitHub Release Message
-        default: "GitHub Release"
 
 jobs:
   build-upload:
