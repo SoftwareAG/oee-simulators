@@ -38,6 +38,9 @@ jobs:
         with:
           path: 'repo'
 
+      - name: Print Release Body
+        run: echo ${{ inputs.release_body }}
+
       - name: Run tests
         run: |
           cd repo
