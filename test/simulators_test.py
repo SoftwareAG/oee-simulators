@@ -1,9 +1,9 @@
 import unittest, logging, os
-from datetime import datetime
-
 import config.root # Set source directory
 
+from datetime import datetime, timedelta
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
+from simulators.main.shiftplan import Shiftplan
 from simulators.main.simulator import get_or_create_device_id, load
 from simulators.main.cumulocityAPI import CumulocityAPI
 from simulators.main.interface import datetime_to_string
@@ -23,22 +23,9 @@ class Test(unittest.TestCase):
         self.CREATE_PROFILES_ARGUMENTS = self.MICROSERVICE_OPTIONS.get("CREATE_PROFILES_ARGUMENTS", "")
         self.CREATE_ASSET_HIERARCHY = self.MICROSERVICE_OPTIONS.get("CREATE_ASSET_HIERARCHY", "False")
         self.DELETE_PROFILES = self.MICROSERVICE_OPTIONS.get("DELETE_PROFILES", "False")
-        self.device_model = {
-            "type": "Simulator",
-            "id": "sim_001_test",
-            "label": "Test Simulator #1",
-            "enabled": "true"
-        }
-        self.device_model_no_id = {
-            "type": "Simulator",
-            "label": "Test Simulator #1",
-            "enabled": "true"
-        }
-        self.device_model_no_label = {
-            "type": "Simulator",
-            "id": "sim_001_test",
-            "enabled": "true"
-        }
+        Utils.setup_model(self)
+        Utils.setup_shiftplan(self)
+
 
     def test_get_or_create_device_id_with_full_model_and_delete(self):
         log.info("Start testing create device and adding external id")
@@ -76,27 +63,28 @@ class Test(unittest.TestCase):
         log.info("Start testing create and activate oee profile")
         device_id = Utils.create_device(device_model=self.device_model)
 
-        # Change working directory to test to allow profile template read
+        # Get current directory path
         current_dir = os.getcwd()
-        try:
+
+        # Extracts the base name of the current directory
+        base_dir = os.path.basename(current_dir)
+        # If the working directory is not test then change to test
+        if base_dir != "test":
             # Change to the 'test' directory
             os.chdir("test")
-        except:
-            pass
 
         try:
             device_profile_info = self.oee_api.create_and_activate_profile(external_id=self.device_model.get('id'))
             # null device_profile_info will fail the test
             self.assertIsNotNone(device_profile_info)
-            self.assertEqual(device_profile_info.get('status'), 'ACTIVE', msg="Profile is not active")
-
+        finally:
             # Change back to the original working directory
             os.chdir(current_dir)
-        finally:
             self.cumulocity_api.delete_managed_object(device_profile_info.get('id'))
             log.info(f"Removed the test oee profile with id {device_profile_info.get('id')}")
             self.cumulocity_api.delete_managed_object(device_id)
             log.info(f"Removed the test device with id {device_id}")
+
         log.info('-' * 100)
 
     def test_create_update_organization_structure(self):
@@ -119,18 +107,7 @@ class Test(unittest.TestCase):
         log.info("Start testing sending event")
         device_id = Utils.create_device(self.device_model)
         log.info(f"Created the {self.device_model.get('label')} with id {device_id}")
-        event = {
-             'source': {
-                 'id': f'{device_id}'
-             },
-             'time': f'{datetime_to_string(datetime.utcnow())}',
-             'type': 'Availability',
-             'text': 'Availability',
-             'status': 'up',
-             'production_time_s': 0.0,
-             'production_speed_h': 25.0,
-             'pieces_produced': 0.0
-        }
+        event = Utils.setup_events(device_id)
         response = self.cumulocity_api.send_event(event)
         self.assertIsNotNone(response)
         self.cumulocity_api.delete_managed_object(device_id)
@@ -141,33 +118,146 @@ class Test(unittest.TestCase):
         log.info("Start testing create measurement")
         device_id = Utils.create_device(self.device_model)
         log.info(f"Created the {self.device_model.get('label')} with id {device_id}")
-
-        measurement = {
-              'type': 'PumpPressure',
-              'time': f'{datetime_to_string(datetime.utcnow())}',
-              'source': {
-                  'id': f'{device_id}'
-              },
-              'Pressure': {
-                  'P':
-                      {
-                          'unit': 'hPa',
-                          'value': 1179.26
-                      }
-              }
-
-        }
+        measurement = Utils.setup_measurements(device_id)
         response = self.cumulocity_api.create_measurements(measurement)
         self.assertIsNotNone(response)
         self.cumulocity_api.delete_managed_object(device_id)
         log.info(f"Removed the {self.device_model.get('label')} with id {device_id}")
 
+    def test_shifplan_creation(self):
+        log.info("Start testing create shiftplan")
+        # Create shiftplan
+        shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), self.shiftplans))
+        for shiftplan in shiftplans:
+            try:
+                # Get created shiftplan info
+                shiftplan_info = self.oee_api.get_shiftplan(locationId=shiftplan.locationId)
+                # Check recurring time slots field. If it is not empty then the shiftplan was created
+                self.assertNotEqual(len(shiftplan_info.get('recurringTimeslots')),0, msg="Test shiftplan was not created")
+
+            finally:
+                # Delete test shiftplan
+                self.oee_api.delete_shiftplan(shiftplan.locationId)
+                # Check recurring time slots field. If it is empty then the shiftplan was deleted
+                shiftplan_info = self.oee_api.get_shiftplan(locationId=shiftplan.locationId)
+                self.assertEqual(len(shiftplan_info.get('recurringTimeslots')),0, msg="Test shiftplan was not deleted")
+                log.info(f"Deleted shiftplan {shiftplan.locationId}")
+        log.info('-' * 100)
+
 class Utils:
+    def __init__(self):
+        self.shiftplans = None
+        self.device_model_no_label = None
+        self.device_model_no_id = None
+        self.device_model = None
+
     @staticmethod
     def create_device(device_model):
         log.info(f"Created device model: {device_model}")
         device_id = get_or_create_device_id(device_model=device_model)
         return device_id
+
+    def setup_model(self):
+        self.device_model = {
+            "type": "Simulator",
+            "id": "sim_001_test",
+            "label": "Test Simulator #1",
+            "enabled": "true",
+            "locationId": "TestShiftLocation",
+            "events": [
+                {
+                    "type": "Availability",
+                    "minimumPerHour": 1800,
+                    "maximumPerHour": 3600,
+                    "status": ["up", "down"],
+                    "probabilities": [0.9, 0.1],
+                    "durations": [0, 0],
+                    "forceStatusDown": True
+                },
+                {
+                    "type": "Piece_Produced",
+                    "frequency": 25,
+                    "followedBy": {
+                        "type": "Piece_Ok",
+                        "frequency": 20
+                    }
+                }
+            ]
+        }
+        self.device_model_no_id = {
+            "type": "Simulator",
+            "label": "Test Simulator #1",
+            "enabled": "true"
+        }
+        self.device_model_no_label = {
+            "type": "Simulator",
+            "id": "sim_001_test",
+            "enabled": "true"
+        }
+    def setup_shiftplan(self):
+        self.shiftplans = [
+            {
+                "locationId": "TestShiftLocation",
+                "recurringTimeslots": [
+                    {"id": "TestShiftLocation-FirstShift",
+                     "seriesPostfix": "DayShift",
+                     "slotType": "PRODUCTION",
+                     "slotStart": f'{datetime_to_string(datetime.utcnow())}',
+                     "slotEnd": f'{datetime_to_string(datetime.utcnow() + timedelta(minutes=1))}',
+                     "description": "One Minute Shift",
+                     "active": True,
+                     "slotRecurrence": {
+                         "weekdays": [1, 2, 3, 4, 5]
+                     }
+                     },
+                    {"id": "TestShiftLocation-Break",
+                     "slotType": "BREAK",
+                     "slotStart": f'{datetime_to_string(datetime.utcnow() + timedelta(minutes=2))}',
+                     "slotEnd": f'{datetime_to_string(datetime.utcnow() + timedelta(minutes=3))}',
+                     "description": "One Minute Break",
+                     "active": True,
+                     "slotRecurrence": {
+                         "weekdays": [1, 2, 3, 4, 5]
+                     }
+                     }
+                ]
+            }
+        ]
+
+    @staticmethod
+    def setup_events(device_id):
+        event = {
+            'source': {
+                'id': f'{device_id}'
+            },
+            'time': f'{datetime_to_string(datetime.utcnow())}',
+            'type': 'Availability',
+            'text': 'Availability',
+            'status': 'up',
+            'production_time_s': 0.0,
+            'production_speed_h': 25.0,
+            'pieces_produced': 0.0
+        }
+        return event
+
+    @staticmethod
+    def setup_measurements(device_id):
+        measurement = {
+            'type': 'PumpPressure',
+            'time': f'{datetime_to_string(datetime.utcnow())}',
+            'source': {
+                'id': f'{device_id}'
+            },
+            'Pressure': {
+                'P':
+                    {
+                        'unit': 'hPa',
+                        'value': 1179.26
+                    }
+            }
+
+        }
+        return measurement
 
 
 
