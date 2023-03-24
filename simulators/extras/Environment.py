@@ -1,8 +1,10 @@
+import os
+
 ### Required
-C8Y_BASE = 'http://localhost:8080'
-C8Y_TENANT = ''
-C8Y_USER = ''
-C8Y_PASSWORD = ''
+C8Y_BASEURL = os.environ.get('C8Y_BASEURL') or 'http://localhost:8080'
+C8Y_TENANT = os.environ.get('C8Y_TENANT') or ''
+C8Y_USER = os.environ.get('C8Y_USER') or ''
+C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD') or ''
 
 ### Optional
 # Input None if not set
@@ -13,8 +15,8 @@ DEVICE_ID = None   # Input device ID(s) (i.e. DEVICE_ID = 123456, 234567) or set
 ############################
 # Extract data with periods#
 ############################
-TIME_UNIT = 'hours'  # weeks, days, hours, minutes, seconds
-PERIOD_TO_EXPORT = 4
+TIME_UNIT = 'minutes'  # weeks, days, hours, minutes, seconds
+PERIOD_TO_EXPORT = 90
 ####################################
 # Extract data with exact milestone#
 ####################################

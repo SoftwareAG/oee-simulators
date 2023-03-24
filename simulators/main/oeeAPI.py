@@ -20,9 +20,9 @@ class ProfileCreateMode(Enum):
     CREATE_IF_NOT_EXISTS = 2
 
 class OeeAPI:
-    OEE_BASE = f'{C8Y_BASEURL}/service/oee-bundle'
-    CONF_REST_ENDPOINT = f'{OEE_BASE}/configurationmanager/2/configuration'
-    SHIFTPLAN_REST_ENDPOINT = f'{OEE_BASE}/mes/shiftplan'
+    OEE_BASEURL = f'{C8Y_BASEURL}/service/oee-bundle'
+    CONF_REST_ENDPOINT = f'{OEE_BASEURL}/configurationmanager/2/configuration'
+    SHIFTPLAN_REST_ENDPOINT = f'{OEE_BASEURL}/mes/shiftplan'
     c8y_api = CumulocityAPI()
 
     templates = {}
@@ -167,21 +167,33 @@ class OeeAPI:
         log.warning(f'Cannot create Timeslot for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
         return False
 
-    def get_shiftplan(self, locationId, dateFrom, dateTo):
-        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}?dateFrom={dateFrom}&dateTo={dateTo}'
-        response = requests.get(url, headers=C8Y_HEADERS)
+    def get_shiftplan(self, locationId, dateFrom = None, dateTo = None):
+        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}'
+        if dateTo and dateFrom:
+            params = {'dateFrom': dateFrom, 'dateTo': dateTo}
+        else:
+            params = None
+        response = requests.get(url, headers=C8Y_HEADERS, params=params)
         if response.ok:
             return response.json()
         log.warning(f'Cannot get shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
         return {'locationId':locationId,'timeslots':{}}
 
-    def get_shiftplan_status(self, locationId,):
+    def get_shiftplan_status(self, locationId):
         url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}/status'
         response = requests.get(url, headers=C8Y_HEADERS)
         if response.ok:
             return response.json()
         log.warning(f'Cannot get shiftplan status for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
         return None
+
+    def delete_shiftplan(self, locationId):
+        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}'
+        response = requests.delete(url, headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json()
+        log.warning(f'Cannot delete shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
+        return {'locationId': locationId, 'timeslots': {}}
 
     def create_or_update_asset_hierarchy(self, deviceIDs, line_description = "Simulator LINE", line_type = "LINE", site_description = "Simulator SITE", site_type = "SITE", oee_target = 80):
         profileIDs_deviceIDs_in_line_array = []
