@@ -27,6 +27,7 @@ env:
   C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
   C8Y_TENANT: ${{ secrets.C8Y_TENANT }}
   C8Y_USER: ${{ secrets.C8Y_USER }}
+  release_body: ${{ github.event.inputs.environment }}
 
 jobs:
   run-tests:
@@ -39,9 +40,7 @@ jobs:
           path: 'repo'
 
       - name: Setup release body
-        run: echo ${{ github.event.inputs.release_body }}
-        env:
-          release_body: ${{ inputs.release_body }}
+        run: echo ${{ env.release_body }}
 
       - name: Run tests
         run: |
@@ -54,11 +53,9 @@ jobs:
           C8Y_PASSWORD: ${{ env.C8Y_PASSWORD }}
           C8Y_TENANT: ${{ env.C8Y_TENANT }}
           C8Y_USER: ${{ env.C8Y_USER }}
-    outputs:
-      release_body: ${{ env.release_body }}
 
   call-build-workflow:
     needs: run-tests
     uses: ./.github/workflows/build.yml
     with:
-      release_body: ${{ needs.run-tests.outputs.release_body }}
+      release_body: ${{ env.release_body }}
