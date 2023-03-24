@@ -1,7 +1,8 @@
 import json, logging, requests
 
+from cumulocityAPI import C8Y_BASEURL, C8Y_TENANT, C8Y_HEADERS, CumulocityAPI
 from enum import Enum
-from cumulocityAPI import C8Y_BASE, C8Y_TENANT, C8Y_HEADERS, CumulocityAPI
+
 
 log = logging.getLogger("OeeAPI")
 
@@ -19,9 +20,9 @@ class ProfileCreateMode(Enum):
     CREATE_IF_NOT_EXISTS = 2
 
 class OeeAPI:
-    OEE_BASE = f'{C8Y_BASE}/service/oee-bundle'
-    CONF_REST_ENDPOINT = f'{OEE_BASE}/configurationmanager/2/configuration'
-    SHIFTPLAN_REST_ENDPOINT = f'{OEE_BASE}/mes/shiftplan'
+    OEE_BASEURL = f'{C8Y_BASEURL}/service/oee-bundle'
+    CONF_REST_ENDPOINT = f'{OEE_BASEURL}/configurationmanager/2/configuration'
+    SHIFTPLAN_REST_ENDPOINT = f'{OEE_BASEURL}/mes/shiftplan'
     c8y_api = CumulocityAPI()
 
     templates = {}
@@ -166,15 +167,19 @@ class OeeAPI:
         log.warning(f'Cannot create Timeslot for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
         return False
 
-    def get_shiftplan(self, locationId, dateFrom, dateTo):
-        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}?dateFrom={dateFrom}&dateTo={dateTo}'
-        response = requests.get(url, headers=C8Y_HEADERS)
+    def get_shiftplan(self, locationId, dateFrom = None, dateTo = None):
+        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}'
+        if dateTo and dateFrom:
+            params = {'dateFrom': dateFrom, 'dateTo': dateTo}
+        else:
+            params = None
+        response = requests.get(url, headers=C8Y_HEADERS, params=params)
         if response.ok:
             return response.json()
         log.warning(f'Cannot get shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
         return {'locationId':locationId,'timeslots':{}}
 
-    def get_shiftplan_status(self, locationId,):
+    def get_shiftplan_status(self, locationId):
         url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}/status'
         response = requests.get(url, headers=C8Y_HEADERS)
         if response.ok:
@@ -182,13 +187,15 @@ class OeeAPI:
         log.warning(f'Cannot get shiftplan status for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
         return None
 
-    def create_or_update_asset_hierarchy(self, deviceIDs):
-        line_description = "Simulator LINE"
-        line_type = "LINE"
-        site_description = "Simulator SITE"
-        site_type = "SITE"
-        oee_target = 80
+    def delete_shiftplan(self, locationId):
+        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}'
+        response = requests.delete(url, headers=C8Y_HEADERS)
+        if response.ok:
+            return response.json()
+        log.warning(f'Cannot delete shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
+        return {'locationId': locationId, 'timeslots': {}}
 
+    def create_or_update_asset_hierarchy(self, deviceIDs, line_description = "Simulator LINE", line_type = "LINE", site_description = "Simulator SITE", site_type = "SITE", oee_target = 80):
         profileIDs_deviceIDs_in_line_array = []
         for deviceID in deviceIDs:
             profileID = self.c8y_api.get_profile_id(deviceID=deviceID)
@@ -199,13 +206,12 @@ class OeeAPI:
         site_id = self.get_id_of_asset_hierarchy_line(site_description)
 
         if line_id == '':
-            line_managed_object = self.create_new_asset_hierarchy(type=line_type, hierarchy_array=profileIDs_deviceIDs_in_line_array, description=line_description, oee_target=oee_target)
-            log.info(f'Created asset hierarchy Line: {line_managed_object}')
+            line_managed_object = self.create_update_asset_hierarchy(type=line_type, hierarchy_array=profileIDs_deviceIDs_in_line_array, description=line_description, oee_target=oee_target)
             line_id = line_managed_object.get('id')
 
         LineID_in_site_array = [{"profileID": '', "ID": line_id}]
         if site_id == '':
-            site_managed_object = self.create_new_asset_hierarchy(type=site_type, hierarchy_array=LineID_in_site_array, description=site_description, oee_target=oee_target)
+            site_managed_object = self.create_update_asset_hierarchy(type=site_type, hierarchy_array=LineID_in_site_array, description=site_description, oee_target=oee_target)
             log.info(f'Created asset hierarchy Site: {site_managed_object}')
         else:
             line_managed_object = self.c8y_api.updateISAType(id=line_id, type=line_type, hierarchy=profileIDs_deviceIDs_in_line_array, description=line_description, oeetarget=oee_target)
@@ -213,10 +219,13 @@ class OeeAPI:
             site_managed_object = self.c8y_api.updateISAType(id=site_id, type=site_type, hierarchy=LineID_in_site_array, description=site_description, oeetarget=oee_target)
             log.info(f'Updated asset hierarchy Site: {site_managed_object}')
 
-    def create_new_asset_hierarchy(self, type, hierarchy_array, description, oee_target):
-        id_ISA_Type = self.c8y_api.createISAType(type=type, hierarchy=None, description=description, oeetarget=oee_target)
-        asset_id = id_ISA_Type.get("id")
+        return line_managed_object, site_managed_object
+
+    def create_update_asset_hierarchy(self, type, hierarchy_array, description, oee_target):
+        object_ISA_Type = self.c8y_api.createISAType(type=type, hierarchy=None, description=description, oeetarget=oee_target)
+        asset_id = object_ISA_Type.get("id")
         managed_object = self.c8y_api.updateISAType(id=asset_id, type=type, hierarchy=hierarchy_array, description=description, oeetarget=oee_target)
+        log.info(f'Created asset hierarchy {type}: {managed_object}')
         return managed_object
 
     def get_id_of_asset_hierarchy_line(self, text):

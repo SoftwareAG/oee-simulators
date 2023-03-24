@@ -10,7 +10,7 @@ There are extra features in [extras](simulators/extras):
 
 ## Simulator Microservice
 
-Creates simulators in Cumulocity based on the definitions in [simulators.json](main/simulators.json). Those simulators can be used for profiles in the OEE App. The currently supported simulators and the corresponding profiles are described [here](simulators.md).
+Creates simulators in Cumulocity based on the definitions in [simulators.json](main/simulator.json). Those simulators can be used for profiles in the OEE App. The currently supported simulators and the corresponding profiles are described [here](simulators.md).
 
 Detailed feature list:
 - configuration in JSON, no need to write code
@@ -47,8 +47,8 @@ Detailed feature list:
   where "type" is optional and its default value is the value from the "fragment" property
 - Simulates shutdowns (no events or measurements are sent if machine is DOWN)
 - Written in Python and is easy to extend
-- the main entry point is [simulators.py](main/simulators.py)
-  - the script reads the configuration from [simulators.json](main/simulators.json) and creates a new device for every entry
+- the main entry point is [simulator.py](main/simulator.py)
+  - the script reads the configuration from [simulator.json](main/simulator.json) and creates a new device for every entry
   - the `id` property is used as `external_id` for the ManagedObjects to avoid creating multiple devices when redeploying/updating the microservice
 - Simulators act according to given Shiftplans
   - Simulators are linked to shiftplans via locationId

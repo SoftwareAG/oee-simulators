@@ -1,0 +1,42 @@
+name: Build oee-simulators
+
+on:
+  workflow_call:
+
+jobs:
+  build-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          path: 'repo'
+
+      - name: Set branch name
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Update version number
+        run: |
+          cd repo/simulators
+          SIMULATOR_VERSION=${GITHUB_RUN_NUMBER}
+          sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
+          echo "RELEASE_VERSION=${SIMULATOR_VERSION}" >> $GITHUB_ENV
+
+      - name: Build Docker image
+        run: |
+          cd repo/simulators
+          docker build -t oee-simulators .
+          docker save -o image.tar oee-simulators
+          docker rmi oee-simulators
+
+      - name: Upload file and zip an artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: 'oee-simulators'
+          path: |
+            repo/simulators/image.tar
+            repo/simulators/cumulocity.json
+
+  call-release-workflow:
+    needs: build-upload
+    uses: ./.github/workflows/release.yml

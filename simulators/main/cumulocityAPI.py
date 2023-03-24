@@ -1,6 +1,6 @@
 import json, os, logging, requests, base64
 
-C8Y_BASE = os.environ.get('C8Y_BASEURL') or 'http://localhost:8080'
+C8Y_BASEURL = os.environ.get('C8Y_BASEURL') or 'http://localhost:8080'
 C8Y_TENANT = os.environ.get('C8Y_TENANT') or 't100'
 C8Y_USER = os.environ.get('C8Y_USER') or 'test'
 C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD') or 'test'
@@ -25,6 +25,11 @@ MEASUREMENT_HEADERS = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + user_and_pass
 }
+MEASUREMENT_COLLECTIONS_HEADERS = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/vnd.com.nsn.cumulocity.measurementcollection+json',
+    'Authorization': 'Basic ' + user_and_pass
+}
 
 log = logging.getLogger("C8yAPI")
 
@@ -40,10 +45,10 @@ class CumulocityAPI:
 
     def send_event(self, event):
         if self.mocking:
-            log.info(f"mock: send event {json.dumps(event)} to {C8Y_BASE}/event/events")
+            log.info(f"mock: send event {json.dumps(event)} to {C8Y_BASEURL}/event/events")
             return json.dumps({'response': 200})
         else:
-            response = requests.post(C8Y_BASE + '/event/events', headers=C8Y_HEADERS, data=json.dumps(event))
+            response = requests.post(C8Y_BASEURL + '/event/events', headers=C8Y_HEADERS, data=json.dumps(event))
             if response.ok:
                 return response.json()
             self.log_warning_on_bad_response(response)
@@ -51,16 +56,81 @@ class CumulocityAPI:
 
     def create_measurements(self, measurement):
         if self.mocking:
-            log.info(
-                f"mock: create measurements {json.dumps(measurement)} by the request to {C8Y_BASE}/measurement/measurements")
+            log.info(f"mock: create measurements {json.dumps(measurement)} by the request to {C8Y_BASEURL}/measurement/measurements")
             return json.dumps({'response': 200})
         else:
-            response = requests.post(C8Y_BASE + '/measurement/measurements', headers=MEASUREMENT_HEADERS,
+            response = requests.post(C8Y_BASEURL + '/measurement/measurements', headers=MEASUREMENT_HEADERS,
                                      data=json.dumps(measurement))
             if response.ok:
                 return response.json()
             self.log_warning_on_bad_response(response)
             return None
+
+    def get_measurements(self, date_from, date_to, device_id):
+        if self.mocking:
+            log.info(f"mock: get measurements by the request to {C8Y_BASEURL}/measurement/measurements")
+            return json.dumps({'response': 200})
+        else:
+            '''
+            params = {
+                'dateFrom': f'{date_from}',
+                'dateTo': f'{date_to}',
+                'source': device_id
+            }
+            '''
+            response = requests.get(C8Y_BASEURL + '/measurement/measurements?dateFrom=2023-03-23T09:30:42.622Z&dateTo=2023-03-23T11:00:42.622Z&source=9786377', headers=MEASUREMENT_COLLECTIONS_HEADERS)
+            if response.ok:
+                return response.json()
+            self.log_warning_on_bad_response(response)
+            return None
+
+    def delete_measurements(self, date_from, date_to, device_id):
+        if self.mocking:
+            log.info(f"mock: deleted measurements by the request to {C8Y_BASEURL}/measurement/measurements")
+            return json.dumps({'response': 200})
+        else:
+            params = {
+                'dateFrom': f'{date_from}',
+                'dateTo': f'{date_to}',
+                'source': device_id
+            }
+            response = requests.delete(C8Y_BASEURL + '/measurement/measurements', headers=MEASUREMENT_HEADERS, params=params)
+            if response.ok:
+                return True
+            self.log_warning_on_bad_response(response)
+            return False
+
+    def get_alarms(self, date_from, date_to, device_id):
+        if self.mocking:
+            log.info(f"mock: get alarms by the request to {C8Y_BASEURL}/alarm/alarms")
+            return json.dumps({'response': 200})
+        else:
+            params = {
+                'dateFrom': f'{date_from}',
+                'dateTo': f'{date_to}',
+                'source': device_id
+            }
+            response = requests.get(C8Y_BASEURL + '/alarm/alarms', headers=C8Y_HEADERS, params=params)
+            if response.ok:
+                return response.json()
+            self.log_warning_on_bad_response(response)
+            return None
+
+    def delete_alarms(self, date_from, date_to, device_id):
+        if self.mocking:
+            log.info(f"mock: deleted alarms by the request to {C8Y_BASEURL}/alarm/alarms")
+            return json.dumps({'response': 200})
+        else:
+            params = {
+                'dateFrom': f'{date_from}',
+                'dateTo': f'{date_to}',
+                'source': device_id
+            }
+            response = requests.delete(C8Y_BASEURL + '/alarm/alarms', headers=C8Y_HEADERS, params=params)
+            if response.ok:
+                return True
+            self.log_warning_on_bad_response(response)
+            return False
             
     def log_warning_on_bad_response(self, response):
         if not response.ok:
@@ -83,7 +153,7 @@ class CumulocityAPI:
             log.info(f'mock: count_all types({oee_type})')
             return 5
 
-        request_query = f'{C8Y_BASE}/inventory/managedObjects/count?type={oee_type}'
+        request_query = f'{C8Y_BASEURL}/inventory/managedObjects/count?type={oee_type}'
         repsonse = requests.get(request_query, headers=C8Y_HEADERS)
         if repsonse.ok:
             return repsonse.json()
@@ -94,7 +164,7 @@ class CumulocityAPI:
         if self.mocking:
             log.info(f'mock: count_profiles(${device_id})')
             return 10
-        request_query = f'{C8Y_BASE}/inventory/managedObjects/count?type={self.OEE_CALCULATION_PROFILE_TYPE}&text={device_id}'
+        request_query = f'{C8Y_BASEURL}/inventory/managedObjects/count?type={self.OEE_CALCULATION_PROFILE_TYPE}&text={device_id}'
         response = requests.get(request_query, headers=C8Y_HEADERS)
         if response.ok:
             try:
@@ -110,7 +180,7 @@ class CumulocityAPI:
         if self.mocking:
             log.info(f'mock: create_managed_object()')
             return {'id': '0'}
-        response = requests.post(C8Y_BASE + '/inventory/managedObjects', headers=C8Y_HEADERS, data=fragment)
+        response = requests.post(C8Y_BASEURL + '/inventory/managedObjects', headers=C8Y_HEADERS, data=fragment)
         if response.ok:
             return response.json()
         self.log_warning_on_bad_response(response)
@@ -121,7 +191,7 @@ class CumulocityAPI:
         if self.mocking:
             log.info(f'mock: get_managed_object()')
             return {'id': '0'}
-        response = requests.get(C8Y_BASE + f'/inventory/managedObjects/{id}', headers=C8Y_HEADERS)
+        response = requests.get(C8Y_BASEURL + f'/inventory/managedObjects/{id}', headers=C8Y_HEADERS)
         if response.ok:
             return response.json()
         self.log_warning_on_bad_response(response)
@@ -132,7 +202,7 @@ class CumulocityAPI:
         if self.mocking:
             log.info(f'mock: get_managed_object()')
             return [{'id': '0'}]
-        response = requests.get(C8Y_BASE + f'/inventory/managedObjects?type={self.OEE_CALCULATION_CATEGORY}', headers=C8Y_HEADERS)
+        response = requests.get(C8Y_BASEURL + f'/inventory/managedObjects?type={self.OEE_CALCULATION_CATEGORY}', headers=C8Y_HEADERS)
         if response.ok:
             return response.json()['managedObjects']
         self.log_warning_on_bad_response(response)        
@@ -142,7 +212,7 @@ class CumulocityAPI:
         if self.mocking:
             log.info(f'mock: delete_managed_object()')
             return {'id': '0'}
-        response = requests.delete(C8Y_BASE + f'/inventory/managedObjects/{id}', headers=C8Y_HEADERS)
+        response = requests.delete(C8Y_BASEURL + f'/inventory/managedObjects/{id}', headers=C8Y_HEADERS)
         if response.ok:
             return 1
         self.log_warning_on_bad_response(response)
@@ -154,7 +224,7 @@ class CumulocityAPI:
             log.info(f'mock: update_managed_object()')
             return {'id': '0'}
 
-        response = requests.put(f'{C8Y_BASE}/inventory/managedObjects/{device_id}', headers=C8Y_HEADERS, data=fragment)
+        response = requests.put(f'{C8Y_BASEURL}/inventory/managedObjects/{device_id}', headers=C8Y_HEADERS, data=fragment)
         if response.ok:
             return response.json()
         self.log_warning_on_bad_response(response)
@@ -166,7 +236,7 @@ class CumulocityAPI:
             return {'id': '0'}
 
         data = {"managedObject": {"id": child_id}}
-        response = requests.post(f'{C8Y_BASE}/inventory/managedObjects/{device_id}/childDevices', headers=C8Y_HEADERS, data=json.dumps(data))
+        response = requests.post(f'{C8Y_BASEURL}/inventory/managedObjects/{device_id}/childDevices', headers=C8Y_HEADERS, data=json.dumps(data))
         if response.ok:
             return response.json()
 
@@ -177,7 +247,7 @@ class CumulocityAPI:
         if self.mocking:
             log.info(f'mock: find_simulators()')
             return []
-        response = requests.get(f'{C8Y_BASE}/inventory/managedObjects?type={self.C8Y_SIMULATORS_GROUP}&fragmentType=c8y_IsDevice&pageSize=100', headers=C8Y_HEADERS)
+        response = requests.get(f'{C8Y_BASEURL}/inventory/managedObjects?type={self.C8Y_SIMULATORS_GROUP}&fragmentType=c8y_IsDevice&pageSize=100', headers=C8Y_HEADERS)
         if response.ok:
             mangaged_objects = response.json()['managedObjects']
             return [mo['id'] for mo in mangaged_objects]
@@ -187,13 +257,13 @@ class CumulocityAPI:
     def get_external_ids(self, device_ids):
         external_ids = []
         for id in device_ids:
-            external_id_response = requests.get(C8Y_BASE + '/identity/globalIds/' + id + '/externalIds', headers=C8Y_HEADERS)
+            external_id_response = requests.get(C8Y_BASEURL + '/identity/globalIds/' + id + '/externalIds', headers=C8Y_HEADERS)
             if external_id_response.ok and len(external_id_response.json()['externalIds'])>0:
                 external_ids.append(external_id_response.json()['externalIds'][0]['externalId'])
         return external_ids
 
     def get_device_by_external_id(self, external_id):
-        response = requests.get(f'{C8Y_BASE}/identity/externalIds/{self.C8Y_SIMULATORS_GROUP}/{external_id}', headers=C8Y_HEADERS)
+        response = requests.get(f'{C8Y_BASEURL}/identity/externalIds/{self.C8Y_SIMULATORS_GROUP}/{external_id}', headers=C8Y_HEADERS)
         if response.ok:
             device_id = response.json()['managedObject']['id']
             log.info(f'Device({device_id}) has been found by its external id "{self.C8Y_SIMULATORS_GROUP}/{external_id}".')
@@ -220,19 +290,19 @@ class CumulocityAPI:
             'type': type,
             'externalId': ext_id
         }
-        response = requests.post(C8Y_BASE + '/identity/globalIds/' + device_id + '/externalIds', headers=EXTERNAL_ID_HEADERS, data=json.dumps(external_id))
+        response = requests.post(C8Y_BASEURL + '/identity/globalIds/' + device_id + '/externalIds', headers=EXTERNAL_ID_HEADERS, data=json.dumps(external_id))
         self.log_warning_on_bad_response(response)
         return device_id
 
     def get_tenant_option_by_category(self, category):
-        response = requests.get(C8Y_BASE + f'/tenant/options/{category}', headers=C8Y_HEADERS)
+        response = requests.get(C8Y_BASEURL + f'/tenant/options/{category}', headers=C8Y_HEADERS)
         if response.ok:
             return response.json()
         log.warn(f'Could not get any tenant options for category {category}. Response status code is: {response}, content: {response.text}')
         return {}
 
     def get_profile_id(self, deviceID):
-        request_query = f'{C8Y_BASE}/inventory/managedObjects?type={self.OEE_CALCULATION_PROFILE_TYPE}&text={deviceID}'
+        request_query = f'{C8Y_BASEURL}/inventory/managedObjects?type={self.OEE_CALCULATION_PROFILE_TYPE}&text={deviceID}'
         response = requests.get(request_query, headers=C8Y_HEADERS)
         if response.ok:
             try:
@@ -269,7 +339,7 @@ class CumulocityAPI:
         return self.update_managed_object(id, json.dumps(isaObjectRequestBody))
 
     def getISAObjects(self):
-        request_query = f'{C8Y_BASE}/inventory/managedObjects?pageSize=1000&withTotalPages=false&fragmentType=isISAObject'
+        request_query = f'{C8Y_BASEURL}/inventory/managedObjects?pageSize=1000&withTotalPages=false&fragmentType=isISAObject'
         response = requests.get(request_query, headers=C8Y_HEADERS)
         if response.ok:
             return response.json()['managedObjects']

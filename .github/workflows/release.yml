@@ -1,17 +1,22 @@
-# Build docker image, build cumulocity archive and release it to the repository
+# Release public oee-simulators
 
-name: Build & release oee-simulators
+name: Release oee-simulators
 
 on:
-  workflow_dispatch:
-    inputs:
-        release_body:
-          type: string
-          description: GitHub Release Message
-          default: "GitHub Release Message"
+  workflow_call:
+  push:
+    branches:
+      - main
+    # Only run the workflow when build.yml has completed successfully
+    paths-ignore:
+      - '**'
+    # Wait for the build job to complete before running the release job
+    jobs:
+      - build
+
 
 jobs:
-  build_upload:
+  build-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -19,34 +24,12 @@ jobs:
         with:
           path: 'repo'
 
-      - name: update versionnumber
-        run: |
-          cd repo/simulators
-          SIMULATOR_VERSION=${GITHUB_RUN_NUMBER}
-          sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
-          echo "RELEASE_VERSION=${SIMULATOR_VERSION}" >> $GITHUB_ENV
-
       - name: Zip the source-code
         run: |
-          zip -r source-code.zip repo
-
-      - name: build docker image
-        run: |
           cd repo/simulators
-          docker build -t oee-simulators .
-          docker save -o image.tar oee-simulators
-          docker rmi oee-simulators
-        
-      - name: upload file and zip an artifact
-        uses: actions/upload-artifact@v3.1.2
-        with:
-          name: 'oee-simulators'
-          path: |
-            repo/simulators/image.tar
-            repo/simulators/cumulocity.json
+          zip -r source-code.zip .
 
       - name: Zip files for release
-        if: github.ref == 'refs/heads/main'
         run: |
           cd repo/simulators
           zip oee-simulators.zip image.tar cumulocity.json
@@ -64,7 +47,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-      - name: upload oee-sim zip
+      - name: Upload oee-sim zip
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -75,7 +58,7 @@ jobs:
           asset_name: 'oee-simulators.zip'
           asset_content_type: application/zip
 
-      - name: upload source-code zip
+      - name: Upload source-code zip
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-release-asset@v1.0.2
         env:

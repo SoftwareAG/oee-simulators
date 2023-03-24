@@ -1,0 +1,50 @@
+name: Run tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: string
+        description: Name of the environment to use
+        required: true
+      release_body:
+        type: string
+        description: GitHub Release Message
+        default: "GitHub Release"
+
+  push:
+    branches: [ '*' ]
+    environment:
+      name: Nam
+
+env:
+  C8Y_BASEURL: ${{ secrets.C8Y_BASEURL }}
+  C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
+  C8Y_TENANT: ${{ secrets.C8Y_TENANT }}
+  C8Y_USER: ${{ secrets.C8Y_USER }}
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    environment: Nam
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          path: 'repo'
+
+      - name: Run tests
+        run: |
+          cd repo
+          python -m unittest discover -s test -p "simulators_test.py" -v
+          pip3 install c8y-api
+          python -m unittest discover -s test -p "export_import_test.py" -v
+        env:
+          C8Y_BASEURL: ${{ env.C8Y_BASEURL }}
+          C8Y_PASSWORD: ${{ env.C8Y_PASSWORD }}
+          C8Y_TENANT: ${{ env.C8Y_TENANT }}
+          C8Y_USER: ${{ env.C8Y_USER }}
+
+  call-build-workflow:
+    needs: run-tests
+    uses: ./.github/workflows/build.yml
