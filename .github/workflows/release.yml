@@ -6,7 +6,7 @@ on:
   workflow_call:
   push:
     branches:
-      - *
+      - '*'
     # Only run the workflow when build.yml has completed successfully
     paths-ignore:
       - '**'
@@ -24,20 +24,22 @@ jobs:
         with:
           path: 'repo'
 
+      - name: Print Release Version
+        run: echo $RELEASE_VERSION
+        env:
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+
       - name: Zip the source-code
+        if: github.ref == 'refs/heads/main'
         run: |
           cd repo/simulators
           zip -r source-code.zip .
 
       - name: Zip files for release
+        if: github.ref == 'refs/heads/main'
         run: |
           cd repo/simulators
           zip oee-simulators.zip image.tar cumulocity.json
-
-      - name: Print Release Version
-        run: echo $RELEASE_VERSION
-        env:
-          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
 
       - name: Create Release
         if: github.ref == 'refs/heads/main'
