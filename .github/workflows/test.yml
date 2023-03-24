@@ -10,7 +10,7 @@ on:
       release_body:
         type: string
         description: GitHub Release Message
-        default: "GitHub Release"
+        default: "GitHub Manual Release"
 
   push:
     branches: [ '*' ]
@@ -20,7 +20,7 @@ on:
       release_body:
         type: string
         description: GitHub Release Message
-        default: "GitHub Release"
+        default: "GitHub Automatic Release"
 
 env:
   C8Y_BASEURL: ${{ secrets.C8Y_BASEURL }}
@@ -38,8 +38,10 @@ jobs:
         with:
           path: 'repo'
 
-      - name: Print Release Body
-        run: echo ${{ github.event.inputs.release_body }}
+      - name: Setup release body
+        run: echo ${{ inputs.release_body }}
+        env:
+          release_body: ${{ inputs.release_body }}
 
       - name: Run tests
         run: |
@@ -52,9 +54,11 @@ jobs:
           C8Y_PASSWORD: ${{ env.C8Y_PASSWORD }}
           C8Y_TENANT: ${{ env.C8Y_TENANT }}
           C8Y_USER: ${{ env.C8Y_USER }}
+    outputs:
+      release_body: ${{ env.release_body }}
 
   call-build-workflow:
     needs: run-tests
     uses: ./.github/workflows/build.yml
     with:
-      release_body: ${{ github.event.inputs.release_body }}
+      release_body: ${{ needs.run-tests.outputs.release_body }}
