@@ -16,6 +16,11 @@ on:
     branches: [ '*' ]
     environment:
       name: Nam
+    inputs:
+      release_body:
+        type: string
+        description: GitHub Release Message
+        default: "GitHub Release"
 
 env:
   C8Y_BASEURL: ${{ secrets.C8Y_BASEURL }}
