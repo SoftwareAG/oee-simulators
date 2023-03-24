@@ -25,9 +25,9 @@ jobs:
           path: 'repo'
 
       - name: Print Release Version
-        run: echo $RELEASE_VERSION
+        run: echo ${{ inputs.RELEASE_VERSION }}
         env:
-          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+          RELEASE_VERSION: ${{ inputs.RELEASE_VERSION }}
 
       - name: Zip the source-code
         if: github.ref == 'refs/heads/main'

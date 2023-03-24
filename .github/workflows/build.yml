@@ -36,7 +36,14 @@ jobs:
           path: |
             repo/simulators/image.tar
             repo/simulators/cumulocity.json
+        env:
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+        id: upload-artifact
+    outputs:
+      release_version: ${{ env.RELEASE_VERSION }}
 
   call-release-workflow:
     needs: build-upload
     uses: ./.github/workflows/release.yml
+    with:
+      RELEASE_VERSION: ${{ steps.upload-artifact.outputs.release_version }}
