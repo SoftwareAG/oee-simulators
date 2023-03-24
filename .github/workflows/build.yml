@@ -46,4 +46,4 @@ jobs:
     needs: build-upload
     uses: ./.github/workflows/release.yml
     with:
-      RELEASE_VERSION: ${{ steps.upload-artifact.outputs.release_version }}
+      RELEASE_VERSION: ${{ needs.build-upload.outputs.release_version }}
