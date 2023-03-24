@@ -48,3 +48,5 @@ jobs:
   call-build-workflow:
     needs: run-tests
     uses: ./.github/workflows/build.yml
+    with:
+      release_body: ${{ github.event.inputs.release_body }}

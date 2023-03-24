@@ -2,6 +2,11 @@ name: Build oee-simulators
 
 on:
   workflow_call:
+    inputs:
+      release_body:
+        type: string
+        description: GitHub Release Message
+        default: "GitHub Release"
 
 jobs:
   build-upload:
@@ -47,3 +52,4 @@ jobs:
     uses: ./.github/workflows/release.yml
     with:
       RELEASE_VERSION: ${{ needs.build-upload.outputs.release_version }}
+      release_body: ${{ inputs.release_body }}

@@ -9,6 +9,11 @@ on:
         type: string
         required: true
 
+      release_body:
+        type: string
+        description: GitHub Release Message
+        default: "GitHub Release"
+
   push:
     branches:
       - '*'
