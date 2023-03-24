@@ -4,6 +4,11 @@ name: Release oee-simulators
 
 on:
   workflow_call:
+    inputs:
+      RELEASE_VERSION:
+        type: string
+        required: true
+
   push:
     branches:
       - '*'
