@@ -39,7 +39,7 @@ jobs:
           path: 'repo'
 
       - name: Setup release body
-        run: echo ${{ inputs.release_body }}
+        run: echo ${{ github.event.inputs.release_body }}
         env:
           release_body: ${{ inputs.release_body }}
 
