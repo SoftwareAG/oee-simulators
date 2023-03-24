@@ -167,7 +167,7 @@ class OeeAPI:
         log.warning(f'Cannot create Timeslot for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
         return False
 
-    def get_shiftplan(self, locationId, dateFrom, dateTo):
+    def get_shiftplan(self, locationId, dateFrom = None, dateTo = None):
         url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}'
         if dateTo and dateFrom:
             params = {'dateFrom': dateFrom, 'dateTo': dateTo}
@@ -179,7 +179,7 @@ class OeeAPI:
         log.warning(f'Cannot get shiftplan for {locationId}, url: {url},  response: {response.status_code}: {response.text} ')
         return {'locationId':locationId,'timeslots':{}}
 
-    def get_shiftplan_status(self, locationId, ):
+    def get_shiftplan_status(self, locationId):
         url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}/status'
         response = requests.get(url, headers=C8Y_HEADERS)
         if response.ok:

@@ -69,22 +69,21 @@ class Test(unittest.TestCase):
         base_dir = os.path.basename(current_dir)
         # If the working directory is not test then change to test
         if base_dir != "test":
+            # Change to the 'test' directory
             os.chdir("test")
 
-        # Change to the 'test' directory
+        try:
+            device_profile_info = self.oee_api.create_and_activate_profile(external_id=self.device_model.get('id'))
+            # null device_profile_info will fail the test
+            self.assertIsNotNone(device_profile_info)
+        finally:
+            # Change back to the original working directory
+            os.chdir(current_dir)
+            self.cumulocity_api.delete_managed_object(device_profile_info.get('id'))
+            log.info(f"Removed the test oee profile with id {device_profile_info.get('id')}")
+            self.cumulocity_api.delete_managed_object(device_id)
+            log.info(f"Removed the test device with id {device_id}")
 
-
-        device_profile_info = self.oee_api.create_and_activate_profile(external_id=self.device_model.get('id'))
-        # null device_profile_info will fail the test
-        self.assertIsNotNone(device_profile_info)
-
-        # Change back to the original working directory
-        os.chdir(current_dir)
-
-        self.cumulocity_api.delete_managed_object(device_profile_info.get('id'))
-        log.info(f"Removed the test oee profile with id {device_profile_info.get('id')}")
-        self.cumulocity_api.delete_managed_object(device_id)
-        log.info(f"Removed the test device with id {device_id}")
         log.info('-' * 100)
 
     def test_create_update_organization_structure(self):
@@ -131,7 +130,7 @@ class Test(unittest.TestCase):
         for shiftplan in shiftplans:
             try:
                 # Get created shiftplan info
-                shiftplan_info = self.oee_api.get_shiftplan(locationId=shiftplan.locationId, dateFrom=None, dateTo=None)
+                shiftplan_info = self.oee_api.get_shiftplan(locationId=shiftplan.locationId)
                 # Check recurring time slots field. If it is not empty then the shiftplan was created
                 self.assertNotEqual(len(shiftplan_info.get('recurringTimeslots')),0, msg="Test shiftplan was not created")
 
@@ -139,7 +138,7 @@ class Test(unittest.TestCase):
                 # Delete test shiftplan
                 self.oee_api.delete_shiftplan(shiftplan.locationId)
                 # Check recurring time slots field. If it is empty then the shiftplan was deleted
-                shiftplan_info = self.oee_api.get_shiftplan(locationId=shiftplan.locationId, dateFrom=None, dateTo=None)
+                shiftplan_info = self.oee_api.get_shiftplan(locationId=shiftplan.locationId)
                 self.assertEqual(len(shiftplan_info.get('recurringTimeslots')),0, msg="Test shiftplan was not deleted")
                 log.info(f"Deleted shiftplan {shiftplan.locationId}")
         log.info('-' * 100)
