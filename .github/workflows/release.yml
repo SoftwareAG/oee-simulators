@@ -40,7 +40,7 @@ jobs:
           RELEASE_VERSION: ${{ inputs.RELEASE_VERSION }}
 
       - name: Print Release Body
-        run: echo ${{ github.event.inputs.release_body }}
+        run: echo ${{ inputs.release_body }}
 
       - name: Zip the source-code
         if: github.ref == 'refs/heads/main'
