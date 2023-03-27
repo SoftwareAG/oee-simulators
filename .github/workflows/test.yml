@@ -22,6 +22,9 @@ on:
 
 env:
   C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
+  C8Y_BASEURL: ${{ vars.C8Y_BASEURL }}
+  C8Y_TENANT: ${{ vars.C8Y_TENANT }}
+  C8Y_USER: ${{ vars.C8Y_USER }}
 
 jobs:
   run-tests:
