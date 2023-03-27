@@ -7,6 +7,8 @@ on:
         type: string
         description: Name of the environment to use
         default: "test"
+        options:
+          test: Test Environment
         required: true
       release_body:
         type: string
