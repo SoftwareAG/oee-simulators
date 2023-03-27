@@ -21,10 +21,10 @@ on:
       name: test
 
 env:
-  C8Y_BASEURL: ${{ secrets.C8Y_BASEURL }}
+  C8Y_BASEURL: ${{ env.C8Y_BASEURL }}
   C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
-  C8Y_TENANT: ${{ secrets.C8Y_TENANT }}
-  C8Y_USER: ${{ secrets.C8Y_USER }}
+  C8Y_TENANT: ${{ env.C8Y_TENANT }}
+  C8Y_USER: ${{ env.C8Y_USER }}
 
 jobs:
   run-tests:
