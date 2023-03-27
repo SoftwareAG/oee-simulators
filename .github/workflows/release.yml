@@ -4,7 +4,7 @@ name: Release oee-simulators
 
 on:
   workflow_call:
-    branches: [ main ]
+    if: github.ref == 'refs/heads/main'
     inputs:
       release_version:
         type: string
