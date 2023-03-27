@@ -29,7 +29,7 @@ env:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    environment: ${{ env.ENVIRONMENT_NAME || github.event.inputs.environment }}
+    environment: ${{ github.event.deployment.environment || github.event.inputs.environment }}
     outputs:
       release_body: ${{ env.release_body }}
     steps:
