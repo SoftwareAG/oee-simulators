@@ -40,7 +40,7 @@ jobs:
         env:
           release_body: 'On Push release'
         run:
-          echo "${{ env.release_body }}"
+          echo ${{ env.release_body }}
 
       - name: Run tests
         run: |
@@ -56,7 +56,13 @@ jobs:
 
   call-build-workflow:
     needs: run-tests
-    uses: ./.github/workflows/build.yml
-    run: echo ${{ env.release_body }}
-    with:
-      release_body: ${{ needs.run-tests.outputs.release_body || github.event.inputs.release_body}}
+    runs-on: ubuntu-latest
+    environment: Nam
+    steps:
+      - name: check release body
+        run: echo ${{ needs.run-tests.outputs.release_body }}
+
+      - name: call build
+        uses: ./.github/workflows/build.yml
+        with:
+          release_body: ${{ needs.run-tests.outputs.release_body || github.event.inputs.release_body}}
