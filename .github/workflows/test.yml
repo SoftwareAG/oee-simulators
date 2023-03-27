@@ -6,6 +6,7 @@ on:
       environment:
         type: string
         description: Name of the environment to use
+        default: "test"
         required: true
       release_body:
         type: string
