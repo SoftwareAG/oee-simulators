@@ -27,8 +27,6 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     environment: Nam
-    outputs:
-      release_body: ${{ env.release_body }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -37,10 +35,8 @@ jobs:
 
       - name: Setup release body on push event
         if: github.event_name == 'push'
-        env:
-          release_body: 'On Push release'
         run:
-          echo ${{ env.release_body }}
+          echo "RELEASE_BODY=On Push Release" >> $GITHUB_ENV
 
       - name: Run tests
         run: |
@@ -56,18 +52,6 @@ jobs:
 
   call-build-workflow:
     needs: run-tests
-    runs-on: ubuntu-latest
-    environment: Nam
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-        with:
-          path: 'repo'
-
-      - name: check release body
-        run: echo ${{ needs.run-tests.outputs.release_body }}
-
-      - name: call build
-        uses: ./.github/workflows/build.yml
-        with:
-          release_body: ${{ needs.run-tests.outputs.release_body || github.event.inputs.release_body}}
+    uses: ./.github/workflows/build.yml
+    with:
+      release_body: ${{ env.RELEASE_BODY || github.event.inputs.release_body}}
