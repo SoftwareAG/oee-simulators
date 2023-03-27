@@ -15,7 +15,7 @@ on:
   push:
     branches: [ '*' ]
     environment:
-      name: Nam
+      name: test
 
 env:
   C8Y_BASEURL: ${{ secrets.C8Y_BASEURL }}
@@ -26,7 +26,7 @@ env:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    environment: Nam
+    environment: test
     outputs:
       release_body: ${{ env.RELEASE_BODY }}
     steps:
@@ -38,7 +38,7 @@ jobs:
       - name: Setup release body on push event
         if: github.event_name == 'push'
         run:
-          echo "RELEASE_BODY=On Push Release" >> $GITHUB_ENV
+          echo "RELEASE_BODY=GitHub on push Release" >> $GITHUB_ENV
 
       - name: Run tests
         run: |
