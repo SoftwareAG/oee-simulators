@@ -59,6 +59,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: Nam
     steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          path: 'repo'
+
       - name: check release body
         run: echo ${{ needs.run-tests.outputs.release_body }}
 
