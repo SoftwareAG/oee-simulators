@@ -4,7 +4,6 @@ name: Release oee-simulators
 
 on:
   workflow_call:
-    if: github.ref == 'refs/heads/main'
     inputs:
       release_version:
         type: string
@@ -16,6 +15,7 @@ on:
 
 jobs:
   build-release:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
