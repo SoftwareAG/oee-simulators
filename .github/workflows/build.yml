@@ -9,6 +9,8 @@ on:
 jobs:
   build-upload:
     runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ env.RELEASE_VERSION }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -45,8 +47,6 @@ jobs:
             repo/simulators/image.tar
             repo/simulators/cumulocity.json
         id: upload-artifact
-    outputs:
-      release_version: ${{ env.RELEASE_VERSION }}
 
   call-release-workflow:
     needs: build-upload

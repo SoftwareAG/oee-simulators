@@ -16,18 +16,12 @@ on:
     branches: [ '*' ]
     environment:
       name: Nam
-    inputs:
-      release_body:
-        type: string
-        description: GitHub Release Message
-        default: "GitHub Automatic Release"
 
 env:
   C8Y_BASEURL: ${{ secrets.C8Y_BASEURL }}
   C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
   C8Y_TENANT: ${{ secrets.C8Y_TENANT }}
   C8Y_USER: ${{ secrets.C8Y_USER }}
-  release_body: ${{ github.event.inputs.environment }}
 
 jobs:
   run-tests:
@@ -38,9 +32,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: 'repo'
-
-      - name: Setup release body
-        run: echo ${{ env.release_body }}
 
       - name: Run tests
         run: |
@@ -55,7 +46,16 @@ jobs:
           C8Y_USER: ${{ env.C8Y_USER }}
 
   call-build-workflow:
-    needs: run-tests
-    uses: ./.github/workflows/build.yml
-    with:
-      release_body: ${{ env.release_body }}
+    steps:
+      - name: Setup release body on push event
+        if: github.event_name == 'push'
+        env:
+          release_body: 'On Push release'
+        run:
+          echo "The release body is: ${{ env.release_body }}"
+
+      - name: Pass release_body to build workflow
+        needs: run-tests
+        uses: ./.github/workflows/build.yml
+        with:
+          release_body: ${{ needs.run-tests.outputs.release_version || github.event.inputs.release_body}}
