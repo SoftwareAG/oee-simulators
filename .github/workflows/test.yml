@@ -27,6 +27,8 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     environment: Nam
+    outputs:
+      release_body: ${{ env.RELEASE_BODY }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -54,4 +56,4 @@ jobs:
     needs: run-tests
     uses: ./.github/workflows/build.yml
     with:
-      release_body: ${{ env.RELEASE_BODY || github.event.inputs.release_body}}
+      release_body: ${{ needs.run-tests.outputs.release_body || github.event.inputs.release_body}}
