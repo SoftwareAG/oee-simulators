@@ -40,7 +40,7 @@ jobs:
         env:
           release_body: 'On Push release'
         run:
-          echo "The release body is: ${{ env.release_body }}"
+          echo "${{ env.release_body }}"
 
       - name: Run tests
         run: |
