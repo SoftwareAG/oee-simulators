@@ -6,9 +6,9 @@ on:
       environment:
         type: string
         description: Name of the environment to use
-        default: "test"
+        default: "oee-dev"
         options:
-          test: Test Environment
+          oee-dev: oee-dev Environment
         required: true
       release_body:
         type: string
@@ -18,7 +18,7 @@ on:
   push:
     branches: [ main ]
     environment:
-      name: test
+      name: oee-dev
 
 env:
   C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
@@ -29,9 +29,9 @@ env:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    environment: test
+    environment: ${{ env.ENVIRONMENT_NAME || github.event.inputs.environment }}
     outputs:
-      release_body: ${{ env.RELEASE_BODY }}
+      release_body: ${{ env.release_body }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -41,7 +41,7 @@ jobs:
       - name: Setup release body on push event
         if: github.event_name == 'push'
         run:
-          echo "RELEASE_BODY=GitHub on push Release" >> $GITHUB_ENV
+          echo "release_body=GitHub on push Release" >> $GITHUB_ENV
 
       - name: Run tests
         run: |
