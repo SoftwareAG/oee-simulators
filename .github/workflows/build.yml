@@ -5,6 +5,7 @@ on:
     inputs:
       release_body:
         type: string
+        required: true
 
 jobs:
   build-upload:

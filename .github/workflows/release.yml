@@ -11,6 +11,7 @@ on:
 
       release_body:
         type: string
+        required: true
 
   push:
     branches:
