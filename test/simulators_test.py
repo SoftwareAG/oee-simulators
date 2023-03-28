@@ -262,5 +262,16 @@ class Utils:
 
 
 if __name__ == '__main__':
-    # begin the unittest.main()
-    unittest.main()
+    # create a test suite
+    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+
+    # create a test runner
+    runner = unittest.TextTestRunner()
+
+    # run the test suite using the test runner
+    result = runner.run(suite)
+
+    # print the test result summary
+    log.info("Executed: ", result.testsRun)
+    log.info("Failed: ", len(result.failures))
+    log.info("Errors: ", len(result.errors))
