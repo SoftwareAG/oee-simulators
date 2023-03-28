@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        type: string
+        type: environment
         description: Name of the environment to use
         default: "oee-dev"
         options:
