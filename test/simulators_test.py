@@ -144,6 +144,13 @@ class Test(unittest.TestCase):
                 log.info(f"Deleted shiftplan {shiftplan.locationId}")
         log.info('-' * 100)
 
+    def test_split(self):
+        s = 'hello world'
+        self.assertEqual(s.split(), ['hello', 'world!'])
+        # check that s.split fails when the separator is not a string
+        with self.assertRaises(TypeError):
+            s.split(2)
+
 class Utils:
     def __init__(self):
         self.shiftplans = None
@@ -272,6 +279,6 @@ if __name__ == '__main__':
     result = runner.run(suite)
 
     # print the test result summary
-    log.info("Executed: ", result.testsRun)
-    log.info("Failed: ", len(result.failures))
-    log.info("Errors: ", len(result.errors))
+    log.info(f"Executed: {result.testsRun}")
+    log.info(f"Failed: {len(result.failures)}")
+    log.info(f"Errors: {len(result.errors)}")
