@@ -11,16 +11,25 @@ Prebuilt docker images can be downloaded from the [Releases](https://github.soft
 # unit test 
 Collection of test for the [Generic Simulators](simulators)
 
-In order to run all the test scripts:
+To run specific test script:
 ```
-python -m unittest discover -s test -p "*_test.py"
+python test/[script-name].py  [-h] [--tenant TENANT] [--password PASSWORD] [--baseurl BASEURL] [--user USER]
 ```
-Run specific script:
-```
-cd test
-python -m unittest [test-script-name].py
-```
+<pre>
+Cumulocity platform credentials setup
 
+optional arguments:<br>
+  long syntax          |    short syntax    |   Functions
+------------------------------------------------------------------------------------------
+  --help,              |    -h              |   show help message and exit
+  --tenant TENANT,     |    -t TENANT       |    Tenant ID
+  --password PASSWORD, |    -p PASSWORD     |    C8Y Password
+  --baseurl BASEURL,   |    -b BASEURL      |    C8Y Baseurl
+  --user USER,         |    -u USER         |    C8Y Username
+
+The <strong><ins>arguments</strong></ins> for the script are <strong><ins>optional</strong></ins>, but if you choose to input any of them, it is important to note that <strong><ins>all four arguments: Tenant ID, C8Y Password, C8Y Baseurl, and C8Y Username must be filled</ins></strong>. 
+Failure to provide any of these fields may cause the script to malfunction or produce unexpected results. 
+</pre>
 ------------------------------
 
 These tools are provided as-is and without warranty or support. They do not constitute part of the Software AG product suite. Users are free to use, fork and modify them, subject to the license agreement. While Software AG welcomes contributions, we cannot guarantee to include every contribution in the master project.
