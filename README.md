@@ -13,23 +13,37 @@ Collection of test for the [Generic Simulators](simulators)
 
 To run specific test script:
 ```
-python test/[script-name].py  [-h] [--tenant TENANT] [--password PASSWORD] [--baseurl BASEURL] [--user USER]
+python test/[script-name].py  [-h] [--tenant-id TENANT_ID] [--password PASSWORD] [--baseurl BASEURL] [--username USER]
 ```
 <pre>
 Cumulocity platform credentials setup
 
 optional arguments:<br>
-  long syntax          |    short syntax    |   Functions
+  long syntax                |    short syntax       |   Functions
 ------------------------------------------------------------------------------------------
-  --help,              |    -h              |   show help message and exit
-  --tenant TENANT,     |    -t TENANT       |    Tenant ID
-  --password PASSWORD, |    -p PASSWORD     |    C8Y Password
-  --baseurl BASEURL,   |    -b BASEURL      |    C8Y Baseurl
-  --user USER,         |    -u USER         |    C8Y Username
+  --help,                    |    -h                 |   show help message and exit
+  --tenant-id TENANT_ID,     |    -t TENANT_ID       |   Tenant ID
+  --password PASSWORD,       |    -p PASSWORD        |   C8Y Password
+  --baseurl BASEURL,         |    -b BASEURL         |   C8Y Baseurl
+  --username USER,           |    -u USER            |   C8Y Username
 
-The <strong><ins>arguments</strong></ins> for the script are <strong><ins>optional</strong></ins>, but if you choose to input any of them, it is important to note that <strong><ins>all four arguments: Tenant ID, C8Y Password, C8Y Baseurl, and C8Y Username must be filled</ins></strong>. 
-Failure to provide any of these fields may cause the script to malfunction or produce unexpected results. 
+It is important to note that <strong><ins>all four arguments: Tenant ID, C8Y Password, C8Y Baseurl, and C8Y Username must be filled</ins></strong>. 
+Failure to provide any of these fields may cause the script to malfunction or produce unexpected results.
 </pre>
+
+If you don't want to input arguments, you can set environment variables need to be set in [cumulocityAPI.py](simulators/main/cumulocityAPI.py) in order to run [simulators_test.py](test/simulators_test.py). <br>
+For example:
+```
+C8Y_BASEURL=https://perftest.2.performance.c8y.io 
+C8Y_TENANT=t3233
+C8Y_USER=viktor.tymoshenko@softwareag.com
+C8Y_PASSWORD=yourpassword
+```
+
+If you run the [export_import_test.py](test/export_import_test.py), besides environment variables in [cumulocityAPI.py](main/cumulocityAPI.py), you must set environment variables also in [Environment.py](simulators/extras/Environment.py).
+Because they use both [extra](simulators/extras) and [main](simulators/main) parts of simulators which are independent to each other.
+<br>
+
 ------------------------------
 
 These tools are provided as-is and without warranty or support. They do not constitute part of the Software AG product suite. Users are free to use, fork and modify them, subject to the license agreement. While Software AG welcomes contributions, we cannot guarantee to include every contribution in the master project.
