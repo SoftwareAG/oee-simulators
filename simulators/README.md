@@ -101,7 +101,7 @@ Install python 3.8.3+ on your system. Probably you'll need install some packages
 pip install requests
 ```
 
-To run the scripts the following environment variables need to be set:
+To run the scripts the following environment variables need to be set in [cumulocityAPI.py](main/cumulocityAPI.py):
 
 ```
 C8Y_BASEURL=https://perftest.2.performance.c8y.io 
