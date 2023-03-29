@@ -34,9 +34,9 @@ Failure to provide any of these fields may cause the script to malfunction or pr
 If you don't want to input arguments, you can set environment variables need to be set in [cumulocityAPI.py](simulators/main/cumulocityAPI.py) in order to run [simulators_test.py](test/simulators_test.py). <br>
 For example:
 ```
-C8Y_BASEURL=https://perftest.2.performance.c8y.io 
-C8Y_TENANT=t3233
-C8Y_USER=viktor.tymoshenko@softwareag.com
+C8Y_BASEURL=https://test.development.c8y.io 
+C8Y_TENANT=t123
+C8Y_USER=yourusername
 C8Y_PASSWORD=yourpassword
 ```
 
