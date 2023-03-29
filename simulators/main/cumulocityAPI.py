@@ -1,6 +1,6 @@
 import json, os, logging, requests, base64
 
-from credentials_handler import get_credentials
+from credentials_handler import check_credentials_availability
 
 C8Y_BASEURL = os.environ.get('C8Y_BASEURL')
 C8Y_TENANT = os.environ.get('C8Y_TENANT')
@@ -8,29 +8,7 @@ C8Y_USER = os.environ.get('C8Y_USER')
 C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD')
 
 log = logging.getLogger("C8yAPI")
-
-# Get credentials from argument inputs
-base_url, tenant, user, password = get_credentials()
-if base_url:
-    C8Y_BASEURL = base_url
-    if not C8Y_BASEURL:
-        log.info("C8Y_BASEURL is not set")
-        C8Y_BASEURL = "http://localhost:8080" # Add placeholder so code can reaches the connection error message
-if tenant:
-    C8Y_TENANT = tenant
-    if not C8Y_TENANT:
-        log.info("C8Y_TENANT is not set")
-        C8Y_TENANT = "t100"                    # Add placeholder so code can reaches the connection error message
-if user:
-    C8Y_USER = user
-    if not C8Y_USER:
-        log.info("C8Y_USER is not set")
-        C8Y_USER = "test"                       # Add placeholder so code can reaches the connection error message
-if password:
-    C8Y_PASSWORD = password
-    if not C8Y_PASSWORD:
-        log.info("C8Y_PASSWORD is not set")
-        C8Y_PASSWORD = "test"                   # Add placeholder so code can reaches the connection error message
+C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD = check_credentials_availability(C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD)
 
 MOCK_REQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
 
