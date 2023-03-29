@@ -33,7 +33,7 @@ jobs:
 
       - name: Check Environment
         run:
-          echo ::Running in Environment:: ${{ github.event.inputs.environment }}
+          echo "::debug::Running on environment ${{ github.event.inputs.environment }}"
 
       - name: Run tests
         run: |
