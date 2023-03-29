@@ -1,5 +1,5 @@
-import unittest, logging, os, sys
-import config.root
+import unittest, logging, os
+import config.root # Configure root directories
 
 from datetime import datetime, timedelta
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI

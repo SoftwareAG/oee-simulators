@@ -1,15 +1,14 @@
 import unittest, logging, os
-from datetime import timezone, datetime, timedelta
-
 import simulators.extras.Environment as Ex_Im_Env
+import config.root # Configure root directories
 
+from datetime import timezone, datetime, timedelta
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
 from simulators.main.cumulocityAPI import CumulocityAPI
 from unittest.mock import patch
 from subprocess import call
 from simulators.main.simulator import load
 from simulators.main.interface import datetime_to_string
-
 
 log = logging.getLogger("Test Import Export")
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
