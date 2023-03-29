@@ -15,18 +15,22 @@ if base_url:
     C8Y_BASEURL = base_url
     if not C8Y_BASEURL:
         log.info("C8Y_BASEURL is not set")
+        C8Y_BASEURL = "http://localhost:8080" # Add placeholder so code can reaches the connection error message
 if tenant:
     C8Y_TENANT = tenant
     if not C8Y_TENANT:
         log.info("C8Y_TENANT is not set")
+        C8Y_TENANT = "t100"                    # Add placeholder so code can reaches the connection error message
 if user:
     C8Y_USER = user
     if not C8Y_USER:
         log.info("C8Y_USER is not set")
+        C8Y_USER = "test"                       # Add placeholder so code can reaches the connection error message
 if password:
     C8Y_PASSWORD = password
     if not C8Y_PASSWORD:
         log.info("C8Y_PASSWORD is not set")
+        C8Y_PASSWORD = "test"                   # Add placeholder so code can reaches the connection error message
 
 MOCK_REQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
 
