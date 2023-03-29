@@ -1,7 +1,6 @@
-import shutil, unittest, logging, os
+import unittest, logging, os
 from datetime import timezone, datetime, timedelta
 
-import config.root # Set source directory
 import simulators.extras.Environment as Ex_Im_Env
 
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI

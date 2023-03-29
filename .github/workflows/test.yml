@@ -46,9 +46,9 @@ jobs:
       - name: Run tests
         run: |
           cd repo
-          python -m unittest discover -s test -p "simulators_test.py" -v
+          python test/simulators_test.py -v
           pip3 install c8y-api
-          python -m unittest discover -s test -p "export_import_test.py" -v
+          python test/export_import_test.py -v
         env:
           C8Y_BASEURL: ${{ env.C8Y_BASEURL }}
           C8Y_PASSWORD: ${{ env.C8Y_PASSWORD }}
