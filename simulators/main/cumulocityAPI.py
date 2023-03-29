@@ -170,7 +170,7 @@ class CumulocityAPI:
             try:
                 return int(response.text)
             except Exception as e:
-                log.warn(f'cannot convert "${response.text}" to number. exception: {e}')
+                log.warning(f'cannot convert "${response.text}" to number. exception: {e}')
                 return 0
         else:
             self.log_warning_on_bad_response(response)
@@ -298,7 +298,7 @@ class CumulocityAPI:
         response = requests.get(C8Y_BASEURL + f'/tenant/options/{category}', headers=C8Y_HEADERS)
         if response.ok:
             return response.json()
-        log.warn(f'Could not get any tenant options for category {category}. Response status code is: {response}, content: {response.text}')
+        log.warning(f'Could not get any tenant options for category {category}. Response status code is: {response}, content: {response.text}')
         return {}
 
     def get_profile_id(self, deviceID):
@@ -308,7 +308,7 @@ class CumulocityAPI:
             try:
                 return response.json()['managedObjects'][0]['id']
             except Exception as e:
-                log.warn(f'Cannot get id of profile: "{response.text}". exception: {e}')
+                log.warning(f'Cannot get id of profile: "{response.text}". exception: {e}')
                 return ""
         else:
             self.log_warning_on_bad_response(response)
