@@ -1,5 +1,5 @@
-import unittest, logging, os
-import config.root # Set source directory
+import unittest, logging, os, sys
+import config.root
 
 from datetime import datetime, timedelta
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
@@ -11,7 +11,6 @@ from unittest.mock import patch
 
 log = logging.getLogger("Test")
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
-
 
 class Test(unittest.TestCase):
     def setUp(self):

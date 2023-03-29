@@ -1,9 +1,14 @@
 import json, os, logging, requests, base64
 
-C8Y_BASEURL = os.environ.get('C8Y_BASEURL') or 'http://localhost:8080'
-C8Y_TENANT = os.environ.get('C8Y_TENANT') or 't100'
-C8Y_USER = os.environ.get('C8Y_USER') or 'test'
-C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD') or 'test'
+from credentials_handler import check_credentials_availability
+
+C8Y_BASEURL = os.environ.get('C8Y_BASEURL')
+C8Y_TENANT = os.environ.get('C8Y_TENANT')
+C8Y_USER = os.environ.get('C8Y_USER')
+C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD')
+
+log = logging.getLogger("C8yAPI")
+C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD = check_credentials_availability(C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD)
 
 MOCK_REQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
 
@@ -30,8 +35,6 @@ MEASUREMENT_COLLECTIONS_HEADERS = {
     'Accept': 'application/vnd.com.nsn.cumulocity.measurementcollection+json',
     'Authorization': 'Basic ' + user_and_pass
 }
-
-log = logging.getLogger("C8yAPI")
 
 class CumulocityAPI:
 

@@ -1,7 +1,6 @@
-import shutil, unittest, logging, os
+import unittest, logging, os
 from datetime import timezone, datetime, timedelta
 
-import config.root # Set source directory
 import simulators.extras.Environment as Ex_Im_Env
 
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
@@ -116,6 +115,6 @@ if __name__ == '__main__':
     result = runner.run(suite)
 
     # print the test result summary
-    log.info("Executed: ", result.testsRun)
-    log.info("Failed: ", len(result.failures))
-    log.info("Errors: ", len(result.errors))
+    log.info(f"Executed: {result.testsRun}")
+    log.info(f"Failed: {len(result.failures)}")
+    log.info(f"Errors: {len(result.errors)}")
