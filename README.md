@@ -1,4 +1,4 @@
-# oee-simulators
+# OEE-simulators
 
 Collection of simulators available for Cumulocity IoT OEE app. All simulators are available as Docker images and need to be deployed to the tenant where OEE app is running. Once deployed, the simulators automatically create preconfigured devices and start sending data. 
 
@@ -8,7 +8,7 @@ Simulators are needed to calculate OEE based on configuration profiles that can 
 
 Prebuilt docker images can be downloaded from the [Releases](https://github.softwareag.com/IOTA/oee-simulators/releases) in this repository.
 
-# unit test 
+# Tests 
 Collection of test for the [Generic Simulators](simulators)
 
 To run specific test script:
