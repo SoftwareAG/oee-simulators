@@ -43,6 +43,7 @@ jobs:
             repo/simulators/cumulocity.json
 
   call-release-workflow:
+    if: github.ref == 'refs/heads/main'
     needs: build-upload
     uses: ./.github/workflows/release.yml
     with:

@@ -15,6 +15,11 @@ on:
         description: GitHub Release Message
         default: "GitHub Manual Release"
 
+  push:
+    branches: [ '*' ]
+    environment:
+      name: oee-dev
+
 env:
   C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
   C8Y_BASEURL: ${{ vars.C8Y_BASEURL }}
@@ -24,7 +29,7 @@ env:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment }}
+    environment: ${{ github.event.deployment.environment || github.event.inputs.environment }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -33,7 +38,7 @@ jobs:
 
       - name: Check Environment
         run:
-          echo "::debug::Running on environment ${{ github.event.inputs.environment }}"
+          echo "Running on environment ${{ github.event.inputs.environment }}"
 
       - name: Run tests
         run: |
@@ -51,4 +56,4 @@ jobs:
     needs: run-tests
     uses: ./.github/workflows/build.yml
     with:
-      release_body: ${{ github.event.inputs.release_body }}
+      release_body: ${{ github.event.inputs.release_body || 'Test' }} # Add Test string as placeholder to avoid error
