@@ -44,7 +44,7 @@ on:
 
 jobs:
   call-test-workflow:
-    if: ${{ github.event.inputs.run_build == true }}
+    if: ${{ github.event.inputs.environment == "oee-dev" }}
     uses: ./.github/workflows/test.yml
     with:
       environment: ${{ github.event.inputs.environment }}
