@@ -1,14 +1,30 @@
 name: Build oee-simulators
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       release_body:
         type: string
-        required: true
+        description: GitHub Release Message
+        default: "Release version ${GITHUB_RUN_NUMBER}"
+
+      run_release:
+        description: 'Run release workflow?'
+        required: false
+        default: false
+        type: bool
+
+  push:
+    branches: [ '*' ]
+    environment:
+      name: oee-dev
 
 jobs:
-  build-upload:
+  call-test-workflow:
+    uses: ./.github/workflows/test.yml
+
+  build-upload-with-test:
+    needs: call-test-workflow
     runs-on: ubuntu-latest
     outputs:
       release_version: ${{ env.release_version }}
@@ -42,10 +58,10 @@ jobs:
             repo/simulators/image.tar
             repo/simulators/cumulocity.json
 
-  call-release-workflow:
-    if: github.ref == 'refs/heads/main'
+  call-release-workflow-after-build:
+    if: ${{ github.event.inputs.run_release == true && github.ref == 'refs/heads/main' }}
     needs: build-upload
     uses: ./.github/workflows/release.yml
     with:
       release_version: ${{ needs.build-upload.outputs.release_version }}
-      release_body: ${{ inputs.release_body }}
+      release_body: ${{ github.event.inputs.release_body }}

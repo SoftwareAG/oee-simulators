@@ -10,15 +10,15 @@ on:
         options:
           oee-dev: oee-dev Environment
         required: true
-      release_body:
-        type: string
-        description: GitHub Release Message
-        default: "GitHub Manual Release"
 
-  push:
-    branches: [ '*' ]
+  workflow_call:
     environment:
       name: oee-dev
+
+  #push:
+  #  branches: [ '*' ]
+  #  environment:
+  #    name: oee-dev
 
 env:
   C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
@@ -51,9 +51,3 @@ jobs:
           C8Y_PASSWORD: ${{ env.C8Y_PASSWORD }}
           C8Y_TENANT: ${{ env.C8Y_TENANT }}
           C8Y_USER: ${{ env.C8Y_USER }}
-
-  call-build-workflow:
-    needs: run-tests
-    uses: ./.github/workflows/build.yml
-    with:
-      release_body: ${{ github.event.inputs.release_body || 'Test' }} # Add Test string as placeholder to avoid error
