@@ -44,6 +44,7 @@ on:
 
 jobs:
   call-test-workflow:
+    if: ${{ github.event.inputs.run_build == true }}
     uses: ./.github/workflows/test.yml
     with:
       environment: ${{ github.event.inputs.environment }}
