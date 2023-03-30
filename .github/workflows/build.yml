@@ -32,18 +32,12 @@ on:
     branches: [ '*' ]
     environment:
       name: oee-dev
-    inputs:
-      run_build:
-        description: 'Run build workflow?'
-        required: false
-        default: false
-        type: bool
 
 jobs:
   call-test-workflow:
     uses: ./.github/workflows/test.yml
     with:
-      environment: ${{ env.oee-dev || github.event.inputs.environment }}
+      environment: ${{ github.event.deployment.environment || github.event.inputs.environment }}
 
   build-upload:
     needs: call-test-workflow
