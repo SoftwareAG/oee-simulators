@@ -22,6 +22,12 @@ on:
         default: false
         type: bool
 
+      run_build:
+        description: 'Run build workflow?'
+        required: false
+        default: false
+        type: bool
+
   push:
     branches: [ '*' ]
     environment:

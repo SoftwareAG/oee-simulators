@@ -17,11 +17,6 @@ on:
         type: string
         required: true
 
-  #push:
-  #  branches: [ '*' ]
-  #  environment:
-  #    name: oee-dev
-
 env:
   C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
   C8Y_BASEURL: ${{ vars.C8Y_BASEURL }}
