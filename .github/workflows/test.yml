@@ -47,6 +47,9 @@ jobs:
           python test/simulators_test.py
           pip3 install c8y-api
           python test/export_import_test.py
+          if [ $? -ne 0 ]; then
+            exit 1
+          fi
         env:
           C8Y_BASEURL: ${{ env.C8Y_BASEURL }}
           C8Y_PASSWORD: ${{ env.C8Y_PASSWORD }}
