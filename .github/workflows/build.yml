@@ -32,6 +32,12 @@ on:
     branches: [ '*' ]
     environment:
       name: oee-dev
+    inputs:
+      run_build:
+        description: 'Run build workflow?'
+        required: false
+        default: false
+        type: bool
 
 jobs:
   call-test-workflow:
@@ -41,6 +47,7 @@ jobs:
 
   build-upload:
     needs: call-test-workflow
+    if: ${{ github.event.inputs.run_build == true }}
     runs-on: ubuntu-latest
     outputs:
       release_version: ${{ env.release_version }}
