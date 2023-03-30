@@ -42,6 +42,7 @@ on:
 jobs:
   call-test-workflow:
     runs-on: ubuntu-latest
+    environment: ${{ github.event.deployment.environment || github.event.inputs.environment }}
     steps:
       - name: Check Environment
         run:
