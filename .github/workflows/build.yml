@@ -44,10 +44,10 @@ on:
 
 jobs:
   call-test-workflow:
-    if: ${{ inputs.environment == 'oee-dev' }}
+    if: ${{ github.event.inputs.environment == 'oee-dev' }}
     uses: ./.github/workflows/test.yml
     with:
-      environment: ${{ inputs.environment }}
+      environment: ${{ github.event.inputs.environment }}
 
   build-upload:
     needs: call-test-workflow
