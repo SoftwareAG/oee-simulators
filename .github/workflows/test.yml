@@ -2,6 +2,9 @@ name: Run tests
 
 on:
   workflow_call:
+    secrets:
+      C8Y_PASSWORD:
+        required: true
 
   workflow_dispatch:
     inputs:
