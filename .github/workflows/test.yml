@@ -46,13 +46,18 @@ jobs:
         run: |
           cd repo
           python test/simulators_test.py
+          echo "STATUS simulator test: "
+          echo $?
           pip3 install c8y-api
           python test/export_import_test.py
+          echo "STATUS ex-im test: "
+          echo $?
           if [ $? -ne 0 ]; then
             echo "::set-output name=tests-failed::true"
+            echo "tests-failed=true" >> $GITHUB_OUTPUT
             exit 1
           else
-            echo "::set-output name=tests-failed::false"
+            echo "tests-failed=false" >> $GITHUB_OUTPUT
           fi
         env:
           C8Y_BASEURL: ${{ env.C8Y_BASEURL }}
