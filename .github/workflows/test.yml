@@ -48,6 +48,12 @@ jobs:
           python test/simulators_test.py
           pip3 install c8y-api
           python test/export_import_test.py
+          if [ $? -ne 0 ]; then
+            echo "::set-output name=tests-failed::true"
+            exit 1
+          else
+            echo "::set-output name=tests-failed::false"
+          fi
         env:
           C8Y_BASEURL: ${{ env.C8Y_BASEURL }}
           C8Y_PASSWORD: ${{ env.C8Y_PASSWORD }}
@@ -55,8 +61,7 @@ jobs:
           C8Y_USER: ${{ env.C8Y_USER }}
 
       - name: Check Test Status
+        if: ${{ steps.tests.outputs.tests-failed == 'true' }}
         run: |
-          echo "STEP OUTCOME: ${{ steps.tests.outcome }}"
-          if [ ${{ steps.tests.outcome }} == 'failure' ]; then
-            exit 1
-          fi
+          echo "Tests failed!"
+          exit 1
