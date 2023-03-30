@@ -1,4 +1,4 @@
-import unittest, logging, os
+import sys, unittest, logging, os
 import config.root # Configure root directories
 import simulators.extras.Environment as Ex_Im_Env
 
@@ -120,6 +120,6 @@ if __name__ == '__main__':
 
     # return True if no failures or errors, False otherwise
     if len(result.failures) == 0 and len(result.errors) == 0:
-        exit(True)
+        sys.exit(0)
     else:
-        exit(False)
+        sys.exit(1)

@@ -1,3 +1,4 @@
+import sys
 import unittest, logging, os
 import config.root # Configure root directories
 
@@ -143,6 +144,10 @@ class Test(unittest.TestCase):
                 log.info(f"Deleted shiftplan {shiftplan.locationId}")
         log.info('-' * 100)
 
+    def test_upper(self):
+        self.assertEqual('hello'.upper(), 'abc')
+
+
 class Utils:
     def __init__(self):
         self.shiftplans = None
@@ -277,6 +282,6 @@ if __name__ == '__main__':
 
     # return True if no failures or errors, False otherwise
     if len(result.failures) == 0 and len(result.errors) == 0:
-        exit(True)
+        sys.exit(0)
     else:
-        exit(False)
+        sys.exit(1)
