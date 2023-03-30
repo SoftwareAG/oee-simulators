@@ -41,9 +41,16 @@ on:
 
 jobs:
   call-test-workflow:
-    uses: ./.github/workflows/test.yml
-    with:
-      environment: ${{ github.event.deployment.environment || github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Environment
+        run:
+          echo "Running on environment ${{ github.event.deployment.environment || github.event.inputs.environment }}"
+
+      - name: call test workflow
+        uses: ./.github/workflows/test.yml
+        with:
+          environment: ${{ github.event.deployment.environment || github.event.inputs.environment }}
 
   build-upload:
     needs: call-test-workflow
