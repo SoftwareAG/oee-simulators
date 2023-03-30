@@ -1,6 +1,12 @@
 name: Run tests
 
 on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+
   workflow_dispatch:
     inputs:
       environment:
@@ -9,12 +15,6 @@ on:
         default: "oee-dev"
         options:
           oee-dev: oee-dev Environment
-        required: true
-
-  workflow_call:
-    inputs:
-      environment:
-        type: string
         required: true
 
 env:
