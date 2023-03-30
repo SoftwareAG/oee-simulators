@@ -46,7 +46,7 @@ jobs:
   call-test-workflow:
     uses: ./.github/workflows/test.yml
     with:
-      environment: ${{ github.event.inputs.environment }}
+      environment: ${{ inputs.environment }}
 
   build-upload:
     needs: call-test-workflow
