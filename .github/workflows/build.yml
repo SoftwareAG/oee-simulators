@@ -34,6 +34,8 @@ on:
 jobs:
   call-test-workflow:
     uses: ./.github/workflows/test.yml
+    with:
+      environment: 'oee-dev'
     secrets:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
 

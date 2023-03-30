@@ -2,6 +2,11 @@ name: Run tests
 
 on:
   workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+
     secrets:
       C8Y_PASSWORD:
         required: true
@@ -25,7 +30,7 @@ env:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'test' }}
+    environment: ${{ github.event.inputs.environment || inputs.environment }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -34,7 +39,7 @@ jobs:
 
       - name: Check Environment
         run:
-          echo "Running on environment ${{ github.event.inputs.environment || 'test' }}"
+          echo "Running on environment ${{ github.event.inputs.environment || inputs.environment }}"
           echo ${{ secrets.C8Y_PASSWORD }}
 
       - name: Run tests
