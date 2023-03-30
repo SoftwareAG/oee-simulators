@@ -47,6 +47,8 @@ jobs:
           python test/simulators_test.py
           pip3 install c8y-api
           python test/export_import_test.py
+          echo "CHECK STATUS"
+          echo $
           if [ $? -ne 0 ]; then
             exit 1
           fi
