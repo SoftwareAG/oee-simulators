@@ -144,10 +144,6 @@ class Test(unittest.TestCase):
                 log.info(f"Deleted shiftplan {shiftplan.locationId}")
         log.info('-' * 100)
 
-    def test_upper(self):
-        self.assertEqual('hello'.upper(), 'abc')
-
-
 class Utils:
     def __init__(self):
         self.shiftplans = None
