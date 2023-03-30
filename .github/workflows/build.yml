@@ -41,22 +41,9 @@ on:
 
 jobs:
   call-test-workflow:
-    runs-on: ubuntu-latest
-    environment: ${{ github.event.deployment.environment || github.event.inputs.environment }}
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-        with:
-          path: 'repo'
-
-      - name: Check Environment
-        run:
-          echo "Running on environment ${{ github.event.deployment.environment || github.event.inputs.environment }}"
-
-      - name: call test workflow
-        uses: ./.github/workflows/test.yml
-        with:
-          environment: ${{ github.event.deployment.environment || github.event.inputs.environment }}
+    uses: ./.github/workflows/test.yml
+    with:
+      environment: ${{ github.event.deployment.environment || github.event.inputs.environment }}
 
   build-upload:
     needs: call-test-workflow

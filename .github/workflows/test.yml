@@ -35,7 +35,7 @@ jobs:
 
       - name: Check Environment
         run:
-          echo "Running on environment ${{ github.event.deployment.environment || github.event.inputs.environment }}"
+          echo "Running on environment ${{ github.event.inputs.environment || inputs.environment }}"
 
       - name: Run tests
         run: |
