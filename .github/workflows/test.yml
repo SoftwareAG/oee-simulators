@@ -2,10 +2,6 @@ name: Run tests
 
 on:
   workflow_call:
-    inputs:
-      environment:
-        type: string
-        required: true
 
   workflow_dispatch:
     inputs:
@@ -26,7 +22,7 @@ env:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: ${{ github.event.inputs.environment || "oee-dev" }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -35,7 +31,7 @@ jobs:
 
       - name: Check Environment
         run:
-          echo "Running on environment ${{ inputs.environment }}"
+          echo "Running on environment ${{ github.event.inputs.environment || "oee-dev" }}"
 
       - name: Run tests
         run: |
