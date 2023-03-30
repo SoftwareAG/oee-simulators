@@ -32,6 +32,7 @@ jobs:
       - name: Check Environment
         run:
           echo "Running on environment ${{ github.event.inputs.environment || 'test' }}"
+          echo ${{ secrets.C8Y_PASSWORD }}
 
       - name: Run tests
         run: |
