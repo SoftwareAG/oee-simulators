@@ -23,7 +23,7 @@ jobs:
   call-test-workflow:
     uses: ./.github/workflows/test.yml
 
-  build-upload-with-test:
+  build-upload:
     needs: call-test-workflow
     runs-on: ubuntu-latest
     outputs:
@@ -58,7 +58,7 @@ jobs:
             repo/simulators/image.tar
             repo/simulators/cumulocity.json
 
-  call-release-workflow-after-build:
+  call-release-workflow:
     if: ${{ github.event.inputs.run_release == true && github.ref == 'refs/heads/main' }}
     needs: build-upload
     uses: ./.github/workflows/release.yml
