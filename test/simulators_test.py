@@ -274,3 +274,9 @@ if __name__ == '__main__':
     log.info(f"Executed: {result.testsRun}")
     log.info(f"Failed: {len(result.failures)}")
     log.info(f"Errors: {len(result.errors)}")
+
+    # return True if no failures or errors, False otherwise
+    if len(result.failures) == 0 and len(result.errors) == 0:
+        exit(True)
+    else:
+        exit(False)
