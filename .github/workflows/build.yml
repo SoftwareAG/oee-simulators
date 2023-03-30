@@ -3,6 +3,14 @@ name: Build oee-simulators
 on:
   workflow_dispatch:
     inputs:
+      environment:
+        type: environment
+        description: Name of the environment to use
+        default: "oee-dev"
+        options:
+          oee-dev: oee-dev Environment
+        required: true
+
       release_body:
         type: string
         description: GitHub Release Message
@@ -22,6 +30,8 @@ on:
 jobs:
   call-test-workflow:
     uses: ./.github/workflows/test.yml
+    with:
+      environment: ${{ github.event.deployment.environment || github.event.inputs.environment }}
 
   build-upload:
     needs: call-test-workflow
