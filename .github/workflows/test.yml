@@ -26,6 +26,7 @@ env:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    if: ${{ inputs.environment == 'oee-dev' }}
     environment: ${{ github.event.inputs.environment || inputs.environment }}
     steps:
       - name: Checkout Repo
