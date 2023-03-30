@@ -22,7 +22,7 @@ env:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'oee-dev' }}
+    environment: ${{ github.event.inputs.environment || 'test' }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -31,7 +31,7 @@ jobs:
 
       - name: Check Environment
         run:
-          echo "Running on environment ${{ github.event.inputs.environment || 'oee-dev' }}"
+          echo "Running on environment ${{ github.event.inputs.environment || 'test' }}"
 
       - name: Run tests
         run: |
