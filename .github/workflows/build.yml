@@ -33,7 +33,7 @@ on:
     inputs:
       environment:
         type: string
-        default: "oee-dev"
+        default: oee-dev
         required: true
 
       run_build:
