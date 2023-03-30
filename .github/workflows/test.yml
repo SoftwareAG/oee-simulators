@@ -42,6 +42,7 @@ jobs:
           echo "Running on environment ${{ github.event.inputs.environment || inputs.environment }}"
 
       - name: Run tests
+        id: tests
         run: |
           cd repo
           python test/simulators_test.py
@@ -55,6 +56,7 @@ jobs:
 
       - name: Check Test Status
         run: |
-          if [ ${{ job.status }} == 'failure' ]; then
+          echo "STEP OUTCOME: ${{ steps.tests.outcome }}"
+          if [ ${{ steps.tests.outcome }} == 'failure' ]; then
             exit 1
           fi
