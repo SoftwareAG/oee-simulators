@@ -33,7 +33,6 @@ on:
 
 jobs:
   call-test-workflow:
-    id: call-test-workflow
     uses: ./.github/workflows/test.yml
     with:
       environment: 'oee-dev'
