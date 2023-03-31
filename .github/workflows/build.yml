@@ -43,13 +43,13 @@ jobs:
     needs: call-test-workflow
     uses: ./.github/workflows/test.yml
     with:
-      environment: 'test'
+      environment: 'oee-dev'
     secrets:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
 
   build-upload:
     needs: [ call-test-workflow, recall-test-workflow-on-other-environment ]
-    if: ${{ always() && github.event.inputs.run_release == true && github.ref == 'refs/heads/main' }}
+    if: ${{ always() && github.event.inputs.run_release == true || github.event_name == 'push'}}
     runs-on: ubuntu-latest
     outputs:
       release_version: ${{ env.release_version }}
