@@ -34,14 +34,13 @@ on:
 jobs:
   call-test-workflow:
     uses: ./.github/workflows/test.yml
-    continue-on-error: true
     with:
       environment: 'oee-dev'
     secrets:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
 
   recall-test-workflow-on-other-environment:
-    if: ${{ job.status == 'failure' || job.status == 'cancelled' }}
+    if: ${{ failure() || cancelled() }}
     needs: call-test-workflow
     uses: ./.github/workflows/test.yml
     with:
