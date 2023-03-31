@@ -38,6 +38,7 @@ jobs:
       environment: 'oee-dev'
     secrets:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
+    continue-on-error: true
 
   recall-test-workflow-on-other-environment:
     if: ${{ failure() || cancelled() }}
@@ -50,7 +51,7 @@ jobs:
 
   build-upload:
     needs: [ call-test-workflow, recall-test-workflow-on-other-environment ]
-    if: ${{ always() }}
+    if: ${{ always() && github.event.inputs.run_release == true && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     outputs:
       release_version: ${{ env.release_version }}
@@ -61,7 +62,6 @@ jobs:
           path: 'repo'
 
       - name: Update version number
-        if: ${{ matrix.job == needs.job }}
         run: |
           cd repo/simulators
           SIMULATOR_VERSION=${GITHUB_RUN_NUMBER}
@@ -71,7 +71,6 @@ jobs:
           release_version: ${{ env.release_version }}
 
       - name: Build Docker image
-        if: ${{ matrix.job == needs.job }}
         run: |
           cd repo/simulators
           docker build -t oee-simulators .
@@ -79,7 +78,6 @@ jobs:
           docker rmi oee-simulators
 
       - name: Upload file and zip an artifact
-        if: ${{ matrix.job == needs.job }}
         uses: actions/upload-artifact@v3.1.2
         with:
           name: 'oee-simulators'
