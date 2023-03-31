@@ -29,6 +29,7 @@ env:
 
 jobs:
   run-tests:
+    continue-on-error: true
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment || inputs.environment }}
     steps:
@@ -42,7 +43,6 @@ jobs:
           echo "Running on environment ${{ github.event.inputs.environment || inputs.environment }}"
 
       - name: Run tests
-        continue-on-error: true
         run: |
           cd repo
           python test/simulators_test.py

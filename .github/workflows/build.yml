@@ -47,9 +47,25 @@ jobs:
     secrets:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
 
-  build-upload:
+  check-test-status:
     needs: [ call-test-workflow, recall-test-workflow-on-other-environment ]
-    if: ${{ github.event.inputs.run_release == true || success() && !cancelled()}}
+    if: ${{ github.event.inputs.run_release == true }}
+    runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ env.release_version }}
+    steps:
+      - name: Check status
+        run:
+          echo "Call-test-workflow exited with code ${{ steps.call-test-workflow.outputs.status }}"
+          echo "recall-test-workflow exited with code ${{ steps.recall-test-workflow-on-other-environment.outputs.status }}"
+
+      - name: Output exit code
+        run:
+          exit 1
+
+  build-upload:
+    needs: check-test-status
+    if: ${{ github.event.inputs.run_release == true }}
     runs-on: ubuntu-latest
     outputs:
       release_version: ${{ env.release_version }}
@@ -58,6 +74,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: 'repo'
+
+      - name: Check status
+        run:
+          echo "Call-test-workflow exited with code ${{ steps.call-test-workflow.outputs.status }}"
+          echo "recall-test-workflow exited with code ${{ steps.recall-test-workflow-on-other-environment.outputs.status }}"
 
       - name: Update version number
         run: |
