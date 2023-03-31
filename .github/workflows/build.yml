@@ -33,9 +33,18 @@ on:
 
 jobs:
   call-test-workflow:
+    id: call-test-workflow
     uses: ./.github/workflows/test.yml
     with:
       environment: 'oee-dev'
+    secrets:
+      C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
+
+  recall-test-workflow-on-other-environment:
+    if: ${{ failure() && github.job == 'call-test-workflow' }} # Only run if call-test-workflow job failed
+    uses: ./.github/workflows/test.yml
+    with:
+      environment: 'test'
     secrets:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
 
