@@ -53,8 +53,8 @@ jobs:
     steps:
       - name: Check status
         run:
-          echo "Call-test-workflow exited with code ${{ steps.call-test-workflow.outputs.status }}"
-          echo "recall-test-workflow exited with code ${{ steps.recall-test-workflow-on-other-environment.outputs.status }}"
+          echo "Call-test-workflow exited with code ${{ needs.call-test-workflow.outputs.status }}"
+          echo "recall-test-workflow exited with code ${{ needs.recall-test-workflow-on-other-environment.outputs.status }}"
 
       - name: Output exit code
         run:
@@ -66,7 +66,7 @@ jobs:
     steps:
       - name: Check status
         run:
-          echo "Call-test-workflow exited with code ${{ steps.check-test-status.outputs.status }}"
+          echo "Call-test-workflow exited with code ${{ needs.check-test-status.outputs.status }}"
 
       - name: Output exit code
         run:
