@@ -50,12 +50,10 @@ jobs:
 
   build-upload:
     needs: [ call-test-workflow, recall-test-workflow-on-other-environment ]
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     outputs:
       release_version: ${{ env.release_version }}
-    strategy:
-      matrix:
-        job: [ call-test-workflow, recall-test-workflow-on-other-environment ]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
