@@ -40,7 +40,6 @@ jobs:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
 
   recall-test-workflow-on-other-environment:
-    if: ${{ failure() || cancelled() }}
     needs: call-test-workflow
     uses: ./.github/workflows/test.yml
     with:
