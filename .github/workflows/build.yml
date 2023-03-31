@@ -38,7 +38,6 @@ jobs:
       environment: 'oee-dev'
     secrets:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
-    continue-on-error: true
 
   recall-test-workflow-on-other-environment:
     if: ${{ failure() || cancelled() }}
