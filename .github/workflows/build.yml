@@ -49,7 +49,7 @@ jobs:
 
   build-upload:
     needs: [ call-test-workflow, recall-test-workflow-on-other-environment ]
-    if: ${{ always() && github.event.inputs.run_release == true || github.event_name == 'push'}}
+    if: ${{ github.event.inputs.run_release == true || success() && !cancelled()}}
     runs-on: ubuntu-latest
     outputs:
       release_version: ${{ env.release_version }}
