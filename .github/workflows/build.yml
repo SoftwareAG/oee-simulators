@@ -50,6 +50,8 @@ jobs:
   check-test-status:
     needs: [ call-test-workflow, recall-test-workflow-on-other-environment ]
     runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.output-exit-code.outputs.exit_code }}
     steps:
       - name: Check status
         run:
@@ -57,7 +59,9 @@ jobs:
           echo "recall-test-workflow exited with code ${{ needs.recall-test-workflow-on-other-environment.outputs.status }}"
 
       - name: Output exit code
+        id: output-exit-code
         run:
+          echo "::set-output name=exit_code::0"
           exit 0
 
   check-test-status-2:
