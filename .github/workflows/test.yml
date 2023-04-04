@@ -11,6 +11,11 @@ on:
       C8Y_PASSWORD:
         required: true
 
+    outputs:
+      test-output:
+        description: "The test status code"
+        value: ${{ jobs.run-tests.outputs.test-output }}
+
   workflow_dispatch:
     inputs:
       environment:
@@ -51,7 +56,7 @@ jobs:
           python test/simulators_test.py
           pip3 install c8y-api
           python test/export_import_test.py
-          echo "::set-output name=test-output::$?"
+          echo "test-output=$?" >> $GITHUB_OUTPUT
         env:
           C8Y_BASEURL: ${{ env.C8Y_BASEURL }}
           C8Y_PASSWORD: ${{ env.C8Y_PASSWORD }}

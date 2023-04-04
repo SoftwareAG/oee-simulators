@@ -34,24 +34,18 @@ on:
 jobs:
   call-test-workflow:
     uses: ./.github/workflows/test.yml
-    id: call-test
     with:
       environment: ${{ github.event.inputs.environment || 'oee-dev' }}
     secrets:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
-    outputs:
-      test-output: ${{ steps.call-test.outputs.test-output }}
 
   recall-test-workflow-on-other-environment:
     needs: call-test-workflow
-    id: recall-test
     uses: ./.github/workflows/test.yml
     with:
       environment: ${{ github.event.inputs.environment || 'oee-dev' }}
     secrets:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
-    outputs:
-      test-output: ${{ steps.recall-test.outputs.test-output }}
 
   check-test-status:
     needs: [ call-test-workflow, recall-test-workflow-on-other-environment ]
