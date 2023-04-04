@@ -27,11 +27,16 @@ env:
   C8Y_TENANT: ${{ vars.C8Y_TENANT }}
   C8Y_USER: ${{ vars.C8Y_USER }}
 
+outputs:
+  test-output:
+
 jobs:
   run-tests:
     continue-on-error: true
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment || inputs.environment }}
+    outputs:
+      test-output: ${{ steps.run-tests.outputs.test-output }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -43,6 +48,7 @@ jobs:
           echo "Running on environment ${{ github.event.inputs.environment || inputs.environment }}"
 
       - name: Run tests
+        id: run-tests
         run: |
           cd repo
           python test/simulators_test.py
@@ -53,3 +59,10 @@ jobs:
           C8Y_PASSWORD: ${{ env.C8Y_PASSWORD }}
           C8Y_TENANT: ${{ env.C8Y_TENANT }}
           C8Y_USER: ${{ env.C8Y_USER }}
+        shell: bash
+
+      - name: Set Test Output
+        if: always()
+        run: echo "::set-output name=test-output::$?"
+        outputs:
+          test-output: ${{ steps.run-tests.outputs.test-output }}
