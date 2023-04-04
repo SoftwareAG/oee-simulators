@@ -49,7 +49,7 @@ jobs:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
 
   build-upload:
-    needs: check-test-status-2
+    needs: [call-test-workflow, recall-test-workflow-on-other-environment]
     if: ${{ github.event.inputs.run_release == true && needs.call-test-workflow.outputs.test-output == 0 || needs.recall-test-workflow-on-other-environment.outputs.test-output == 0}}
     runs-on: ubuntu-latest
     outputs:
