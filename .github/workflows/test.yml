@@ -51,16 +51,10 @@ jobs:
           python test/simulators_test.py
           pip3 install c8y-api
           python test/export_import_test.py
-          echo "$?"
+          echo "::set-output name=test-output::$?"
         env:
           C8Y_BASEURL: ${{ env.C8Y_BASEURL }}
           C8Y_PASSWORD: ${{ env.C8Y_PASSWORD }}
           C8Y_TENANT: ${{ env.C8Y_TENANT }}
           C8Y_USER: ${{ env.C8Y_USER }}
         shell: bash
-
-      - name: Set Test Output
-        if: always()
-        run: echo "::set-output name=test-output::$?"
-        outputs:
-          test-output: ${{ steps.run-tests.outputs.test-output }}
