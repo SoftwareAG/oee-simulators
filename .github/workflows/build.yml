@@ -35,7 +35,7 @@ jobs:
   call-test-workflow:
     uses: ./.github/workflows/test.yml
     with:
-      environment: 'oee-dev'
+      environment: ${{ github.event.inputs.environment || 'oee-dev' }}
     secrets:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
 
@@ -43,7 +43,7 @@ jobs:
     needs: call-test-workflow
     uses: ./.github/workflows/test.yml
     with:
-      environment: 'oee-dev'
+      environment: ${{ github.event.inputs.environment || 'oee-dev' }}
     secrets:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
 
