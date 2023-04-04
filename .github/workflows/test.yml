@@ -27,9 +27,6 @@ env:
   C8Y_TENANT: ${{ vars.C8Y_TENANT }}
   C8Y_USER: ${{ vars.C8Y_USER }}
 
-outputs:
-  test-output:
-
 jobs:
   run-tests:
     continue-on-error: true
