@@ -163,7 +163,7 @@ class Test(unittest.TestCase):
 
         # Create simulator.json
         Utils.setup_model(self)
-        device_model = self.device_model
+        device_model = [self.device_model]
         with open("simulator.json", "w") as f:
             json.dump(device_model, f)
 
@@ -192,12 +192,11 @@ class Test(unittest.TestCase):
             process = subprocess.Popen(["python", "simulator.py", "-b", C8Y_BASEURL, "-u", C8Y_USER, "-p", C8Y_PASSWORD, "-t", C8Y_TENANT, "-test"])
 
             # Wait for 20 seconds
-            time.sleep(20)
+            time.sleep(60)
 
             # Terminate the script
             process.terminate()
 
-            Utils.setup_model()
             external_device_id = self.device_model.get('id')
             device_id = self.cumulocity_api.get_device_by_external_id(external_id=f"{external_device_id}")
             profile_id = self.cumulocity_api.get_profile_id(deviceID=device_id)
