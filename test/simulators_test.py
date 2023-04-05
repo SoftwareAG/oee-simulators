@@ -155,18 +155,33 @@ class Test(unittest.TestCase):
         # Extracts the base name of the current directory
         base_dir = os.path.basename(current_dir)
         # If the working directory is not main then change to main
-        if base_dir != "main":
+        if base_dir != "main" and base_dir != "test":
             # Change to the 'main' directory
             os.chdir("simulators/main")
+        elif base_dir == "test":
+            # Change to the 'main' directory
+            os.chdir("../simulators/main")
 
-        # Start the script with arguments
-        process = subprocess.Popen(["python", "simulator.py", "-b", C8Y_BASEURL, "-u", C8Y_USER, "-p", C8Y_PASSWORD, "-t", C8Y_TENANT])
+        try:
+            # Start the script with arguments
+            process = subprocess.Popen(["python", "simulator.py", "-b", C8Y_BASEURL, "-u", C8Y_USER, "-p", C8Y_PASSWORD, "-t", C8Y_TENANT])
 
-        # Wait for 60 seconds
-        time.sleep(20)
+            # Wait for 60 seconds
+            time.sleep(20)
 
-        # Terminate the script
-        process.terminate()
+            # Terminate the script
+            process.terminate()
+
+            Utils.setup_model()
+            external_device_id = self.device_model.get('id')
+            device_id = self.cumulocity_api.get_device_by_external_id(external_id=f"{external_device_id}")
+            profile_id = self.cumulocity_api.get_profile_id(deviceID=device_id)
+
+        finally:
+            self.cumulocity_api.delete_managed_object(profile_id)
+            log.info(f"Removed the test oee profile with id {profile_id}")
+            self.cumulocity_api.delete_managed_object(device_id)
+            log.info(f"Removed the test device with id {device_id}")
 
         log.info('-' * 100)
 
