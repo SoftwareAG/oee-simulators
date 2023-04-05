@@ -8,18 +8,14 @@ def get_credentials():
     parser.add_argument('--password', '-p', type=str, help='C8Y Password')
     parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
     parser.add_argument('--username', '-u', type=str, help='C8Y Username')
+    parser.add_argument('-t', '--test', action='store_true', help='Flag to enable test mode')
     args = parser.parse_args()
 
-    username = args.username
-    password = args.password
-    baseurl = args.baseurl
-    tenant_id = args.tenant_id
-
-    return baseurl, tenant_id, username, password
+    return args.baseurl, args.tenant_id, args.username, args.password, args.test
 
 def check_credentials_availability(C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD):
     # Get credentials from argument inputs
-    base_url, tenant, user, password = get_credentials()
+    base_url, tenant, user, password, test_flag = get_credentials()
     if base_url:
         C8Y_BASEURL = base_url
         if not C8Y_BASEURL:
@@ -41,4 +37,4 @@ def check_credentials_availability(C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWO
             log.info("C8Y_PASSWORD is not set")
             C8Y_PASSWORD = "test"  # Add placeholder so code can reaches the connection error message
 
-    return C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD
+    return C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, test_flag

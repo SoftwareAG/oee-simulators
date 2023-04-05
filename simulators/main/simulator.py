@@ -1,7 +1,7 @@
 import contextlib, json, logging, os, sys
 import interface, time
 
-from cumulocityAPI import (C8Y_BASEURL, C8Y_TENANT, C8Y_USER, CumulocityAPI)
+from cumulocityAPI import C8Y_BASEURL, C8Y_TENANT, C8Y_USER, TEST_FLAG, CumulocityAPI
 from datetime import datetime
 from oeeAPI import OeeAPI, ProfileCreateMode
 from shiftplan import Shiftplan
@@ -138,7 +138,19 @@ def load(filename):
 
 ###################################################################################
 if __name__ == '__main__':
-    log.info(f'cwd:{os.getcwd()}')
+    current_dir = os.getcwd()
+    log.info(f'cwd:{current_dir}')
+
+    # read & update Shiftplans
+    SHIFTPLANS_MODELS = load("shiftplans.json")
+    if not SHIFTPLANS_MODELS:
+        sys.exit()
+    shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), SHIFTPLANS_MODELS))
+
+    if TEST_FLAG:
+        # Change to the 'test' directory
+        os.chdir("../../test")
+
     DEVICE_MODELS = load("simulator.json")
     if not DEVICE_MODELS:
         sys.exit()
@@ -155,12 +167,6 @@ if __name__ == '__main__':
             DEVICE_EVENT_MODELS.append(device_model)
         if device_model.get("measurements"):
             DEVICE_MEASUREMENT_MODELS.append(device_model)
-
-    # read & update Shiftplans
-    SHIFTPLANS_MODELS = load("shiftplans.json")
-    if not SHIFTPLANS_MODELS:
-        sys.exit()
-    shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), SHIFTPLANS_MODELS))
 
     if DELETE_PROFILES.lower() == "true":
         log.debug(f'Deleting all Profiles')
