@@ -1,12 +1,11 @@
-import sys
-import unittest, logging, os
+import subprocess, sys, time, unittest, logging, os
 import config.root # Configure root directories
 
 from datetime import datetime, timedelta
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
 from simulators.main.shiftplan import Shiftplan
 from simulators.main.simulator import get_or_create_device_id, load
-from simulators.main.cumulocityAPI import CumulocityAPI
+from simulators.main.cumulocityAPI import CumulocityAPI, C8Y_USER, C8Y_PASSWORD, C8Y_TENANT, C8Y_BASEURL
 from simulators.main.interface import datetime_to_string
 from unittest.mock import patch
 
@@ -25,6 +24,7 @@ class Test(unittest.TestCase):
         self.DELETE_PROFILES = self.MICROSERVICE_OPTIONS.get("DELETE_PROFILES", "False")
         Utils.setup_model(self)
         Utils.setup_shiftplan(self)
+        log.info('-' * 100)
 
 
     def test_get_or_create_device_id_with_full_model_and_delete(self):
@@ -112,6 +112,7 @@ class Test(unittest.TestCase):
         self.assertIsNotNone(response)
         self.cumulocity_api.delete_managed_object(device_id)
         log.info(f"Removed the {self.device_model.get('label')} with id {device_id}")
+        log.info('-' * 100)
 
 
     def test_send_measurement(self):
@@ -123,6 +124,7 @@ class Test(unittest.TestCase):
         self.assertIsNotNone(response)
         self.cumulocity_api.delete_managed_object(device_id)
         log.info(f"Removed the {self.device_model.get('label')} with id {device_id}")
+        log.info('-' * 100)
 
     def test_shifplan_creation(self):
         log.info("Start testing create shiftplan")
@@ -142,6 +144,30 @@ class Test(unittest.TestCase):
                 shiftplan_info = self.oee_api.get_shiftplan(locationId=shiftplan.locationId)
                 self.assertEqual(len(shiftplan_info.get('recurringTimeslots')),0, msg="Test shiftplan was not deleted")
                 log.info(f"Deleted shiftplan {shiftplan.locationId}")
+        log.info('-' * 100)
+
+    def test_run_simulators_script(self):
+        log.info("Start testing simulators script functions")
+        # Get current directory path
+        current_dir = os.getcwd()
+        print(current_dir)
+
+        # Extracts the base name of the current directory
+        base_dir = os.path.basename(current_dir)
+        # If the working directory is not main then change to main
+        if base_dir != "main":
+            # Change to the 'main' directory
+            os.chdir("simulators/main")
+
+        # Start the script with arguments
+        process = subprocess.Popen(["python", "simulator.py", "-b", C8Y_BASEURL, "-u", C8Y_USER, "-p", C8Y_PASSWORD, "-t", C8Y_TENANT])
+
+        # Wait for 60 seconds
+        time.sleep(20)
+
+        # Terminate the script
+        process.terminate()
+
         log.info('-' * 100)
 
 class Utils:
