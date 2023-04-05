@@ -8,7 +8,7 @@ def get_credentials():
     parser.add_argument('--password', '-p', type=str, help='C8Y Password')
     parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
     parser.add_argument('--username', '-u', type=str, help='C8Y Username')
-    parser.add_argument('-t', '--test', action='store_true', help='Flag to enable test mode')
+    parser.add_argument('--test', '-test', action='store_true', help='Flag to enable test mode')
     args = parser.parse_args()
 
     return args.baseurl, args.tenant_id, args.username, args.password, args.test

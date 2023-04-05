@@ -1,3 +1,4 @@
+import json
 import subprocess, sys, time, unittest, logging, os
 import config.root # Configure root directories
 
@@ -148,6 +149,7 @@ class Test(unittest.TestCase):
 
     def test_run_simulators_script(self):
         log.info("Start testing simulators script functions")
+
         # Get current directory path
         current_dir = os.getcwd()
         print(current_dir)
@@ -156,17 +158,40 @@ class Test(unittest.TestCase):
         base_dir = os.path.basename(current_dir)
         # If the working directory is not main then change to main
         if base_dir != "main" and base_dir != "test":
-            # Change to the 'main' directory
-            os.chdir("simulators/main")
-        elif base_dir == "test":
-            # Change to the 'main' directory
-            os.chdir("../simulators/main")
+            # Change to the 'test' directory
+            os.chdir("test")
+
+        # Create simulator.json
+        Utils.setup_model(self)
+        device_model = self.device_model
+        with open("simulator.json", "w") as f:
+            json.dump(device_model, f)
+
+        # Create shiftplans.json
+        Utils.setup_shiftplan(self)
+        shiftplans = self.shiftplans
+        with open("shiftplans.json", "w") as f:
+            json.dump(shiftplans, f)
+
+        # Check if the files were created
+        if os.path.exists("simulator.json"):
+            print("simulator.json created successfully!")
+        else:
+            print("Error creating simulator.json")
+
+        if os.path.exists("shiftplans.json"):
+            print("shiftplans.json created successfully!")
+        else:
+            print("Error creating shiftplans.json")
+
+        # Change to the 'main' directory to access simulator script
+        os.chdir("../simulators/main")
 
         try:
             # Start the script with arguments
-            process = subprocess.Popen(["python", "simulator.py", "-b", C8Y_BASEURL, "-u", C8Y_USER, "-p", C8Y_PASSWORD, "-t", C8Y_TENANT])
+            process = subprocess.Popen(["python", "simulator.py", "-b", C8Y_BASEURL, "-u", C8Y_USER, "-p", C8Y_PASSWORD, "-t", C8Y_TENANT, "-test"])
 
-            # Wait for 60 seconds
+            # Wait for 20 seconds
             time.sleep(20)
 
             # Terminate the script
