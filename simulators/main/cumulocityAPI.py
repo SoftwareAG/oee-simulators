@@ -57,6 +57,23 @@ class CumulocityAPI:
             self.log_warning_on_bad_response(response)
             return None
 
+    def get_events(self, date_from, date_to, device_id):
+        if self.mocking:
+            log.info(f"mock: get measurements by the request to {C8Y_BASEURL}/event/events")
+            return json.dumps({'response': 200})
+        else:
+            params = {
+                'dateFrom': f'{date_from}',
+                'dateTo': f'{date_to}',
+                'source': device_id
+            }
+
+            response = requests.get(C8Y_BASEURL + '/event/events', headers=C8Y_HEADERS, params=params)
+            if response.ok:
+                return response.json()
+            self.log_warning_on_bad_response(response)
+            return None
+
     def create_measurements(self, measurement):
         if self.mocking:
             log.info(f"mock: create measurements {json.dumps(measurement)} by the request to {C8Y_BASEURL}/measurement/measurements")
