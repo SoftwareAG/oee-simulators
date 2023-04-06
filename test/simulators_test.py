@@ -81,10 +81,7 @@ class Test(unittest.TestCase):
         finally:
             # Change back to the original working directory
             os.chdir(current_dir)
-            self.cumulocity_api.delete_managed_object(device_profile_info.get('id'))
-            log.info(f"Removed the test oee profile with id {device_profile_info.get('id')}")
-            self.cumulocity_api.delete_managed_object(device_id)
-            log.info(f"Removed the test device with id {device_id}")
+            Utils.delete_oee_profile_and_device(self, profile_id= device_profile_info.get('id'), device_id=device_id)
 
         log.info('-' * 100)
 
@@ -163,7 +160,10 @@ class Test(unittest.TestCase):
 
         # Create simulator.json
         Utils.setup_model(self)
-        device_model = [self.device_model]
+        device_model = [
+            self.device_model,
+            self.device_model_with_measurements
+        ]
         with open("simulator.json", "w") as f:
             json.dump(device_model, f)
 
@@ -190,22 +190,34 @@ class Test(unittest.TestCase):
         try:
             # Start the script with arguments
             process = subprocess.Popen(["python", "simulator.py", "-b", C8Y_BASEURL, "-u", C8Y_USER, "-p", C8Y_PASSWORD, "-t", C8Y_TENANT, "-test"])
-
             # Wait for 20 seconds
             time.sleep(60)
-
             # Terminate the script
             process.terminate()
 
-            external_device_id = self.device_model.get('id')
-            device_id = self.cumulocity_api.get_device_by_external_id(external_id=f"{external_device_id}")
-            profile_id = self.cumulocity_api.get_profile_id(deviceID=device_id)
+            # Configure time milestone to extract data
+            for shiftplan in self.shiftplans[0].get('recurringTimeslots'):
+                if shiftplan.get('slotType') == 'PRODUCTION':
+                    date_from = shiftplan.get('slotStart')
+                if shiftplan.get('slotType') == 'BREAK':
+                    date_to = shiftplan.get('slotEnd')
+
+            # Get event device id and profile id from device external id
+            event_device_id, event_profile_id = Utils.get_profile_and_device_ids_from_external_id(self, self.device_model.get('id'))
+            # Get measurement device id and profile id from device external id
+            measurement_device_id, measurement_profile_id = Utils.get_profile_and_device_ids_from_external_id(self, self.device_model_with_measurements.get('id'))
+
+            # Get events from event simulator
+            events = self.cumulocity_api.get_events(date_from=date_from, date_to=date_to, device_id=event_device_id)
+            self.assertTrue(len(events.get('events')) > 0 , msg=f'No events found for simulator {self.device_model.get("label")}')
+
+            # Get measurements from measurement simulator
+            measurements = self.cumulocity_api.get_measurements(date_from=date_from, date_to=date_to, device_id=measurement_device_id)
+            self.assertTrue(len(measurements.get('measurements')) > 0, msg=f'No measurements found for simulator #{self.device_model_with_measurements.get("label")}')
 
         finally:
-            self.cumulocity_api.delete_managed_object(profile_id)
-            log.info(f"Removed the test oee profile with id {profile_id}")
-            self.cumulocity_api.delete_managed_object(device_id)
-            log.info(f"Removed the test device with id {device_id}")
+            Utils.delete_oee_profile_and_device(self, profile_id=event_profile_id, device_id=event_device_id)
+            Utils.delete_oee_profile_and_device(self, profile_id=measurement_profile_id, device_id=measurement_device_id)
 
         log.info('-' * 100)
 
@@ -215,6 +227,7 @@ class Utils:
         self.device_model_no_label = None
         self.device_model_no_id = None
         self.device_model = None
+        self.device_model_with_measurements = None
 
     @staticmethod
     def create_device(device_model):
@@ -226,7 +239,7 @@ class Utils:
         self.device_model = {
             "type": "Simulator",
             "id": "sim_001_test",
-            "label": "Test Simulator #1",
+            "label": "Test Simulator with events",
             "enabled": "true",
             "locationId": "TestShiftLocation",
             "events": [
@@ -246,6 +259,25 @@ class Utils:
                         "type": "Piece_Ok",
                         "frequency": 20
                     }
+                }
+            ]
+        }
+        self.device_model_with_measurements = {
+            "type": "Simulator",
+            "id": "sim_002_test",
+            "label": "Test Simulator with measurements",
+            "locationId": "TestShiftLocation",
+            "enabled": "true",
+            "measurements": [
+                {
+                    "fragment": "ProductionTime",
+                    "series": "T",
+                    "unit": "s",
+                    "valueDistribution": "uniform",
+                    "minimumValue": 450.0,
+                    "maximumValue": 900.0,
+                    "minimumPerHour": 1800.0,
+                    "maximumPerHour": 3600.0
                 }
             ]
         }
@@ -323,7 +355,16 @@ class Utils:
 
         }
         return measurement
+    def get_profile_and_device_ids_from_external_id(self, external_id):
+        device_id = self.cumulocity_api.get_device_by_external_id(external_id=f"{external_id}")
+        profile_id = self.cumulocity_api.get_profile_id(deviceID=device_id)
+        return device_id, profile_id
 
+    def delete_oee_profile_and_device(self, profile_id, device_id):
+        self.cumulocity_api.delete_managed_object(profile_id)
+        log.info(f"Removed the test oee profile with id {profile_id}")
+        self.cumulocity_api.delete_managed_object(device_id)
+        log.info(f"Removed the test device with id {device_id}")
 
 
 if __name__ == '__main__':
