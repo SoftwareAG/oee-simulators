@@ -28,14 +28,11 @@ on:
         default: false
         type: bool
 
-  push:
-    branches: [ '*' ]
-
 jobs:
   call-test-workflow:
     uses: ./.github/workflows/test.yml
     with:
-      environment: 'oee-dev'
+      environment: ${{ inputs.environment }}
     secrets:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
 

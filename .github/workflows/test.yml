@@ -21,6 +21,9 @@ on:
           oee-dev: oee-dev Environment
         required: true
 
+  push:
+    branches: [ '*' ]
+
 env:
   C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
   C8Y_BASEURL: ${{ vars.C8Y_BASEURL }}
@@ -39,7 +42,7 @@ jobs:
 
       - name: Check Environment
         run:
-          echo "Running on environment ${{ inputs.environment }}"
+          echo "Running on environment ${{ inputs.environment || 'oee-dev' }}"
 
       - name: Run tests
         id: tests
