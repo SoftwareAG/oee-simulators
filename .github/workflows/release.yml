@@ -20,12 +20,43 @@ jobs:
         with:
           path: 'repo'
 
+      - name: Check artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: release_version.txt
+          path: release_version.txt
+        id: check_artifact
+
+      - name: Create or modify release version
+        run: |
+          if [[ -z "${{ steps.check_artifact.outputs.artifact_id }}" ]]; then
+            echo "SIMULATOR_VERSION=${{ github.run_number }}" > release_version.txt
+            echo "::set-env name=SIMULATOR_VERSION::${{ github.run_number }}"
+            echo "Created new release version"
+          else
+            ARTIFACT_ID="${{ steps.check_artifact.outputs.artifact_id }}"
+            ARTIFACT_SIZE=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${ARTIFACT_ID}" \
+              | jq -r '.size_in_bytes')
+            if [ $ARTIFACT_SIZE -eq 0 ]; then
+              echo "SIMULATOR_VERSION=${{ github.run_number }}" > release_version.txt
+              echo "::set-env name=SIMULATOR_VERSION::${{ github.run_number }}"
+              echo "Created new release version"
+            else
+              LATEST_VERSION=$(cat release_version.txt | awk -F '=' '{print $2}')
+              SIMULATOR_VERSION=$((LATEST_VERSION+1))
+              sed -i "s/release_version=${{ LATEST_VERSION }}/release_version=${{ SIMULATOR_VERSION }}/" release_version.txt
+              echo "::set-env name=SIMULATOR_VERSION::${{ SIMULATOR_VERSION }}"
+              echo "Modified existing release version from ${{ LATEST_VERSION }} to ${{ SIMULATOR_VERSION }}"
+            fi
+          fi
+        shell: bash
+
       - name: Update version number
         run: |
           cd repo/simulators
-          SIMULATOR_VERSION=${GITHUB_RUN_NUMBER}
-          sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
-          echo "release_version=${SIMULATOR_VERSION}" >> $GITHUB_ENV
+          sed -i "s/@project.version@/1.0.${{ env.SIMULATOR_VERSION }}/g" cumulocity.json
+          echo "release_version=${{ env.SIMULATOR_VERSION }}" >> $GITHUB_ENV
 
       - name: Zip the source-code
         run: |
