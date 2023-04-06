@@ -1,6 +1,6 @@
 import json, os, logging, requests, base64
 
-from credentials_handler import check_credentials_availability
+from arguments_handler import check_credentials_availability
 
 C8Y_BASEURL = os.environ.get('C8Y_BASEURL')
 C8Y_TENANT = os.environ.get('C8Y_TENANT')
@@ -74,14 +74,13 @@ class CumulocityAPI:
             log.info(f"mock: get measurements by the request to {C8Y_BASEURL}/measurement/measurements")
             return json.dumps({'response': 200})
         else:
-            '''
             params = {
                 'dateFrom': f'{date_from}',
                 'dateTo': f'{date_to}',
                 'source': device_id
             }
-            '''
-            response = requests.get(C8Y_BASEURL + '/measurement/measurements?dateFrom=2023-03-23T09:30:42.622Z&dateTo=2023-03-23T11:00:42.622Z&source=9786377', headers=MEASUREMENT_COLLECTIONS_HEADERS)
+
+            response = requests.get(C8Y_BASEURL + '/measurement/measurements', headers=MEASUREMENT_COLLECTIONS_HEADERS, params=params)
             if response.ok:
                 return response.json()
             self.log_warning_on_bad_response(response)
