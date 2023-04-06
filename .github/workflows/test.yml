@@ -30,7 +30,7 @@ env:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || inputs.environment }}
+    environment: ${{ inputs.environment }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -39,7 +39,7 @@ jobs:
 
       - name: Check Environment
         run:
-          echo "Running on environment ${{ github.event.inputs.environment || inputs.environment }}"
+          echo "Running on environment ${{ inputs.environment }}"
 
       - name: Run tests
         id: tests
