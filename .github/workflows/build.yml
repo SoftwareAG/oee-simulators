@@ -11,23 +11,6 @@ on:
           oee-dev: oee-dev Environment
         required: true
 
-      release_body:
-        type: string
-        description: GitHub Release Message
-        default: "Release version ${GITHUB_RUN_NUMBER}"
-
-      run_release:
-        description: 'Run release workflow?'
-        required: false
-        default: false
-        type: bool
-
-      run_build:
-        description: 'Run build workflow?'
-        required: false
-        default: false
-        type: bool
-
 jobs:
   call-test-workflow:
     uses: ./.github/workflows/test.yml
@@ -38,10 +21,7 @@ jobs:
 
   build-upload:
     needs: call-test-workflow
-    if: ${{ github.event.inputs.run_build == true }}
     runs-on: ubuntu-latest
-    outputs:
-      release_version: ${{ env.release_version }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -53,9 +33,7 @@ jobs:
           cd repo/simulators
           SIMULATOR_VERSION=${GITHUB_RUN_NUMBER}
           sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
-          echo "release_version=${SIMULATOR_VERSION}" >> $GITHUB_ENV
-        env:
-          release_version: ${{ env.release_version }}
+          echo "release_version=${SIMULATOR_VERSION}"
 
       - name: Build Docker image
         run: |
@@ -71,11 +49,3 @@ jobs:
           path: |
             repo/simulators/image.tar
             repo/simulators/cumulocity.json
-
-  call-release-workflow:
-    if: ${{ github.event.inputs.run_release == true && github.ref == 'refs/heads/main' }}
-    needs: build-upload
-    uses: ./.github/workflows/release.yml
-    with:
-      release_version: ${{ needs.build-upload.outputs.release_version }}
-      release_body: ${{ github.event.inputs.release_body }}

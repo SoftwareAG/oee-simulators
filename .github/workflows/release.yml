@@ -3,15 +3,12 @@
 name: Release oee-simulators
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
-      release_version:
-        type: string
-        required: true
-
       release_body:
         type: string
-        required: true
+        description: GitHub Release Message
+        default: "Release version ${GITHUB_RUN_NUMBER}"
 
 jobs:
   build-release:
@@ -23,15 +20,24 @@ jobs:
         with:
           path: 'repo'
 
-      - name: Check Release Version and Release Body
-        run: 
-          echo ${{ inputs.release_version }}
-          echo ${{ inputs.release_body }}
+      - name: Update version number
+        run: |
+          cd repo/simulators
+          SIMULATOR_VERSION=${GITHUB_RUN_NUMBER}
+          sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
+          echo "release_version=${SIMULATOR_VERSION}" >> $GITHUB_ENV
 
       - name: Zip the source-code
         run: |
           cd repo/simulators
           zip -r source-code.zip .
+
+      - name: Build Docker image
+        run: |
+          cd repo/simulators
+          docker build -t oee-simulators .
+          docker save -o image.tar oee-simulators
+          docker rmi oee-simulators
 
       - name: Zip files for release
         run: |
@@ -44,8 +50,8 @@ jobs:
         with:
           draft: false
           prerelease: false
-          release_name: v1.0.${{ inputs.release_version }}
-          tag_name: v1.0.${{ inputs.release_version }}
+          release_name: v1.0.${{ env.release_version }}
+          tag_name: v1.0.${{ env.release_version }}
           body: ${{ inputs.release_body }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
