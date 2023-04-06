@@ -106,10 +106,10 @@ class MachineSimulator:
         return True # if there are no shiftplans for a device, the production time should not be affected by them
 
     def log_not_in_shift(self):
-        log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is not in PRODUCTION shift -> ignore event')
+        log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is not in PRODUCTION shift -> ignoring events and measurements')
 
     def log_back_in_shift(self):
-        log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is now in PRODUCTION shift -> generating events')
+        log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is now in PRODUCTION shift -> generating events and measurements')
 
 
 def get_or_create_device_id(device_model):
