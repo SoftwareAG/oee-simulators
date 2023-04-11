@@ -19,8 +19,8 @@ group.add_argument("-c", "--create-profiles", action="store_true", dest="createP
                     help="create profiles")
 group.add_argument("-r", "--remove-simulator-profiles-via-oee", action="store_true", dest="removeSimulatorProfilesViaOee",
                     help="remove all simulator profiles using the OEE API provided by oee-bundle")
-group.add_argument("-d", "--delete-simulator-profiles", action="store_true", dest="deleteSimulatorProfiles",
-                    help="delete all simulator profiles using the C8Y inventory API (useful if oee-bundle is not working/available")
+group.add_argument("-d", "--delete-simulator-profiles", action="store_true", dest="deleteSimulatorProfiles", help="delete all simulator profiles using the C8Y inventory API (useful if oee-bundle is not working/available")
+group.add_argument("-ds", "--delete-simulators", action="store_true", dest="deleteSimulators", help="delete all simulators using the C8Y inventory API (useful if oee-bundle is not working/available")
 group.add_argument("-cat", "--create-categories", action="store_true", dest="createCalculationCategories", help="create or update calclation categories")
 group.add_argument("--delete-categories", action="store_true", dest="deleteCalculationCategories", help="delete all calclation categories")
 args = parser.parse_args()
@@ -118,3 +118,18 @@ if args.createCalculationCategories:
     else:
         log.warning('More than 1 category managed object! Unable to update managed object')
     log.info('==========Categories created==========')
+
+if args.deleteSimulators:
+    simulator_ids = oee_api.get_simulator_ids()
+    deleted_simulators = 0
+    for simulator_id in simulator_ids:
+        log.info(f'Deleting simulator #{simulator_id}')
+        response = c8y_api.delete_managed_object(simulator_id)
+        if response:
+            log.info(f'Deleted successfully simulator #{simulator_id}')
+            deleted_simulators += 1
+        else:
+            log.info(f'Failed to delete simulator #{simulator_id}')
+
+    log.info(f'Total simulators: {len(simulator_ids)}')
+    log.info(f'Total deleted simulators: {deleted_simulators}')
