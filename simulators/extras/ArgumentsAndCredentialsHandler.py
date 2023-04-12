@@ -43,15 +43,16 @@ def SetupLogger(console_logger_name, console_log_level):
 
 def HandleExportArguments():
     parser = argparse.ArgumentParser(description='Script to export or import profiles data')
-    parser.add_argument('--device-ids', '-i', type=str, help='Input device id / List of device ids', nargs='+')
-    parser.add_argument('--create-from', '-from', type=str, help='Input "create from" milestone')
-    parser.add_argument('--create-to', '-to', type=str, help='Input "create to" milestone')
-    parser.add_argument('--data-type', '-d', choices=['measurements', 'alarms', 'all'], help='Export "alarms" or "measurements"')
-    parser.add_argument('--log', '-l', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help='Log-level')
-    parser.add_argument('--username', '-u', type=str, help='C8Y Username')
-    parser.add_argument('--password', '-p', type=str, help='C8Y Password')
-    parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
-    parser.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
+    import_arg = parser.add_argument_group('Import')
+    import_arg.add_argument('--device-ids', '-i', type=str, help='Input device id / List of device ids', nargs='+')
+    import_arg.add_argument('--create-from', '-from', type=str, help='Input "create from" milestone')
+    import_arg.add_argument('--create-to', '-to', type=str, help='Input "create to" milestone')
+    import_arg.add_argument('--data-type', '-d', choices=['measurements', 'alarms', 'all'], help='Export "alarms" or "measurements"')
+    import_arg.add_argument('--log', '-l', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help='Log-level')
+    import_arg.add_argument('--username', '-u', type=str, help='C8Y Username')
+    import_arg.add_argument('--password', '-p', type=str, help='C8Y Password')
+    import_arg.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
+    import_arg.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
     args = parser.parse_args()
 
     data_type = args.data_type
@@ -115,13 +116,14 @@ def HandleExportArguments():
 
 def HandleImportArguments():
     parser = argparse.ArgumentParser(description='Script to import profiles data')
-    parser.add_argument('--ifiles', '-i', type=str, help='Input file', nargs='+')
-    parser.add_argument('--log', '-l', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help='Log-level')
-    parser.add_argument('--username', '-u', type=str, help='C8Y Username')
-    parser.add_argument('--password', '-p', type=str, help='C8Y Password')
-    parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
-    parser.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
-    parser.add_argument('--disable-ssl-verification', action='store_false')
+    export_arg = parser.add_argument_group('Import')
+    export_arg.add_argument('--ifiles', '-i', type=str, help='Input file', nargs='+')
+    export_arg.add_argument('--log', '-l', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help='Log-level')
+    export_arg.add_argument('--username', '-u', type=str, help='C8Y Username')
+    export_arg.add_argument('--password', '-p', type=str, help='C8Y Password')
+    export_arg.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
+    export_arg.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
+    export_arg.add_argument('--disable-ssl-verification', action='store_false')
 
     args = parser.parse_args()
 

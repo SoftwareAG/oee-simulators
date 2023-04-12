@@ -4,7 +4,7 @@ import simulators.extras.Environment as Ex_Im_Env
 
 from datetime import timezone, datetime, timedelta
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
-from simulators.main.cumulocityAPI import CumulocityAPI
+from simulators.main.cumulocityAPI import CumulocityAPI, C8Y_USER, C8Y_PASSWORD, C8Y_TENANT, C8Y_BASEURL
 from unittest.mock import patch
 from subprocess import call
 from simulators.main.simulator import load
@@ -49,7 +49,7 @@ class Test(unittest.TestCase):
             # Take export time period
             date_from, date_to = Utils.set_time_period()
             # Run the ExportProfileData.py script
-            call(["python", "ExportProfileData.py", "--device-ids", f"{profile_id}"])
+            call(["python", "ExportProfileData.py", "--device-ids", f"{profile_id}", "--username", f"{C8Y_USER}", "--password", f"{C8Y_PASSWORD}", "--tenant-id", f"{C8Y_TENANT}", "--baseurl", f"{C8Y_BASEURL}"])
             filename = f"{external_device_id}_profile"
             # Check if the sim_001_profile.json is created
             profile_path = f"export_data/{filename}.json"

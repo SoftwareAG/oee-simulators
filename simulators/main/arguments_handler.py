@@ -14,19 +14,19 @@ credentials.add_argument('--username', '-u', type=str, help='C8Y Username')
 credentials.add_argument('--test', '-test', action='store_true', help='Flag to enable test mode')
 
 # profile_generator arguments
-profile_generator_mode = parser.add_mutually_exclusive_group()
+profile_generator_mode = parser.add_argument_group('Profile_generator')
 profile_generator_mode.add_argument("--create-profiles", "-c",  action="store_true", dest="create_profiles",help="create profiles")
 profile_generator_mode.add_argument("--remove-simulator-profiles-via-oee", "-r", action="store_true", dest="remove_simulator_profiles_via_oee", help="remove all simulator profiles using the OEE API provided by oee-bundle")
 profile_generator_mode.add_argument("--delete-simulator-profiles", "-d", action="store_true", dest="delete_simulator_profiles", help="delete all simulator profiles using the C8Y inventory API (useful if oee-bundle is not working/available")
 profile_generator_mode.add_argument("--create-categories", "-cat", action="store_true", dest="create_categories", help="create or update calculation categories")
 profile_generator_mode.add_argument("--delete-categories", "-dcat", action="store_true", dest="delete_categories", help="delete all calculation categories")
 
+args = parser.parse_args()
+print(args)
 def get_credentials():
-    args = parser.parse_args()
     return args.baseurl, args.tenant_id, args.username, args.password, args.test
 
 def get_profile_generator_mode():
-    args = parser.parse_args()
     if args.create_profiles:
         return 'createProfiles'
     elif args.remove_simulator_profiles_via_oee:
