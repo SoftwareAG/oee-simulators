@@ -351,7 +351,7 @@
     {
         "type": "Simulator",
         "id": "sim_014",
-        "label": "Normal #14 with with two shifts",
+        "label": "Normal #14 with two shifts",
         "locationId": "TwoShiftLocation",
         "enabled": true,
         "events": [
@@ -377,7 +377,7 @@
     {
         "type": "Simulator",
         "id": "sim_015",
-        "label": "Normal #15 with with three shifts",
+        "label": "Normal #15 with three shifts",
         "locationId": "ThreeShiftLocation",
         "enabled": true,
         "events": [
