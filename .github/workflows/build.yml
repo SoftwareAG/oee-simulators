@@ -6,10 +6,15 @@ on:
       environment:
         required: true
         type: string
+
     outputs:
       release_version:
         description: "The release version variable"
         value: ${{ jobs.build-upload.outputs.release_version }}
+
+    secrets:
+      C8Y_PASSWORD:
+        required: true
 
   workflow_dispatch:
     inputs:
