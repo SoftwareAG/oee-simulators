@@ -1,16 +1,14 @@
-import shutil, unittest, logging, os
-from datetime import timezone, datetime, timedelta
-
-import config.root # Set source directory
+import sys, unittest, logging, os
+import config.root # Configure root directories
 import simulators.extras.Environment as Ex_Im_Env
 
+from datetime import timezone, datetime, timedelta
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
 from simulators.main.cumulocityAPI import CumulocityAPI
 from unittest.mock import patch
 from subprocess import call
 from simulators.main.simulator import load
 from simulators.main.interface import datetime_to_string
-
 
 log = logging.getLogger("Test Import Export")
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
@@ -106,4 +104,22 @@ class Utils():
         return date_from, date_to
 
 if __name__ == '__main__':
-    unittest.main()
+    # create a test suite
+    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+
+    # create a test runner
+    runner = unittest.TextTestRunner()
+
+    # run the test suite using the test runner
+    result = runner.run(suite)
+
+    # print the test result summary
+    log.info(f"Executed: {result.testsRun}")
+    log.info(f"Failed: {len(result.failures)}")
+    log.info(f"Errors: {len(result.errors)}")
+
+    # return True if no failures or errors, False otherwise
+    if len(result.failures) == 0 and len(result.errors) == 0:
+        sys.exit(0)
+    else:
+        sys.exit(1)

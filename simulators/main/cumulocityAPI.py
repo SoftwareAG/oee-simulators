@@ -1,9 +1,14 @@
 import json, os, logging, requests, base64
 
-C8Y_BASEURL = os.environ.get('C8Y_BASEURL') or 'http://localhost:8080'
-C8Y_TENANT = os.environ.get('C8Y_TENANT') or 't100'
-C8Y_USER = os.environ.get('C8Y_USER') or 'test'
-C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD') or 'test'
+from credentials_handler import check_credentials_availability
+
+C8Y_BASEURL = os.environ.get('C8Y_BASEURL')
+C8Y_TENANT = os.environ.get('C8Y_TENANT')
+C8Y_USER = os.environ.get('C8Y_USER')
+C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD')
+
+log = logging.getLogger("C8yAPI")
+C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD = check_credentials_availability(C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD)
 
 MOCK_REQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
 
@@ -30,8 +35,6 @@ MEASUREMENT_COLLECTIONS_HEADERS = {
     'Accept': 'application/vnd.com.nsn.cumulocity.measurementcollection+json',
     'Authorization': 'Basic ' + user_and_pass
 }
-
-log = logging.getLogger("C8yAPI")
 
 class CumulocityAPI:
 
@@ -170,7 +173,7 @@ class CumulocityAPI:
             try:
                 return int(response.text)
             except Exception as e:
-                log.warn(f'cannot convert "${response.text}" to number. exception: {e}')
+                log.warning(f'cannot convert "${response.text}" to number. exception: {e}')
                 return 0
         else:
             self.log_warning_on_bad_response(response)
@@ -298,7 +301,7 @@ class CumulocityAPI:
         response = requests.get(C8Y_BASEURL + f'/tenant/options/{category}', headers=C8Y_HEADERS)
         if response.ok:
             return response.json()
-        log.warn(f'Could not get any tenant options for category {category}. Response status code is: {response}, content: {response.text}')
+        log.warning(f'Could not get any tenant options for category {category}. Response status code is: {response}, content: {response.text}')
         return {}
 
     def get_profile_id(self, deviceID):
@@ -308,7 +311,7 @@ class CumulocityAPI:
             try:
                 return response.json()['managedObjects'][0]['id']
             except Exception as e:
-                log.warn(f'Cannot get id of profile: "{response.text}". exception: {e}')
+                log.warning(f'Cannot get id of profile: "{response.text}". exception: {e}')
                 return ""
         else:
             self.log_warning_on_bad_response(response)

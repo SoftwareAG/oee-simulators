@@ -2,25 +2,54 @@ name: Build oee-simulators
 
 on:
   workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+
+    outputs:
+      release_version:
+        description: "The release version variable"
+        value: ${{ jobs.build-upload.outputs.release_version }}
+
+    secrets:
+      C8Y_PASSWORD:
+        required: true
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: environment
+        description: Name of the environment to use
+        default: "oee-dev"
+        required: true
 
 jobs:
+  call-test-workflow:
+    uses: ./.github/workflows/test.yml
+    with:
+      environment: ${{ inputs.environment }}
+    secrets:
+      C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
+
   build-upload:
+    needs: call-test-workflow
     runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.update-version-number.outputs.release_version }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
           path: 'repo'
 
-      - name: Set branch name
-        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-
       - name: Update version number
+        id: update-version-number
         run: |
           cd repo/simulators
           SIMULATOR_VERSION=${GITHUB_RUN_NUMBER}
           sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
-          echo "RELEASE_VERSION=${SIMULATOR_VERSION}" >> $GITHUB_ENV
+          echo "release_version=${SIMULATOR_VERSION}" >> $GITHUB_OUTPUT
 
       - name: Build Docker image
         run: |
@@ -36,7 +65,3 @@ jobs:
           path: |
             repo/simulators/image.tar
             repo/simulators/cumulocity.json
-
-  call-release-workflow:
-    needs: build-upload
-    uses: ./.github/workflows/release.yml

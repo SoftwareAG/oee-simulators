@@ -1,5 +1,6 @@
+import sys
 import unittest, logging, os
-import config.root # Set source directory
+import config.root # Configure root directories
 
 from datetime import datetime, timedelta
 from simulators.main.oeeAPI import ProfileCreateMode, OeeAPI
@@ -11,7 +12,6 @@ from unittest.mock import patch
 
 log = logging.getLogger("Test")
 logging.basicConfig(format='%(asctime)s %(name)s:%(message)s', level=logging.DEBUG)
-
 
 class Test(unittest.TestCase):
     def setUp(self):
@@ -262,5 +262,22 @@ class Utils:
 
 
 if __name__ == '__main__':
-    # begin the unittest.main()
-    unittest.main()
+    # create a test suite
+    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+
+    # create a test runner
+    runner = unittest.TextTestRunner()
+
+    # run the test suite using the test runner
+    result = runner.run(suite)
+
+    # print the test result summary
+    log.info(f"Executed: {result.testsRun}")
+    log.info(f"Failed: {len(result.failures)}")
+    log.info(f"Errors: {len(result.errors)}")
+
+    # return True if no failures or errors, False otherwise
+    if len(result.failures) == 0 and len(result.errors) == 0:
+        sys.exit(0)
+    else:
+        sys.exit(1)
