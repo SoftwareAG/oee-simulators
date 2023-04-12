@@ -17,8 +17,6 @@ on:
         type: environment
         description: Name of the environment to use
         default: "oee-dev"
-        options:
-          oee-dev: oee-dev Environment
         required: true
 
   push:
@@ -33,7 +31,7 @@ env:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'oee-dev' }}
+    environment: ${{ inputs.environment }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -42,7 +40,7 @@ jobs:
 
       - name: Check Environment
         run:
-          echo "Running on environment ${{ inputs.environment || 'oee-dev' }}"
+          echo "Running on environment ${{ inputs.environment }}"
 
       - name: Run tests
         id: tests
