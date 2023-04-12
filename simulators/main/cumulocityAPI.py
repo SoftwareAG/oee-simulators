@@ -1,6 +1,10 @@
 import json, os, logging, requests, base64
 
+<<<<<<< HEAD
 from arguments_handler import check_credentials_availability
+=======
+from credentials_handler import check_credentials_availability
+>>>>>>> main
 
 C8Y_BASEURL = os.environ.get('C8Y_BASEURL')
 C8Y_TENANT = os.environ.get('C8Y_TENANT')
@@ -8,7 +12,11 @@ C8Y_USER = os.environ.get('C8Y_USER')
 C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD')
 
 log = logging.getLogger("C8yAPI")
+<<<<<<< HEAD
 C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, TEST_FLAG = check_credentials_availability(C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD)
+=======
+C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD = check_credentials_availability(C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD)
+>>>>>>> main
 
 MOCK_REQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
 

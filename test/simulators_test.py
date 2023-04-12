@@ -1,5 +1,4 @@
-import json
-import subprocess, sys, time, unittest, logging, os
+import json, subprocess, sys, time, unittest, logging, os
 import config.root # Configure root directories
 
 from datetime import datetime, timedelta
