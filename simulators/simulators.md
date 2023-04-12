@@ -51,9 +51,9 @@ The simulators will create machines sending events and measurements required to 
 - **Quality**:  the simulator produces an event `Piece_Ok`. The event might be produced with probability 80% shortly after the `Piece_Produced` event (both events have the same timestamp), which results in a quality of 80%.
 
 #### 10. Ideal Producer A80
-- **Availability**: the simulator produces an `Availability` event which has a field `status` that is 80% of time is `up`, which results in an availability of 80%.
-- **Performance**: the simulator produces an event `Piecec_Produced`. The event is produced 60 times per hour and it contains a field named `count` with value 5. The summary amount of events per hour is 300. 
-- **Quality**: the simulator produces a `Pieces_Ok` event. It contains a field named `count` with value 5. Those events follow a few seconds after a corresponding `Pieces_Produced` event (both events have the same timestamp). The summary amount of quality pieces is also 300 per hour, which results in a quality of 100%.
+- **Availability**: the simulator produces an `Availability` event which has a field `status` that is 80% of time is `up` and 20% is `down`, which results in an availability of 80%.
+- **Performance**: the simulator produces an event `Pieces_Produced`. The event is produced 60 times per hour and it contains fields named `piecesMinimumPerProduction` and `piecesMaximumPerProduction` with value 5. The summary amount of events per hour is 60 which results in the amount of production pieces is 300 per hours. 
+- **Quality**: the simulator produces a `Pieces_Ok` event. It contains fields named `piecesMinimumPerProduction` and `piecesMaximumPerProduction` with value 5. Those events follow a few seconds after a corresponding `Pieces_Produced` event (both events have the same timestamp). The summary amount of quality pieces is also 300 per hour, which results in a quality of 100%.
 
 #### 11. Ideal Producer with Categories
 - **Availability**: the simulator produces an `Availability` event which has a field `status` that is 90% of time is `up`, 7% `Planned maintenance`, 3% `Manual stop`, which results in an availability of 90%.
