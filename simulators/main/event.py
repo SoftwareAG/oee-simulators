@@ -81,10 +81,10 @@ class Event(interface.MachineType):
 
         event = self.type_fragment(event_definition)
 
-        statusses = event_definition.get("status") or ["up"]
+        statuses = event_definition.get("status") or ["up"]
         probabilities = event_definition.get("probabilities") or [0.5]
         durations = event_definition.get("durations") or [0]
-        status, duration = get_random_status(statusses, durations, probabilities)
+        status, duration = get_random_status(statuses, durations, probabilities)
         self.machine_up = (status == "up")
         event.update({'status': status})
 
@@ -266,11 +266,16 @@ def try_event(probability: float):
     return uniform(0.0, 1.0) <= probability
 
 
-def get_random_status(statusses, durations, probabilites):
+def get_random_status(statuses, durations, probabilities):
     '''returns a random status and duration of the given lists of status, durations and probabilites.
     '''
-    if len(statusses) != len(probabilites) or len(durations) != len(probabilites):
-        log.info("Length of statusses, duration and probabilites does not match. Set status to up")
+    if len(statuses) != len(probabilities) or len(durations) != len(probabilities):
+        log.info("Length of statuses, duration and probabilities does not match. Set status to up")
         return "up", 0
-    choice = choices([i for i in range(len(probabilites))], probabilites)[0]
-    return statusses[choice], durations[choice]
+
+    # Generate a list of indices based on the length of the probabilities list
+    indices = [i for i in range(len(probabilities))]
+    # Use the choices function from the random module to randomly select an index
+    # from the indices list based on the given probabilities
+    choice = choices(indices, probabilities)[0]
+    return statuses[choice], durations[choice]
