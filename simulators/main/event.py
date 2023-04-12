@@ -39,8 +39,8 @@ class Event(interface.MachineType):
                 return frequency / 3600.0
             if event_type == "Pieces_Produced":
                 frequency = event_definition.get("frequency")
-                countMaximumPerHour = event_definition.get("countMaximumPerHour")
-                return frequency * countMaximumPerHour / 3600.0
+                piecesMaximumPerProduction = event_definition.get("piecesMaximumPerProduction")
+                return frequency * piecesMaximumPerProduction / 3600.0
 
         return 0.0
 
@@ -138,12 +138,14 @@ class Event(interface.MachineType):
 
         self.produce_pieces()
 
-        countMaximumPerHour = event_definition.get("countMaximumPerHour") or 10
+        piecesMinimumPerProduction = event_definition.get("piecesMinimumPerProduction") or 1
+        piecesMaximumPerProduction = event_definition.get("piecesMaximumPerProduction") or 10
+        piecesPerProduction = randint(piecesMinimumPerProduction, piecesMaximumPerProduction)
 
         frequency = event_definition.get("frequency") or 1
 
         event = self.type_fragment(event_definition)
-        pieces_produced = self.pick_pieces(frequency * countMaximumPerHour / 3600.0)
+        pieces_produced = self.pick_pieces(frequency * piecesPerProduction / 3600.0)
         event.update({"count": pieces_produced})
         event.update(self.get_production_info())
 
@@ -164,15 +166,15 @@ class Event(interface.MachineType):
     def on_pieces_ok_event(self, event_definition, task):
         event = self.type_fragment(event_definition)
 
-        countMinimumPerHour = event_definition.get("countMinimumPerHour") or 0
-        countMaximumPerHour = event_definition.get("countMaximumPerHour") or 10
+        piecesMinimumPerProduction = event_definition.get("piecesMinimumPerProduction") or 0
+        piecesMaximumPerProduction = event_definition.get("piecesMaximumPerProduction") or 10
 
         piece_produced_timestamp = None
         if hasattr(task, 'extra'):
             piece_produced_timestamp = task.extra["timestamp"]
-            countMaximumPerHour = task.extra.get("pieces_produced") or countMaximumPerHour
+            piecesMaximumPerProduction = task.extra.get("pieces_produced") or piecesMaximumPerProduction
 
-        event.update({"count": randint(min(countMinimumPerHour, countMaximumPerHour), countMaximumPerHour)})
+        event.update({"count": randint(min(piecesMinimumPerProduction, piecesMaximumPerProduction), piecesMaximumPerProduction)})
 
         self.send_event(event, piece_produced_timestamp)
 
