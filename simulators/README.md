@@ -38,16 +38,17 @@ Detailed feature list:
     } 
     ```
   the expected quality would be 80% (*followedBy.frequency/frequency * 100%*)
-- For the `Pieces_Produced`, the simulator produces multiple pieces at a time so the minimum (`countMinimumPerHour`) and maximum pieces per production (`countMaximumPerHour`) must be set
+
+- For the `Pieces_Produced`, the simulator produces multiple pieces at a time so the minimum (`piecesMinimumPerProduction`) and maximum pieces per production (`piecesMaximumPerProduction`) must be set
   ```
     "type": "Pieces_Produced",
     "frequency": 6,
-    "countMinimumPerHour": 1,
-    "countMaximumPerHour": 10,
+    "piecesMinimumPerProduction": 1,
+    "piecesMaximumPerProduction": 10,
     "followedBy": {
         "type": "Pieces_Ok",
-        "countMinimumPerHour": 0,
-        "countMaximumPerHour": 10,
+        "piecesMinimumPerProduction": 0,
+        "piecesMaximumPerProduction": 10,
         "frequency": 6
     }
   ```
