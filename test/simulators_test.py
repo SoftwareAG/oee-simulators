@@ -123,7 +123,7 @@ class Test(unittest.TestCase):
         log.info(f"Removed the {self.device_model_with_events.get('label')} with id {device_id}")
         log.info('-' * 100)
 
-    def test_shifplan_creation(self):
+    def test_shiftplan_creation(self):
         log.info("Start testing create shiftplan")
         # Create shiftplan
         shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), self.shiftplans))
