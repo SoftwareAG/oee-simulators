@@ -12,7 +12,7 @@ timeFormat = "%Y-%m-%dT%H:%M:%S.%fZ"
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 file_log_level = logging.DEBUG
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
-json_filename_list_to_import, console_log_level, c8y, password, verifySslCertificate = ArgumentsAndCredentialsHandler.HandleImportArguments()
+json_filename_list_to_import, console_log_level, c8y, password, verifySslCertificate, TEST_FLAG = ArgumentsAndCredentialsHandler.HandleImportArguments()
 C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.SetupHeadersForAPIRequest(tenant_id=c8y.tenant_id, username= c8y.username, password=password)
 ####################################################
 # Setup Log
@@ -150,6 +150,10 @@ def AddJsonExtensionToFileNameList(list_of_filenames):
 
 
 if __name__ == '__main__':
+    if TEST_FLAG:
+        # Change to the 'test' directory
+        os.chdir("../../test")
+
     if json_filename_list_to_import:
         listOfFileNamesWithExtension = AddJsonExtensionToFileNameList(list_of_filenames=json_filename_list_to_import)
         listOfFilePaths = ReplaceFileNameWithFilePathInList(list_of_files=listOfFileNamesWithExtension)

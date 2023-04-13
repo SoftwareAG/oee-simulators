@@ -34,11 +34,13 @@ class Test(unittest.TestCase):
     def test_export_import_profile_data(self, mock_error):
         # Get current working directory
         current_dir = os.getcwd()
-        # Change working directory to extras to run script and export data
-        try:
-            os.chdir("../simulators/extras") # IDE
-        except:
-            os.chdir("simulators/extras") # Command line
+        # Extracts the base name of the current directory
+        base_dir = os.path.basename(current_dir)
+        # If the working directory is test then change to extras
+        if base_dir == "oee-simulators":
+            os.chdir("simulators/extras")
+        elif base_dir == "test":
+            os.chdir("../simulators/extras")
 
         try:
             external_device_id = "sim_001"
@@ -47,13 +49,20 @@ class Test(unittest.TestCase):
 
             log.info("Begin export data")
             # Take export time period
+
             date_from, date_to = Utils.set_time_period()
+
             # Run the ExportProfileData.py script
-            call(["python", "ExportProfileData.py", "--device-ids", f"{profile_id}", "--username", f"{C8Y_USER}", "--password", f"{C8Y_PASSWORD}", "--tenant-id", f"{C8Y_TENANT}", "--baseurl", f"{C8Y_BASEURL}"])
+            call(["python", "ExportProfileData.py", "--device-ids", f"{profile_id}", "--username", f"{C8Y_USER}", "--password", f"{C8Y_PASSWORD}", "--tenant-id", f"{C8Y_TENANT}", "--baseurl", f"{C8Y_BASEURL}", "--test"])
+
             filename = f"{external_device_id}_profile"
             # Check if the sim_001_profile.json is created
             profile_path = f"export_data/{filename}.json"
+
+            Utils.change_working_dir_between_extras_and_test()
+
             self.assertTrue(os.path.exists(profile_path), msg=f"{filename}.json not found")
+
             # Open the JSON file and load its contents
             data = load(profile_path)
             # Check if the data file is empty
@@ -64,8 +73,11 @@ class Test(unittest.TestCase):
             self.cumulocity_api.delete_measurements(date_from=date_from,date_to=date_to,device_id=profile_id)
 
             log.info("Begin import data")
+
+            Utils.change_working_dir_between_extras_and_test()
+
             # Run the ImportData.py script and get the exit code
-            exit_code = call(["python", "ImportData.py", "--ifiles", f"{filename}"])
+            exit_code = call(["python", "ImportData.py", "--ifiles", f"{filename}", "--username", f"{C8Y_USER}", "--password", f"{C8Y_PASSWORD}", "--tenant-id", f"{C8Y_TENANT}", "--baseurl", f"{C8Y_BASEURL}", "--test"])
             # Check if the exit code is 0
             self.assertEqual(exit_code, 0, msg="ImportData.py script failed to run")
 
@@ -102,6 +114,14 @@ class Utils():
         date_to = datetime_to_string(date_to)
 
         return date_from, date_to
+    @staticmethod
+    def change_working_dir_between_extras_and_test():
+        base_dir = os.path.basename(os.getcwd())
+        # If the working directory is test then change to extras
+        if base_dir == "test":
+            os.chdir("../simulators/extras")
+        elif base_dir == "extras":
+            os.chdir("../../test")
 
 if __name__ == '__main__':
     # create a test suite
