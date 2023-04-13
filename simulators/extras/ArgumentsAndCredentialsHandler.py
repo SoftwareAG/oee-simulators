@@ -53,6 +53,7 @@ def HandleExportArguments():
     import_arg.add_argument('--password', '-p', type=str, help='C8Y Password')
     import_arg.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
     import_arg.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
+    import_arg.add_argument('--test', '-test', action='store_true', help='Flag to enable test mode')
     args = parser.parse_args()
 
     data_type = args.data_type
@@ -106,12 +107,14 @@ def HandleExportArguments():
     if not tenant:
         tenant = Environment.C8Y_TENANT
 
+    test = args.test
+
     c8y = CumulocityApi(base_url=baseurl,  # the url of your Cumulocity tenant here
                         tenant_id=tenant,  # the tenant ID of your Cumulocity tenant here
                         username=username,  # your Cumulocity IoT username
                         password=password)  # your Cumulocity IoT password
 
-    return data_type, device_ids_list, create_from, create_to, log_level, c8y, password
+    return data_type, device_ids_list, create_from, create_to, log_level, c8y, password, test
 
 
 def HandleImportArguments():

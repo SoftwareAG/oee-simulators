@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
 C8Y_OEE_SIMULATOR_DEVICES_GROUP = "c8y_EventBasedSimulator"
-DATA_TYPE, DEVICE_ID_LIST, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y, PASSWORD = ArgumentsAndCredentialsHandler.HandleExportArguments()
+DATA_TYPE, DEVICE_ID_LIST, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y, PASSWORD, TEST_FLAG = ArgumentsAndCredentialsHandler.HandleExportArguments()
 C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.SetupHeadersForAPIRequest(tenant_id=c8y.tenant_id, username= c8y.username, password=PASSWORD)
 ####################################################
 # Setup Log
@@ -200,6 +200,10 @@ if __name__ == '__main__':
     createFrom, createTo = SetTimePeriodToExportData()
     consoleLogger.info(f"Export data which is created after/from: {createFrom}")
     consoleLogger.info(f"and created before/to: {createTo}")
+
+    if TEST_FLAG:
+        # Change to the 'test' directory
+        os.chdir("../../test")
 
     if not DEVICE_ID_LIST:
         ExportAllProfileDataFromChildDevices(createFrom=createFrom, createTo=createTo)
