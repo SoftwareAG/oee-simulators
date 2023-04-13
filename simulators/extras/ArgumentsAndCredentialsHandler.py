@@ -122,6 +122,7 @@ def HandleImportArguments():
     parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
     parser.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
     parser.add_argument('--disable-ssl-verification', action='store_false')
+    parser.add_argument('--strict', action='store_false')
 
     args = parser.parse_args()
 
@@ -162,12 +163,14 @@ def HandleImportArguments():
 
     VERIFY_SSL_CERTIFICATE = args.disable_ssl_verification
 
+    STRICT_MODE = args.strict
+
     c8y = CumulocityApi(base_url=BASEURL,  # the url of your Cumulocity tenant here
                         tenant_id=TENANT,  # the tenant ID of your Cumulocity tenant here
                         username=USERNAME,  # your Cumulocity IoT username
                         password=PASSWORD)  # your Cumulocity IoT password
 
-    return INPUT_FILE_LIST, LOG_LEVEL, c8y, PASSWORD, VERIFY_SSL_CERTIFICATE
+    return INPUT_FILE_LIST, LOG_LEVEL, c8y, PASSWORD, VERIFY_SSL_CERTIFICATE, STRICT_MODE
 
 
 def RemoveTrailingSlashFromBaseUrl(baseUrl):
