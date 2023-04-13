@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
 
     def test_get_or_create_device_id_with_full_model_and_delete(self):
         log.info("Start testing create device and adding external id")
-        device_id = Utils.create_device(self.device_model)
+        device_id = Utils.create_device(self.device_model_with_events)
         # null device_id will fail the test
         self.assertIsNotNone(device_id)
         self.cumulocity_api.delete_managed_object(device_id)
@@ -61,7 +61,7 @@ class Test(unittest.TestCase):
 
     def test_create_and_activate_oee_profile(self):
         log.info("Start testing create and activate oee profile")
-        device_id = Utils.create_device(device_model=self.device_model)
+        device_id = Utils.create_device(device_model=self.device_model_with_events)
 
         # Get current directory path
         current_dir = os.getcwd()
@@ -74,7 +74,7 @@ class Test(unittest.TestCase):
             os.chdir("test")
 
         try:
-            device_profile_info = self.oee_api.create_and_activate_profile(external_id=self.device_model.get('id'))
+            device_profile_info = self.oee_api.create_and_activate_profile(external_id=self.device_model_with_events.get('id'))
             # null device_profile_info will fail the test
             self.assertIsNotNone(device_profile_info)
         finally:
@@ -86,7 +86,7 @@ class Test(unittest.TestCase):
 
     def test_create_update_organization_structure(self):
         log.info("Start testing create hierarchy asset (organization structure)")
-        device_id = Utils.create_device(self.device_model)
+        device_id = Utils.create_device(self.device_model_with_events)
         line_managed_object, site_managed_object = self.oee_api.create_or_update_asset_hierarchy(deviceIDs=device_id, line_description = "Simulator LINE", line_type = "LINE", site_description = "Simulator SITE", site_type = "SITE", oee_target = 80)
         self.assertIsNotNone(line_managed_object.get('hierarchy'))
         self.assertIsNotNone(site_managed_object.get('hierarchy'))
@@ -102,25 +102,25 @@ class Test(unittest.TestCase):
 
     def test_send_event(self):
         log.info("Start testing sending event")
-        device_id = Utils.create_device(self.device_model)
-        log.info(f"Created the {self.device_model.get('label')} with id {device_id}")
+        device_id = Utils.create_device(self.device_model_with_events)
+        log.info(f"Created the {self.device_model_with_events.get('label')} with id {device_id}")
         event = Utils.setup_events(device_id)
         response = self.cumulocity_api.send_event(event)
         self.assertIsNotNone(response)
         self.cumulocity_api.delete_managed_object(device_id)
-        log.info(f"Removed the {self.device_model.get('label')} with id {device_id}")
+        log.info(f"Removed the {self.device_model_with_events.get('label')} with id {device_id}")
         log.info('-' * 100)
 
 
     def test_send_measurement(self):
         log.info("Start testing create measurement")
-        device_id = Utils.create_device(self.device_model)
-        log.info(f"Created the {self.device_model.get('label')} with id {device_id}")
+        device_id = Utils.create_device(self.device_model_with_events)
+        log.info(f"Created the {self.device_model_with_events.get('label')} with id {device_id}")
         measurement = Utils.setup_measurements(device_id)
         response = self.cumulocity_api.create_measurements(measurement)
         self.assertIsNotNone(response)
         self.cumulocity_api.delete_managed_object(device_id)
-        log.info(f"Removed the {self.device_model.get('label')} with id {device_id}")
+        log.info(f"Removed the {self.device_model_with_events.get('label')} with id {device_id}")
         log.info('-' * 100)
 
     def test_shifplan_creation(self):
@@ -160,7 +160,7 @@ class Test(unittest.TestCase):
         # Create simulator.json
         Utils.setup_model(self)
         device_model = [
-            self.device_model,
+            self.device_model_with_events,
             self.device_model_with_measurements
         ]
         with open("simulator.json", "w") as f:
@@ -202,13 +202,13 @@ class Test(unittest.TestCase):
                     date_to = shiftplan.get('slotEnd')
 
             # Get event device id and profile id from device external id
-            event_device_id, event_profile_id = Utils.get_profile_and_device_ids_from_external_id(self, self.device_model.get('id'))
+            event_device_id, event_profile_id = Utils.get_profile_and_device_ids_from_external_id(self, self.device_model_with_events.get('id'))
             # Get measurement device id and profile id from device external id
             measurement_device_id, measurement_profile_id = Utils.get_profile_and_device_ids_from_external_id(self, self.device_model_with_measurements.get('id'))
 
             # Get events from event simulator
             events = self.cumulocity_api.get_events(date_from=date_from, date_to=date_to, device_id=event_device_id)
-            self.assertTrue(len(events.get('events')) > 0 , msg=f'No events found for simulator {self.device_model.get("label")}')
+            self.assertTrue(len(events.get('events')) > 0 , msg=f'No events found for simulator {self.device_model_with_events.get("label")}')
 
             # Get measurements from measurement simulator
             measurements = self.cumulocity_api.get_measurements(date_from=date_from, date_to=date_to, device_id=measurement_device_id)
@@ -225,7 +225,7 @@ class Utils:
         self.shiftplans = None
         self.device_model_no_label = None
         self.device_model_no_id = None
-        self.device_model = None
+        self.device_model_with_events = None
         self.device_model_with_measurements = None
 
     @staticmethod
@@ -235,7 +235,7 @@ class Utils:
         return device_id
 
     def setup_model(self):
-        self.device_model = {
+        self.device_model_with_events = {
             "type": "Simulator",
             "id": "sim_001_test",
             "label": "Test Simulator with events",
