@@ -325,7 +325,7 @@
     {
         "type": "Simulator",
         "id": "sim_013",
-        "label": "Normal #13 with with one day shift",
+        "label": "Normal #13 with one day shift",
         "locationId": "OneShiftLocation",
         "enabled": true,
         "events": [
@@ -508,7 +508,8 @@
     {
         "type": "Simulator",
         "id": "sim_019",
-        "label": "Measurement Simulator #4 with with three shifts",
+        "label": "Measurement Simulator #4 with three shifts",
+        "locationId": "ThreeShiftLocation",
         "enabled": true,
         "measurements": [
             {
@@ -536,7 +537,8 @@
     {
         "type": "Simulator",
         "id": "sim_020",
-        "label": "Measurement Simulator #5 with Location",
+        "label": "Measurement Simulator #5 with one day shift",
+        "locationId": "OneShiftLocation",
         "enabled": true,
         "measurements": [
             {

@@ -1,6 +1,6 @@
 ## Event based Simulators
 
-### Simulated Devices
+###  [Simulated Devices](main/simulator.json)
 
 #### Events simulators
 The simulators will create machines sending events required to configure Cumulocity IoT OEE app to calculate **OEE** from **Availability**, **Performance** and **Quality**.
@@ -77,13 +77,62 @@ The simulators will create machines sending events required to configure Cumuloc
 - **Quality**:  the simulator produces an event `Piece_Ok`. The event is produced shortly after the `Piece_Produced` event (both events have the same timestamp). The event is produced about 20 times per hour which results in a quality of 80%.
 
 ##### 15. Normal #15 with three shifts
-- **Availability**: the simulator produces an `Availability` event which has a field `status` that is either `up` or `down`. This event is produced 5-10 times per hour with 90% being `up`. The simulator also follows the shiftplan `TwoShiftLocation` which works in 3 shifts, each last for 8 hours with a short break 30 minutes.
+- **Availability**: the simulator produces an `Availability` event which has a field `status` that is either `up` or `down`. This event is produced 5-10 times per hour with 90% being `up`. The simulator also follows the shiftplan `ThreeShiftLocation` which works in 3 shifts, each last for 8 hours with a short break 30 minutes.
 - **Performance**: the simulator produces an event `Piece_Produced`. The event is produced about 25 times per hour.
 - **Quality**:  the simulator produces an event `Piece_Ok`. The event is produced shortly after the `Piece_Produced` event (both events have the same timestamp). The event is produced about 20 times per hour which results in a quality of 80%.
 
 #### Measurements simulators
 The simulators will create machines sending measurements to Cumulocity IoT OEE app.
 
+##### 16. Measurement Simulator #1
+- **Pressure**: \
+    "series": "P"\
+    "unit": "hPa" 
+
+- **PieceProduced**:\
+    "series": "Width"\
+    "unit": "mm"
+
+##### 17. Measurement Simulator #2
+- **Pressure**:\
+    "series": "P" \
+    "unit": "hPa" 
+- **Pieces**:\
+    "series": "Produced"\
+    "unit": "pcs"
+- **Pieces**:\
+    "series": "OK"\
+    "unit": "pcs"
+
+##### 18. Measurement Simulator #3
+- **ProductionTime**:\
+    "series": "T"\
+    "unit": "s"
+- **Pieces**:\
+    "series": "Produced"\
+    "unit": "pcs"
+- **Pieces**:\
+    "series": "OK" \
+    "unit": "pcs"
+
+##### 19. Measurement Simulator #4 with three shifts
+The simulator also follows the shiftplan `ThreeShiftLocation` which works in 3 shifts, each last for 8 hours with a short break 30 minutes.
+- **Pressure**:\
+    "series": "P"\
+    "unit": "hPa"
+- **Pieces**:\
+    series": "Produced"\
+    unit": "pcs"
+
+##### 20. Measurement Simulator #5 with one day shift
+The simulator follows the shiftplan `OneShiftLocation` which works 8 hours a day with a short break 30 minutes.
+- **Pressure**:
+                "series": "P",
+                "unit": "hPa",
+- **Pieces**:
+                "series": "Produced",
+                "unit": "pcs"
+- 
 ### OEE profile settings for events simulators
 
 Labels not mentioned explicitly in the following table, such as for example `Profile Name`, `Machine Location` or `Workpiece Name`, can be arbitrary values as they don't have any influence on the calculation. 
@@ -119,3 +168,11 @@ The computation method is `PPQ` for all profiles. Matching settings for each pro
 - AQA: Actual Quality Amount
 
 ### OEE profile settings for measurements simulators
+
+| Simulator                                   | Measurements                                                                                                                              | Others                         |
+|---------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| Measurement Simulator #1                    | `Pressure` (series: P, unit: hPa, freq: 4), `PieceProduced` (series: Width, unit: mm, freq: 2)                                            | --------                       |
+| Measurement Simulator #2                    | `Pressure` (series: P, unit: hPa, freq: 4), `Pieces` (series: Produced, unit: pcs, freq: 2), `Pieces` (series: OK, unit: pcs, freq: 2)    | --------                       |
+| Measurement Simulator #3                    | `ProductionTime` (series: T, unit: s, freq: 4), `Pieces` (series: Produced, unit: pcs, freq: 2), `Pieces` (series: OK, unit: pcs, freq: 2) | --------                       |
+| Measurement Simulator #4 with three shifts  | `Pressure` (series: P, unit: hPa, freq: 4), `Pieces` (series: Produced, unit: pcs, freq: 2)                                               | shiftplan `ThreeShiftLocation` |
+| Measurement Simulator #5 with one day shift | `Pressure` (series: P, unit: hPa, freq: 4), `Pieces` (series: Produced, unit: pcs, freq: 2)                                               | shiftplan `OneShiftLocation`   |
