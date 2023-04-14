@@ -10,7 +10,44 @@ There are extra features in [extras](extras):
 
 ## Simulator Microservice
 
-Creates simulators in Cumulocity based on the definitions in [simulators.json](main/simulator.json). Those simulators can be used for profiles in the OEE App. The currently supported simulators and the corresponding profiles are described [here](simulators.md).
+### Simulator definition
+Creating simulators in Cumulocity based on the definitions in [simulators.json](main/simulator.json). Those simulators can be used for profiles in the OEE App. The currently supported simulators and the corresponding profiles are described [here](simulators.md).
+
+Example for a simulator definition:
+```
+  [
+    {
+        "type": "Simulator",
+        "id": "sim_001",
+        "label": "Normal #1",
+        "enabled": true,
+        "events": [
+            {
+                "type": "Availability",
+                "minimumPerHour": 5,
+                "maximumPerHour": 10,
+                "status": ["up", "down"],
+                "probabilities": [0.9, 0.1],
+                "durations": [0, 0],
+                "forceStatusDown": true
+            }
+        ],
+        "measurements": [
+            {
+                "type": "PumpPressure",
+                "fragment": "Pressure",
+                "series": "P",
+                "unit": "hPa",
+                "valueDistribution": "uniform",
+                "minimumValue": 1000.0,
+                "maximumValue": 1500.0,
+                "minimumPerHour": 4.0,
+                "maximumPerHour": 4.0
+            }
+        ]
+    }
+  ]
+```
 
 Detailed feature list:
 - configuration in JSON, no need to write code
@@ -26,19 +63,27 @@ Detailed feature list:
     ```
     "frequency": 20
     ```
-- the availability of machine is expressed as probability value with range from 0.0 to 1.0
-- the timestamp of the following `Piece_ok` event is the same as corresponding `Piece_Produced` event
-- the expected quality of production is configurable.  
-    ```
-    "type": "Piece_Produced",
-    "frequency": 25,
-    "followedBy": {
-        "type": "Piece_Ok",
-        "frequency": 20
-    } 
-    ```
-  the expected quality would be 80% (*followedBy.frequency/frequency * 100%*)
+  
+- the availability of machine is expressed as probability value `probabilities` with range from 0.0 to 1.0. The `probabilities` is an array which has correspondence with the `status` array.
+  ```
+    "status": ["up", "down"],
+    "probabilities": [0.9, 0.1]
+  ```
+  In this case, the up status has 90% to happen and the down status has the remain 10%.
 
+- the timestamp of the following `Piece_ok` event is the same as corresponding `Piece_Produced` event
+  - the expected quality of production is configurable.  
+  ```
+    "events": [
+      "type": "Piece_Produced",
+      "frequency": 25,
+      "followedBy": {
+          "type": "Piece_Ok",
+          "frequency": 20
+      }
+    ]
+  ```
+    the expected quality would be 80% (*followedBy.frequency/frequency * 100%*)
 - For the `Pieces_Produced`, the simulator produces multiple pieces at a time so the minimum (`piecesMinimumPerProduction`) and maximum pieces per production (`piecesMaximumPerProduction`) must be set
   ```
     "type": "Pieces_Produced",
@@ -52,24 +97,55 @@ Detailed feature list:
         "frequency": 6
     }
   ```
-- the kind of measurement that should be sent, can be defined by
-    ```
-    "type": "PumpPressure",
-    "fragment": "Pressure",
-    "series": "P",
-    ```
-  where "type" is optional and its default value is the value from the "fragment" property
-- Simulates shutdowns (no events or measurements are sent if machine is DOWN)
-- Written in Python and is easy to extend
+  - the kind of measurement that should be sent, can be defined by
+      ```
+      "measurements": [
+          "type": "PumpPressure",
+          "fragment": "Pressure",
+          "series": "P"
+      ]
+      ```
+    where "type" is optional and its default value is the value from the "fragment" property
+
+- Simulates shutdowns (no events or measurements are sent if simulator is DOWN or out of shift)
+
 - the main entry point is [simulator.py](main/simulator.py)
   - the script reads the configuration from [simulator.json](main/simulator.json) and creates a new device for every entry
   - the `id` property is used as `external_id` for the ManagedObjects to avoid creating multiple devices when redeploying/updating the microservice
+  
 - Simulators act according to given Shiftplans
   - Simulators are linked to shiftplans via locationId
-  - Shiftplans are polled once a day
-  - If a Simulator is not in Production time according to the given Shiftplan, it will not produce any  events
-  - At startup [shiftplans.json](main/shiftplans.json) is parsed and used to update the given timeslots whitin the shiftplan
-  - The `locationId's` presented in [shiftplans.json](main/shiftplans.json) are used to parse for all shiftplans used in the script and are the only shiftplans are considered for the polling
+  - If a Simulator is not in Production time according to the given Shiftplan, it will not produce any events and measurements.
+  - At startup [shiftplans.json](main/shiftplans.json) is parsed and used to update the given timeslots within the shiftplan.
+  - The `locationId's` presented in [shiftplans.json](main/shiftplans.json) are used to parse for all shiftplans used in the script but only a specific shiftplan is applied to a simulator if it define the `locationId` of a shift.
+  ```
+    {
+      "type": "Simulator",
+      "id": "sim_012",
+      "label": "Normal #12 with short shifts",
+      "locationId": "ShortShiftsLocation",
+      "enabled": true
+    }
+  ```
+  In this example, the ShortShiftsLocation shift is applied to the simulator sim_012.
+
+### Shiftplan definition
+```
+  [
+    {
+      "locationId": "OneShiftLocation",
+      "recurringTimeslots": [
+        { "id": "OneShiftLocation-DayShift", "seriesPostfix": "DayShift", "slotType": "PRODUCTION", "slotStart": "2022-07-13T08:00:00Z", "slotEnd": "2022-07-13T16:00:00Z", "description": "Day Shift", "active": true, "slotRecurrence": { "weekdays": [1, 2, 3, 4, 5] } },
+        { "id": "OneShiftLocation-Break", "slotType": "BREAK", "slotStart": "2022-07-13T12:00:00Z", "slotEnd": "2022-07-13T12:30:00Z", "description": "Day Shift Break", "active": true, "slotRecurrence": { "weekdays": [1, 2, 3, 4, 5] } }
+      ]
+    },
+    {...}
+  ]
+```
+This is an example of a shiftplan which contains a shift name `OneShiftLocation` in `locationId` field.
+The `recurringTimeslots` field is an array which define components of the shift. In this case, this shift has two parts: 
+  - `OneShiftLocation-DayShift` is the shift for `PRODUCTION`, in which the applied simulators will generate events and measurements. The length of the shift is defined by the abstraction between `slotEnd` and `slotStart` and the `active` field is set to true means that this component of the shift is activated. The field `slotRecurrence` defined which day of the week can the applied simulators work. `""weekdays": [1, 2, 3, 4, 5]` means the applied simulators will work from Monday to Friday.
+  - `OneShiftLocation-Break` is the shift for `BREAK`, in which the applied simulators will not generate events and measurements. The other setup is the same as above.
 
 ### Build the docker image
 
