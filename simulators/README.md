@@ -9,9 +9,17 @@ There are extra features in [extras](extras):
 - the **import data** to upload Measurements or/and Alarms from data json file to OEE profiles.
 
 ## Simulator Microservice
+Detailed feature list:
+- configuration in JSON, no need to write code.
+- automatically creates devices and sends data.
+- identifies devices using a configurable `externalId`.
+- devices can be disabled to not send any events and measurements.
+- Written in python which can be modified easily for further development.
+- Simulators work based on status and shift that it is assigned to.
 
 ### Simulator definition
 Creating simulators in Cumulocity based on the definitions in [simulators.json](main/simulator.json). Those simulators can be used for profiles in the OEE App. The currently supported simulators and the corresponding profiles are described [here](simulators.md).
+
 
 Example for a simulator definition:
 ```
@@ -49,11 +57,6 @@ Example for a simulator definition:
   ]
 ```
 
-Detailed feature list:
-- configuration in JSON, no need to write code
-- automatically creates devices and sends data
-- identifies devices using a configurable `externalId`
-- devices can be disabled to not send any events and measurements
 - the number of **events** and **measurements** **per hour** can be configured as a random number in a range
     ```
     "minimumPerHour": 5,
@@ -105,7 +108,9 @@ Detailed feature list:
           "series": "P"
       ]
       ```
-    where "type" is optional and its default value is the value from the "fragment" property
+    where "type" is optional and its default value is the value from the "fragment" property.
+  
+  - In measurements, `valueDistribution` is defined to let the simulator know which distribution formular to use to generate measurements. There are three choices that can be defined here: `uniform`, `uniformint`, `normal`.
 
 - Simulates shutdowns (no events or measurements are sent if simulator is DOWN or out of shift)
 
