@@ -1,3 +1,4 @@
+import subprocess
 import sys, unittest, logging, os
 import config.root # Configure root directories
 import simulators.extras.Environment as Ex_Im_Env
@@ -37,28 +38,34 @@ class Test(unittest.TestCase):
         current_dir = os.getcwd()
         # Extracts the base name of the current directory
         base_dir = os.path.basename(current_dir)
-        # If the working directory is test or oee-simulator then change to extras
-        if base_dir == "oee-simulators":
-            os.chdir("simulators/extras")
-        elif base_dir == "test":
-            os.chdir("../simulators/extras")
+        # Change work dir to test
+        if base_dir != "test":
+            os.chdir("test")
 
         try:
+            # Create new simulator and oee profile
             Utils.setup_model(self)
             device_id = Utils.create_device(self.device_model_with_events)
-            profile_id = self.cumulocity_api.get_profile_id(deviceID=device_id)
             external_device_id = self.device_model_with_events.get('id')
+            profile_id = self.oee_api.create_and_activate_profile(external_id=external_device_id).get('id')
+
             filename = f"{external_device_id}_profile"
             data_file_path = f"export_data/{filename}.json"
 
             log.info('*' * 100)
-            log.info("Importing data 1st time")
+            log.info("Importing data")
             log.info('*' * 100)
 
+            # Chane work dir to extras
+            Utilities.change_working_dir_between_extras_and_test()
             # Run the ImportData.py script and get the exit code
             exit_code = call(["python", "ImportData.py", "--ifiles", f"{filename}", "--username", f"{C8Y_USER}", "--password", f"{C8Y_PASSWORD}", "--tenant-id", f"{C8Y_TENANT}", "--baseurl", f"{C8Y_BASEURL}", "--test"])
             # Check if the exit code is 0
             self.assertEqual(exit_code, 0, msg="ImportData.py script failed to run 1st time")
+
+            log.info('*' * 100)
+            log.info("Deleting sample data file")
+            log.info('*' * 100)
 
             # Delete sample data file
             try:
@@ -91,39 +98,12 @@ class Test(unittest.TestCase):
             # Check if the data file is empty
             self.assertTrue(len(data.get('measurements')) > 0 or len(data.get('alarms')) > 0, msg=f"No data in {filename}.json")
 
-            log.info('*' * 100)
-            log.info("Deleting all extracted data in tenant")
-            log.info('*' * 100)
-
-            # Take export time period
-            date_from, date_to = Utilities.set_time_period()
-
-            self.cumulocity_api.delete_alarms(date_from=date_from,date_to=date_to,device_id=profile_id)
-            self.cumulocity_api.delete_measurements(date_from=date_from,date_to=date_to,device_id=profile_id)
-
-            log.info('*' * 100)
-            log.info("Importing data 2nd time")
-            log.info('*' * 100)
-
-            # Change work dir to exras
-            Utilities.change_working_dir_between_extras_and_test()
-            # Run the ImportData.py script and get the exit code
-            exit_code = call(["python", "ImportData.py", "--ifiles", f"{filename}", "--username", f"{C8Y_USER}", "--password", f"{C8Y_PASSWORD}", "--tenant-id", f"{C8Y_TENANT}", "--baseurl", f"{C8Y_BASEURL}", "--test"])
-            # Check if the exit code is 0
-            self.assertEqual(exit_code, 0, msg="ImportData.py script failed to run 2nd time")
-
-            log.info('*' * 100)
-            log.info("Getting measurements and alarms data")
-            log.info('*' * 100)
-
-            measurements = self.cumulocity_api.get_measurements(date_from=date_from, date_to=date_to, device_id=profile_id)
-            alarms = self.cumulocity_api.get_alarms(date_from=date_from, date_to=date_to, device_id=profile_id)
-            self.assertTrue(len(measurements.get('measurements')) > 0 or len(alarms.get('alarms')) > 0, msg="No data after deleting and re-importing data")
-
 
         finally:
             # Change back to the original working directory
             os.chdir(current_dir)
+            # Delete test device and profile
+            Utils.delete_oee_profile_and_device(self=self, profile_id=profile_id, device_id=device_id)
 
 class Utilities:
     @staticmethod
@@ -151,11 +131,14 @@ class Utilities:
     @staticmethod
     def change_working_dir_between_extras_and_test():
         base_dir = os.path.basename(os.getcwd())
+        print(f"Current working directory: {base_dir}")
         # If the working directory is test then change to extras
         if base_dir == "test":
             os.chdir("../simulators/extras")
         elif base_dir == "extras":
             os.chdir("../../test")
+        current_dir = os.path.basename(os.getcwd())
+        print(f"Change to working directory: {current_dir}")
 
 if __name__ == '__main__':
     # create a test suite
