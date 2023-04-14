@@ -38,6 +38,7 @@ Detailed feature list:
     } 
     ```
   the expected quality would be 80% (*followedBy.frequency/frequency * 100%*)
+
 - For the `Pieces_Produced`, the simulator produces multiple pieces at a time so the minimum (`piecesMinimumPerProduction`) and maximum pieces per production (`piecesMaximumPerProduction`) must be set
   ```
     "type": "Pieces_Produced",
