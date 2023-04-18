@@ -111,9 +111,9 @@ class Utilities:
         date_to = datetime.now().replace(tzinfo=timezone.utc)
         time_unit = Ex_Im_Env.TIME_UNIT
 
-        if time_unit == 'seconds' or not time_unit:
-            date_from = date_to - timedelta(seconds=Ex_Im_Env.PERIOD_TO_EXPORT)
-            return date_from, date_to
+        if time_unit not in ['days', 'weeks', 'hours', 'minutes']:
+            log.info(f'{time_unit} is not an acceptable time unit input, the time unit will be set to **seconds** automatically')
+            time_unit = 'seconds'
 
         if time_unit == 'days':
             date_from = date_to - timedelta(days=Ex_Im_Env.PERIOD_TO_EXPORT)
@@ -123,11 +123,14 @@ class Utilities:
             date_from = date_to - timedelta(hours=Ex_Im_Env.PERIOD_TO_EXPORT)
         elif time_unit == 'minutes':
             date_from = date_to - timedelta(minutes=Ex_Im_Env.PERIOD_TO_EXPORT)
+        elif time_unit == 'seconds':
+            date_from = date_to - timedelta(seconds=Ex_Im_Env.PERIOD_TO_EXPORT)
 
         date_from = datetime_to_string(date_from)
         date_to = datetime_to_string(date_to)
 
         return date_from, date_to
+
     @staticmethod
     def change_working_dir_between_extras_and_test():
         base_dir = os.path.basename(os.getcwd())
