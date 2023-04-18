@@ -184,7 +184,7 @@ def SetTimePeriodToExportData():
         createTo = datetime.now().replace(tzinfo=timezone.utc)
         TimeUnit = Environment.TIME_UNIT
 
-        if TimeUnit == 'seconds' or not TimeUnit:
+        if TimeUnit == 'seconds' or not TimeUnit or TimeUnit not in ['days', 'weeks', 'hours', 'minutes']:
             createFrom = createTo - timedelta(seconds=Environment.PERIOD_TO_EXPORT)
             return createFrom, createTo
 
