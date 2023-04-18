@@ -102,7 +102,7 @@ Note: A profile will be created and activated only if no other profiles are alre
 
 ### Deployment
 
-To deploy this project, upload the zip file to the Cumulocity as Microservice. The zip file can be created locally as described above or downloaded from the [releases](releases) section.
+To deploy this project, upload the zip file to the Cumulocity as Microservice. The zip file can be created locally as described above or downloaded from the [releases](https://github.com/SoftwareAG/oee-simulators/releases) section.
 
 ## Profile generator
 

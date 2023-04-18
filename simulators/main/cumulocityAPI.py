@@ -1,6 +1,6 @@
 import json, os, logging, requests, base64
 
-from credentials_handler import check_credentials_availability
+from arguments_handler import check_credentials_availability
 
 C8Y_BASEURL = os.environ.get('C8Y_BASEURL')
 C8Y_TENANT = os.environ.get('C8Y_TENANT')
@@ -8,7 +8,7 @@ C8Y_USER = os.environ.get('C8Y_USER')
 C8Y_PASSWORD = os.environ.get('C8Y_PASSWORD')
 
 log = logging.getLogger("C8yAPI")
-C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD = check_credentials_availability(C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD)
+C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD, TEST_FLAG = check_credentials_availability(C8Y_BASEURL, C8Y_TENANT, C8Y_USER, C8Y_PASSWORD)
 
 MOCK_REQUESTS = os.environ.get('MOCK_C8Y_REQUESTS') or 'false'
 
@@ -57,6 +57,23 @@ class CumulocityAPI:
             self.log_warning_on_bad_response(response)
             return None
 
+    def get_events(self, date_from, date_to, device_id):
+        if self.mocking:
+            log.info(f"mock: get measurements by the request to {C8Y_BASEURL}/event/events")
+            return json.dumps({'response': 200})
+        else:
+            params = {
+                'dateFrom': f'{date_from}',
+                'dateTo': f'{date_to}',
+                'source': device_id
+            }
+
+            response = requests.get(C8Y_BASEURL + '/event/events', headers=C8Y_HEADERS, params=params)
+            if response.ok:
+                return response.json()
+            self.log_warning_on_bad_response(response)
+            return None
+
     def create_measurements(self, measurement):
         if self.mocking:
             log.info(f"mock: create measurements {json.dumps(measurement)} by the request to {C8Y_BASEURL}/measurement/measurements")
@@ -74,14 +91,13 @@ class CumulocityAPI:
             log.info(f"mock: get measurements by the request to {C8Y_BASEURL}/measurement/measurements")
             return json.dumps({'response': 200})
         else:
-            '''
             params = {
                 'dateFrom': f'{date_from}',
                 'dateTo': f'{date_to}',
                 'source': device_id
             }
-            '''
-            response = requests.get(C8Y_BASEURL + '/measurement/measurements?dateFrom=2023-03-23T09:30:42.622Z&dateTo=2023-03-23T11:00:42.622Z&source=9786377', headers=MEASUREMENT_COLLECTIONS_HEADERS)
+
+            response = requests.get(C8Y_BASEURL + '/measurement/measurements', headers=MEASUREMENT_COLLECTIONS_HEADERS, params=params)
             if response.ok:
                 return response.json()
             self.log_warning_on_bad_response(response)

@@ -6,7 +6,7 @@
     "shortShutdowns": null,
     "version": "2.0.0",
     "amountUnit": "",
-    "name": "Simulator Test #1 - ${counter}",
+    "name": "Simulator Test #2 - ${counter}",
     "tenantId": "${tenantId}",
     "locationId": "",
     "external": false,
