@@ -15,7 +15,7 @@ Detailed feature list:
 - identifies devices using a configurable `externalId`.
 - devices can be disabled to not send any events and measurements.
 - Written in python which can be modified easily for further development.
-- Simulators work based on status and shift that it is assigned to.
+- Simulators work based on status and shift that it is assigned.
 
 ### Simulator definition
 Creating simulators in Cumulocity based on the definitions in [simulators.json](main/simulator.json). Those simulators can be used for profiles in the OEE App. The currently supported simulators and the corresponding profiles are described [here](simulators.md).
@@ -110,7 +110,7 @@ Example for a simulator definition:
       ```
     where "type" is optional and its default value is the value from the "fragment" property.
   
-  - In measurements, `valueDistribution` is defined to let the simulator know which distribution formular to use to generate measurements. There are three choices that can be defined here: `uniform`, `uniformint`, `normal`.
+  - In measurements, `valueDistribution` is defined to let the simulator know which distribution formula to use to generate measurements. There are three choices that can be defined here: `uniform`, `uniformint`, `normal`.
 
 - Simulates shutdowns (no events or measurements are sent if simulator is DOWN or out of shift)
 
@@ -118,21 +118,24 @@ Example for a simulator definition:
   - the script reads the configuration from [simulator.json](main/simulator.json) and creates a new device for every entry
   - the `id` property is used as `external_id` for the ManagedObjects to avoid creating multiple devices when redeploying/updating the microservice
   
-- Simulators act according to given Shiftplans
-  - Simulators are linked to shiftplans via locationId
-  - If a Simulator is not in Production time according to the given Shiftplan, it will not produce any events and measurements.
-  - At startup [shiftplans.json](main/shiftplans.json) is parsed and used to update the given timeslots within the shiftplan.
-  - The `locationId's` presented in [shiftplans.json](main/shiftplans.json) are used to parse for all shiftplans used in the script but only a specific shiftplan is applied to a simulator if it define the `locationId` of a shift.
-  ```
-    {
-      "type": "Simulator",
-      "id": "sim_012",
-      "label": "Normal #12 with short shifts",
-      "locationId": "ShortShiftsLocation",
-      "enabled": true
-    }
-  ```
-  In this example, the ShortShiftsLocation shift is applied to the simulator sim_012.
+    - Simulators act according to given Shiftplans
+      - Simulators are linked to shiftplans via locationId.
+      - The `locationId` presented in [shiftplans.json](main/shiftplans.json) are used to parse for all shiftplans used in the script but only a specific shiftplan is applied to a simulator if it has the `locationId` of a shift defined.
+        ```
+        {
+          "type": "Simulator",
+          "id": "sim_012",
+          "label": "Normal #12 with short shifts",
+          "locationId": "ShortShiftsLocation",
+          "enabled": true
+        }
+        ```
+        In this example, the ShortShiftsLocation shift is applied to the simulator sim_012.
+      - If a Simulator is not in Production time according to the given Shiftplan, it will not produce any events and measurements.
+      - At startup [shiftplans.json](main/shiftplans.json) is parsed once and the shifts are created accordingly (if they do not exist).
+      - Everytime an event/measurement is about to be sent, the script checks if the status of the locationId equals PRODUCTION; and only if the status is correct, the event/measurement is sent.
+      - Since the status of shiftplans is checked in realtime, if there are any changes to the shiftplans, they are taken into account.
+
 
 ### Shiftplan definition
 ```
@@ -151,6 +154,8 @@ This is an example of a shiftplan which contains a shift name `OneShiftLocation`
 The `recurringTimeslots` field is an array which define components of the shift. In this case, this shift has two parts: 
   - `OneShiftLocation-DayShift` is the shift for `PRODUCTION`, in which the applied simulators will generate events and measurements. The length of the shift is defined by the abstraction between `slotEnd` and `slotStart` and the `active` field is set to true means that this component of the shift is activated. The field `slotRecurrence` defined which day of the week can the applied simulators work. `""weekdays": [1, 2, 3, 4, 5]` means the applied simulators will work from Monday to Friday.
   - `OneShiftLocation-Break` is the shift for `BREAK`, in which the applied simulators will not generate events and measurements. The other setup is the same as above.
+
+**Only `recurringTimeslots` is supported**, `timeslots` is not support.
 
 ### Build the docker image
 
