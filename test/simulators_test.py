@@ -216,7 +216,7 @@ class Test(unittest.TestCase):
         try:
             # Start the script with arguments
             process = subprocess.Popen(["python", "simulator.py", "-b", C8Y_BASEURL, "-u", C8Y_USER, "-p", C8Y_PASSWORD, "-t", C8Y_TENANT, "-test"])
-            # Wait for 20 seconds
+            # Wait for 60 seconds
             time.sleep(60)
             # Terminate the script
             process.terminate()
