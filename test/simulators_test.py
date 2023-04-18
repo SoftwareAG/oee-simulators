@@ -192,28 +192,18 @@ class Test(unittest.TestCase):
         ]
         with open("simulator.json", "w") as f:
             json.dump(device_model, f)
+        self.assertTrue(os.path.exists('simulator.json'), msg=f"simulator.json is not created")
 
         # Create shiftplans.json
         Utils.setup_shiftplan(self)
         shiftplans = self.shiftplans
         with open("shiftplans.json", "w") as f:
             json.dump(shiftplans, f)
-
-        # Check if the files were created
-        if os.path.exists("simulator.json"):
-            log.debug("simulator.json created successfully!")
-        else:
-            log.debug("Error creating simulator.json")
-
-        if os.path.exists("shiftplans.json"):
-            log.debug("shiftplans.json created successfully!")
-        else:
-            log.debug("Error creating shiftplans.json")
-
-        # Change to the 'main' directory to access simulator script
-        os.chdir("../simulators/main")
+        self.assertTrue(os.path.exists('shiftplans.json'), msg=f"shiftplans.json is not created")
 
         try:
+            # Change to the 'main' directory to access simulator script
+            os.chdir("../simulators/main")
             # Start the script with arguments
             process = subprocess.Popen(["python", "simulator.py", "-b", C8Y_BASEURL, "-u", C8Y_USER, "-p", C8Y_PASSWORD, "-t", C8Y_TENANT, "-test"])
             # Wait for 60 seconds
