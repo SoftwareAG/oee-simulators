@@ -148,7 +148,6 @@ class Test(unittest.TestCase):
 
         # Get current directory path
         current_dir = os.getcwd()
-        print(current_dir)
 
         # Extracts the base name of the current directory
         base_dir = os.path.basename(current_dir)
@@ -174,14 +173,14 @@ class Test(unittest.TestCase):
 
         # Check if the files were created
         if os.path.exists("simulator.json"):
-            print("simulator.json created successfully!")
+            log.debug("simulator.json created successfully!")
         else:
-            print("Error creating simulator.json")
+            log.debug("Error creating simulator.json")
 
         if os.path.exists("shiftplans.json"):
-            print("shiftplans.json created successfully!")
+            log.debug("shiftplans.json created successfully!")
         else:
-            print("Error creating shiftplans.json")
+            log.debug("Error creating shiftplans.json")
 
         # Change to the 'main' directory to access simulator script
         os.chdir("../simulators/main")

@@ -134,14 +134,11 @@ class Utilities:
     @staticmethod
     def change_working_dir_between_extras_and_test():
         base_dir = os.path.basename(os.getcwd())
-        print(f"Current working directory: {base_dir}")
         # If the working directory is test then change to extras
         if base_dir == "test":
             os.chdir("../simulators/extras")
         elif base_dir == "extras":
             os.chdir("../../test")
-        current_dir = os.path.basename(os.getcwd())
-        print(f"Change to working directory: {current_dir}")
 
 if __name__ == '__main__':
     # create a test suite
