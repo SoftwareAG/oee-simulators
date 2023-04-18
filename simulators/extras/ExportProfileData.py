@@ -172,7 +172,7 @@ def CreateFilePath(Id):
     if not os.path.exists('export_data'):
         os.makedirs('export_data')
     relativeFilePath = f'export_data/{Id}.json'
-    filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
+    filePath = os.path.join(os.getcwd(), relativeFilePath)
     consoleLogger.debug(f"Created successfully file path: {filePath}")
     return filePath
 
@@ -205,13 +205,13 @@ def SetTimePeriodToExportData():
 
 # Main function to run the script
 if __name__ == '__main__':
-    createFrom, createTo = SetTimePeriodToExportData()
-    consoleLogger.info(f"Export data which is created after/from: {createFrom}")
-    consoleLogger.info(f"and created before/to: {createTo}")
-
     if TEST_FLAG:
         # Change to the 'test' directory
         os.chdir("../../test")
+
+    createFrom, createTo = SetTimePeriodToExportData()
+    consoleLogger.info(f"Export data which is created after/from: {createFrom}")
+    consoleLogger.info(f"and created before/to: {createTo}")
 
     if not DEVICE_ID_LIST:
         ExportAllProfileDataFromChildDevices(createFrom=createFrom, createTo=createTo)
