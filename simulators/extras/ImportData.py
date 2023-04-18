@@ -3,7 +3,7 @@ import ArgumentsAndCredentialsHandler
 
 from urllib3.exceptions import InsecureRequestWarning
 from os.path import isfile, join
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Data File Folder
 EXPORT_DATA_FOLDER = 'export_data'
@@ -65,8 +65,8 @@ def CreateMeasurements(measurements):
 
 
 def GetTimeDifference(object, key):
-    creation_Time = datetime.strptime(object[key], timeFormat)
-    now = datetime.utcnow()
+    creation_Time = datetime.strptime(object[key], timeFormat).replace(tzinfo=timezone.utc)
+    now = datetime.now().replace(tzinfo=timezone.utc)
     return (now - creation_Time)
 
 
