@@ -184,9 +184,9 @@ def SetTimePeriodToExportData():
         createTo = datetime.now().replace(tzinfo=timezone.utc)
         TimeUnit = Environment.TIME_UNIT
 
-        if TimeUnit == 'seconds' or not TimeUnit or TimeUnit not in ['days', 'weeks', 'hours', 'minutes']:
-            createFrom = createTo - timedelta(seconds=Environment.PERIOD_TO_EXPORT)
-            return createFrom, createTo
+        if TimeUnit not in ['days', 'weeks', 'hours', 'minutes']:
+            consoleLogger.info(f'{TimeUnit} is not an acceptable time unit input, the time unit will be set to **seconds** automatically')
+            TimeUnit = 'seconds'
 
         if TimeUnit == 'days':
             createFrom = createTo - timedelta(days=Environment.PERIOD_TO_EXPORT)
@@ -196,6 +196,8 @@ def SetTimePeriodToExportData():
             createFrom = createTo - timedelta(hours=Environment.PERIOD_TO_EXPORT)
         elif TimeUnit == 'minutes':
             createFrom = createTo - timedelta(minutes=Environment.PERIOD_TO_EXPORT)
+        elif TimeUnit == 'seconds':
+            createFrom = createTo - timedelta(seconds=Environment.PERIOD_TO_EXPORT)
         return createFrom, createTo
 
     return CREATE_FROM, CREATE_TO
