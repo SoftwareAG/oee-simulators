@@ -48,7 +48,6 @@ class Test(unittest.TestCase):
             device_id = Utils.create_device(self.device_model_with_events)
             external_device_id = self.device_model_with_events.get('id')
             profile_id = self.oee_api.create_and_activate_profile(external_id=external_device_id).get('id')
-
             filename = f"{external_device_id}_profile"
             data_file_path = f"export_data/{filename}.json"
 
@@ -98,7 +97,6 @@ class Test(unittest.TestCase):
             # Check if the data file is empty
             self.assertTrue(len(data.get('measurements')) > 0 or len(data.get('alarms')) > 0, msg=f"No data in {filename}.json")
 
-
         finally:
             # Change back to the original working directory
             os.chdir(current_dir)
@@ -130,6 +128,14 @@ class Utilities:
         date_to = datetime_to_string(date_to)
 
         return date_from, date_to
+    @staticmethod
+    def change_working_dir_between_extras_and_test():
+        base_dir = os.path.basename(os.getcwd())
+        # If the working directory is test then change to extras
+        if base_dir == "test":
+            os.chdir("../simulators/extras")
+        elif base_dir == "extras":
+            os.chdir("../../test")
 
     @staticmethod
     def change_working_dir_between_extras_and_test():
