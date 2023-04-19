@@ -28,7 +28,10 @@ class Test(unittest.TestCase):
 
 
     def test_get_or_create_device_id_with_full_model_and_delete(self):
+        log.info('-' * 100)
         log.info("Start testing create device and adding external id")
+        log.info('-' * 100)
+
         device_id = Utils.create_device(self.device_model_with_events)
         # null device_id will fail the test
         self.assertIsNotNone(device_id)
@@ -37,14 +40,20 @@ class Test(unittest.TestCase):
         log.info('-' * 100)
 
     def test_get_or_create_device_id_with_missing_id(self):
+        log.info('-' * 100)
         log.info("Start testing create device with no id")
+        log.info('-' * 100)
+
         device_id = Utils.create_device(self.device_model_no_id)
         # null device_id will fail the test
         self.assertIsNone(device_id)
         log.info('-' * 100)
 
     def test_get_or_create_device_id_with_missing_label(self):
+        log.info('-' * 100)
         log.info("Start testing create device with no label")
+        log.info('-' * 100)
+
         device_id = Utils.create_device(self.device_model_no_label)
         # null device_id will fail the test
         self.assertIsNone(device_id)
@@ -52,7 +61,10 @@ class Test(unittest.TestCase):
 
     @patch('logging.Logger.error')  # patch to hide the log.error method
     def test_load_json_file(self, mock_error):
+        log.info('-' * 100)
         log.info("Start testing load json file")
+        log.info('-' * 100)
+
         model = load("simulators/main/simulator.json") # Load model for unittest CLI
         if not model:
             model = load("../simulators/main/simulator.json") # Load model for unittest on IDE
@@ -60,7 +72,10 @@ class Test(unittest.TestCase):
         log.info('-' * 100)
 
     def test_create_and_activate_oee_profile(self):
+        log.info('-' * 100)
         log.info("Start testing create and activate oee profile")
+        log.info('-' * 100)
+
         device_id = Utils.create_device(device_model=self.device_model_with_events)
 
         # Get current directory path
@@ -85,7 +100,10 @@ class Test(unittest.TestCase):
         log.info('-' * 100)
 
     def test_create_update_organization_structure(self):
+        log.info('-' * 100)
         log.info("Start testing create hierarchy asset (organization structure)")
+        log.info('-' * 100)
+
         device_id = Utils.create_device(self.device_model_with_events)
         line_managed_object, site_managed_object = self.oee_api.create_or_update_asset_hierarchy(deviceIDs=device_id, line_description = "Simulator LINE", line_type = "LINE", site_description = "Simulator SITE", site_type = "SITE", oee_target = 80)
         self.assertIsNotNone(line_managed_object.get('hierarchy'))
@@ -101,7 +119,10 @@ class Test(unittest.TestCase):
         log.info('-' * 100)
 
     def test_send_event(self):
+        log.info('-' * 100)
         log.info("Start testing sending event")
+        log.info('-' * 100)
+
         device_id = Utils.create_device(self.device_model_with_events)
         log.info(f"Created the {self.device_model_with_events.get('label')} with id {device_id}")
         event = Utils.setup_events(device_id)
@@ -113,7 +134,10 @@ class Test(unittest.TestCase):
 
 
     def test_send_measurement(self):
+        log.info('-' * 100)
         log.info("Start testing create measurement")
+        log.info('-' * 100)
+
         device_id = Utils.create_device(self.device_model_with_events)
         log.info(f"Created the {self.device_model_with_events.get('label')} with id {device_id}")
         measurement = Utils.setup_measurements(device_id)
@@ -124,7 +148,10 @@ class Test(unittest.TestCase):
         log.info('-' * 100)
 
     def test_shiftplan_creation(self):
+        log.info('-' * 100)
         log.info("Start testing create shiftplan")
+        log.info('-' * 100)
+
         # Create shiftplan
         shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), self.shiftplans))
         for shiftplan in shiftplans:
@@ -144,12 +171,12 @@ class Test(unittest.TestCase):
         log.info('-' * 100)
 
     def test_run_simulators_script(self):
+        log.info('-' * 100)
         log.info("Start testing simulators script functions")
+        log.info('-' * 100)
 
         # Get current directory path
         current_dir = os.getcwd()
-        print(current_dir)
-
         # Extracts the base name of the current directory
         base_dir = os.path.basename(current_dir)
         # If the working directory is not main then change to main
@@ -165,31 +192,21 @@ class Test(unittest.TestCase):
         ]
         with open("simulator.json", "w") as f:
             json.dump(device_model, f)
+        self.assertTrue(os.path.exists('simulator.json'), msg=f"simulator.json is not created")
 
         # Create shiftplans.json
         Utils.setup_shiftplan(self)
         shiftplans = self.shiftplans
         with open("shiftplans.json", "w") as f:
             json.dump(shiftplans, f)
-
-        # Check if the files were created
-        if os.path.exists("simulator.json"):
-            print("simulator.json created successfully!")
-        else:
-            print("Error creating simulator.json")
-
-        if os.path.exists("shiftplans.json"):
-            print("shiftplans.json created successfully!")
-        else:
-            print("Error creating shiftplans.json")
-
-        # Change to the 'main' directory to access simulator script
-        os.chdir("../simulators/main")
+        self.assertTrue(os.path.exists('shiftplans.json'), msg=f"shiftplans.json is not created")
 
         try:
+            # Change to the 'main' directory to access simulator script
+            os.chdir("../simulators/main")
             # Start the script with arguments
             process = subprocess.Popen(["python", "simulator.py", "-b", C8Y_BASEURL, "-u", C8Y_USER, "-p", C8Y_PASSWORD, "-t", C8Y_TENANT, "-test"])
-            # Wait for 20 seconds
+            # Wait for 60 seconds
             time.sleep(60)
             # Terminate the script
             process.terminate()
