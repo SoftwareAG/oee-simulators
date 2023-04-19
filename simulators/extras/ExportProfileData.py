@@ -207,10 +207,6 @@ if __name__ == '__main__':
     consoleLogger.info(f"Export data which is created after/from: {createFrom}")
     consoleLogger.info(f"and created before/to: {createTo}")
 
-    if TEST_FLAG:
-        # Change to the 'test' directory
-        os.chdir("../../test")
-
     if not DEVICE_ID_LIST:
         ExportAllProfileDataFromChildDevices(createFrom=createFrom, createTo=createTo)
     else:
