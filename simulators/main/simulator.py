@@ -1,7 +1,7 @@
 import contextlib, json, logging, os, sys
 import interface, time
 
-from cumulocityAPI import (C8Y_BASEURL, C8Y_TENANT, C8Y_USER, CumulocityAPI)
+from cumulocityAPI import C8Y_BASEURL, C8Y_TENANT, C8Y_USER, TEST_FLAG, CumulocityAPI
 from datetime import datetime
 from oeeAPI import OeeAPI, ProfileCreateMode
 from shiftplan import Shiftplan
@@ -106,10 +106,10 @@ class MachineSimulator:
         return True # if there are no shiftplans for a device, the production time should not be affected by them
 
     def log_not_in_shift(self):
-        log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is not in PRODUCTION shift -> ignore event')
+        log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is not in PRODUCTION shift -> ignoring events and measurements')
 
     def log_back_in_shift(self):
-        log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is now in PRODUCTION shift -> generating events')
+        log.info(f'Device: {self.machine.device_id} [{self.machine.model["label"]}] is now in PRODUCTION shift -> generating events and measurements')
 
 
 def get_or_create_device_id(device_model):
@@ -138,23 +138,12 @@ def load(filename):
 
 ###################################################################################
 if __name__ == '__main__':
-    log.info(f'cwd:{os.getcwd()}')
-    DEVICE_MODELS = load("simulator.json")
-    if not DEVICE_MODELS:
-        sys.exit()
-    DEVICE_EVENT_MODELS = []
-    DEVICE_MEASUREMENT_MODELS = []
+    current_dir = os.getcwd()
+    log.info(f'cwd:{current_dir}')
 
-    # Add device id to the model of devices
-    for device_model in DEVICE_MODELS:
-        if get_or_create_device_id(device_model):
-            device_model["device_id"] = get_or_create_device_id(device_model)
-        else:
-            continue
-        if device_model.get("events"):
-            DEVICE_EVENT_MODELS.append(device_model)
-        if device_model.get("measurements"):
-            DEVICE_MEASUREMENT_MODELS.append(device_model)
+    if TEST_FLAG:
+        # Change to the 'test' directory
+        os.chdir("../../test")
 
     # read & update Shiftplans
     SHIFTPLANS_MODELS = load("shiftplans.json")
@@ -162,19 +151,42 @@ if __name__ == '__main__':
         sys.exit()
     shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), SHIFTPLANS_MODELS))
 
+    DEVICE_MODELS = load("simulator.json")
+    if not DEVICE_MODELS:
+        sys.exit()
+    DEVICE_EVENT_MODELS = []
+    DEVICE_MEASUREMENT_MODELS = []
+    CREATED_DEVICE_IDS = []
+
+    # Add device id to the model of devices
+    for device_model in DEVICE_MODELS:
+        device_model["device_id"] = get_or_create_device_id(device_model)
+        if not device_model["device_id"]:
+            continue
+        else:
+            CREATED_DEVICE_IDS.append(device_model["device_id"])
+        if device_model.get("events"):
+            DEVICE_EVENT_MODELS.append(device_model)
+        if device_model.get("measurements"):
+            DEVICE_MEASUREMENT_MODELS.append(device_model)
+
     if DELETE_PROFILES.lower() == "true":
         log.debug(f'Deleting all Profiles')
         oeeAPI.delete_all_simulators_profiles()
 
-    # Create Simulator Profiles
-    [oeeAPI.create_and_activate_profile(id, PROFILE_CREATE_MODE) for id in oeeAPI.get_simulator_external_ids()]
+    # Get a list of simulator external IDs
+    external_ids = cumulocityAPI.get_external_ids(CREATED_DEVICE_IDS)
+    # Create and activate a profile for each external ID
+    for id in external_ids:
+        oeeAPI.create_and_activate_profile(id, PROFILE_CREATE_MODE)
 
     os.system(f'python profile_generator.py -cat {CREATE_PROFILES_ARGUMENTS}')
 
     if CREATE_ASSET_HIERARCHY.lower() == "true":
         log.info("Creating the OEE asset hierarchy")
         ids = []
-        [ids.append(simulator.get("device_id")) for simulator in DEVICE_MODELS]
+        for simulator in DEVICE_MODELS:
+            ids.append(simulator.get("device_id"))
         oeeAPI.create_or_update_asset_hierarchy(deviceIDs=ids)
 
 

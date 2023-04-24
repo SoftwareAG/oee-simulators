@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
 C8Y_OEE_SIMULATOR_DEVICES_GROUP = "c8y_EventBasedSimulator"
-DATA_TYPE, DEVICE_ID_LIST, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y, PASSWORD = ArgumentsAndCredentialsHandler.HandleExportArguments()
+DATA_TYPE, DEVICE_ID_LIST, CREATE_FROM, CREATE_TO, LOG_LEVEL, c8y, PASSWORD, TEST_FLAG = ArgumentsAndCredentialsHandler.HandleExportArguments()
 C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.SetupHeadersForAPIRequest(tenant_id=c8y.tenant_id, username= c8y.username, password=PASSWORD)
 ####################################################
 # Setup Log
@@ -166,7 +166,7 @@ def CreateFilePath(Id):
     if not os.path.exists('export_data'):
         os.makedirs('export_data')
     relativeFilePath = f'export_data/{Id}.json'
-    filePath = os.path.join(os.path.dirname(__file__), relativeFilePath)
+    filePath = os.path.join(os.getcwd(), relativeFilePath)
     consoleLogger.debug(f"Created successfully file path: {filePath}")
     return filePath
 
@@ -178,9 +178,9 @@ def SetTimePeriodToExportData():
         createTo = datetime.now().replace(tzinfo=timezone.utc)
         TimeUnit = Environment.TIME_UNIT
 
-        if TimeUnit == 'seconds' or not TimeUnit:
-            createFrom = createTo - timedelta(seconds=Environment.PERIOD_TO_EXPORT)
-            return createFrom, createTo
+        if TimeUnit not in ['days', 'weeks', 'hours', 'minutes']:
+            consoleLogger.info(f'{TimeUnit} is not an acceptable time unit input, the time unit will be set to **seconds** automatically')
+            TimeUnit = 'seconds'
 
         if TimeUnit == 'days':
             createFrom = createTo - timedelta(days=Environment.PERIOD_TO_EXPORT)
@@ -190,6 +190,8 @@ def SetTimePeriodToExportData():
             createFrom = createTo - timedelta(hours=Environment.PERIOD_TO_EXPORT)
         elif TimeUnit == 'minutes':
             createFrom = createTo - timedelta(minutes=Environment.PERIOD_TO_EXPORT)
+        elif TimeUnit == 'seconds':
+            createFrom = createTo - timedelta(seconds=Environment.PERIOD_TO_EXPORT)
         return createFrom, createTo
 
     return CREATE_FROM, CREATE_TO
@@ -197,6 +199,10 @@ def SetTimePeriodToExportData():
 
 # Main function to run the script
 if __name__ == '__main__':
+    if TEST_FLAG:
+        # Change to the 'test' directory
+        os.chdir("../../test")
+
     createFrom, createTo = SetTimePeriodToExportData()
     consoleLogger.info(f"Export data which is created after/from: {createFrom}")
     consoleLogger.info(f"and created before/to: {createTo}")

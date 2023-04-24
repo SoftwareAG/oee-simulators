@@ -153,18 +153,17 @@ class OeeAPI:
         return []  
     
     def add_timeslots_for_shiftplan(self,shiftplan):
-        locationId = shiftplan.locationId
         for timeslot in shiftplan.recurringTimeSlots:
-            self.add_timeslot(locationId, timeslot)
+            self.add_timeslot(shiftplan.locationId, timeslot)
         return True
 
     def add_timeslot(self, locationId, timeslot):
         url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}/timeslot'
         response = requests.post(url, headers=C8Y_HEADERS, data = json.dumps(timeslot))
         if response.ok:
-            log.info(f'Timeslot for {locationId} was created')
+            log.info(f'Timeslot {timeslot.get("id")} for {locationId} was created')
             return True
-        log.warning(f'Cannot create Timeslot for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
+        log.warning(f'Cannot create Timeslot {timeslot.get("id")} for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
         return False
 
     def get_shiftplan(self, locationId, dateFrom = None, dateTo = None):

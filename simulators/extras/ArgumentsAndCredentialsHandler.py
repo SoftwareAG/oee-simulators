@@ -43,15 +43,17 @@ def SetupLogger(console_logger_name, console_log_level):
 
 def HandleExportArguments():
     parser = argparse.ArgumentParser(description='Script to export or import profiles data')
-    parser.add_argument('--device-ids', '-i', type=str, help='Input device id / List of device ids', nargs='+')
-    parser.add_argument('--create-from', '-from', type=str, help='Input "create from" milestone')
-    parser.add_argument('--create-to', '-to', type=str, help='Input "create to" milestone')
-    parser.add_argument('--data-type', '-d', choices=['measurements', 'alarms', 'all'], help='Export "alarms" or "measurements"')
-    parser.add_argument('--log', '-l', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help='Log-level')
-    parser.add_argument('--username', '-u', type=str, help='C8Y Username')
-    parser.add_argument('--password', '-p', type=str, help='C8Y Password')
-    parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
-    parser.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
+    export_arg = parser.add_argument_group('Import')
+    export_arg.add_argument('--device-ids', '-i', type=str, help='Input device id / List of device ids', nargs='+')
+    export_arg.add_argument('--create-from', '-from', type=str, help='Input "create from" milestone')
+    export_arg.add_argument('--create-to', '-to', type=str, help='Input "create to" milestone')
+    export_arg.add_argument('--data-type', '-d', choices=['measurements', 'alarms', 'all'], help='Export "alarms" or "measurements"')
+    export_arg.add_argument('--log', '-l', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help='Log-level')
+    export_arg.add_argument('--username', '-u', type=str, help='C8Y Username')
+    export_arg.add_argument('--password', '-p', type=str, help='C8Y Password')
+    export_arg.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
+    export_arg.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
+    export_arg.add_argument('--test', '-test', action='store_true', help='Flag to enable test mode')
     args = parser.parse_args()
 
     data_type = args.data_type
@@ -105,23 +107,27 @@ def HandleExportArguments():
     if not tenant:
         tenant = Environment.C8Y_TENANT
 
+    test = args.test
+
     c8y = CumulocityApi(base_url=baseurl,  # the url of your Cumulocity tenant here
                         tenant_id=tenant,  # the tenant ID of your Cumulocity tenant here
                         username=username,  # your Cumulocity IoT username
                         password=password)  # your Cumulocity IoT password
 
-    return data_type, device_ids_list, create_from, create_to, log_level, c8y, password
+    return data_type, device_ids_list, create_from, create_to, log_level, c8y, password, test
 
 
 def HandleImportArguments():
     parser = argparse.ArgumentParser(description='Script to import profiles data')
-    parser.add_argument('--ifiles', '-i', type=str, help='Input file', nargs='+')
-    parser.add_argument('--log', '-l', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help='Log-level')
-    parser.add_argument('--username', '-u', type=str, help='C8Y Username')
-    parser.add_argument('--password', '-p', type=str, help='C8Y Password')
-    parser.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
-    parser.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
-    parser.add_argument('--disable-ssl-verification', action='store_false')
+    import_arg = parser.add_argument_group('Import')
+    import_arg.add_argument('--ifiles', '-i', type=str, help='Input file', nargs='+')
+    import_arg.add_argument('--log', '-l', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help='Log-level')
+    import_arg.add_argument('--username', '-u', type=str, help='C8Y Username')
+    import_arg.add_argument('--password', '-p', type=str, help='C8Y Password')
+    import_arg.add_argument('--baseurl', '-b', type=str, help='C8Y Baseurl')
+    import_arg.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
+    import_arg.add_argument('--disable-ssl-verification', action='store_false')
+    import_arg.add_argument('--test', '-test', action='store_true', help='Flag to enable test mode')
 
     args = parser.parse_args()
 
@@ -162,12 +168,14 @@ def HandleImportArguments():
 
     VERIFY_SSL_CERTIFICATE = args.disable_ssl_verification
 
+    test = args.test
+
     c8y = CumulocityApi(base_url=BASEURL,  # the url of your Cumulocity tenant here
                         tenant_id=TENANT,  # the tenant ID of your Cumulocity tenant here
                         username=USERNAME,  # your Cumulocity IoT username
                         password=PASSWORD)  # your Cumulocity IoT password
 
-    return INPUT_FILE_LIST, LOG_LEVEL, c8y, PASSWORD, VERIFY_SSL_CERTIFICATE
+    return INPUT_FILE_LIST, LOG_LEVEL, c8y, PASSWORD, VERIFY_SSL_CERTIFICATE, test
 
 
 def RemoveTrailingSlashFromBaseUrl(baseUrl):
