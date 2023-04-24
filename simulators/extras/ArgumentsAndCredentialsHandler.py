@@ -119,6 +119,7 @@ def HandleExportArguments():
 
 def HandleImportArguments():
     parser = argparse.ArgumentParser(description='Script to import profiles data')
+
     import_arg = parser.add_argument_group('Import')
     import_arg.add_argument('--ifiles', '-i', type=str, help='Input file', nargs='+')
     import_arg.add_argument('--log', '-l', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help='Log-level')
@@ -128,6 +129,7 @@ def HandleImportArguments():
     import_arg.add_argument('--tenant-id', '-t', type=str, help='C8Y TenantID (optional)')
     import_arg.add_argument('--disable-ssl-verification', action='store_false')
     import_arg.add_argument('--test', '-test', action='store_true', help='Flag to enable test mode')
+    import_arg.add_argument('--strict', action='store_false', help='Flag to enable strict mode which stops script immediately when serious issue happens')
 
     args = parser.parse_args()
 
@@ -169,14 +171,14 @@ def HandleImportArguments():
     VERIFY_SSL_CERTIFICATE = args.disable_ssl_verification
 
     test = args.test
+    STRICT_MODE = args.strict
 
     c8y = CumulocityApi(base_url=BASEURL,  # the url of your Cumulocity tenant here
                         tenant_id=TENANT,  # the tenant ID of your Cumulocity tenant here
                         username=USERNAME,  # your Cumulocity IoT username
                         password=PASSWORD)  # your Cumulocity IoT password
 
-    return INPUT_FILE_LIST, LOG_LEVEL, c8y, PASSWORD, VERIFY_SSL_CERTIFICATE, test
-
+    return INPUT_FILE_LIST, LOG_LEVEL, c8y, PASSWORD, VERIFY_SSL_CERTIFICATE, test, STRICT_MODE
 
 def RemoveTrailingSlashFromBaseUrl(baseUrl):
     if baseUrl[-1] == '/':

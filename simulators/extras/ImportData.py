@@ -12,7 +12,7 @@ timeFormat = "%Y-%m-%dT%H:%M:%S.%fZ"
 logTimeFormat = "%Y%m%d%H%M%S_%f"
 file_log_level = logging.DEBUG
 C8Y_PROFILE_GROUP = 'c8y_EventBasedSimulatorProfile'
-json_filename_list_to_import, console_log_level, c8y, password, verifySslCertificate, TEST_FLAG = ArgumentsAndCredentialsHandler.HandleImportArguments()
+json_filename_list_to_import, console_log_level, c8y, password, verifySslCertificate, TEST_FLAG, strict_mode = ArgumentsAndCredentialsHandler.HandleImportArguments()
 C8Y_HEADERS, MEASUREMENTS_HEADERS = ArgumentsAndCredentialsHandler.SetupHeadersForAPIRequest(tenant_id=c8y.tenant_id, username= c8y.username, password=password)
 ####################################################
 # Setup Log
@@ -45,6 +45,8 @@ def GetDeviceIdByExternalId(external_id):
         consoleLogger.info(f'Device({device_id}) has been found by its external id "{C8Y_PROFILE_GROUP}/{external_id}".')
         return device_id
     consoleLogger.warning(response.json())
+    if strict_mode:
+        sys.exit(1)
     return None
 
 
@@ -53,6 +55,8 @@ def CreateAlarm(alarm):
     if response.ok:
         return response.json()
     consoleLogger.warning(response.json())
+    if strict_mode:
+        sys.exit(1)
     return None
 
 
@@ -61,6 +65,8 @@ def CreateMeasurements(measurements):
     if response.ok:
         return response.json()
     consoleLogger.warning(response.json())
+    if strict_mode:
+        sys.exit(1)
     return None
 
 
