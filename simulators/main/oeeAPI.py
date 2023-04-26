@@ -152,7 +152,7 @@ class OeeAPI:
         log.warning(f'Didnt find any simulators: {ids}')
         return []  
     
-    def add_timeslots_for_shiftplan(self,shiftplan):
+    def add_timeslots_for_shiftplan(self, shiftplan):
         for timeslot in shiftplan.recurringTimeSlots:
             self.add_timeslot(shiftplan.locationId, timeslot)
         return True
@@ -164,6 +164,20 @@ class OeeAPI:
             log.info(f'Timeslot {timeslot.get("id")} for {locationId} was created')
             return True
         log.warning(f'Cannot create Timeslot {timeslot.get("id")} for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
+        return False
+
+    def delete_timeslots_for_shiftplan(self, shiftplan):
+        for timeslot in shiftplan.recurringTimeSlots:
+            self.delete_timeslot(shiftplan.locationId, timeslot)
+        return True
+
+    def delete_timeslot(self, locationId, timeslot):
+        url = f'{self.SHIFTPLAN_REST_ENDPOINT}/{locationId}/timeslot/{timeslot.get("id")}'
+        response = requests.delete(url, headers=C8Y_HEADERS)
+        if response.ok:
+            log.info(f'Timeslot {timeslot} for {locationId} was deleted')
+            return True
+        log.warning(f'Cannot delete timeslot {timeslot.get("id")} for location:{locationId}, content: {response.status_code} - {response.text}, url: {url}, data: {json.dumps(timeslot)}')
         return False
 
     def get_shiftplan(self, locationId, dateFrom = None, dateTo = None):
