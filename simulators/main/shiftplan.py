@@ -3,13 +3,10 @@ import logging
 from cumulocityAPI import CumulocityAPI
 from oeeAPI import OeeAPI 
 
-
 log = logging.getLogger("task")
 
 cumulocityAPI = CumulocityAPI()
 oeeAPI = OeeAPI()
-
-one_day = 86400
 
 class Shiftplan:
 
