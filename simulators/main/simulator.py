@@ -18,6 +18,7 @@ MICROSERVICE_OPTIONS = cumulocityAPI.get_tenant_option_by_category("simulators")
 PROFILE_CREATE_MODE = ProfileCreateMode[MICROSERVICE_OPTIONS.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
 CREATE_PROFILES_ARGUMENTS = MICROSERVICE_OPTIONS.get("CREATE_PROFILES_ARGUMENTS", "")
 CREATE_ASSET_HIERARCHY = MICROSERVICE_OPTIONS.get("CREATE_ASSET_HIERARCHY", "True")
+REPLACE_EXISTING_TIMESLOTS = MICROSERVICE_OPTIONS.get("REPLACE_EXISTING_TIMESLOTS", "False")
 LOG_LEVEL = MICROSERVICE_OPTIONS.get("LOG_LEVEL", "INFO")
 DELETE_PROFILES = MICROSERVICE_OPTIONS.get("DELETE_PROFILES", "False")
 
@@ -31,8 +32,6 @@ log.info(f"started at {interface.current_timestamp()}")
 log.debug(f'Tenant options: {MICROSERVICE_OPTIONS}')
 log.info(f'CREATE_PROFILES:{PROFILE_CREATE_MODE}')
 
-# Setting up time for polling interval
-log.info(f'Shiftplan polling interval is set to {Shiftplan.polling_interval:,} secs')
 ##########################################
 
 log.debug(C8Y_BASEURL)
@@ -149,7 +148,7 @@ if __name__ == '__main__':
     SHIFTPLANS_MODELS = load("shiftplans.json")
     if not SHIFTPLANS_MODELS:
         sys.exit()
-    shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), SHIFTPLANS_MODELS))
+    shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model, REPLACE_EXISTING_TIMESLOTS), SHIFTPLANS_MODELS))
 
     DEVICE_MODELS = load("simulator.json")
     if not DEVICE_MODELS:

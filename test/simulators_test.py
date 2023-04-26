@@ -21,6 +21,7 @@ class Test(unittest.TestCase):
         self.PROFILE_CREATE_MODE = ProfileCreateMode[self.MICROSERVICE_OPTIONS.get("CREATE_PROFILES", "CREATE_IF_NOT_EXISTS")]
         self.CREATE_PROFILES_ARGUMENTS = self.MICROSERVICE_OPTIONS.get("CREATE_PROFILES_ARGUMENTS", "")
         self.CREATE_ASSET_HIERARCHY = self.MICROSERVICE_OPTIONS.get("CREATE_ASSET_HIERARCHY", "False")
+        self.REPLACE_EXISTING_TIMESLOTS = self.MICROSERVICE_OPTIONS.get("REPLACE_EXISTING_TIMESLOTS", "False")
         self.DELETE_PROFILES = self.MICROSERVICE_OPTIONS.get("DELETE_PROFILES", "False")
         Utils.setup_model(self)
         Utils.setup_shiftplan(self)
@@ -153,7 +154,7 @@ class Test(unittest.TestCase):
         log.info('-' * 100)
 
         # Create shiftplan
-        shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model), self.shiftplans))
+        shiftplans = list(map(lambda shiftplan_model: Shiftplan(shiftplan_model, self.REPLACE_EXISTING_TIMESLOTS), self.shiftplans))
         for shiftplan in shiftplans:
             try:
                 # Get created shiftplan info
