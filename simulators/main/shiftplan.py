@@ -12,7 +12,6 @@ oeeAPI = OeeAPI()
 one_day = 86400
 
 class Shiftplan:
-    polling_interval = one_day
 
     def __init__(self, shiftplan_model, replace_existing_timeslots) -> None:
         self.locationId = shiftplan_model["locationId"] or ""

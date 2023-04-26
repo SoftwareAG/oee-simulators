@@ -32,8 +32,6 @@ log.info(f"started at {interface.current_timestamp()}")
 log.debug(f'Tenant options: {MICROSERVICE_OPTIONS}')
 log.info(f'CREATE_PROFILES:{PROFILE_CREATE_MODE}')
 
-# Setting up time for polling interval
-log.info(f'Shiftplan polling interval is set to {Shiftplan.polling_interval:,} secs')
 ##########################################
 
 log.debug(C8Y_BASEURL)
