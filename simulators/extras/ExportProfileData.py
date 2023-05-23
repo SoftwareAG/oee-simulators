@@ -173,25 +173,30 @@ def CreateFilePath(Id):
 
 def SetTimePeriodToExportData():
     if not CREATE_FROM or CREATE_TO:
-        consoleLogger.debug(f'CREATE_FROM and/or CREATE_TO were not set. Using default setup to export {Environment.PERIOD_TO_EXPORT} {Environment.TIME_UNIT} ago from now')
+        if not Environment.CREATE_FROM or not Environment.CREATE_TO:
+            consoleLogger.debug(f'CREATE_FROM and/or CREATE_TO were not set. Using default setup to export {Environment.PERIOD_TO_EXPORT} {Environment.TIME_UNIT} ago from now')
 
-        createTo = datetime.now().replace(tzinfo=timezone.utc)
-        TimeUnit = Environment.TIME_UNIT
+            createTo = datetime.now().replace(tzinfo=timezone.utc)
+            TimeUnit = Environment.TIME_UNIT
 
-        if TimeUnit not in ['days', 'weeks', 'hours', 'minutes']:
-            consoleLogger.info(f'{TimeUnit} is not an acceptable time unit input, the time unit will be set to **seconds** automatically')
-            TimeUnit = 'seconds'
+            if TimeUnit not in ['days', 'weeks', 'hours', 'minutes']:
+                consoleLogger.info(f'{TimeUnit} is not an acceptable time unit input, the time unit will be set to **seconds** automatically')
+                TimeUnit = 'seconds'
 
-        if TimeUnit == 'days':
-            createFrom = createTo - timedelta(days=Environment.PERIOD_TO_EXPORT)
-        elif TimeUnit == 'weeks':
-            createFrom = createTo - timedelta(weeks=Environment.PERIOD_TO_EXPORT)
-        elif TimeUnit == 'hours':
-            createFrom = createTo - timedelta(hours=Environment.PERIOD_TO_EXPORT)
-        elif TimeUnit == 'minutes':
-            createFrom = createTo - timedelta(minutes=Environment.PERIOD_TO_EXPORT)
-        elif TimeUnit == 'seconds':
-            createFrom = createTo - timedelta(seconds=Environment.PERIOD_TO_EXPORT)
+            if TimeUnit == 'days':
+                createFrom = createTo - timedelta(days=Environment.PERIOD_TO_EXPORT)
+            elif TimeUnit == 'weeks':
+                createFrom = createTo - timedelta(weeks=Environment.PERIOD_TO_EXPORT)
+            elif TimeUnit == 'hours':
+                createFrom = createTo - timedelta(hours=Environment.PERIOD_TO_EXPORT)
+            elif TimeUnit == 'minutes':
+                createFrom = createTo - timedelta(minutes=Environment.PERIOD_TO_EXPORT)
+            elif TimeUnit == 'seconds':
+                createFrom = createTo - timedelta(seconds=Environment.PERIOD_TO_EXPORT)
+        else:
+            createFrom = Environment.CREATE_FROM
+            createTo = Environment.CREATE_TO
+
         return createFrom, createTo
 
     return CREATE_FROM, CREATE_TO
