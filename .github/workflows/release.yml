@@ -8,7 +8,7 @@ on:
       release_body:
         type: string
         description: GitHub Release Message
-        default: "Release version ${GITHUB_RUN_NUMBER}"
+        default: "New Release"
 
       environment:
         type: environment
@@ -45,7 +45,7 @@ jobs:
         with:
           draft: false
           prerelease: false
-          release_name: v1.0.$${{ needs.call-build-workflow.outputs.release_version }}
+          release_name: v1.0.${{ needs.call-build-workflow.outputs.release_version }}
           tag_name: v1.0.${{ needs.call-build-workflow.outputs.release_version }}
           body: ${{ inputs.release_body }}
         env:
@@ -59,14 +59,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # upload_url output is provided automatically by the GitHub API when the release is created
           asset_path: 'repo/simulators/oee-simulators.zip'
           asset_name: 'oee-simulators.zip'
-          asset_content_type: application/zip
-
-      - name: Upload source-code zip
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: 'source-code.zip'
-          asset_name: 'oee-simulators-src.zip'
           asset_content_type: application/zip
