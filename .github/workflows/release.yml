@@ -8,7 +8,7 @@ on:
       release_body:
         type: string
         description: GitHub Release Message
-        default: "Release version ${GITHUB_RUN_NUMBER}"
+        default: "Release version ${{ github.run_number }}"
 
       environment:
         type: environment
