@@ -45,7 +45,7 @@ jobs:
         with:
           draft: false
           prerelease: false
-          release_name: v1.0.$${{ needs.call-build-workflow.outputs.release_version }}
+          release_name: v1.0.${{ needs.call-build-workflow.outputs.release_version }}
           tag_name: v1.0.${{ needs.call-build-workflow.outputs.release_version }}
           body: ${{ inputs.release_body }}
         env:
