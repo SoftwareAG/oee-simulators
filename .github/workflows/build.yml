@@ -47,7 +47,7 @@ jobs:
         id: update-version-number
         run: |
           cd repo/simulators
-          SIMULATOR_VERSION=$((GITHUB_RUN_NUMBER + 51))
+          SIMULATOR_VERSION=$((GITHUB_RUN_NUMBER + 50))
           sed -i "s/@project.version@/1.0.${SIMULATOR_VERSION}/g" cumulocity.json
           echo "release_version=${SIMULATOR_VERSION}" >> $GITHUB_OUTPUT
 
