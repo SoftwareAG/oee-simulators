@@ -34,6 +34,13 @@ jobs:
         with:
           path: 'repo'
 
+      - name: Build Docker image
+        run: |
+          cd repo/simulators
+          docker build -t oee-simulators .
+          docker save -o image.tar oee-simulators
+          docker rmi oee-simulators
+
       - name: Zip files for release
         run: |
           cd repo/simulators
