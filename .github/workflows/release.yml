@@ -42,6 +42,7 @@ jobs:
           docker rmi oee-simulators
 
       - name: Zip files for release
+        shell: bash
         run: |
           cd repo/simulators
           if [[ ! -f image.tar ]]; then
