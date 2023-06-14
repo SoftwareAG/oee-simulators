@@ -36,7 +36,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v3.0.2
         with:
-          name: 'oee-simulators'
+          name: 'oee-simulators.zip'
           path: 'repo/simulators'
 
       - name: Create Release
