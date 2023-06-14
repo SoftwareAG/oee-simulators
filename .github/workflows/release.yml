@@ -33,11 +33,15 @@ jobs:
         with:
           path: 'repo'
 
-      - name: Download build artifact
+      - name: Download and rename artifact
         uses: actions/download-artifact@v3.0.2
         with:
-          name: 'oee-simulators.zip'
+          name: 'oee-simulators'
           path: 'repo/simulators'
+
+      - name: Rename artifact
+        run: |
+          mv repo/simulators/oee-simulators repo/simulators/oee-simulators.zip
 
       - name: Create Release
         uses: actions/create-release@v1.1.4
