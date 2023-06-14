@@ -25,6 +25,7 @@ jobs:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
 
   build-release:
+    if: github.ref == 'refs/heads/main'
     needs: call-build-workflow
     runs-on: ubuntu-latest
     steps:
