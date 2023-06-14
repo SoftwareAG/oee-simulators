@@ -33,16 +33,25 @@ jobs:
         with:
           path: 'repo'
 
-      - name: Download and rename artifact
+      - name: Download artifact
         uses: actions/download-artifact@v3.0.2
         with:
           name: 'oee-simulators'
           path: 'repo/simulators'
 
-      - name: Rename artifact
+      - name: Zip files for release
+        shell: bash
         run: |
           cd repo/simulators
-          mv oee-simulators oee-simulators.zip
+          if [[ ! -f image.tar ]]; then
+            echo "Missing required files: image.tar"
+            exit 1
+          fi
+          if [[ ! -f cumulocity.json ]]; then
+            echo "Missing required files: cumulocity.json"
+            exit 1
+          fi
+          zip oee-simulators.zip image.tar cumulocity.json
 
       - name: Create Release
         uses: actions/create-release@v1.1.4
