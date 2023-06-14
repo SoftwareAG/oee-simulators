@@ -53,6 +53,7 @@ jobs:
             echo "Missing required files: cumulocity.json"
             exit 1
           fi
+          sed -i "s/@project.version@/1.0.${{ needs.call-build-workflow.outputs.release_version }}/g" cumulocity.json
           zip oee-simulators.zip image.tar cumulocity.json
 
       - name: Create Release
