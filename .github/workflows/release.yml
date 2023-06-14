@@ -42,8 +42,17 @@ jobs:
           docker rmi oee-simulators
 
       - name: Zip files for release
+        shell: bash
         run: |
           cd repo/simulators
+          if [[ ! -f image.tar ]]; then
+            echo "Missing required files: image.tar"
+            exit 1
+          fi
+          if [[ ! -f cumulocity.json ]]; then
+            echo "Missing required files: cumulocity.json"
+            exit 1
+          fi
           zip oee-simulators.zip image.tar cumulocity.json
 
       - name: Create Release
