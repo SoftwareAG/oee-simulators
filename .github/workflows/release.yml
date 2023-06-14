@@ -25,7 +25,6 @@ jobs:
       C8Y_PASSWORD: ${{ secrets.C8Y_PASSWORD }}
 
   build-release:
-    if: github.ref == 'refs/heads/main'
     needs: call-build-workflow
     runs-on: ubuntu-latest
     steps:
@@ -34,27 +33,11 @@ jobs:
         with:
           path: 'repo'
 
-      - name: Build Docker image
-        run: |
-          cd repo/simulators
-          docker build -t oee-simulators .
-          docker save -o image.tar oee-simulators
-          docker rmi oee-simulators
-
-      - name: Zip files for release
-        shell: bash
-        run: |
-          cd repo/simulators
-          if [[ ! -f image.tar ]]; then
-            echo "Missing required files: image.tar"
-            exit 1
-          fi
-          if [[ ! -f cumulocity.json ]]; then
-            echo "Missing required files: cumulocity.json"
-            exit 1
-          fi
-          sed -i "s/@project.version@/1.0.${{ needs.call-build-workflow.outputs.release_version }}/g" cumulocity.json
-          zip oee-simulators.zip image.tar cumulocity.json
+      - name: Download build artifact
+        uses: actions/download-artifact@v3.1.2
+        with:
+          name: 'oee-simulators'
+          path: 'repo/simulators'
 
       - name: Create Release
         uses: actions/create-release@v1.1.4
