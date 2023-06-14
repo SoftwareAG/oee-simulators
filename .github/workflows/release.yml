@@ -34,7 +34,7 @@ jobs:
           path: 'repo'
 
       - name: Download build artifact
-        uses: actions/download-artifact@v3.1.2
+        uses: actions/download-artifact@v3.0.2
         with:
           name: 'oee-simulators'
           path: 'repo/simulators'
