@@ -41,7 +41,8 @@ jobs:
 
       - name: Rename artifact
         run: |
-          mv repo/simulators/oee-simulators repo/simulators/oee-simulators.zip
+          cd repo/simulators
+          mv oee-simulators oee-simulators.zip
 
       - name: Create Release
         uses: actions/create-release@v1.1.4
